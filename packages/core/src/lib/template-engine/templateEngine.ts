@@ -6,4 +6,6 @@ export class TemplateEngine {
   constructor({ compiler }: { compiler: Compiler }) {
     this.compiler = compiler;
   }
+
+  // public async compile(templateProvider) {}
 }

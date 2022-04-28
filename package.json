@@ -5,6 +5,7 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "glob": "^8.0.1",
     "nunjucks": "^3.2.3",
     "tslib": "^2.3.0"
   },
@@ -15,6 +16,7 @@
     "@nrwl/js": "14.0.3",
     "@nrwl/linter": "14.0.3",
     "@nrwl/workspace": "14.0.3",
+    "@types/glob": "^7.2.0",
     "@types/jest": "27.4.1",
     "@types/node": "16.11.7",
     "@typescript-eslint/eslint-plugin": "~5.18.0",

@@ -1,4 +1,4 @@
-import { NunjucksCompiler, InMemoryCodeLoader } from '../../..';
+import { NunjucksCompiler, InMemoryCodeLoader } from '../../../src';
 
 it('Nunjucks compiler should compile template without error.', async () => {
   // Arrange
