@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@vulcan/core": ["packages/core/src/index.ts"]
+      "@vulcan/core": ["packages/core/src/index.ts"],
+      "@vulcan/serve": ["packages/serve/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
