@@ -5,6 +5,7 @@
   "scripts": {},
   "private": true,
   "dependencies": {
+    "nunjucks": "^3.2.3",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
@@ -18,6 +19,7 @@
     "@types/node": "16.11.7",
     "@typescript-eslint/eslint-plugin": "~5.18.0",
     "@typescript-eslint/parser": "~5.18.0",
+    "cz-conventional-changelog": "3.3.0",
     "eslint": "~8.12.0",
     "eslint-config-prettier": "8.1.0",
     "jest": "27.5.1",
@@ -26,5 +28,10 @@
     "ts-jest": "27.1.4",
     "ts-node": "9.1.1",
     "typescript": "~4.6.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
