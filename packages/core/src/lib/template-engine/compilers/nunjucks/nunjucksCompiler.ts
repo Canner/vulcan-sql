@@ -7,6 +7,7 @@ const precomileWrapper: nunjucks.PrecompileOptions['wrapper'] = (templates) => {
 };
 
 export class NunjucksCompiler extends Compiler {
+  public name = 'nunjucks';
   private env: nunjucks.Environment;
 
   constructor({ loader }: { loader: nunjucks.ILoader }) {

@@ -3,7 +3,7 @@ import * as path from 'path';
 
 it('File template provider should provide correct files and contents', async () => {
   // Arrange
-  const filePath = path.resolve(__dirname, './test-templates');
+  const filePath = path.resolve(__dirname, '../test-templates');
   const provider = new FileTemplateProvider({ folderPath: filePath });
   const templates: Template[] = [];
 
@@ -14,15 +14,15 @@ it('File template provider should provide correct files and contents', async () 
   // Assert
   expect(templates.length).toBe(3);
   expect(templates).toContainEqual({
-    name: 'user.sql',
+    name: 'user',
     statement: 'select * from public.user where id = {{ id }}',
   });
   expect(templates).toContainEqual({
-    name: 'group.sql',
+    name: 'group',
     statement: 'select * from public.group where id = {{ id }}',
   });
   expect(templates).toContainEqual({
-    name: 'sub-folder/role.sql',
+    name: 'sub-folder/role',
     statement: 'select * from public.role where id = {{ id }}',
   });
 });

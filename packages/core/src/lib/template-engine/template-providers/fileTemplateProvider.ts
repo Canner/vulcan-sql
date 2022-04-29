@@ -1,6 +1,6 @@
 import { Template, TemplateProvider } from './templateProvider';
 import * as glob from 'glob';
-import * as fs from 'fs/promises';
+import { promises as fs } from 'fs';
 import * as path from 'path';
 
 export interface FileTemplateProviderOptions {
@@ -19,7 +19,9 @@ export class FileTemplateProvider implements TemplateProvider {
 
     for (const file of files) {
       yield {
-        name: path.relative(this.options.folderPath, file),
+        name: path
+          .relative(this.options.folderPath, file)
+          .replace(/\.sql$/, ''),
         statement: await fs.readFile(file, 'utf8'),
       };
     }
@@ -28,8 +30,8 @@ export class FileTemplateProvider implements TemplateProvider {
   private async getTemplateFilePaths(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       glob(
-        './**/*.sql',
-        { nodir: true, root: this.options.folderPath },
+        path.resolve(this.options.folderPath, '**', '*.sql'),
+        { nodir: true },
         (err, files) => {
           if (err) return reject(err);
           else return resolve(files);
