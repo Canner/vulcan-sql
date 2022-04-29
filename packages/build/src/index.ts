@@ -1,1 +1,1 @@
-export * from './lib/build';
+export * from './lib/schema-parser';
