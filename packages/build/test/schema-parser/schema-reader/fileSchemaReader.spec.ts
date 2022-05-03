@@ -1,11 +1,11 @@
-import { FileSchemaReader, SchemaDefinition } from '../../../src';
+import { FileSchemaReader, SchemaData } from '../../../src';
 import * as path from 'path';
 
 it('File schema reader should provide correct files and contents', async () => {
   // Arrange
   const filePath = path.resolve(__dirname, '../test-schema');
   const schemaReader = new FileSchemaReader({ folderPath: filePath });
-  const schemas: SchemaDefinition[] = [];
+  const schemas: SchemaData[] = [];
 
   // Act
   for await (const schema of schemaReader.readSchema()) {

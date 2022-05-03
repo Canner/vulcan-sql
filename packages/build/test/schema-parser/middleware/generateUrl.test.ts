@@ -1,0 +1,47 @@
+import { RawAPISchema } from '../../../src';
+import { GenerateUrl } from '../../../src/lib/schema-parser/middleware/generateUrl';
+
+it('Should keep url in schema', async () => {
+  // Arrange
+  const schema: RawAPISchema = {
+    urlPath: '/existed/path',
+    name: 'some-name',
+  };
+  // Act
+  await GenerateUrl(schema, async () => Promise.resolve());
+  // Assert
+  expect(schema.urlPath).toEqual('/existed/path');
+});
+
+it('Should add leading slash', async () => {
+  // Arrange
+  const schema: RawAPISchema = {
+    name: 'some-name',
+  };
+  // Act
+  await GenerateUrl(schema, async () => Promise.resolve());
+  // Assert
+  expect(schema.urlPath).toEqual('/some-name');
+});
+
+it('Should remove trailing slash', async () => {
+  // Arrange
+  const schema: RawAPISchema = {
+    name: '/some-name/',
+  };
+  // Act
+  await GenerateUrl(schema, async () => Promise.resolve());
+  // Assert
+  expect(schema.urlPath).toEqual('/some-name');
+});
+
+it('Should replace white space', async () => {
+  // Arrange
+  const schema: RawAPISchema = {
+    name: 'some name',
+  };
+  // Act
+  await GenerateUrl(schema, async () => Promise.resolve());
+  // Assert
+  expect(schema.urlPath).toEqual('/some-name');
+});

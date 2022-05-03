@@ -1,4 +1,4 @@
-import { DefinitionType, SchemaDefinition, SchemaReader } from './schemaReader';
+import { SchemaDataType, SchemaData, SchemaReader } from './schemaReader';
 import * as glob from 'glob';
 import { promises as fs } from 'fs';
 import * as path from 'path';
@@ -15,7 +15,7 @@ export class FileSchemaReader extends SchemaReader {
     this.options = options;
   }
 
-  public async *readSchema(): AsyncGenerator<SchemaDefinition> {
+  public async *readSchema(): AsyncGenerator<SchemaData> {
     const files = await this.getSchemaFilePaths();
 
     for (const file of files) {
@@ -25,7 +25,7 @@ export class FileSchemaReader extends SchemaReader {
       yield {
         name,
         content: await fs.readFile(file, 'utf8'),
-        type: DefinitionType.YAML,
+        type: SchemaDataType.YAML,
       };
     }
   }

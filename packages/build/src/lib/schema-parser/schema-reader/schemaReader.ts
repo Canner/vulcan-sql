@@ -14,16 +14,16 @@
 //   error: { code: string; message: string }[];
 // }
 
-export enum DefinitionType {
+export enum SchemaDataType {
   YAML = 'YAML',
 }
 
-export interface SchemaDefinition {
+export interface SchemaData {
   name: string;
   content: string;
-  type: DefinitionType;
+  type: SchemaDataType;
 }
 
 export abstract class SchemaReader {
-  abstract readSchema(): AsyncGenerator<SchemaDefinition>;
+  abstract readSchema(): AsyncGenerator<SchemaData>;
 }
