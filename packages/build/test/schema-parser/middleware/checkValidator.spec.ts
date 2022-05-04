@@ -5,7 +5,7 @@ import * as sinon from 'ts-sinon';
 it('Should pass if there is no error', async () => {
   // Arrange
   const schema: RawAPISchema = {
-    name: 'some-name',
+    sourceName: 'some-name',
     request: [
       {
         validators: [{ name: 'validator1' }],
@@ -28,7 +28,7 @@ it('Should pass if there is no error', async () => {
 it('Should throw if some validators have no name', async () => {
   // Arrange
   const schema: RawAPISchema = {
-    name: 'some-name',
+    sourceName: 'some-name',
     request: [
       {
         validators: [{ name: 'validator1' }, {}],
@@ -51,7 +51,7 @@ it('Should throw if some validators have no name', async () => {
 it('Should throw if the arguments of a validator is invalid', async () => {
   // Arrange
   const schema: RawAPISchema = {
-    name: 'some-name',
+    sourceName: 'some-name',
     request: [
       {
         validators: [{ name: 'validator1' }],

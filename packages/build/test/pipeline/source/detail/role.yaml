@@ -1,0 +1,9 @@
+name: Role
+url: /detail/role/:id
+request:
+  - name: id
+    in: query
+    description: role id
+    validators:
+      - uuid
+      - required

@@ -7,7 +7,7 @@ export interface RawRequestParameter
 }
 
 export interface RawAPISchema extends DeepPartial<Omit<APISchema, 'request'>> {
-  name: string;
+  sourceName: string;
   request?: DeepPartial<RawRequestParameter[]>;
 }
 

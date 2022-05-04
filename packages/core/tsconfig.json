@@ -8,9 +8,9 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "typeRoots": ["./types", "../../node_modules/@types"]
+    "typeRoots": ["../../node_modules/@types"]
   },
-  "files": [],
+  "files": ["...", "../../types/nunjucks.d.ts"],
   "include": [],
   "references": [
     {

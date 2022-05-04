@@ -4,7 +4,7 @@ export const generateUrl =
   (): SchemaParserMiddleware => async (schemas, next) => {
     if (schemas.urlPath) return next();
 
-    let urlPath = schemas.name.toLocaleLowerCase();
+    let urlPath = schemas.sourceName.toLocaleLowerCase();
 
     // replace spaces with dashes
     urlPath = urlPath.replace(/\s/g, '-');

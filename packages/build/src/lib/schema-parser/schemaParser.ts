@@ -7,6 +7,7 @@ import {
   generateUrl,
   checkValidator,
   transformValidator,
+  generateTemplateSource,
 } from './middleware';
 import * as compose from 'koa-compose';
 
@@ -35,6 +36,7 @@ export class SchemaParser {
   }) {
     this.schemaReader = schemaReader;
     this.use(generateUrl());
+    this.use(generateTemplateSource());
     this.use(transformValidator());
     this.use(checkValidator(validatorLoader));
   }
@@ -60,7 +62,7 @@ export class SchemaParser {
     switch (schemaData.type) {
       case SchemaDataType.YAML:
         return {
-          name: schemaData.name,
+          sourceName: schemaData.name,
           ...(yaml.load(schemaData.content) as object),
         } as RawAPISchema;
       default:
