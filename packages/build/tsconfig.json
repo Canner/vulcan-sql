@@ -9,7 +9,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "files": [],
+  "files": ["...", "../../types/nunjucks.d.ts"],
   "include": [],
   "references": [
     {

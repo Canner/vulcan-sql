@@ -4,7 +4,7 @@ import { transformValidator } from '../../../src/lib/schema-parser/middleware/tr
 it('Should convert string validator to proper format', async () => {
   // Arrange
   const schema: RawAPISchema = {
-    name: 'some-name',
+    sourceName: 'some-name',
     request: [
       {
         validators: ['validator1'],
@@ -23,7 +23,7 @@ it('Should convert string validator to proper format', async () => {
 it('Should add fallback value when a validator has no argument', async () => {
   // Arrange
   const schema: RawAPISchema = {
-    name: 'some-name',
+    sourceName: 'some-name',
     request: [
       {
         validators: [{ name: 'validator1' }],
@@ -42,7 +42,7 @@ it('Should add fallback value when a validator has no argument', async () => {
 it('Should add fallback value when there is no request', async () => {
   // Arrange
   const schema: RawAPISchema = {
-    name: 'some-name',
+    sourceName: 'some-name',
   };
   // Act
   await transformValidator()(schema, async () => Promise.resolve());
@@ -53,7 +53,7 @@ it('Should add fallback value when there is no request', async () => {
 it('Should add fallback value when a request has no validator', async () => {
   // Arrange
   const schema: RawAPISchema = {
-    name: 'some-name',
+    sourceName: 'some-name',
     request: [{ fieldName: 'field1' }],
   };
   // Act

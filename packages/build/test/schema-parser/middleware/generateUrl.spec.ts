@@ -5,7 +5,7 @@ it('Should keep url in schema', async () => {
   // Arrange
   const schema: RawAPISchema = {
     urlPath: '/existed/path',
-    name: 'some-name',
+    sourceName: 'some-name',
   };
   // Act
   await generateUrl()(schema, async () => Promise.resolve());
@@ -16,7 +16,7 @@ it('Should keep url in schema', async () => {
 it('Should add leading slash', async () => {
   // Arrange
   const schema: RawAPISchema = {
-    name: 'some-name',
+    sourceName: 'some-name',
   };
   // Act
   await generateUrl()(schema, async () => Promise.resolve());
@@ -27,7 +27,7 @@ it('Should add leading slash', async () => {
 it('Should remove trailing slash', async () => {
   // Arrange
   const schema: RawAPISchema = {
-    name: '/some-name/',
+    sourceName: '/some-name/',
   };
   // Act
   await generateUrl()(schema, async () => Promise.resolve());
@@ -38,7 +38,7 @@ it('Should remove trailing slash', async () => {
 it('Should replace white space', async () => {
   // Arrange
   const schema: RawAPISchema = {
-    name: 'some name',
+    sourceName: 'some name',
   };
   // Act
   await generateUrl()(schema, async () => Promise.resolve());
