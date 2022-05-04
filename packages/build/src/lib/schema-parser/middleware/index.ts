@@ -1,4 +1,3 @@
 export * from './middleware';
-import { GenerateUrl } from './generateUrl';
-
-export default [GenerateUrl];
+export * from './generateUrl';
+export * from './checkValidator';

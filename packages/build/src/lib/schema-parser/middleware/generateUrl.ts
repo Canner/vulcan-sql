@@ -1,21 +1,22 @@
 import { SchemaParserMiddleware } from './middleware';
 
-export const GenerateUrl: SchemaParserMiddleware = async (schemas, next) => {
-  if (schemas.urlPath) return next();
+export const generateUrl =
+  (): SchemaParserMiddleware => async (schemas, next) => {
+    if (schemas.urlPath) return next();
 
-  let urlPath = schemas.name.toLocaleLowerCase();
+    let urlPath = schemas.name.toLocaleLowerCase();
 
-  // replace spaces with dashes
-  urlPath = urlPath.replace(/\s/g, '-');
+    // replace spaces with dashes
+    urlPath = urlPath.replace(/\s/g, '-');
 
-  // add leading slash
-  if (urlPath.charAt(0) !== '/') urlPath = `/${urlPath}`;
+    // add leading slash
+    if (urlPath.charAt(0) !== '/') urlPath = `/${urlPath}`;
 
-  // remove trailing slash
-  if (urlPath.charAt(urlPath.length - 1) === '/')
-    urlPath = urlPath.slice(0, -1);
+    // remove trailing slash
+    if (urlPath.charAt(urlPath.length - 1) === '/')
+      urlPath = urlPath.slice(0, -1);
 
-  schemas.urlPath = urlPath;
+    schemas.urlPath = urlPath;
 
-  return next();
-};
+    return next();
+  };

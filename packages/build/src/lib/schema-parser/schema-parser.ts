@@ -1,8 +1,21 @@
-import { APISchema } from '@vulcan/core';
+import { APISchema, IValidator } from '@vulcan/core';
 import { SchemaData, SchemaDataType, SchemaReader } from './schema-reader';
 import * as yaml from 'js-yaml';
-import middleware, { RawAPISchema, SchemaParserMiddleware } from './middleware';
+import {
+  RawAPISchema,
+  SchemaParserMiddleware,
+  generateUrl,
+  checkValidator,
+} from './middleware';
 import * as compose from 'koa-compose';
+
+/**
+ * Temporary interface
+ * @deprecated
+ */
+export interface ValidatorLoader {
+  getLoader(name: string): IValidator;
+}
 
 export interface SchemaParseResult {
   schemas: APISchema[];
@@ -10,11 +23,18 @@ export interface SchemaParseResult {
 
 export class SchemaParser {
   private schemaReader: SchemaReader;
-  private middleware: SchemaParserMiddleware[];
+  private middleware: SchemaParserMiddleware[] = [];
 
-  constructor({ schemaReader }: { schemaReader: SchemaReader }) {
+  constructor({
+    schemaReader,
+    validatorLoader,
+  }: {
+    schemaReader: SchemaReader;
+    validatorLoader: ValidatorLoader;
+  }) {
     this.schemaReader = schemaReader;
-    this.middleware = middleware;
+    this.use(generateUrl());
+    this.use(checkValidator(validatorLoader));
   }
 
   public async parse(): Promise<SchemaParseResult> {
@@ -22,10 +42,16 @@ export class SchemaParser {
     const schemas: APISchema[] = [];
     for await (const schemaData of this.schemaReader.readSchema()) {
       const schema = await this.parseContent(schemaData);
+      // execute middleware
       await execute(schema);
       schemas.push(schema as APISchema);
     }
     return { schemas };
+  }
+
+  public use(middleware: SchemaParserMiddleware): this {
+    this.middleware.push(middleware);
+    return this;
   }
 
   private async parseContent(schemaData: SchemaData): Promise<RawAPISchema> {

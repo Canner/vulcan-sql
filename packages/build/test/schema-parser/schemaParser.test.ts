@@ -1,4 +1,9 @@
-import { SchemaDataType, SchemaParser, SchemaReader } from '../../src';
+import {
+  SchemaDataType,
+  SchemaParser,
+  SchemaReader,
+  ValidatorLoader,
+} from '../../src';
 import * as sinon from 'ts-sinon';
 
 it('Schema parser parse should return correct result', async () => {
@@ -13,14 +18,22 @@ request:
     in: query
     description: role id
     validators:
-      - uuid
-      - required
+      - name: uuid
       `,
       type: SchemaDataType.YAML,
     };
   };
   stubSchemaReader.readSchema.returns(generator());
-  const schemaParser = new SchemaParser({ schemaReader: stubSchemaReader });
+  const stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
+  stubValidatorLoader.getLoader.returns({
+    name: 'validator1',
+    validateSchema: () => true,
+    validateData: () => true,
+  });
+  const schemaParser = new SchemaParser({
+    schemaReader: stubSchemaReader,
+    validatorLoader: stubValidatorLoader,
+  });
 
   // Act
   const result = await schemaParser.parse();

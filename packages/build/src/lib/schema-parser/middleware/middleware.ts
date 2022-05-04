@@ -1,6 +1,7 @@
 import { APISchema } from '@vulcan/core';
+import { DeepPartial } from 'ts-essentials';
 
-export interface RawAPISchema extends Partial<APISchema> {
+export interface RawAPISchema extends DeepPartial<APISchema> {
   name: string;
 }
 
