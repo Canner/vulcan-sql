@@ -6,6 +6,7 @@ import {
   SchemaParserMiddleware,
   generateUrl,
   checkValidator,
+  transformValidator,
 } from './middleware';
 import * as compose from 'koa-compose';
 
@@ -34,6 +35,7 @@ export class SchemaParser {
   }) {
     this.schemaReader = schemaReader;
     this.use(generateUrl());
+    this.use(transformValidator());
     this.use(checkValidator(validatorLoader));
   }
 

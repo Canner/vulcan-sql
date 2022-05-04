@@ -1,17 +1,19 @@
-import { ValidatorLoader } from '../schema-parser';
+import { ValidatorLoader } from '../schemaParser';
 import { SchemaParserMiddleware } from './middleware';
 import { chain } from 'lodash';
+import { APISchema } from '@vulcan/core';
 
 export const checkValidator =
   (loader: ValidatorLoader): SchemaParserMiddleware =>
   async (schemas, next) => {
     await next();
-    const validators = chain(schemas.request)
+    const transformedSchemas = schemas as APISchema;
+    const validators = chain(transformedSchemas.request)
       .flatMap((req) => req.validators)
       .value();
 
     for (const validatorRequest of validators) {
-      if (!validatorRequest || !validatorRequest.name) {
+      if (!validatorRequest.name) {
         throw new Error('Validator name is required');
       }
 
