@@ -94,6 +94,8 @@ declare module 'nunjucks' {
     options: {
       autoescape: boolean;
     };
+    opts: any;
+    extensionsList: Extension[];
 
     constructor(loader?: ILoader | ILoader[] | null, opts?: ConfigureOptions);
     render(name: string, context?: object): string;
@@ -250,4 +252,53 @@ declare module 'nunjucks' {
       colno: number;
     }
   }
+
+  export namespace compiler {
+    class Compiler {
+      constructor(name: string, throwOnUndefined: boolean);
+      compile(ast: any): void;
+      getCode(): string;
+    }
+  }
+
+  export namespace parser {
+    function parse(src: string, extensions: Extension[], opts: any): any;
+  }
+
+  export namespace nodes {
+    class Node {
+      typename: string;
+      iterFields(
+        cb: (node: Node | NodeList | CallExtension, fieldName: string) => void
+      ): void;
+    }
+
+    class NodeList extends Node {
+      typename: string;
+      children: Node[];
+    }
+
+    class CallExtension extends Node {
+      extName: string;
+      args: NodeList;
+      contentArgs?: (NodeList | Node)[];
+    }
+
+    class LookupVal extends Node {
+      target: Literal | Symbol;
+      val: Value;
+    }
+
+    class Value extends Node {
+      value: string;
+    }
+
+    class Literal extends Value {}
+
+    class Symbol extends Value {}
+  }
+}
+
+declare module 'nunjucks/src/transformer' {
+  export function transform(ast: any, filter: any);
 }
