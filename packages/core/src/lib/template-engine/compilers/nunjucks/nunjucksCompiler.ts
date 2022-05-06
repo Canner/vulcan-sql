@@ -5,13 +5,9 @@ import {
   isTagExtension,
   NunjucksCompilerExtension,
 } from './extensions';
-
-const precompileWrapper: nunjucks.PrecompileOptions['wrapper'] = (
-  templates
-) => {
-  const template = templates[0].template;
-  return `(() => {${template}})()`;
-};
+import * as transformer from 'nunjucks/src/transformer';
+import { walkAst } from './astWalker';
+import { ParameterVisitor } from './visitors';
 
 export class NunjucksCompiler implements Compiler {
   public name = 'nunjucks';
@@ -23,11 +19,16 @@ export class NunjucksCompiler implements Compiler {
   }
 
   public compile(template: string): string {
-    return nunjucks.precompileString(template, {
-      wrapper: precompileWrapper,
-      name: 'main',
-      env: this.env,
-    });
+    const ast = nunjucks.parser.parse(template, this.env.extensionsList, {});
+    const compiler = new nunjucks.compiler.Compiler(
+      'main',
+      this.env.opts.throwOnUndefined || false
+    );
+    const metadata = this.getMetadata(ast);
+    const preProcessedAst = this.preProcess(ast);
+    compiler.compile(preProcessedAst);
+    const code = compiler.getCode();
+    return `(() => {${code}})()`;
   }
 
   public async render<T extends object>(
@@ -47,5 +48,17 @@ export class NunjucksCompiler implements Compiler {
 
   private loadBuiltInExtensions(): void {
     this.loadExtension(new ErrorExtension());
+  }
+
+  private getMetadata(ast: nunjucks.nodes.Node) {
+    const parameters = new ParameterVisitor();
+    walkAst(ast, [parameters]);
+    return {
+      parameters: parameters.getParameters(),
+    };
+  }
+
+  private preProcess(ast: nunjucks.nodes.Node): nunjucks.nodes.Node {
+    return transformer.transform(ast, []);
   }
 }
