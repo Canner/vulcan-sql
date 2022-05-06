@@ -8,10 +8,13 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
     "typeRoots": ["../../node_modules/@types"],
     "paths": {
       "@artifact-builder/*": ["packages/core/src/lib/artifact-builder/*"],
-      "@template-engine/*": ["packages/core/src/lib/template-engine/*"]
+      "@template-engine/*": ["packages/core/src/lib/template-engine/*"],
+      "@validators/*": ["packages/core/src/lib/validators/*"],
+      "@models/": ["packages/core/src/models"]
     }
   },
   "references": [
