@@ -7,7 +7,12 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@validators/*": ["packages/core/src/lib/validators/*"],
+      "@models/": ["packages/core/src/models"]
+    }
   },
   "files": [],
   "include": [],

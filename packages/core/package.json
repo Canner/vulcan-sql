@@ -1,5 +1,9 @@
 {
   "name": "@vulcan/core",
   "version": "0.0.1",
-  "type": "commonjs"
+  "type": "commonjs",
+  "dependencies": {
+    "joi": "^17.6.0",
+    "moment": "^2.29.3"
+  }
 }
