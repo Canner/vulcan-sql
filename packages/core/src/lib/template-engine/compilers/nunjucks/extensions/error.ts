@@ -1,9 +1,13 @@
 import { NunjucksTagExtension } from './extension';
+import * as nunjucks from 'nunjucks';
 
 export class ErrorExtension implements NunjucksTagExtension {
   public name = 'built-in-error';
   public tags = ['error'];
-  public parse(parser: any, nodes: any, lexer: any) {
+  public parse(
+    parser: nunjucks.parser.Parser,
+    nodes: typeof nunjucks.nodes
+  ): nunjucks.nodes.Node {
     // get the tag token
     const token = parser.nextToken();
 
@@ -22,7 +26,7 @@ export class ErrorExtension implements NunjucksTagExtension {
     return new nodes.CallExtension(this, 'run', errorMessage, []);
   }
 
-  public run(_: any, message: string, lineno: number, colno: number) {
+  public run(_context: any, message: string, lineno: number, colno: number) {
     throw new Error(`${message} at ${lineno}:${colno}`);
   }
 }

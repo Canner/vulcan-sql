@@ -263,10 +263,21 @@ declare module 'nunjucks' {
 
   export namespace parser {
     function parse(src: string, extensions: Extension[], opts: any): any;
+
+    class Parser {
+      nextToken(withWhitespace = false): Token;
+      peekToken(): Token;
+      parseSignature(
+        tolerant: boolean | null,
+        noParens: boolean
+      ): nodes.NodeList;
+      advanceAfterBlockEnd(name: string): Token;
+    }
   }
 
   export namespace nodes {
     class Node {
+      constructor(lineno: number, colno: number, ...args: any[]);
       typename: string;
       iterFields(
         cb: (node: Node | NodeList | CallExtension, fieldName: string) => void
@@ -278,9 +289,16 @@ declare module 'nunjucks' {
     class NodeList extends Node {
       typename: string;
       children: Node[];
+      addChild(child: Node): void;
     }
 
     class CallExtension extends Node {
+      constructor(
+        ext: object,
+        prop: string,
+        args: nodes.NodeList,
+        contentArgs: nodes.Node[]
+      );
       extName: string;
       args: NodeList;
       contentArgs?: (NodeList | Node)[];
@@ -298,6 +316,17 @@ declare module 'nunjucks' {
     class Literal extends Value {}
 
     class Symbol extends Value {}
+  }
+
+  namespace lexer {
+    function lexer(src: string, opts: any): any;
+  }
+
+  interface Token {
+    type: string;
+    lineno: number;
+    colno: number;
+    value: string;
   }
 }
 
