@@ -4,11 +4,11 @@ it('Error extension should throw error with error code and the position while re
   // Arrange
   const loader = new InMemoryCodeLoader();
   const compiler = new NunjucksCompiler({ loader });
-  const compilerCode = compiler.compile(`
+  const { compiledData } = compiler.compile(`
 {% error "This is an error" %}
   `);
   // Action, Assert
-  loader.setSource('test', compilerCode);
+  loader.setSource('test', compiledData);
   await expect(compiler.render('test', { name: 'World' })).rejects.toThrowError(
     'This is an error at 1:3'
   );

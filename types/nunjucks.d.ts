@@ -271,6 +271,8 @@ declare module 'nunjucks' {
       iterFields(
         cb: (node: Node | NodeList | CallExtension, fieldName: string) => void
       ): void;
+      lineno: number;
+      colno: number;
     }
 
     class NodeList extends Node {

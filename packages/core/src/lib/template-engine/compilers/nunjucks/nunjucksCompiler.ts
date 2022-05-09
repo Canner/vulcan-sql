@@ -1,4 +1,4 @@
-import { Compiler } from '../compiler';
+import { Compiler, CompileResult } from '../compiler';
 import * as nunjucks from 'nunjucks';
 import {
   ErrorExtension,
@@ -18,7 +18,7 @@ export class NunjucksCompiler implements Compiler {
     this.loadBuiltInExtensions();
   }
 
-  public compile(template: string): string {
+  public compile(template: string): CompileResult {
     const ast = nunjucks.parser.parse(template, this.env.extensionsList, {});
     const compiler = new nunjucks.compiler.Compiler(
       'main',
@@ -28,7 +28,7 @@ export class NunjucksCompiler implements Compiler {
     const preProcessedAst = this.preProcess(ast);
     compiler.compile(preProcessedAst);
     const code = compiler.getCode();
-    return `(() => {${code}})()`;
+    return { compiledData: `(() => {${code}})()`, metadata };
   }
 
   public async render<T extends object>(

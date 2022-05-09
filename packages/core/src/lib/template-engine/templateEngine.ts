@@ -1,8 +1,14 @@
-import { Compiler, InMemoryCodeLoader, NunjucksCompiler } from './compilers';
+import {
+  Compiler,
+  InMemoryCodeLoader,
+  NunjucksCompiler,
+  TemplateMetadata,
+} from './compilers';
 import { TemplateProvider } from './template-providers';
 
 export interface PreCompiledResult {
   templates: Record<string, string>;
+  metadata?: Record<string, TemplateMetadata>;
 }
 
 export class TemplateEngine {
@@ -38,17 +44,23 @@ export class TemplateEngine {
     return new TemplateEngine({ compiler, templateProvider });
   }
 
-  public async compile(): Promise<PreCompiledResult> {
+  public async compile(): Promise<Required<PreCompiledResult>> {
     if (!this.templateProvider) throw new Error('Template provider is not set');
 
     const templateResult: Record<string, string> = {};
+    const metadataResult: Record<string, TemplateMetadata> = {};
 
     for await (const template of this.templateProvider.getTemplates()) {
-      templateResult[template.name] = this.compiler.compile(template.statement);
+      const { compiledData, metadata } = this.compiler.compile(
+        template.statement
+      );
+      templateResult[template.name] = compiledData;
+      metadataResult[template.name] = metadata;
     }
 
     return {
       templates: templateResult,
+      metadata: metadataResult,
     };
   }
 

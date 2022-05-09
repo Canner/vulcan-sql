@@ -11,7 +11,12 @@ it('Template engine compile function should wrap correct result', async () => {
   // Assert
   const stubCompiler = sinon.stubInterface<Compiler>();
   stubCompiler.name = 'stub-compiler';
-  stubCompiler.compile.returns('compiled-template');
+  stubCompiler.compile.returns({
+    compiledData: 'compiled-template',
+    metadata: {
+      parameters: [],
+    },
+  });
   const stubTemplateProvider = sinon.stubInterface<TemplateProvider>();
   const generator = async function* () {
     yield {
@@ -33,6 +38,11 @@ it('Template engine compile function should wrap correct result', async () => {
   expect(result).toEqual({
     templates: {
       'template-name': 'compiled-template',
+    },
+    metadata: {
+      'template-name': {
+        parameters: [],
+      },
     },
   });
 });

@@ -1,10 +1,18 @@
+import { chain, groupBy } from 'lodash';
 import * as nunjucks from 'nunjucks';
+import { TemplateParameterMetadata } from '../../compiler';
 import { Visitor } from './visitor';
 
 const MAX_DEPTH = 100;
 
+interface Parameter {
+  name: string;
+  lineNo: number;
+  columnNo: number;
+}
+
 export class ParameterVisitor implements Visitor {
-  private parameters = new Set<string>();
+  private parameters: Parameter[] = [];
   private lookupParameter: string;
 
   constructor({
@@ -29,7 +37,11 @@ export class ParameterVisitor implements Visitor {
           parent = parent.target;
         } else {
           if (parent.value === this.lookupParameter) {
-            this.parameters.add(name);
+            this.parameters.push({
+              name,
+              lineNo: node.lineno,
+              columnNo: node.colno,
+            });
           }
           parent = null;
         }
@@ -38,10 +50,20 @@ export class ParameterVisitor implements Visitor {
   }
 
   public reset() {
-    this.parameters.clear();
+    this.parameters = [];
   }
 
-  public getParameters() {
-    return Array.from(this.parameters.values());
+  public getParameters(): TemplateParameterMetadata[] {
+    return chain(this.parameters)
+      .groupBy('name')
+      .values()
+      .map((parameters) => ({
+        name: parameters[0].name,
+        locations: parameters.map((parameter) => ({
+          lineNo: parameter.lineNo,
+          columnNo: parameter.columnNo,
+        })),
+      }))
+      .value();
   }
 }
