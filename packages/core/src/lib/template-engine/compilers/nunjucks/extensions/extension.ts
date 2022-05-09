@@ -1,10 +1,15 @@
+import * as nunjucks from 'nunjucks';
+
 export type NunjucksCompilerExtension = NunjucksTagExtension;
 
 export interface NunjucksTagExtension {
   name: string;
   tags: string[];
-  // TODO: create interfaces for each argument
-  parse(parser: any, nodes: any, lexer: any): any;
+  parse(
+    parser: nunjucks.parser.Parser,
+    nodes: typeof nunjucks.nodes,
+    lexer: typeof nunjucks.lexer
+  ): nunjucks.nodes.Node;
 }
 
 export function isTagExtension(
