@@ -8,10 +8,12 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "typeRoots": ["../../node_modules/@types"]
+    "typeRoots": ["../../node_modules/@types"],
+    "paths": {
+      "@artifact-builder/*": ["packages/core/src/lib/artifact-builder/*"],
+      "@template-engine/*": ["packages/core/src/lib/template-engine/*"]
+    }
   },
-  "files": ["...", "../../types/nunjucks.d.ts"],
-  "include": [],
   "references": [
     {
       "path": "./tsconfig.lib.json"

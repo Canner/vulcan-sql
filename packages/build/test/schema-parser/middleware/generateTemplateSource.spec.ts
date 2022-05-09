@@ -1,5 +1,5 @@
-import { RawAPISchema } from '../../../src';
-import { generateTemplateSource } from '../../../src/lib/schema-parser/middleware/generateTemplateSource';
+import { RawAPISchema } from '@schema-parser/.';
+import { generateTemplateSource } from '@schema-parser/middleware/generateTemplateSource';
 
 it('Should keep templateSource in schema', async () => {
   // Arrange
@@ -10,7 +10,7 @@ it('Should keep templateSource in schema', async () => {
   // Act
   await generateTemplateSource()(schema, async () => Promise.resolve());
   // Assert
-  expect(schema.templateSource).toEqual('existed/path');
+  expect(schema['templateSource']).toEqual('existed/path');
 });
 
 it('Should add fallback value (source name) when templateSource is empty', async () => {
@@ -21,5 +21,5 @@ it('Should add fallback value (source name) when templateSource is empty', async
   // Act
   await generateTemplateSource()(schema, async () => Promise.resolve());
   // Assert
-  expect(schema.templateSource).toEqual('some/name');
+  expect(schema['templateSource']).toEqual('some/name');
 });

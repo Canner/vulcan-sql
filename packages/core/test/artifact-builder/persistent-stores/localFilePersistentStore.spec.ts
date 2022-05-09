@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { LocalFilePersistentStore } from '../../../src';
+import { LocalFilePersistentStore } from '@artifact-builder/.';
 
 it('Should persist data to file', async () => {
   // Arrange

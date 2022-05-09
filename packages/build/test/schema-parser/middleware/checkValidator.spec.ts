@@ -1,5 +1,5 @@
-import { RawAPISchema, ValidatorLoader } from '../../../src';
-import { checkValidator } from '../../../src/lib/schema-parser/middleware/checkValidator';
+import { RawAPISchema, ValidatorLoader } from '@schema-parser/.';
+import { checkValidator } from '@schema-parser/middleware/checkValidator';
 import * as sinon from 'ts-sinon';
 
 it('Should pass if there is no error', async () => {

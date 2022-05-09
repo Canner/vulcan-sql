@@ -7,10 +7,12 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@vulcan/core": ["packages/core/src/index.ts"],
+      "@schema-parser/*": ["packages/build/src/lib/schema-parser/*"]
+    }
   },
-  "files": ["...", "../../types/nunjucks.d.ts"],
-  "include": [],
   "references": [
     {
       "path": "./tsconfig.lib.json"

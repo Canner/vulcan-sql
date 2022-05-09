@@ -3,7 +3,7 @@ import {
   Artifact,
   LocalFilePersistentStore,
   VulcanArtifactBuilder,
-} from '../../src';
+} from '@artifact-builder/.';
 
 it('Should persist artifacts to file', async () => {
   // Arrange

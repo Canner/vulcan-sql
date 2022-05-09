@@ -3,7 +3,7 @@ import {
   Compiler,
   TemplateProvider,
   FileTemplateProvider,
-} from '../../src';
+} from '@template-engine/.';
 import * as sinon from 'ts-sinon';
 import * as path from 'path';
 
