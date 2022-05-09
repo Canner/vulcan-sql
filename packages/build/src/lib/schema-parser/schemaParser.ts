@@ -9,6 +9,8 @@ import {
   transformValidator,
   generateTemplateSource,
   checkParameter,
+  fallbackErrors,
+  addMissingErrors,
 } from './middleware';
 import * as compose from 'koa-compose';
 
@@ -41,6 +43,7 @@ export class SchemaParser {
     this.use(generateTemplateSource());
     this.use(transformValidator());
     this.use(checkValidator(validatorLoader));
+    this.use(fallbackErrors());
   }
 
   public async parse({
@@ -51,6 +54,7 @@ export class SchemaParser {
     const middleware = [...this.middleware];
     if (metadata) {
       middleware.push(checkParameter(metadata));
+      middleware.push(addMissingErrors(metadata));
     }
     const execute = compose(middleware);
     const schemas: APISchema[] = [];

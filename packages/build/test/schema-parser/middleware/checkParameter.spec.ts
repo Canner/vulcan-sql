@@ -28,6 +28,7 @@ it('Should pass when every parameter has been defined', async () => {
           locations: [],
         },
       ],
+      errors: [],
     },
   };
   // Act Assert
@@ -59,6 +60,7 @@ it(`Should throw when any parameter hasn't be defined`, async () => {
           locations: [],
         },
       ],
+      errors: [],
     },
   };
   // Act Assert
