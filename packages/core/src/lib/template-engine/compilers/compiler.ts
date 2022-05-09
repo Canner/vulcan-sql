@@ -3,6 +3,11 @@ export interface TemplateLocation {
   columnNo: number;
 }
 
+export interface TemplateErrorMetadata {
+  code: string;
+  locations: TemplateLocation[];
+}
+
 export interface TemplateParameterMetadata {
   name: string;
   locations: TemplateLocation[];
@@ -10,6 +15,7 @@ export interface TemplateParameterMetadata {
 
 export interface TemplateMetadata {
   parameters: TemplateParameterMetadata[];
+  errors: TemplateErrorMetadata[];
 }
 
 export interface CompileResult {

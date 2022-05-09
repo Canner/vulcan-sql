@@ -7,7 +7,7 @@ import {
 } from './extensions';
 import * as transformer from 'nunjucks/src/transformer';
 import { walkAst } from './astWalker';
-import { ParameterVisitor } from './visitors';
+import { ParametersVisitor, ErrorsVisitor } from './visitors';
 
 export class NunjucksCompiler implements Compiler {
   public name = 'nunjucks';
@@ -51,10 +51,12 @@ export class NunjucksCompiler implements Compiler {
   }
 
   private getMetadata(ast: nunjucks.nodes.Node) {
-    const parameters = new ParameterVisitor();
-    walkAst(ast, [parameters]);
+    const parameters = new ParametersVisitor();
+    const errors = new ErrorsVisitor();
+    walkAst(ast, [parameters, errors]);
     return {
       parameters: parameters.getParameters(),
+      errors: errors.getErrors(),
     };
   }
 
