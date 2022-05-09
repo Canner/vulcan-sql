@@ -1,5 +1,5 @@
-import { RawAPISchema } from '../../../src';
-import { generateUrl } from '../../../src/lib/schema-parser/middleware/generateUrl';
+import { RawAPISchema } from '@schema-parser/.';
+import { generateUrl } from '@schema-parser/middleware/generateUrl';
 
 it('Should keep url in schema', async () => {
   // Arrange
@@ -10,7 +10,7 @@ it('Should keep url in schema', async () => {
   // Act
   await generateUrl()(schema, async () => Promise.resolve());
   // Assert
-  expect(schema.urlPath).toEqual('/existed/path');
+  expect(schema['urlPath']).toEqual('/existed/path');
 });
 
 it('Should add leading slash', async () => {
@@ -21,7 +21,7 @@ it('Should add leading slash', async () => {
   // Act
   await generateUrl()(schema, async () => Promise.resolve());
   // Assert
-  expect(schema.urlPath).toEqual('/some-name');
+  expect(schema['urlPath']).toEqual('/some-name');
 });
 
 it('Should remove trailing slash', async () => {
@@ -32,7 +32,7 @@ it('Should remove trailing slash', async () => {
   // Act
   await generateUrl()(schema, async () => Promise.resolve());
   // Assert
-  expect(schema.urlPath).toEqual('/some-name');
+  expect(schema['urlPath']).toEqual('/some-name');
 });
 
 it('Should replace white space', async () => {
@@ -43,5 +43,5 @@ it('Should replace white space', async () => {
   // Act
   await generateUrl()(schema, async () => Promise.resolve());
   // Assert
-  expect(schema.urlPath).toEqual('/some-name');
+  expect(schema['urlPath']).toEqual('/some-name');
 });

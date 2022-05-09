@@ -1,5 +1,5 @@
-import { RawAPISchema } from '../../../src';
-import { transformValidator } from '../../../src/lib/schema-parser/middleware/transformValidator';
+import { RawAPISchema } from '@schema-parser/.';
+import { transformValidator } from '@schema-parser/middleware/transformValidator';
 
 it('Should convert string validator to proper format', async () => {
   // Arrange
