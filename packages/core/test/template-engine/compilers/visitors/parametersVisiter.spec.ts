@@ -6,10 +6,10 @@ it('Visitor should return correct parameter', async () => {
   // Arrange
   const ast = nunjucks.parser.parse(
     `
-    {{ params.a }}{{ params.a.b }}{{ other.params.a }}
-    {% if params.c and params.d.e %}
-      {{ params.f.g | capitalize }}
-    {% endif %}
+{{ params.a }}{{ params.a.b }}{{ other.params.a }}
+{% if params.c and params.d.e %}
+  {{ params.f.g | capitalize }}
+{% endif %}
     `,
     [],
     {}
@@ -20,13 +20,37 @@ it('Visitor should return correct parameter', async () => {
   const parameters = visitor.getParameters();
   // Assert
   expect(parameters.length).toBe(7);
-  expect(parameters).toContain('a');
-  expect(parameters).toContain('a.b');
-  expect(parameters).toContain('c');
-  expect(parameters).toContain('d');
-  expect(parameters).toContain('d.e');
-  expect(parameters).toContain('f');
-  expect(parameters).toContain('f.g');
+  expect(parameters).toContainEqual({
+    name: 'a',
+    locations: [
+      { lineNo: 1, columnNo: 9 },
+      { lineNo: 1, columnNo: 23 },
+    ],
+  });
+  expect(parameters).toContainEqual({
+    name: 'a.b',
+    locations: [{ lineNo: 1, columnNo: 25 }],
+  });
+  expect(parameters).toContainEqual({
+    name: 'c',
+    locations: [{ lineNo: 2, columnNo: 12 }],
+  });
+  expect(parameters).toContainEqual({
+    name: 'd',
+    locations: [{ lineNo: 2, columnNo: 25 }],
+  });
+  expect(parameters).toContainEqual({
+    name: 'd.e',
+    locations: [{ lineNo: 2, columnNo: 27 }],
+  });
+  expect(parameters).toContainEqual({
+    name: 'f',
+    locations: [{ lineNo: 3, columnNo: 11 }],
+  });
+  expect(parameters).toContainEqual({
+    name: 'f.g',
+    locations: [{ lineNo: 3, columnNo: 13 }],
+  });
 });
 
 it('Visitor should throw error when max depth (100) is reached', async () => {

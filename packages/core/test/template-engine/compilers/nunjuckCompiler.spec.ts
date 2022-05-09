@@ -16,10 +16,10 @@ it('Nunjucks compiler should load compiled code and render template with it', as
   // Arrange
   const loader = new InMemoryCodeLoader();
   const compiler = new NunjucksCompiler({ loader });
-  const compilerCode = compiler.compile('Hello {{ name }}!');
+  const { compiledData } = compiler.compile('Hello {{ name }}!');
 
   // Action
-  loader.setSource('test', compilerCode);
+  loader.setSource('test', compiledData);
   const result = await compiler.render('test', { name: 'World' });
 
   // Assert
