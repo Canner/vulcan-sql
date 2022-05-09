@@ -15,6 +15,7 @@ it('Template engine compile function should wrap correct result', async () => {
     compiledData: 'compiled-template',
     metadata: {
       parameters: [],
+      errors: [],
     },
   });
   const stubTemplateProvider = sinon.stubInterface<TemplateProvider>();
@@ -43,6 +44,7 @@ it('Template engine compile function should wrap correct result', async () => {
     metadata: {
       'template-name': {
         parameters: [],
+        errors: [],
       },
     },
   });

@@ -1,6 +1,6 @@
 import * as nunjucks from 'nunjucks';
 import { walkAst } from '../../../../src/lib/template-engine/compilers/nunjucks/astWalker';
-import { ParameterVisitor } from '../../../../src/lib/template-engine/compilers/nunjucks/visitors';
+import { ParametersVisitor } from '../../../../src/lib/template-engine/compilers/nunjucks/visitors';
 
 it('Visitor should return correct parameter', async () => {
   // Arrange
@@ -14,7 +14,7 @@ it('Visitor should return correct parameter', async () => {
     [],
     {}
   );
-  const visitor = new ParameterVisitor({ lookupParameter: 'params' });
+  const visitor = new ParametersVisitor({ lookupParameter: 'params' });
   // Act
   walkAst(ast, [visitor]);
   const parameters = visitor.getParameters();
@@ -60,7 +60,7 @@ it('Visitor should throw error when max depth (100) is reached', async () => {
     paramString += '.a';
   }
   const ast = nunjucks.parser.parse(`{{ ${paramString} }}`, [], {});
-  const visitor = new ParameterVisitor({ lookupParameter: 'params' });
+  const visitor = new ParametersVisitor({ lookupParameter: 'params' });
   // Act, Assert
   expect(() => walkAst(ast, [visitor])).toThrow('Max depth reached');
 });

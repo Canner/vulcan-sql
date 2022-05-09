@@ -1,4 +1,4 @@
-import { chain, groupBy } from 'lodash';
+import { chain } from 'lodash';
 import * as nunjucks from 'nunjucks';
 import { TemplateParameterMetadata } from '../../compiler';
 import { Visitor } from './visitor';
@@ -11,7 +11,7 @@ interface Parameter {
   columnNo: number;
 }
 
-export class ParameterVisitor implements Visitor {
+export class ParametersVisitor implements Visitor {
   private parameters: Parameter[] = [];
   private lookupParameter: string;
 
