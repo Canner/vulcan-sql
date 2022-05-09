@@ -6,10 +6,14 @@ import {
 } from './compilers';
 import { TemplateProvider } from './template-providers';
 
+export type AllTemplateMetadata = Record<string, TemplateMetadata>;
+
+export type AllTemplates = Record<string, string>;
+
 export interface PreCompiledResult {
   compiler: string;
-  templates: Record<string, string>;
-  metadata?: Record<string, TemplateMetadata>;
+  templates: AllTemplates;
+  metadata?: AllTemplateMetadata;
 }
 
 export class TemplateEngine {
