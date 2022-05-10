@@ -49,10 +49,6 @@ export class ParametersVisitor implements Visitor {
     }
   }
 
-  public reset() {
-    this.parameters = [];
-  }
-
   public getParameters(): TemplateParameterMetadata[] {
     return chain(this.parameters)
       .groupBy('name')

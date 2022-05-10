@@ -1,4 +1,5 @@
 import { NunjucksCompiler, InMemoryCodeLoader } from '@template-engine/.';
+import { NunjucksCompilerExtension } from '@template-engine/compilers/nunjucks/extensions';
 
 it('Nunjucks compiler should compile template without error.', async () => {
   // Arrange
@@ -24,4 +25,15 @@ it('Nunjucks compiler should load compiled code and render template with it', as
 
   // Assert
   expect(result).toBe('Hello World!');
+});
+
+it('Nunjucks compiler should reject unsupported extensions', async () => {
+  // Arrange
+  const loader = new InMemoryCodeLoader();
+  const compiler = new NunjucksCompiler({ loader });
+  // Action, Assert
+  // extension should have parse and name property
+  expect(() =>
+    compiler.loadExtension({ tags: ['test'] } as NunjucksCompilerExtension)
+  ).toThrow('Unsupported extension');
 });

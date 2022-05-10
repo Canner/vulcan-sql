@@ -15,5 +15,5 @@ export interface NunjucksTagExtension {
 export function isTagExtension(
   extension: NunjucksCompilerExtension
 ): extension is NunjucksCompilerExtension {
-  return extension.tags !== undefined || extension.parse !== undefined;
+  return extension.tags !== undefined && extension.parse !== undefined;
 }
