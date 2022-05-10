@@ -13,7 +13,9 @@ export class InMemoryCodeLoader implements nunjucks.ILoader {
     return {
       src: {
         type: 'code',
-        obj: this.source.get(name) ?? {},
+        // We've checked the map and ensured that the key exists
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        obj: this.source.get(name)!,
       },
       path: name,
       noCache: true,

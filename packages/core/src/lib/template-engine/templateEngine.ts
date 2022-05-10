@@ -27,7 +27,7 @@ export class TemplateEngine {
   }: {
     compiledResult?: PreCompiledResult;
     templateProvider?: TemplateProvider;
-  }): TemplateEngine {
+  } = {}): TemplateEngine {
     const loader = new InMemoryCodeLoader();
     // Put compiled templates into loader
     if (compiledResult) {

@@ -74,3 +74,12 @@ it('Template engine useDefaultLoader function should return a fully functional i
   // Assert
   expect(userStatement).toBe('select * from public.user where id = 1');
 });
+
+it('Should throw error when compiling without template provider', async () => {
+  // Assert
+  const templateEngine = TemplateEngine.useDefaultLoader();
+  // Act, Assert
+  await expect(templateEngine.compile()).rejects.toThrow(
+    'Template provider is not set'
+  );
+});
