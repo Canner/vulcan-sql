@@ -10,7 +10,7 @@ jest.mock('glob', () => {
   };
 });
 
-it('File template provider should throw error with a invalid path', async () => {
+it('File template provider should throw error with file search errors', async () => {
   // Arrange
   const filePath = '.';
   const provider = new FileTemplateProvider({ folderPath: filePath });

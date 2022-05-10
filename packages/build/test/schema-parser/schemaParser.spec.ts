@@ -42,3 +42,26 @@ request:
   expect(result.schemas.length).toBe(1);
   expect(result.schemas[0].request[0].description).toBe('role id');
 });
+
+it('Schema parser parse should throw with unsupported schema type', async () => {
+  // Assert
+  const stubSchemaReader = sinon.stubInterface<SchemaReader>();
+  const generator = async function* () {
+    yield {
+      name: 'detail/role',
+      content: ``,
+      type: 'unsupported' as SchemaDataType,
+    };
+  };
+  stubSchemaReader.readSchema.returns(generator());
+  const stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
+  const schemaParser = new SchemaParser({
+    schemaReader: stubSchemaReader,
+    validatorLoader: stubValidatorLoader,
+  });
+
+  // Act, Assert
+  await expect(schemaParser.parse()).rejects.toThrow(
+    `Unsupported schema type: unsupported`
+  );
+});
