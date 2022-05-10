@@ -1,4 +1,7 @@
-import { NunjucksCompiler, InMemoryCodeLoader } from '../../../../src';
+import {
+  NunjucksCompiler,
+  InMemoryCodeLoader,
+} from '@template-engine/compilers/nunjucks';
 
 it('Error extension should throw error with error code and the position while rendering', async () => {
   // Arrange

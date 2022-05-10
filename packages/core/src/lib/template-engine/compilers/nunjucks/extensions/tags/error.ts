@@ -1,4 +1,4 @@
-import { NunjucksTagExtension } from './extension';
+import { NunjucksTagExtension } from '../extension';
 import * as nunjucks from 'nunjucks';
 
 export class ErrorExtension implements NunjucksTagExtension {

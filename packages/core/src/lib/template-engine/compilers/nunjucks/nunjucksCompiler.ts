@@ -2,12 +2,15 @@ import { Compiler, CompileResult } from '../compiler';
 import * as nunjucks from 'nunjucks';
 import {
   ErrorExtension,
+  isFilterExtension,
   isTagExtension,
   NunjucksCompilerExtension,
+  NunjucksFilterExtensionWrapper,
 } from './extensions';
 import * as transformer from 'nunjucks/src/transformer';
 import { walkAst } from './astWalker';
 import { ParametersVisitor, ErrorsVisitor } from './visitors';
+import { UniqueExtension } from './extensions/filters';
 
 export class NunjucksCompiler implements Compiler {
   public name = 'nunjucks';
@@ -35,12 +38,22 @@ export class NunjucksCompiler implements Compiler {
     templateName: string,
     data: T
   ): Promise<string> {
-    return this.env.render(templateName, data);
+    return (
+      this.env
+        .render(templateName, data)
+        // remove empty lines
+        .split(/\r?\n/)
+        .filter((line) => line.trim().length > 0)
+        .join('\n')
+    );
   }
 
   public loadExtension(extension: NunjucksCompilerExtension): void {
     if (isTagExtension(extension)) {
       this.env.addExtension(extension.name, extension);
+    } else if (isFilterExtension(extension)) {
+      const { name, transform } = NunjucksFilterExtensionWrapper(extension);
+      this.env.addFilter(name, transform);
     } else {
       throw new Error('Unsupported extension');
     }
@@ -48,6 +61,7 @@ export class NunjucksCompiler implements Compiler {
 
   private loadBuiltInExtensions(): void {
     this.loadExtension(new ErrorExtension());
+    this.loadExtension(new UniqueExtension());
   }
 
   private getMetadata(ast: nunjucks.nodes.Node) {
