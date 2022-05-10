@@ -24,19 +24,13 @@ export class ErrorsVisitor implements Visitor {
       if (node.extName !== this.extensionName) return;
       const errorCodeNode = node.args.children[0];
       if (!(errorCodeNode instanceof nunjucks.nodes.Literal))
-        throw new Error(
-          `Expected literal, got ${errorCodeNode.constructor.name}`
-        );
+        throw new Error(`Expected literal, got ${errorCodeNode.typename}`);
       this.errorCodes.push({
         code: errorCodeNode.value,
         lineNo: errorCodeNode.lineno,
         columnNo: errorCodeNode.colno,
       });
     }
-  }
-
-  public reset() {
-    this.errorCodes = [];
   }
 
   public getErrors(): TemplateErrorMetadata[] {
