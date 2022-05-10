@@ -9,7 +9,7 @@ import {
 } from './extensions';
 import * as transformer from 'nunjucks/src/transformer';
 import { walkAst } from './astWalker';
-import { ParametersVisitor, ErrorsVisitor } from './visitors';
+import { ParametersVisitor, ErrorsVisitor, FiltersVisitor } from './visitors';
 import { UniqueExtension } from './extensions/filters';
 
 export class NunjucksCompiler implements Compiler {
@@ -67,7 +67,8 @@ export class NunjucksCompiler implements Compiler {
   private getMetadata(ast: nunjucks.nodes.Node) {
     const parameters = new ParametersVisitor();
     const errors = new ErrorsVisitor();
-    walkAst(ast, [parameters, errors]);
+    const filters = new FiltersVisitor({ env: this.env });
+    walkAst(ast, [parameters, errors, filters]);
     return {
       parameters: parameters.getParameters(),
       errors: errors.getErrors(),

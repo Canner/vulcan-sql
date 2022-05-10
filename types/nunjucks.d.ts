@@ -316,6 +316,13 @@ declare module 'nunjucks' {
     class Literal extends Value {}
 
     class Symbol extends Value {}
+
+    class FunCall extends Node {
+      name: Node;
+      args: NodeList;
+    }
+
+    class Filter extends FunCall {}
   }
 
   namespace lexer {
