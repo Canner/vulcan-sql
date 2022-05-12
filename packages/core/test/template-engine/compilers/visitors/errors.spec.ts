@@ -1,13 +1,16 @@
 import * as nunjucks from 'nunjucks';
 import { walkAst } from '@template-engine/compilers/nunjucks/astWalker';
-import { ErrorExtension } from '@template-engine/compilers/nunjucks/extensions';
+import {
+  ErrorExtension,
+  NunjucksTagExtensionWrapper,
+} from '@template-engine/compilers/nunjucks/extensions';
 import { ErrorsVisitor } from '@template-engine/compilers/nunjucks/visitors';
 
 it('Visitor should return correct error list', async () => {
   // Arrange
   const env = new nunjucks.Environment();
-  const ext = new ErrorExtension();
-  env.addExtension(ext.name, ext);
+  const { name, transform } = NunjucksTagExtensionWrapper(new ErrorExtension());
+  env.addExtension(name, transform);
   const ast = nunjucks.parser.parse(
     `
 {% error "ERROR_CODE" %}
@@ -17,7 +20,7 @@ it('Visitor should return correct error list', async () => {
     env.extensionsList,
     {}
   );
-  const visitor = new ErrorsVisitor({ extensionName: ext.name });
+  const visitor = new ErrorsVisitor({ extensionName: name });
   // Act
   walkAst(ast, [visitor]);
   const errors = visitor.getErrors();

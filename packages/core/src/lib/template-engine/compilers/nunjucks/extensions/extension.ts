@@ -4,6 +4,62 @@ export type NunjucksCompilerExtension =
   | NunjucksTagExtension
   | NunjucksFilterExtension;
 
+export interface NunjucksTagExtensionParseResult {
+  argsNodeList: nunjucks.nodes.NodeList;
+  contentNodes: nunjucks.nodes.Node[];
+}
+
+export interface NunjucksTagExtensionRunOptions {
+  context: any;
+  args: any[];
+}
+
+class WrapperTagExtension {
+  // Nunjucks use this value as the name of this extension
+  public __name: string;
+  public tags: string[];
+
+  constructor(private extension: NunjucksTagExtension) {
+    this.__name = extension.name;
+    this.tags = extension.tags;
+  }
+
+  public parse(
+    parser: nunjucks.parser.Parser,
+    nodes: typeof nunjucks.nodes,
+    lexer: typeof nunjucks.lexer
+  ) {
+    const { argsNodeList, contentNodes } = this.extension.parse(
+      parser,
+      nodes,
+      lexer
+    );
+    return new nodes.CallExtensionAsync(
+      this,
+      '__run',
+      argsNodeList,
+      contentNodes
+    );
+  }
+
+  public async __run(...args: any[]) {
+    const context = args[0];
+    const callback = args[args.length - 1];
+    const otherArgs = args.slice(1, args.length - 1);
+    this.extension
+      .run({ context, args: otherArgs })
+      .then((result) => callback(null, result))
+      .catch((err) => callback(err, null));
+  }
+}
+
+export const NunjucksTagExtensionWrapper = (
+  extension: NunjucksTagExtension
+) => ({
+  name: extension.name,
+  transform: new WrapperTagExtension(extension),
+});
+
 export interface NunjucksTagExtension {
   name: string;
   tags: string[];
@@ -11,7 +67,8 @@ export interface NunjucksTagExtension {
     parser: nunjucks.parser.Parser,
     nodes: typeof nunjucks.nodes,
     lexer: typeof nunjucks.lexer
-  ): nunjucks.nodes.Node;
+  ): NunjucksTagExtensionParseResult;
+  run(options: NunjucksTagExtensionRunOptions): Promise<string | void>;
 }
 
 export function isTagExtension(

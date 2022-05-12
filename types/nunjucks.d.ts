@@ -272,6 +272,9 @@ declare module 'nunjucks' {
         noParens: boolean
       ): nodes.NodeList;
       advanceAfterBlockEnd(name: string): Token;
+      parseUntilBlocks(...blockName: string[]): nodes.NodeList;
+      advanceAfterBlockEnd(): Token;
+      fail(message: string, lineno?: number, colno?: number): void;
     }
   }
 
@@ -296,13 +299,15 @@ declare module 'nunjucks' {
       constructor(
         ext: object,
         prop: string,
-        args: nodes.NodeList,
-        contentArgs: nodes.Node[]
+        args: nodes.NodeList | null,
+        contentArgs: nodes.Node[] | null
       );
       extName: string;
       args: NodeList;
       contentArgs?: (NodeList | Node)[];
     }
+
+    class CallExtensionAsync extends CallExtension {}
 
     class LookupVal extends Node {
       target: Literal | Symbol;
@@ -323,6 +328,12 @@ declare module 'nunjucks' {
     }
 
     class Filter extends FunCall {}
+
+    class Set extends Node {
+      value: Node | null;
+      body: Node | null;
+      targets: Node[];
+    }
   }
 
   namespace lexer {

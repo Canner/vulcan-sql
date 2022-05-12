@@ -44,7 +44,13 @@ export class TemplateEngine {
         loader.setSource(templateName, compiledResult.templates[templateName]);
       });
     }
-    const compiler = new NunjucksCompiler({ loader });
+    const compiler = new NunjucksCompiler({
+      loader,
+      executor: {
+        // TODO: replace with real executor
+        executeQuery: async () => [],
+      },
+    });
     return new TemplateEngine({ compiler, templateProvider });
   }
 
