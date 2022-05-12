@@ -2,10 +2,13 @@ import { Compiler, CompileResult } from '../compiler';
 import * as nunjucks from 'nunjucks';
 import {
   ErrorExtension,
+  Executor,
   isFilterExtension,
   isTagExtension,
   NunjucksCompilerExtension,
   NunjucksFilterExtensionWrapper,
+  NunjucksTagExtensionWrapper,
+  ReqExtension,
 } from './extensions';
 import * as transformer from 'nunjucks/src/transformer';
 import { walkAst } from './astWalker';
@@ -15,9 +18,17 @@ import { UniqueExtension } from './extensions/filters';
 export class NunjucksCompiler implements Compiler {
   public name = 'nunjucks';
   private env: nunjucks.Environment;
+  private executor: Executor;
 
-  constructor({ loader }: { loader: nunjucks.ILoader }) {
+  constructor({
+    loader,
+    executor,
+  }: {
+    loader: nunjucks.ILoader;
+    executor: Executor;
+  }) {
     this.env = new nunjucks.Environment(loader);
+    this.executor = executor;
     this.loadBuiltInExtensions();
   }
 
@@ -38,19 +49,25 @@ export class NunjucksCompiler implements Compiler {
     templateName: string,
     data: T
   ): Promise<string> {
-    return (
-      this.env
-        .render(templateName, data)
-        // remove empty lines
-        .split(/\r?\n/)
-        .filter((line) => line.trim().length > 0)
-        .join('\n')
-    );
+    return new Promise((resolve, reject) => {
+      this.env.render(templateName, data, (err, res) => {
+        if (err) return reject(err);
+        if (!res) return resolve('');
+        else
+          return resolve(
+            res
+              .split(/\r?\n/)
+              .filter((line) => line.trim().length > 0)
+              .join('\n')
+          );
+      });
+    });
   }
 
   public loadExtension(extension: NunjucksCompilerExtension): void {
     if (isTagExtension(extension)) {
-      this.env.addExtension(extension.name, extension);
+      const { name, transform } = NunjucksTagExtensionWrapper(extension);
+      this.env.addExtension(name, transform);
     } else if (isFilterExtension(extension)) {
       const { name, transform } = NunjucksFilterExtensionWrapper(extension);
       this.env.addFilter(name, transform);
@@ -62,6 +79,7 @@ export class NunjucksCompiler implements Compiler {
   private loadBuiltInExtensions(): void {
     this.loadExtension(new ErrorExtension());
     this.loadExtension(new UniqueExtension());
+    this.loadExtension(new ReqExtension({ executor: this.executor }));
   }
 
   private getMetadata(ast: nunjucks.nodes.Node) {

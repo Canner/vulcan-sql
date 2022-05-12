@@ -1,4 +1,8 @@
-import { NunjucksTagExtension } from '../extension';
+import {
+  NunjucksTagExtension,
+  NunjucksTagExtensionParseResult,
+  NunjucksTagExtensionRunOptions,
+} from '../extension';
 import * as nunjucks from 'nunjucks';
 
 export class ErrorExtension implements NunjucksTagExtension {
@@ -7,7 +11,7 @@ export class ErrorExtension implements NunjucksTagExtension {
   public parse(
     parser: nunjucks.parser.Parser,
     nodes: typeof nunjucks.nodes
-  ): nunjucks.nodes.Node {
+  ): NunjucksTagExtensionParseResult {
     // get the tag token
     const token = parser.nextToken();
 
@@ -23,10 +27,16 @@ export class ErrorExtension implements NunjucksTagExtension {
     );
 
     // See above for notes about CallExtension
-    return new nodes.CallExtension(this, 'run', errorMessage, []);
+    return {
+      argsNodeList: errorMessage,
+      contentNodes: [],
+    };
   }
 
-  public run(_context: any, message: string, lineno: number, colno: number) {
+  public async run({ args }: NunjucksTagExtensionRunOptions) {
+    const message: string = args[0];
+    const lineno: number = args[1];
+    const colno: number = args[2];
     throw new Error(`${message} at ${lineno}:${colno}`);
   }
 }
