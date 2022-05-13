@@ -96,6 +96,7 @@ declare module 'nunjucks' {
     };
     opts: any;
     extensionsList: Extension[];
+    asyncFilters: string[];
 
     constructor(loader?: ILoader | ILoader[] | null, opts?: ConfigureOptions);
     render(name: string, context?: object): string;

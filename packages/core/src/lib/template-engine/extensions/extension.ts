@@ -86,17 +86,22 @@ export const NunjucksFilterExtensionWrapper = (
   return {
     name: extension.name,
     transform: (value: any, ...args: any[]) => {
-      return extension.transform({
-        value,
-        args: args[0] || {},
-      });
+      const callback = args[args.length - 1];
+      const otherArgs = args.slice(0, args.length - 1);
+      extension
+        .transform({
+          value,
+          args: otherArgs,
+        })
+        .then((res) => callback(null, res))
+        .catch((err) => callback(err, null));
     },
   };
 };
 
 export interface NunjucksFilterExtension<V = any> {
   name: string;
-  transform(options: { value: V; args: Record<string, any> }): any;
+  transform(options: { value: V; args: Record<string, any> }): Promise<any>;
 }
 
 export function isFilterExtension(

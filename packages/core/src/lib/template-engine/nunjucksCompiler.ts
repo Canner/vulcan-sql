@@ -66,7 +66,7 @@ export class NunjucksCompiler implements Compiler {
       this.env.addExtension(name, transform);
     } else if (isFilterExtension(extension)) {
       const { name, transform } = NunjucksFilterExtensionWrapper(extension);
-      this.env.addFilter(name, transform);
+      this.env.addFilter(name, transform, true);
     } else {
       throw new Error('Unsupported extension');
     }
@@ -88,6 +88,6 @@ export class NunjucksCompiler implements Compiler {
   }
 
   private preProcess(ast: nunjucks.nodes.Node): nunjucks.nodes.Node {
-    return transformer.transform(ast, []);
+    return transformer.transform(ast, this.env.asyncFilters);
   }
 }
