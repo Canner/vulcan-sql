@@ -1,35 +1,31 @@
-import { Compiler, CompileResult } from '../compiler';
+import { Compiler, CompileResult } from './compiler';
 import * as nunjucks from 'nunjucks';
 import {
-  ErrorExtension,
-  Executor,
   isFilterExtension,
   isTagExtension,
   NunjucksCompilerExtension,
   NunjucksFilterExtensionWrapper,
   NunjucksTagExtensionWrapper,
-  ReqExtension,
 } from './extensions';
 import * as transformer from 'nunjucks/src/transformer';
-import { walkAst } from './astWalker';
+import { walkAst } from './visitors/astWalker';
 import { ParametersVisitor, ErrorsVisitor, FiltersVisitor } from './visitors';
-import { UniqueExtension } from './extensions/filters';
 
 export class NunjucksCompiler implements Compiler {
   public name = 'nunjucks';
   private env: nunjucks.Environment;
-  private executor: Executor;
+  private extensions: NunjucksCompilerExtension[];
 
   constructor({
     loader,
-    executor,
+    extensions = [],
   }: {
     loader: nunjucks.ILoader;
-    executor: Executor;
+    extensions?: NunjucksCompilerExtension[];
   }) {
     this.env = new nunjucks.Environment(loader);
-    this.executor = executor;
-    this.loadBuiltInExtensions();
+    this.extensions = extensions;
+    this.loadAllExtensions();
   }
 
   public compile(template: string): CompileResult {
@@ -76,10 +72,8 @@ export class NunjucksCompiler implements Compiler {
     }
   }
 
-  private loadBuiltInExtensions(): void {
-    this.loadExtension(new ErrorExtension());
-    this.loadExtension(new UniqueExtension());
-    this.loadExtension(new ReqExtension({ executor: this.executor }));
+  private loadAllExtensions(): void {
+    this.extensions.forEach((ext) => this.loadExtension(ext));
   }
 
   private getMetadata(ast: nunjucks.nodes.Node) {

@@ -1,15 +1,16 @@
 import {
   NunjucksCompiler,
   InMemoryCodeLoader,
-} from '@template-engine/compilers/nunjucks';
-import { Executor } from '@template-engine/compilers/nunjucks/extensions';
-import * as sinon from 'ts-sinon';
+  UniqueExtension,
+} from '@template-engine';
 
 it('Extension should return correct values without unique by argument', async () => {
   // Arrange
   const loader = new InMemoryCodeLoader();
-  const mockExecutor = sinon.stubInterface<Executor>();
-  const compiler = new NunjucksCompiler({ loader, executor: mockExecutor });
+  const compiler = new NunjucksCompiler({
+    loader,
+    extensions: [new UniqueExtension()],
+  });
   const { compiledData } = compiler.compile(
     `
 {% set array = [1,2,3,4,4] %}
@@ -28,8 +29,10 @@ it('Extension should return correct values without unique by argument', async ()
 it('Extension should return correct values with unique by argument', async () => {
   // Arrange
   const loader = new InMemoryCodeLoader();
-  const mockExecutor = sinon.stubInterface<Executor>();
-  const compiler = new NunjucksCompiler({ loader, executor: mockExecutor });
+  const compiler = new NunjucksCompiler({
+    loader,
+    extensions: [new UniqueExtension()],
+  });
   const { compiledData } = compiler.compile(
     `
 {% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}

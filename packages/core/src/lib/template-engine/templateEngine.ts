@@ -1,9 +1,7 @@
-import {
-  Compiler,
-  InMemoryCodeLoader,
-  NunjucksCompiler,
-  TemplateMetadata,
-} from './compilers';
+import { Compiler, TemplateMetadata } from './compiler';
+import { ErrorExtension, ReqExtension, UniqueExtension } from './extensions';
+import { InMemoryCodeLoader } from './inMemoryCodeLoader';
+import { NunjucksCompiler } from './nunjucksCompiler';
 import { TemplateProvider } from './template-providers';
 
 export type AllTemplateMetadata = Record<string, TemplateMetadata>;
@@ -44,12 +42,17 @@ export class TemplateEngine {
         loader.setSource(templateName, compiledResult.templates[templateName]);
       });
     }
+    const executor = {
+      // TODO: replace with real executor
+      executeQuery: async () => [],
+    };
     const compiler = new NunjucksCompiler({
       loader,
-      executor: {
-        // TODO: replace with real executor
-        executeQuery: async () => [],
-      },
+      extensions: [
+        new ErrorExtension(),
+        new ReqExtension({ executor }),
+        new UniqueExtension(),
+      ],
     });
     return new TemplateEngine({ compiler, templateProvider });
   }

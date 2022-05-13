@@ -1,6 +1,5 @@
 import * as nunjucks from 'nunjucks';
-import { walkAst } from '@template-engine/compilers/nunjucks/astWalker';
-import { ParametersVisitor } from '@template-engine/compilers/nunjucks/visitors';
+import { walkAst, ParametersVisitor } from '@template-engine';
 
 it('Visitor should return correct parameter', async () => {
   // Arrange

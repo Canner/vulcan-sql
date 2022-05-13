@@ -1,4 +1,4 @@
-import { InMemoryCodeLoader } from '@template-engine/compilers';
+import { InMemoryCodeLoader } from '@template-engine';
 import * as nunjucks from 'nunjucks';
 
 it('Should set/load compiled code correctly', async () => {

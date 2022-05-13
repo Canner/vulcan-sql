@@ -1,4 +1,4 @@
-import { FileTemplateProvider, Template } from '@template-engine/.';
+import { FileTemplateProvider, Template } from '@template-engine';
 import * as path from 'path';
 
 it('File template provider should provide correct files and contents', async () => {

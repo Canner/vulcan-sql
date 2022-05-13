@@ -1,5 +1,5 @@
 import * as nunjucks from 'nunjucks';
-import { Visitor } from './visitors';
+import { Visitor } from './visitor';
 
 export const walkAst = (
   root: nunjucks.nodes.Node,

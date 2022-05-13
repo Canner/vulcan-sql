@@ -1,6 +1,6 @@
 import { chain } from 'lodash';
 import * as nunjucks from 'nunjucks';
-import { TemplateParameterMetadata } from '../../compiler';
+import { TemplateParameterMetadata } from '../compiler';
 import { Visitor } from './visitor';
 
 const MAX_DEPTH = 100;

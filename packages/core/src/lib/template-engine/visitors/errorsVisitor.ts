@@ -1,6 +1,6 @@
 import { chain } from 'lodash';
 import * as nunjucks from 'nunjucks';
-import { TemplateErrorMetadata } from '../../compiler';
+import { TemplateErrorMetadata } from '../compiler';
 import { Visitor } from './visitor';
 
 interface ErrorCode {

@@ -1,10 +1,9 @@
 import * as nunjucks from 'nunjucks';
-import { walkAst } from '@template-engine/compilers/nunjucks/astWalker';
+import { walkAst, ErrorsVisitor } from '@template-engine';
 import {
   ErrorExtension,
   NunjucksTagExtensionWrapper,
-} from '@template-engine/compilers/nunjucks/extensions';
-import { ErrorsVisitor } from '@template-engine/compilers/nunjucks/visitors';
+} from '@template-engine/extensions';
 
 it('Visitor should return correct error list', async () => {
   // Arrange

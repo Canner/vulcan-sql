@@ -1,4 +1,4 @@
-import { walkAst } from '@template-engine/compilers/nunjucks/astWalker';
+import { walkAst } from '@template-engine';
 import * as nunjucks from 'nunjucks';
 
 it('AST walker should traversal all nodes', async () => {

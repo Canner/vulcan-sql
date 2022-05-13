@@ -1,15 +1,19 @@
 import {
   NunjucksCompiler,
   InMemoryCodeLoader,
-} from '@template-engine/compilers/nunjucks';
-import { Executor } from '@template-engine/compilers/nunjucks/extensions';
+  Executor,
+  ReqExtension,
+} from '@template-engine';
 import * as sinon from 'ts-sinon';
 
 it('req extension should execute correct query and set variable', async () => {
   // Arrange
   const loader = new InMemoryCodeLoader();
   const mockExecutor = sinon.stubInterface<Executor>();
-  const compiler = new NunjucksCompiler({ loader, executor: mockExecutor });
+  const compiler = new NunjucksCompiler({
+    loader,
+    extensions: [new ReqExtension({ executor: mockExecutor })],
+  });
   const { compiledData } = compiler.compile(`
 {% req userCount %}
 select count(*) as count from user where user.id = '{{ params.userId }}';
@@ -34,7 +38,10 @@ it('if argument is not a symbol, extension should throw', async () => {
   // Arrange
   const loader = new InMemoryCodeLoader();
   const mockExecutor = sinon.stubInterface<Executor>();
-  const compiler = new NunjucksCompiler({ loader, executor: mockExecutor });
+  const compiler = new NunjucksCompiler({
+    loader,
+    extensions: [new ReqExtension({ executor: mockExecutor })],
+  });
 
   // Action, Assert
   expect(() =>
@@ -50,7 +57,10 @@ it('if argument is missing, extension should throw', async () => {
   // Arrange
   const loader = new InMemoryCodeLoader();
   const mockExecutor = sinon.stubInterface<Executor>();
-  const compiler = new NunjucksCompiler({ loader, executor: mockExecutor });
+  const compiler = new NunjucksCompiler({
+    loader,
+    extensions: [new ReqExtension({ executor: mockExecutor })],
+  });
 
   // Action, Assert
   expect(() =>

@@ -1,6 +1,5 @@
 import * as nunjucks from 'nunjucks';
-import { walkAst } from '@template-engine/compilers/nunjucks/astWalker';
-import { FiltersVisitor } from '@template-engine/compilers/nunjucks/visitors';
+import { walkAst, FiltersVisitor } from '@template-engine';
 
 it('If we try to use an unloaded filter, visitor should throw error', async () => {
   // Arrange
