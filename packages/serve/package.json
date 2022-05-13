@@ -10,6 +10,8 @@
   "devDependencies": {
     "@types/koa": "^2.13.4",
     "@types/koa-bodyparser": "^4.3.7",
-    "@types/koa-router": "^7.4.4"
+    "@types/koa-router": "^7.4.4",
+    "@types/supertest": "^2.0.12",
+    "supertest": "^6.2.3"
   }
 }
