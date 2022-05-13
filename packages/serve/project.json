@@ -2,6 +2,13 @@
   "root": "packages/serve",
   "sourceRoot": "packages/serve/src",
   "targets": {
+    "start": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "ts-node --project packages/serve/tsconfig.json packages/serve/src/index.ts"
+      }
+    },
     "build": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
