@@ -1,0 +1,1 @@
+select * from public.group where id = {{ id }}

@@ -1,6 +1,8 @@
 import { NunjucksFilterExtension } from '../extension';
 import { uniq, uniqBy } from 'lodash';
+import { injectable } from 'inversify';
 
+@injectable()
 export class UniqueExtension implements NunjucksFilterExtension {
   public name = 'unique';
   public async transform({

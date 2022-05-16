@@ -10,19 +10,20 @@ import {
 import * as transformer from 'nunjucks/src/transformer';
 import { walkAst } from './visitors/astWalker';
 import { ParametersVisitor, ErrorsVisitor, FiltersVisitor } from './visitors';
+import { inject, injectable, multiInject } from 'inversify';
+import { TYPES } from '@containers';
 
+@injectable()
 export class NunjucksCompiler implements Compiler {
   public name = 'nunjucks';
   private env: nunjucks.Environment;
   private extensions: NunjucksCompilerExtension[];
 
-  constructor({
-    loader,
-    extensions = [],
-  }: {
-    loader: nunjucks.ILoader;
-    extensions?: NunjucksCompilerExtension[];
-  }) {
+  constructor(
+    @inject(TYPES.CompilerLoader) loader: nunjucks.ILoader,
+    @multiInject(TYPES.CompilerExtension)
+    extensions: NunjucksCompilerExtension[]
+  ) {
     this.env = new nunjucks.Environment(loader);
     this.extensions = extensions;
     this.loadAllExtensions();

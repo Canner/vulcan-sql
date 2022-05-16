@@ -1,5 +1,7 @@
 import * as nunjucks from 'nunjucks';
+import { injectable } from 'inversify';
 
+@injectable()
 export class InMemoryCodeLoader implements nunjucks.ILoader {
   private source = new Map<string, object>();
 

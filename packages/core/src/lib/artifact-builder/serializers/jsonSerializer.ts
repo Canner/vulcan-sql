@@ -1,5 +1,7 @@
 import { Serializer } from './serializer';
+import { injectable } from 'inversify';
 
+@injectable()
 export class JSONSerializer<T> implements Serializer<T> {
   public serialize(data: T): Buffer {
     return Buffer.from(JSON.stringify(data), 'utf-8');

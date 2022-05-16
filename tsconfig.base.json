@@ -14,6 +14,7 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "types": ["reflect-metadata"],
     "paths": {
       "@vulcan/build": ["packages/build/src/index.ts"],
       "@vulcan/core": ["packages/core/src/index.ts"]

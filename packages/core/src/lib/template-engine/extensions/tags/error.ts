@@ -4,7 +4,9 @@ import {
   NunjucksTagExtensionRunOptions,
 } from '../extension';
 import * as nunjucks from 'nunjucks';
+import { injectable } from 'inversify';
 
+@injectable()
 export class ErrorExtension implements NunjucksTagExtension {
   public name = 'built-in-error';
   public tags = ['error'];

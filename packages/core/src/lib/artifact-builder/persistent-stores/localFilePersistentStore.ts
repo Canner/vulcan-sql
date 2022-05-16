@@ -1,11 +1,17 @@
 import { PersistentStore } from './persistentStore';
 import { promises as fs } from 'fs';
+import { injectable, inject } from 'inversify';
+import { TYPES } from '@containers';
+import { IArtifactBuilderOptions } from '@models';
 
+@injectable()
 export class LocalFilePersistentStore implements PersistentStore {
   private filePath: string;
 
-  constructor({ filePath }: { filePath: string }) {
-    this.filePath = filePath;
+  constructor(
+    @inject(TYPES.ArtifactBuilderOptions) options: IArtifactBuilderOptions
+  ) {
+    this.filePath = options.path;
   }
 
   public async save(data: Buffer): Promise<void> {

@@ -2,15 +2,17 @@ import { Template, TemplateProvider } from './templateProvider';
 import * as glob from 'glob';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+import { inject, injectable } from 'inversify';
+import { TYPES } from '@containers';
+import { ITemplateEngineOptions } from '@models';
 
-export interface FileTemplateProviderOptions {
-  folderPath: string;
-}
-
+@injectable()
 export class FileTemplateProvider implements TemplateProvider {
-  private options: FileTemplateProviderOptions;
+  private options: ITemplateEngineOptions;
 
-  constructor(options: FileTemplateProviderOptions) {
+  constructor(
+    @inject(TYPES.TemplateEngineOptions) options: ITemplateEngineOptions
+  ) {
     this.options = options;
   }
 
@@ -19,9 +21,7 @@ export class FileTemplateProvider implements TemplateProvider {
 
     for (const file of files) {
       yield {
-        name: path
-          .relative(this.options.folderPath, file)
-          .replace(/\.sql$/, ''),
+        name: path.relative(this.options.path, file).replace(/\.sql$/, ''),
         statement: await fs.readFile(file, 'utf8'),
       };
     }
@@ -30,7 +30,7 @@ export class FileTemplateProvider implements TemplateProvider {
   private async getTemplateFilePaths(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       glob(
-        path.resolve(this.options.folderPath, '**', '*.sql'),
+        path.resolve(this.options.path, '**', '*.sql'),
         { nodir: true },
         (err, files) => {
           if (err) return reject(err);
