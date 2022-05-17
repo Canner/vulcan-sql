@@ -1,4 +1,7 @@
+import { TYPES } from '@containers';
+import { ITemplateEngineOptions, TemplateProviderType } from '@models';
 import { FileTemplateProvider } from '@template-engine';
+import { Container } from 'inversify';
 
 jest.mock('glob', () => {
   return (
@@ -10,10 +13,26 @@ jest.mock('glob', () => {
   };
 });
 
+let container: Container;
+
+beforeEach(() => {
+  container = new Container();
+  container
+    .bind<ITemplateEngineOptions>(TYPES.TemplateEngineOptions)
+    .toConstantValue({
+      provider: TemplateProviderType.LocalFile,
+      path: '.',
+    });
+  container.bind(TYPES.TemplateProvider).to(FileTemplateProvider);
+});
+
+afterEach(() => {
+  container.unbindAll();
+});
+
 it('File template provider should throw error with file search errors', async () => {
   // Arrange
-  const filePath = '.';
-  const provider = new FileTemplateProvider({ folderPath: filePath });
+  const provider = container.get<FileTemplateProvider>(TYPES.TemplateProvider);
   // Act, Assert
   const iter = provider.getTemplates();
   await expect(iter.next()).rejects.toThrow('mock error');

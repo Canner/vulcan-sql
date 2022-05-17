@@ -1,11 +1,24 @@
 import * as path from 'path';
-import { LocalFilePersistentStore } from '@artifact-builder';
+import { LocalFilePersistentStore, PersistentStore } from '@artifact-builder';
+import { TYPES } from '@containers';
+import { Container } from 'inversify';
+
+let container: Container;
+
+beforeEach(() => {
+  container = new Container();
+  container
+    .bind(TYPES.ArtifactBuilderOptions)
+    .toConstantValue({ path: path.resolve(__dirname, 'test.json') });
+  container
+    .bind(TYPES.PersistentStore)
+    .to(LocalFilePersistentStore)
+    .inSingletonScope();
+});
 
 it('Should persist data to file', async () => {
   // Arrange
-  const ps = new LocalFilePersistentStore({
-    filePath: path.resolve(__dirname, 'test.json'),
-  });
+  const ps = container.get<PersistentStore>(TYPES.PersistentStore);
   const data = Buffer.from('Hello World');
   // Act, Assert
   await expect(ps.save(data)).resolves.not.toThrow();
@@ -13,9 +26,7 @@ it('Should persist data to file', async () => {
 
 it('Should load persisted data from file with correct data', async () => {
   // Arrange
-  const ps = new LocalFilePersistentStore({
-    filePath: path.resolve(__dirname, 'test.json'),
-  });
+  const ps = container.get<PersistentStore>(TYPES.PersistentStore);
   const data = Buffer.from('Hello World');
   await ps.save(data);
   // Act

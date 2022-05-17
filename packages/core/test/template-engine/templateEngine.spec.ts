@@ -1,15 +1,24 @@
-import {
-  TemplateEngine,
-  Compiler,
-  TemplateProvider,
-  FileTemplateProvider,
-} from '@template-engine';
+import { TemplateEngine, Compiler, TemplateProvider } from '@template-engine';
 import * as sinon from 'ts-sinon';
-import * as path from 'path';
+import { TYPES } from '@containers';
+import { Container } from 'inversify';
 
-it('Template engine compile function should wrap correct result', async () => {
-  // Assert
-  const stubCompiler = sinon.stubInterface<Compiler>();
+let container: Container;
+let stubCompiler: sinon.StubbedInstance<Compiler>;
+let stubTemplateProvider: sinon.StubbedInstance<TemplateProvider>;
+
+beforeEach(() => {
+  container = new Container();
+  stubCompiler = sinon.stubInterface<Compiler>();
+  stubTemplateProvider = sinon.stubInterface<TemplateProvider>();
+
+  container.bind(TYPES.Compiler).toConstantValue(stubCompiler);
+  container
+    .bind(TYPES.Factory_TemplateProvider)
+    .toConstantValue(() => stubTemplateProvider);
+  container.bind(TYPES.TemplateEngine).to(TemplateEngine).inSingletonScope();
+  container.bind(TYPES.TemplateEngineOptions).toConstantValue({});
+
   stubCompiler.name = 'stub-compiler';
   stubCompiler.compile.returns({
     compiledData: 'compiled-template',
@@ -18,7 +27,8 @@ it('Template engine compile function should wrap correct result', async () => {
       errors: [],
     },
   });
-  const stubTemplateProvider = sinon.stubInterface<TemplateProvider>();
+  stubCompiler.render.resolves('sql-statement');
+
   const generator = async function* () {
     yield {
       name: 'template-name',
@@ -26,10 +36,15 @@ it('Template engine compile function should wrap correct result', async () => {
     };
   };
   stubTemplateProvider.getTemplates.returns(generator());
-  const templateEngine = new TemplateEngine({
-    compiler: stubCompiler,
-    templateProvider: stubTemplateProvider,
-  });
+});
+
+afterEach(() => {
+  container.unbindAll();
+});
+
+it('Template engine compile function should wrap correct result', async () => {
+  // Assert
+  const templateEngine = container.get<TemplateEngine>(TYPES.TemplateEngine);
 
   // Act
   const result = await templateEngine.compile();
@@ -51,9 +66,7 @@ it('Template engine compile function should wrap correct result', async () => {
 
 it('Template engine render function should forward correct data to compiler', async () => {
   // Assert
-  const stubCompiler = sinon.stubInterface<Compiler>();
-  stubCompiler.render.resolves('sql-statement');
-  const templateEngine = new TemplateEngine({ compiler: stubCompiler });
+  const templateEngine = container.get<TemplateEngine>(TYPES.TemplateEngine);
   const context = {
     name: 'name',
   };
@@ -64,33 +77,4 @@ it('Template engine render function should forward correct data to compiler', as
   // Assert
   expect(stubCompiler.render.calledWith('template-name', context)).toBe(true);
   expect(result).toBe('sql-statement');
-});
-
-it('Template engine useDefaultLoader function should return a fully functional instance', async () => {
-  // Assert
-  const templateProvider = new FileTemplateProvider({
-    folderPath: path.resolve(__dirname, './test-templates'),
-  });
-  const templateEngine = TemplateEngine.useDefaultLoader({ templateProvider });
-  const compiledResult = await templateEngine.compile();
-
-  // Act
-  const defaultTemplateEngine = TemplateEngine.useDefaultLoader({
-    compiledResult,
-  });
-  const userStatement = await defaultTemplateEngine.render('user', {
-    id: 1,
-  });
-
-  // Assert
-  expect(userStatement).toBe('select * from public.user where id = 1');
-});
-
-it('Should throw error when compiling without template provider', async () => {
-  // Assert
-  const templateEngine = TemplateEngine.useDefaultLoader();
-  // Act, Assert
-  await expect(templateEngine.compile()).rejects.toThrow(
-    'Template provider is not set'
-  );
 });

@@ -10,7 +10,7 @@ import {
 import * as transformer from 'nunjucks/src/transformer';
 import { walkAst } from './visitors/astWalker';
 import { ParametersVisitor, ErrorsVisitor, FiltersVisitor } from './visitors';
-import { inject, injectable, multiInject } from 'inversify';
+import { inject, injectable, multiInject, optional } from 'inversify';
 import { TYPES } from '@containers';
 
 @injectable()
@@ -22,7 +22,8 @@ export class NunjucksCompiler implements Compiler {
   constructor(
     @inject(TYPES.CompilerLoader) loader: nunjucks.ILoader,
     @multiInject(TYPES.CompilerExtension)
-    extensions: NunjucksCompilerExtension[]
+    @optional()
+    extensions: NunjucksCompilerExtension[] = []
   ) {
     this.env = new nunjucks.Environment(loader);
     this.extensions = extensions;

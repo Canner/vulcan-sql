@@ -1,41 +1,55 @@
-import * as path from 'path';
 import {
   Artifact,
+  JSONSerializer,
   LocalFilePersistentStore,
   VulcanArtifactBuilder,
 } from '@artifact-builder';
+import { Container } from 'inversify';
+import { TYPES } from '@containers';
+import * as sinon from 'ts-sinon';
 
-it('Should persist artifacts to file', async () => {
-  // Arrange
-  const ps = new LocalFilePersistentStore({
-    filePath: path.resolve(__dirname, 'test.json'),
-  });
-  const build = new VulcanArtifactBuilder({
-    persistentStore: ps,
-  });
-  const data: Artifact = {
-    schemas: [],
-    templates: {},
-  };
-  // Act, Assert
-  await expect(build.build(data)).resolves.not.toThrow();
+let container: Container;
+let mockPersistentStore: sinon.StubbedInstance<LocalFilePersistentStore>;
+
+const mockArtifact: Artifact = {
+  schemas: [],
+  templates: {},
+};
+
+beforeEach(() => {
+  container = new Container();
+  mockPersistentStore = sinon.stubInterface();
+
+  container
+    .bind(TYPES.Factory_PersistentStore)
+    .toConstantValue(() => mockPersistentStore);
+  container
+    .bind(TYPES.Factory_Serializer)
+    .toConstantValue(() => new JSONSerializer());
+
+  container.bind(TYPES.ArtifactBuilderOptions).toConstantValue({});
+  container.bind(TYPES.ArtifactBuilder).to(VulcanArtifactBuilder);
 });
 
-it('Should load persisted artifacts from file with correct data', async () => {
+it('Should pass serialized data to store while building', async () => {
   // Arrange
-  const ps = new LocalFilePersistentStore({
-    filePath: path.resolve(__dirname, 'test.json'),
-  });
-  const build = new VulcanArtifactBuilder({
-    persistentStore: ps,
-  });
-  const data: Artifact = {
-    schemas: [],
-    templates: {},
-  };
-  await build.build(data);
+  const builder = container.get<VulcanArtifactBuilder>(TYPES.ArtifactBuilder);
+
   // Act
-  const loadedData = await build.load();
+  await builder.build(mockArtifact);
+
   // Assert
-  expect(loadedData).toEqual(data);
+  expect(mockPersistentStore.save.calledOnce).toBe(true);
+});
+
+it('Should load deserialized data while loading', async () => {
+  // Arrange
+  const builder = container.get<VulcanArtifactBuilder>(TYPES.ArtifactBuilder);
+  mockPersistentStore.load.resolves(Buffer.from(JSON.stringify(mockArtifact)));
+
+  // Act
+  const artifact = await builder.load();
+
+  // Assert
+  expect(artifact).toEqual(mockArtifact);
 });

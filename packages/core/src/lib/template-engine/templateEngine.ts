@@ -16,7 +16,7 @@ export interface PreCompiledResult {
 @injectable()
 export class TemplateEngine {
   private compiler: Compiler;
-  private templateProvider?: TemplateProvider;
+  private templateProvider: TemplateProvider;
 
   constructor(
     @inject(TYPES.Compiler) compiler: Compiler,
@@ -29,8 +29,6 @@ export class TemplateEngine {
   }
 
   public async compile(): Promise<Required<PreCompiledResult>> {
-    if (!this.templateProvider) throw new Error('Template provider is not set');
-
     const templateResult: Record<string, string> = {};
     const metadataResult: Record<string, TemplateMetadata> = {};
 

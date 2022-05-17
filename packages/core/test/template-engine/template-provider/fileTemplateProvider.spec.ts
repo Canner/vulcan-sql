@@ -1,10 +1,29 @@
+import { TYPES } from '@containers';
+import { ITemplateEngineOptions, TemplateProviderType } from '@models';
 import { FileTemplateProvider, Template } from '@template-engine';
+import { Container } from 'inversify';
 import * as path from 'path';
+
+let container: Container;
+
+beforeEach(() => {
+  container = new Container();
+  container
+    .bind<ITemplateEngineOptions>(TYPES.TemplateEngineOptions)
+    .toConstantValue({
+      provider: TemplateProviderType.LocalFile,
+      path: path.resolve(__dirname, '../test-templates'),
+    });
+  container.bind(TYPES.TemplateProvider).to(FileTemplateProvider);
+});
+
+afterEach(() => {
+  container.unbindAll();
+});
 
 it('File template provider should provide correct files and contents', async () => {
   // Arrange
-  const filePath = path.resolve(__dirname, '../test-templates');
-  const provider = new FileTemplateProvider({ folderPath: filePath });
+  const provider = container.get<FileTemplateProvider>(TYPES.TemplateProvider);
   const templates: Template[] = [];
 
   // Act

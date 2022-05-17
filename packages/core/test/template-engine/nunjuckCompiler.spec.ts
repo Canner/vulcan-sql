@@ -1,13 +1,30 @@
+import { TYPES } from '@containers';
 import {
   NunjucksCompiler,
   InMemoryCodeLoader,
   NunjucksCompilerExtension,
+  Compiler,
 } from '@template-engine';
+import { Container } from 'inversify';
+
+let container: Container;
+
+beforeEach(() => {
+  container = new Container();
+  container
+    .bind(TYPES.CompilerLoader)
+    .to(InMemoryCodeLoader)
+    .inSingletonScope();
+  container.bind(TYPES.Compiler).to(NunjucksCompiler).inSingletonScope();
+});
+
+afterEach(() => {
+  container.unbindAll();
+});
 
 it('Nunjucks compiler should compile template without error.', async () => {
   // Arrange
-  const loader = new InMemoryCodeLoader();
-  const compiler = new NunjucksCompiler({ loader });
+  const compiler = container.get<Compiler>(TYPES.Compiler);
 
   // Action
   const compilerCode = compiler.compile('Hello {{ name }}');
@@ -18,8 +35,8 @@ it('Nunjucks compiler should compile template without error.', async () => {
 
 it('Nunjucks compiler should load compiled code and render template with it', async () => {
   // Arrange
-  const loader = new InMemoryCodeLoader();
-  const compiler = new NunjucksCompiler({ loader });
+  const loader = container.get<InMemoryCodeLoader>(TYPES.CompilerLoader);
+  const compiler = container.get<Compiler>(TYPES.Compiler);
   const { compiledData } = compiler.compile('Hello {{ name }}!');
 
   // Action
@@ -32,8 +49,7 @@ it('Nunjucks compiler should load compiled code and render template with it', as
 
 it('Nunjucks compiler should reject unsupported extensions', async () => {
   // Arrange
-  const loader = new InMemoryCodeLoader();
-  const compiler = new NunjucksCompiler({ loader });
+  const compiler = container.get<NunjucksCompiler>(TYPES.Compiler);
   // Action, Assert
   // extension should have parse and name property
   expect(() =>
