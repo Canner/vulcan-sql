@@ -1,14 +1,49 @@
+import { TYPES } from '@vulcan/build/containers';
+import { ISchemaParserOptions, SchemaReaderType } from '@vulcan/build/models';
+import { SchemaParserOptions } from '@vulcan/build/options';
 import {
   SchemaFormat,
   SchemaParser,
   SchemaReader,
-  ValidatorLoader,
-} from '../../src';
+} from '@vulcan/build/schema-parser';
+import { ValidatorLoader, TYPES as CORE_TYPES } from '@vulcan/core';
+import { Container } from 'inversify';
 import * as sinon from 'ts-sinon';
+
+let container: Container;
+let stubSchemaReader: sinon.StubbedInstance<SchemaReader>;
+let stubValidatorLoader: sinon.StubbedInstance<ValidatorLoader>;
+
+beforeEach(() => {
+  container = new Container();
+  stubSchemaReader = sinon.stubInterface<SchemaReader>();
+  stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
+
+  container
+    .bind(TYPES.Factory_SchemaReader)
+    .toConstantValue(() => stubSchemaReader);
+  container
+    .bind<Partial<ISchemaParserOptions>>(TYPES.SchemaParserInputOptions)
+    .toConstantValue({
+      schemaPath: '',
+      reader: SchemaReaderType.LocalFile,
+    });
+  container
+    .bind(TYPES.SchemaParserOptions)
+    .to(SchemaParserOptions)
+    .inSingletonScope();
+  container
+    .bind(CORE_TYPES.ValidatorLoader)
+    .toConstantValue(stubValidatorLoader);
+  container.bind(TYPES.SchemaParser).to(SchemaParser).inSingletonScope();
+});
+
+afterEach(() => {
+  container.unbindAll();
+});
 
 it('Schema parser parse should return correct result', async () => {
   // Assert
-  const stubSchemaReader = sinon.stubInterface<SchemaReader>();
   const generator = async function* () {
     yield {
       name: 'detail/role',
@@ -24,16 +59,12 @@ request:
     };
   };
   stubSchemaReader.readSchema.returns(generator());
-  const stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
   stubValidatorLoader.getLoader.returns({
     name: 'validator1',
     validateSchema: () => true,
     validateData: () => true,
   });
-  const schemaParser = new SchemaParser({
-    schemaReader: stubSchemaReader,
-    validatorLoader: stubValidatorLoader,
-  });
+  const schemaParser = container.get<SchemaParser>(TYPES.SchemaParser);
 
   // Act
   const result = await schemaParser.parse();
@@ -45,7 +76,6 @@ request:
 
 it('Schema parser parse should throw with unsupported schema type', async () => {
   // Assert
-  const stubSchemaReader = sinon.stubInterface<SchemaReader>();
   const generator = async function* () {
     yield {
       name: 'detail/role',
@@ -54,11 +84,7 @@ it('Schema parser parse should throw with unsupported schema type', async () => 
     };
   };
   stubSchemaReader.readSchema.returns(generator());
-  const stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
-  const schemaParser = new SchemaParser({
-    schemaReader: stubSchemaReader,
-    validatorLoader: stubValidatorLoader,
-  });
+  const schemaParser = container.get<SchemaParser>(TYPES.SchemaParser);
 
   // Act, Assert
   await expect(schemaParser.parse()).rejects.toThrow(

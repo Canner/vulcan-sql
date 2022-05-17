@@ -2,7 +2,7 @@ import { Artifact, ArtifactBuilder } from './artifactBuilder';
 import { PersistentStore } from './persistent-stores';
 import { Serializer } from './serializers';
 import { inject, injectable, interfaces } from 'inversify';
-import { TYPES } from '@containers';
+import { TYPES } from '@vulcan/core/containers';
 import { IArtifactBuilderOptions } from '../../models/artifactBuilderOptions';
 
 @injectable()

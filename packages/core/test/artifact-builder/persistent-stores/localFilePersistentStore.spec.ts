@@ -1,6 +1,9 @@
 import * as path from 'path';
-import { LocalFilePersistentStore, PersistentStore } from '@artifact-builder';
-import { TYPES } from '@containers';
+import {
+  LocalFilePersistentStore,
+  PersistentStore,
+} from '@vulcan/core/artifact-builder';
+import { TYPES } from '@vulcan/core/containers';
 import { Container } from 'inversify';
 
 let container: Container;

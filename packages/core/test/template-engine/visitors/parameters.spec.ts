@@ -1,5 +1,5 @@
 import * as nunjucks from 'nunjucks';
-import { walkAst, ParametersVisitor } from '@template-engine';
+import { walkAst, ParametersVisitor } from '@vulcan/core/template-engine';
 
 it('Visitor should return correct parameter', async () => {
   // Arrange

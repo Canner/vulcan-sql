@@ -5,7 +5,7 @@ import {
 } from '../extension';
 import * as nunjucks from 'nunjucks';
 import { injectable, inject } from 'inversify';
-import { TYPES } from '@containers';
+import { TYPES } from '@vulcan/core/containers';
 
 // TODO: temporary interface
 export interface Executor {

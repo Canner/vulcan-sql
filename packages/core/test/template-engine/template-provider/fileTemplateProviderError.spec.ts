@@ -1,6 +1,9 @@
-import { TYPES } from '@containers';
-import { ITemplateEngineOptions, TemplateProviderType } from '@models';
-import { FileTemplateProvider } from '@template-engine';
+import { TYPES } from '@vulcan/core/containers';
+import {
+  ITemplateEngineOptions,
+  TemplateProviderType,
+} from '@vulcan/core/models';
+import { FileTemplateProvider } from '@vulcan/core/template-engine';
 import { Container } from 'inversify';
 
 jest.mock('glob', () => {

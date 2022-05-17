@@ -11,7 +11,7 @@ import * as transformer from 'nunjucks/src/transformer';
 import { walkAst } from './visitors/astWalker';
 import { ParametersVisitor, ErrorsVisitor, FiltersVisitor } from './visitors';
 import { inject, injectable, multiInject, optional } from 'inversify';
-import { TYPES } from '@containers';
+import { TYPES } from '@vulcan/core/containers';
 
 @injectable()
 export class NunjucksCompiler implements Compiler {

@@ -1,11 +1,11 @@
-import { TYPES } from '@containers';
+import { TYPES } from '@vulcan/core/containers';
 import {
   NunjucksCompiler,
   InMemoryCodeLoader,
   Executor,
   ReqExtension,
   Compiler,
-} from '@template-engine';
+} from '@vulcan/core/template-engine';
 import { Container } from 'inversify';
 import * as sinon from 'ts-sinon';
 

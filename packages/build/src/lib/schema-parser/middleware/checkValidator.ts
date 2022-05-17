@@ -1,7 +1,6 @@
-import { ValidatorLoader } from '../schemaParser';
 import { SchemaParserMiddleware } from './middleware';
 import { chain } from 'lodash';
-import { APISchema } from '@vulcan/core';
+import { APISchema, ValidatorLoader } from '@vulcan/core';
 
 export const checkValidator =
   (loader: ValidatorLoader): SchemaParserMiddleware =>

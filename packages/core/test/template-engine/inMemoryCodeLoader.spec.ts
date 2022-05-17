@@ -1,4 +1,4 @@
-import { InMemoryCodeLoader } from '@template-engine';
+import { InMemoryCodeLoader } from '@vulcan/core/template-engine';
 import * as nunjucks from 'nunjucks';
 
 it('Should set/load compiled code correctly', async () => {

@@ -8,6 +8,6 @@ export interface SchemaData {
   type: SchemaFormat;
 }
 
-export abstract class SchemaReader {
-  abstract readSchema(): AsyncGenerator<SchemaData>;
+export interface SchemaReader {
+  readSchema(): AsyncGenerator<SchemaData>;
 }

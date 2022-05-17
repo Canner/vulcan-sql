@@ -18,4 +18,6 @@ export const TYPES = {
   TemplateEngineInputOptions: Symbol.for('TemplateEngineInputOptions'),
   // Executor
   Executor: Symbol.for('Executor'),
+  // Validator
+  ValidatorLoader: Symbol.for('ValidatorLoader'),
 };

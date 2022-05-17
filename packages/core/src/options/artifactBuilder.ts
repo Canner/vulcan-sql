@@ -1,10 +1,10 @@
 import { injectable, inject } from 'inversify';
-import { TYPES } from '@containers';
+import { TYPES } from '@vulcan/core/containers';
 import {
   IArtifactBuilderOptions,
   PersistentStoreType,
   SerializerType,
-} from '@models';
+} from '@vulcan/core/models';
 
 @injectable()
 export class ArtifactBuilderOptions implements IArtifactBuilderOptions {

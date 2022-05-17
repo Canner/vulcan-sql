@@ -3,8 +3,8 @@ import * as glob from 'glob';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { inject, injectable } from 'inversify';
-import { TYPES } from '@containers';
-import { ITemplateEngineOptions } from '@models';
+import { TYPES } from '@vulcan/core/containers';
+import { ITemplateEngineOptions } from '@vulcan/core/models';
 
 @injectable()
 export class FileTemplateProvider implements TemplateProvider {

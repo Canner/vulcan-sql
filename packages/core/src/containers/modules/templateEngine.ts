@@ -1,5 +1,8 @@
-import { TYPES } from '@containers';
-import { ITemplateEngineOptions, TemplateProviderType } from '@models';
+import { TYPES } from '@vulcan/core/containers';
+import {
+  ITemplateEngineOptions,
+  TemplateProviderType,
+} from '@vulcan/core/models';
 import {
   ErrorExtension,
   FileTemplateProvider,
@@ -11,7 +14,7 @@ import {
   NunjucksCompiler,
   Compiler,
   TemplateEngine,
-} from '@template-engine';
+} from '@vulcan/core/template-engine';
 import { ContainerModule, interfaces } from 'inversify';
 import { TemplateEngineOptions } from '../../options';
 import * as nunjucks from 'nunjucks';

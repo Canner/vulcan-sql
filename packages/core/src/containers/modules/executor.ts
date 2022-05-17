@@ -1,5 +1,5 @@
 import { ContainerModule } from 'inversify';
-import { Executor } from '@template-engine';
+import { Executor } from '@vulcan/core/template-engine';
 import { TYPES } from '../types';
 
 export const executorModule = () =>

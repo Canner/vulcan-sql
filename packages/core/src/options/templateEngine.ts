@@ -1,6 +1,9 @@
 import { injectable, inject } from 'inversify';
-import { TYPES } from '@containers';
-import { ITemplateEngineOptions, TemplateProviderType } from '@models';
+import { TYPES } from '@vulcan/core/containers';
+import {
+  ITemplateEngineOptions,
+  TemplateProviderType,
+} from '@vulcan/core/models';
 
 @injectable()
 export class TemplateEngineOptions implements ITemplateEngineOptions {

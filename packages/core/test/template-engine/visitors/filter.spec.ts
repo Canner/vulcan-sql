@@ -1,5 +1,5 @@
 import * as nunjucks from 'nunjucks';
-import { walkAst, FiltersVisitor } from '@template-engine';
+import { walkAst, FiltersVisitor } from '@vulcan/core/template-engine';
 
 it('If we try to use an unloaded filter, visitor should throw error', async () => {
   // Arrange

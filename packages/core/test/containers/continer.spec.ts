@@ -1,11 +1,11 @@
-import { ArtifactBuilder } from '@artifact-builder';
-import { Container, TYPES } from '@containers';
+import { ArtifactBuilder } from '@vulcan/core/artifact-builder';
+import { Container, TYPES } from '@vulcan/core/containers';
 import {
   PersistentStoreType,
   SerializerType,
   TemplateProviderType,
-} from '@models';
-import { TemplateEngine } from '@template-engine';
+} from '@vulcan/core/models';
+import { TemplateEngine } from '@vulcan/core/template-engine';
 import * as path from 'path';
 import * as fs from 'fs';
 

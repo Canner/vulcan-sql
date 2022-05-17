@@ -1,6 +1,10 @@
-import { TemplateEngine, Compiler, TemplateProvider } from '@template-engine';
+import {
+  TemplateEngine,
+  Compiler,
+  TemplateProvider,
+} from '@vulcan/core/template-engine';
 import * as sinon from 'ts-sinon';
-import { TYPES } from '@containers';
+import { TYPES } from '@vulcan/core/containers';
 import { Container } from 'inversify';
 
 let container: Container;

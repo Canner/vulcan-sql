@@ -1,6 +1,9 @@
-import { TYPES } from '@containers';
-import { ITemplateEngineOptions, TemplateProviderType } from '@models';
-import { FileTemplateProvider, Template } from '@template-engine';
+import { TYPES } from '@vulcan/core/containers';
+import {
+  ITemplateEngineOptions,
+  TemplateProviderType,
+} from '@vulcan/core/models';
+import { FileTemplateProvider, Template } from '@vulcan/core/template-engine';
 import { Container } from 'inversify';
 import * as path from 'path';
 
