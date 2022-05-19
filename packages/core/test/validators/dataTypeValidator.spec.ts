@@ -14,9 +14,8 @@ describe('Test "date" type validator', () => {
       // Act
       const validator = new DateTypeValidator();
       const result = validator.validateSchema(args);
-
       // Assert
-      expect(result).toBe(true);
+      expect(() => validator.validateSchema(args)).not.toThrow();
     }
   );
 
@@ -53,10 +52,9 @@ describe('Test "date" type validator', () => {
 
       // Act
       const validator = new DateTypeValidator();
-      const result = validator.validateData(data, args);
 
       // Assert
-      expect(result).toBe(true);
+      expect(() => validator.validateData(data, args)).not.toThrow();
     }
   );
 

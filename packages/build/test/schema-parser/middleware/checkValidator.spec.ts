@@ -15,8 +15,8 @@ it('Should pass if there is no error', async () => {
   const stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
   stubValidatorLoader.getLoader.returns({
     name: 'validator1',
-    validateSchema: () => true,
-    validateData: () => true,
+    validateSchema: () => null,
+    validateData: () => null,
   });
 
   // Act Assert
@@ -38,8 +38,8 @@ it('Should throw if some validators have no name', async () => {
   const stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
   stubValidatorLoader.getLoader.returns({
     name: 'validator1',
-    validateSchema: () => true,
-    validateData: () => true,
+    validateSchema: () => null,
+    validateData: () => null,
   });
 
   // Act Assert
@@ -61,12 +61,14 @@ it('Should throw if the arguments of a validator is invalid', async () => {
   const stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
   stubValidatorLoader.getLoader.returns({
     name: 'validator1',
-    validateSchema: () => false,
-    validateData: () => true,
+    validateSchema: () => {
+      throw new Error();
+    },
+    validateData: () => null,
   });
 
   // Act Assert
   await expect(
     checkValidator(stubValidatorLoader)(schema, async () => Promise.resolve())
-  ).rejects.toThrow('Validator validator1 schema invalid');
+  ).rejects.toThrow();
 });

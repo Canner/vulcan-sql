@@ -14,10 +14,9 @@ describe('Test "uuid" type validator ', () => {
       const args = JSON.parse(inputArgs);
       // Act
       const validator = new UUIDTypeValidator();
-      const result = validator.validateSchema(args);
 
       // Assert
-      expect(result).toBe(true);
+      expect(() => validator.validateSchema(args)).not.toThrow();
     }
   );
 
@@ -56,10 +55,9 @@ describe('Test "uuid" type validator ', () => {
       const args = JSON.parse(inputArgs);
       // Act
       const validator = new UUIDTypeValidator();
-      const result = validator.validateData(data, args);
 
       // Assert
-      expect(result).toBe(true);
+      expect(() => validator.validateData(data, args)).not.toThrow();
     }
   );
   it.each([

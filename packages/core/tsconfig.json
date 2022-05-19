@@ -8,7 +8,6 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true,
     "typeRoots": ["../../node_modules/@types"],
     "paths": {
       "@artifact-builder/*": ["packages/core/src/lib/artifact-builder/*"],

@@ -1,8 +1,8 @@
 import * as sinon from 'ts-sinon';
-import supertest from 'supertest';
+import * as supertest from 'supertest';
 import faker from '@faker-js/faker';
 import { Request } from 'koa';
-import KoaRouter from 'koa-router';
+import * as KoaRouter from 'koa-router';
 import { VulcanApplication, VulcanServer } from '@app';
 import {
   APISchema,
@@ -19,7 +19,7 @@ import {
   RequestParameters,
   RequestTransformer,
   RequestValidator,
-} from '@route-generator/.';
+} from '@route/.';
 
 describe('Test vulcan server to call restful APIs', () => {
   let server: VulcanServer;
@@ -212,8 +212,9 @@ describe('Test vulcan server to call restful APIs', () => {
           ctx,
           param.fieldName
         );
-        expected[param.fieldName] =
-          RequestTransformer.convertTypeMapper[param.type](fieldValue);
+        expected[param.fieldName] = RequestTransformer.convertTypeMapper[
+          param.type
+        ](fieldValue, param.fieldName);
       });
 
       // Act

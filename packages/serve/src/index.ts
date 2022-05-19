@@ -1,2 +1,2 @@
-export * from './lib/route-generator';
+export * from './lib/route';
 export * from './lib/app';

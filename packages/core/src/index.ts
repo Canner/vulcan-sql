@@ -1,6 +1,3 @@
-export * from './lib/template-engine';
-export * from './models';
-export * from './lib/artifact-builder';
 // import built-in validators
 import builtInValidatorClasses from './lib/validators';
 import IValidator from './lib/validators/validator';
@@ -22,6 +19,9 @@ const loadedValidators: { [name: string]: IValidator } = Object.assign(
 export * from './lib/validators';
 // Export all other modules
 export * from './models';
+export * from './lib/utils';
 export * from './lib/validators/validator';
+export * from './lib/template-engine';
+export * from './lib/artifact-builder';
 
 export { loadedValidators, IValidator };

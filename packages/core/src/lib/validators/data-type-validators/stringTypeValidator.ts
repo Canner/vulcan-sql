@@ -23,17 +23,18 @@ export class StringTypeValidator implements IValidator {
     max: Joi.number().optional(),
   });
 
-  validateSchema(args: StringInputArgs): boolean {
+  public validateSchema(args: StringInputArgs) {
     try {
       // validate arguments schema
       Joi.assert(args, this.argsValidator);
-      return true;
     } catch {
-      throw new Error('The arguments schema for string type is incorrect');
+      throw new Error(
+        'The arguments schema for "string" type validator is incorrect'
+      );
     }
   }
 
-  validateData(value: string, args: StringInputArgs): boolean {
+  public validateData(value: string, args?: StringInputArgs) {
     // schema is string type
     let schema = Joi.string();
 
@@ -49,7 +50,6 @@ export class StringTypeValidator implements IValidator {
     try {
       // validate data value
       Joi.assert(value, schema);
-      return true;
     } catch {
       throw new Error(
         'The input parameter is invalid, it should be string type'

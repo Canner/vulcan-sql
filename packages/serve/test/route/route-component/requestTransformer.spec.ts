@@ -11,7 +11,7 @@ import {
   KoaRouterContext,
   RequestParameters,
   RequestTransformer,
-} from '@route-generator/.';
+} from '@route/.';
 
 describe('Test request transformer - transform successfully', () => {
   const fakeSchemas: Array<APISchema> = [
@@ -119,7 +119,7 @@ describe('Test request transformer - transform successfully', () => {
       request: {
         ...sinon.stubInterface<Request>(),
         query: {
-          sort: faker.datatype.string(),
+          sort: faker.helpers.arrayElement(['true', 'false']),
         },
       },
     },
@@ -140,8 +140,9 @@ describe('Test request transformer - transform successfully', () => {
           ctx,
           param.fieldName
         );
-        expected[param.fieldName] =
-          RequestTransformer.convertTypeMapper[param.type](fieldValue);
+        expected[param.fieldName] = RequestTransformer.convertTypeMapper[
+          param.type
+        ](fieldValue, param.fieldName);
       });
       // Act
       const transformer = new RequestTransformer();

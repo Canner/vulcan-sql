@@ -8,7 +8,7 @@ import {
   IRequestValidator,
   RestfulRoute,
   RouteGenerator,
-} from '@route-generator/.';
+} from '@route/.';
 
 describe('Test route generator ', () => {
   let stubReqTransformer: sinon.StubbedInstance<IRequestTransformer>;

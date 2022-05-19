@@ -1,12 +1,12 @@
 import { Server } from 'http';
-import Koa from 'koa';
-import KoaRouter from 'koa-router';
+import * as Koa from 'koa';
+import * as KoaRouter from 'koa-router';
 import {
   RestfulRoute,
   BaseRoute,
   APIProviderType,
   GraphQLRoute,
-} from './route-generator';
+} from './route';
 
 export type VulcanServer = Server;
 

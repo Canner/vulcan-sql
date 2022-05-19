@@ -17,17 +17,18 @@ export class UUIDTypeValidator implements IValidator {
     version: Joi.string().optional(),
   });
 
-  validateSchema(args: UUIDInputArgs): boolean {
+  validateSchema(args: UUIDInputArgs) {
     try {
       // validate arguments schema
       Joi.assert(args, this.argsValidator);
-      return true;
     } catch {
-      throw new Error('The arguments schema for uuid type is incorrect');
+      throw new Error(
+        'The arguments schema for "uuid" type validator is incorrect'
+      );
     }
   }
 
-  validateData(value: string, args: UUIDInputArgs): boolean {
+  public validateData(value: string, args: UUIDInputArgs) {
     // schema is string type
     let schema = Joi.string().uuid();
 
@@ -44,7 +45,6 @@ export class UUIDTypeValidator implements IValidator {
     try {
       // validate data value
       Joi.assert(value, schema);
-      return true;
     } catch {
       throw new Error('The input parameter is invalid, it should be uuid type');
     }

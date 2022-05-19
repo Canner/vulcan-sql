@@ -23,17 +23,18 @@ export class IntegerTypeValidator implements IValidator {
     less: Joi.number().integer().optional(),
   });
 
-  validateSchema(args: IntInputArgs): boolean {
+  public validateSchema(args: IntInputArgs) {
     try {
       // validate arguments schema
       Joi.assert(args, this.argsValidator);
-      return true;
     } catch {
-      throw new Error('The arguments schema for integer type is incorrect');
+      throw new Error(
+        'The arguments schema for "integer" type validator is incorrect'
+      );
     }
   }
 
-  validateData(value: string, args: IntInputArgs): boolean {
+  public validateData(value: string, args?: IntInputArgs) {
     // parse arguments
 
     // schema is integer type
@@ -49,7 +50,6 @@ export class IntegerTypeValidator implements IValidator {
     }
     try {
       Joi.assert(value, schema);
-      return true;
     } catch {
       throw new Error(
         'The input parameter is invalid, it should be integer type'

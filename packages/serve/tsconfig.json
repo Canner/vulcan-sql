@@ -8,11 +8,11 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true,
+    "typeRoots": ["../../node_modules/@types"],
     "paths": {
       // specify vulcan/core package for link and make us could import by @vulcan/core
       "@vulcan/core": ["packages/core/src/index.ts"],
-      "@route-generator/*": ["packages/serve/src/lib/route-generator/*"],
+      "@route/*": ["packages/serve/src/lib/route/*"],
       "@app": ["packages/serve/src/lib/app.ts"]
     }
   },

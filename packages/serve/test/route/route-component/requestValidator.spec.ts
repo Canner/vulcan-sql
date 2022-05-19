@@ -1,6 +1,6 @@
 import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
-import { RequestValidator, RequestParameters } from '@route-generator/.';
+import { RequestValidator, RequestParameters } from '@route/.';
 import {
   APISchema,
   FieldDataType,

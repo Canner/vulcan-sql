@@ -2,6 +2,7 @@ import {
   APISchema,
   FieldDataType,
   FieldInType,
+  normalizeStringValue,
   RequestSchema,
 } from '@vulcan/core';
 import { assign } from 'lodash';
@@ -31,11 +32,14 @@ export class RequestTransformer implements IRequestTransformer {
   };
 
   public static readonly convertTypeMapper: {
-    [type in FieldDataType]: (value: string) => any;
+    [type in FieldDataType]: (value: string, name: string) => any;
   } = {
-    [FieldDataType.NUMBER]: (value: string) => Number(value),
-    [FieldDataType.STRING]: (value: string) => String(value),
-    [FieldDataType.BOOLEAN]: (value: string) => Boolean(value),
+    [FieldDataType.NUMBER]: (value: string, name: string) =>
+      normalizeStringValue(value, name, Number.name),
+    [FieldDataType.STRING]: (value: string, name: string) =>
+      normalizeStringValue(value, name, String.name),
+    [FieldDataType.BOOLEAN]: (value: string, name: string) =>
+      normalizeStringValue(value, name, Boolean.name),
   };
 
   public async transform(
@@ -74,7 +78,7 @@ export class RequestTransformer implements IRequestTransformer {
       if (!(type in FieldDataType))
         throw new Error(`The ${type} type not been implemented now.`);
 
-      return RequestTransformer.convertTypeMapper[type](value);
+      return RequestTransformer.convertTypeMapper[type](value, name);
     } catch {
       throw new Error(
         `The value of field "${name}" not belong to ${type} type`

@@ -1,4 +1,8 @@
-import { APISchema, RequestParameter, ValidatorDefinition } from '@vulcan/core';
+import {
+  APISchema,
+  RequestSchema as RequestParameter,
+  ValidatorDefinition,
+} from '@vulcan/core';
 import { DeepPartial } from 'ts-essentials';
 
 export interface RawRequestParameter
