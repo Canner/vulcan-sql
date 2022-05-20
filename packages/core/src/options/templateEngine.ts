@@ -1,19 +1,30 @@
-import { injectable, inject } from 'inversify';
+import { injectable, inject, optional } from 'inversify';
 import { TYPES } from '@vulcan/core/containers';
 import {
   ITemplateEngineOptions,
   TemplateProviderType,
 } from '@vulcan/core/models';
+import { IsOptional, IsString, validateSync } from 'class-validator';
 
 @injectable()
 export class TemplateEngineOptions implements ITemplateEngineOptions {
-  public readonly provider!: TemplateProviderType;
+  @IsString()
+  public readonly provider: TemplateProviderType =
+    TemplateProviderType.LocalFile;
+
+  @IsString()
+  @IsOptional()
   public readonly templatePath!: string;
 
   constructor(
     @inject(TYPES.TemplateEngineInputOptions)
-    options: ITemplateEngineOptions
+    @optional()
+    options: Partial<ITemplateEngineOptions> = {}
   ) {
     Object.assign(this, options);
+    const errors = validateSync(this);
+    if (errors.length > 0) {
+      throw new Error('Invalid template engine options: ' + errors.join(', '));
+    }
   }
 }
