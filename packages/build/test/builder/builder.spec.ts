@@ -16,13 +16,13 @@ it('Builder.build should work', async () => {
       schemaPath: path.resolve(__dirname, 'source'),
     },
     artifact: {
-      storageType: PersistentStoreType.LocalFile,
-      serializerType: SerializerType.JSON,
-      path: path.resolve(__dirname, 'result.json'),
+      provider: PersistentStoreType.LocalFile,
+      serializer: SerializerType.JSON,
+      filePath: path.resolve(__dirname, 'result.json'),
     },
     template: {
       provider: TemplateProviderType.LocalFile,
-      path: path.resolve(__dirname, 'source'),
+      templatePath: path.resolve(__dirname, 'source'),
     },
   };
 

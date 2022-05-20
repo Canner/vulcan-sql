@@ -8,9 +8,9 @@ import {
 
 @injectable()
 export class ArtifactBuilderOptions implements IArtifactBuilderOptions {
-  public readonly storageType!: PersistentStoreType;
-  public readonly serializerType!: SerializerType;
-  public readonly path!: string;
+  public readonly provider!: PersistentStoreType;
+  public readonly serializer!: SerializerType;
+  public readonly filePath!: string;
 
   constructor(
     @inject(TYPES.ArtifactBuilderInputOptions)

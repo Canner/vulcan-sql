@@ -11,7 +11,7 @@ export class LocalFilePersistentStore implements PersistentStore {
   constructor(
     @inject(TYPES.ArtifactBuilderOptions) options: IArtifactBuilderOptions
   ) {
-    this.filePath = options.path;
+    this.filePath = options.filePath;
   }
 
   public async save(data: Buffer): Promise<void> {

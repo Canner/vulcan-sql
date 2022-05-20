@@ -7,7 +7,7 @@ export enum SerializerType {
 }
 
 export interface IArtifactBuilderOptions {
-  storageType: PersistentStoreType;
-  path: string;
-  serializerType: SerializerType;
+  provider: PersistentStoreType;
+  serializer: SerializerType;
+  filePath: string;
 }

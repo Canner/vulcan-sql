@@ -12,7 +12,7 @@ beforeEach(() => {
   container = new Container();
   container
     .bind(TYPES.ArtifactBuilderOptions)
-    .toConstantValue({ path: path.resolve(__dirname, 'test.json') });
+    .toConstantValue({ filePath: path.resolve(__dirname, 'test.json') });
   container
     .bind(TYPES.PersistentStore)
     .to(LocalFilePersistentStore)

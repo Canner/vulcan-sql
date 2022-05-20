@@ -15,7 +15,7 @@ beforeEach(() => {
     .bind<ITemplateEngineOptions>(TYPES.TemplateEngineOptions)
     .toConstantValue({
       provider: TemplateProviderType.LocalFile,
-      path: path.resolve(__dirname, '../test-templates'),
+      templatePath: path.resolve(__dirname, '../test-templates'),
     });
   container.bind(TYPES.TemplateProvider).to(FileTemplateProvider);
 });

@@ -18,13 +18,13 @@ it('Container should load options and resolve all dependencies', async () => {
   const container = new Container();
   container.load({
     artifact: {
-      storageType: PersistentStoreType.LocalFile,
-      path: resultPath,
-      serializerType: SerializerType.JSON,
+      provider: PersistentStoreType.LocalFile,
+      filePath: resultPath,
+      serializer: SerializerType.JSON,
     },
     template: {
       provider: TemplateProviderType.LocalFile,
-      path: path.resolve(__dirname, 'test-template'),
+      templatePath: path.resolve(__dirname, 'test-template'),
     },
   });
   // Act

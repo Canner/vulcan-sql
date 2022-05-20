@@ -8,7 +8,7 @@ import {
 @injectable()
 export class TemplateEngineOptions implements ITemplateEngineOptions {
   public readonly provider!: TemplateProviderType;
-  public readonly path!: string;
+  public readonly templatePath!: string;
 
   constructor(
     @inject(TYPES.TemplateEngineInputOptions)

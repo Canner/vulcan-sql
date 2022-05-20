@@ -17,8 +17,8 @@ export class VulcanArtifactBuilder implements ArtifactBuilder {
     serializerFactory: interfaces.AutoNamedFactory<Serializer<any>>,
     @inject(TYPES.ArtifactBuilderOptions) options: IArtifactBuilderOptions
   ) {
-    this.serializer = serializerFactory(options.serializerType);
-    this.persistentStore = persistentStoreFactory(options.storageType);
+    this.serializer = serializerFactory(options.serializer);
+    this.persistentStore = persistentStoreFactory(options.provider);
   }
 
   public async build(artifact: Artifact): Promise<void> {
