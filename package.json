@@ -21,6 +21,7 @@
     "@nrwl/jest": "14.0.3",
     "@nrwl/js": "14.0.3",
     "@nrwl/linter": "14.0.3",
+    "@nrwl/node": "14.0.3",
     "@nrwl/workspace": "14.0.3",
     "@types/glob": "^7.2.0",
     "@types/jest": "27.4.1",
