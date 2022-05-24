@@ -14,6 +14,7 @@ import {
   NunjucksCompiler,
   Compiler,
   TemplateEngine,
+  ExecuteExtension,
 } from '@vulcan/core/template-engine';
 import { ContainerModule, interfaces } from 'inversify';
 import { TemplateEngineOptions } from '../../options';
@@ -48,6 +49,9 @@ export const templateEngineModule = (options: ITemplateEngineOptions) =>
       .inSingletonScope();
     bind<NunjucksCompilerExtension>(TYPES.CompilerExtension)
       .to(ReqExtension)
+      .inSingletonScope();
+    bind<NunjucksCompilerExtension>(TYPES.CompilerExtension)
+      .to(ExecuteExtension)
       .inSingletonScope();
 
     // Loader

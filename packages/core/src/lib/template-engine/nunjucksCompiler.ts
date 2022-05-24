@@ -9,7 +9,12 @@ import {
 } from './extensions';
 import * as transformer from 'nunjucks/src/transformer';
 import { walkAst } from './visitors/astWalker';
-import { ParametersVisitor, ErrorsVisitor, FiltersVisitor } from './visitors';
+import {
+  ParametersVisitor,
+  ErrorsVisitor,
+  FiltersVisitor,
+  BuilderValueVisitor,
+} from './visitors';
 import { inject, injectable, multiInject, optional } from 'inversify';
 import { TYPES } from '@vulcan/core/containers';
 
@@ -31,16 +36,21 @@ export class NunjucksCompiler implements Compiler {
   }
 
   public compile(template: string): CompileResult {
-    const ast = nunjucks.parser.parse(template, this.env.extensionsList, {});
     const compiler = new nunjucks.compiler.Compiler(
       'main',
       this.env.opts.throwOnUndefined || false
     );
-    const metadata = this.getMetadata(ast);
-    const preProcessedAst = this.preProcess(ast);
-    compiler.compile(preProcessedAst);
+    const { ast, metadata } = this.generateAst(template);
+    compiler.compile(ast);
     const code = compiler.getCode();
     return { compiledData: `(() => {${code}})()`, metadata };
+  }
+
+  public generateAst(template: string) {
+    const ast = nunjucks.parser.parse(template, this.env.extensionsList, {});
+    const metadata = this.getMetadata(ast);
+    const preProcessedAst = this.preProcess(ast);
+    return { ast: preProcessedAst, metadata };
   }
 
   public async render<T extends object>(
@@ -84,7 +94,8 @@ export class NunjucksCompiler implements Compiler {
     const parameters = new ParametersVisitor();
     const errors = new ErrorsVisitor();
     const filters = new FiltersVisitor({ env: this.env });
-    walkAst(ast, [parameters, errors, filters]);
+    const builderValueVisitor = new BuilderValueVisitor();
+    walkAst(ast, [parameters, errors, filters, builderValueVisitor]);
     return {
       parameters: parameters.getParameters(),
       errors: errors.getErrors(),

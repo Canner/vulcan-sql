@@ -319,7 +319,10 @@ declare module 'nunjucks' {
     class CallExtensionAsync extends CallExtension {}
 
     class LookupVal extends Node {
-      target: Literal | Symbol;
+      target:
+        | Symbol // a.b
+        | FunCall // a().b
+        | LookupVal; // a.b.c
       val: Value;
     }
 
@@ -332,7 +335,10 @@ declare module 'nunjucks' {
     class Symbol extends Value {}
 
     class FunCall extends Node {
-      name: Node;
+      name:
+        | Symbol // a()
+        | LookupVal // a.b()
+        | FunCall; // a().b()
       args: NodeList;
     }
 

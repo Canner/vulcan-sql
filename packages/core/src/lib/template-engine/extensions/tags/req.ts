@@ -8,8 +8,13 @@ import { injectable, inject } from 'inversify';
 import { TYPES } from '@vulcan/core/containers';
 
 // TODO: temporary interface
+export interface QueryBuilder {
+  count(): QueryBuilder;
+  value(): Promise<any>;
+}
+
 export interface Executor {
-  executeQuery(query: string): Promise<object>;
+  createBuilder(query: string): Promise<QueryBuilder>;
 }
 
 @injectable()
@@ -69,7 +74,7 @@ export class ReqExtension implements NunjucksTagExtension {
       .split(/\r?\n/)
       .filter((line) => line.trim().length > 0)
       .join('\n');
-    const result = await this.executor.executeQuery(query);
-    context.setVariable(name, result);
+    const builder = await this.executor.createBuilder(query);
+    context.setVariable(name, builder);
   }
 }

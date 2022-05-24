@@ -24,8 +24,7 @@ export class ParametersVisitor implements Visitor {
   public visit(node: nunjucks.nodes.Node) {
     if (node instanceof nunjucks.nodes.LookupVal) {
       let name = node.val.value;
-      let parent: nunjucks.nodes.LookupVal | nunjucks.nodes.Symbol | null =
-        node.target;
+      let parent: typeof node.target | null = node.target;
       let depth = 0;
       while (parent) {
         depth++;
@@ -35,6 +34,8 @@ export class ParametersVisitor implements Visitor {
         if (parent instanceof nunjucks.nodes.LookupVal) {
           name = parent.val.value + '.' + name;
           parent = parent.target;
+        } else if (parent instanceof nunjucks.nodes.FunCall) {
+          parent = parent.name;
         } else {
           if (parent.value === this.lookupParameter) {
             this.parameters.push({

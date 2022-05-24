@@ -18,7 +18,7 @@ let mockBuilder: sinon.StubbedInstance<QueryBuilder>;
 beforeEach(() => {
   container = new Container();
   mockBuilder = sinon.stubInterface<QueryBuilder>();
-  mockBuilder.value.resolves([{ count: 1 }]);
+  mockBuilder.count.returns(mockBuilder);
   mockExecutor = sinon.stubInterface<Executor>();
   mockExecutor.createBuilder.resolves(mockBuilder);
   container
@@ -38,17 +38,23 @@ afterEach(() => {
   container.unbindAll();
 });
 
-it('req extension should execute correct query and set variable', async () => {
+it('query builder should be executes when .value() function called', async () => {
   // Arrange
   const compiler = container.get<Compiler>(TYPES.Compiler);
   const loader = container.get<InMemoryCodeLoader>(TYPES.CompilerLoader);
   const { compiledData } = compiler.compile(`
-{% req userCount %}
-select count(*) as count from user where user.id = '{{ params.userId }}';
+{% req user %}
+select * from public.users limit 1 where id = '{{ params.userId }}';
 {% endreq %}
-{{ userCount.value()[0].count }}
-  `);
 
+{% if user.count().value() == 1 %}
+Existed
+{% else %}
+Not existed
+{% endif %}
+
+  `);
+  mockBuilder.value.resolves(1);
   // Action
   loader.setSource('test', compiledData);
   const query = await compiler.render('test', {
@@ -56,35 +62,8 @@ select count(*) as count from user where user.id = '{{ params.userId }}';
   });
   // Assert
   expect(mockExecutor.createBuilder.firstCall.args[0]).toBe(
-    `select count(*) as count from user where user.id = 'user-id';`
+    `select * from public.users limit 1 where id = 'user-id';`
   );
-  expect(query).toBe('1');
-});
-
-it('if argument is not a symbol, extension should throw', async () => {
-  // Arrange
-  const compiler = container.get<Compiler>(TYPES.Compiler);
-
-  // Action, Assert
-  expect(() =>
-    compiler.compile(`
-{% req "userCount" %}
-select count(*) as count from user where user.id = '{{ params.userId }}';
-{% endreq %}
-  `)
-  ).toThrow(`Expected a symbol, but got Literal`);
-});
-
-it('if argument is missing, extension should throw', async () => {
-  // Arrange
-  const compiler = container.get<Compiler>(TYPES.Compiler);
-
-  // Action, Assert
-  expect(() =>
-    compiler.compile(`
-{% req %}
-select count(*) as count from user where user.id = '{{ params.userId }}';
-{% endreq %}
-  `)
-  ).toThrow(`Expected a variable`);
+  expect(mockBuilder.count.calledOnce).toBe(true);
+  expect(query).toBe('Existed');
 });
