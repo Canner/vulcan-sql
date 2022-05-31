@@ -4,3 +4,4 @@ export * from './errorsVisitor';
 export * from './filtersVisitor';
 export * from './astWalker';
 export * from './builderValueVisitor';
+export * from './mainBuilderVisitor';

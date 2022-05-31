@@ -30,5 +30,6 @@ export interface Compiler {
    * @param template The path or identifier of a template source
    */
   compile(template: string): CompileResult;
+  execute<T extends object>(template: string, data: T): Promise<any>;
   render<T extends object>(templateName: string, data: T): Promise<string>;
 }

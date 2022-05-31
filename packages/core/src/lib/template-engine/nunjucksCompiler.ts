@@ -14,6 +14,7 @@ import {
   ErrorsVisitor,
   FiltersVisitor,
   BuilderValueVisitor,
+  MainBuilderVisitor,
 } from './visitors';
 import { inject, injectable, multiInject, optional } from 'inversify';
 import { TYPES } from '@vulcan/core/containers';
@@ -51,6 +52,16 @@ export class NunjucksCompiler implements Compiler {
     const metadata = this.getMetadata(ast);
     const preProcessedAst = this.preProcess(ast);
     return { ast: preProcessedAst, metadata };
+  }
+
+  public async execute<T extends object>(
+    templateName: string,
+    data: T
+  ): Promise<any> {
+    const template = this.env.getTemplate(templateName, true);
+
+    // const query = await this.render(template, data);
+    // console.log(data);
   }
 
   public async render<T extends object>(
@@ -95,7 +106,14 @@ export class NunjucksCompiler implements Compiler {
     const errors = new ErrorsVisitor();
     const filters = new FiltersVisitor({ env: this.env });
     const builderValueVisitor = new BuilderValueVisitor();
-    walkAst(ast, [parameters, errors, filters, builderValueVisitor]);
+    const mainBuilderVisitor = new MainBuilderVisitor();
+    walkAst(ast, [
+      parameters,
+      errors,
+      filters,
+      builderValueVisitor,
+      mainBuilderVisitor,
+    ]);
     return {
       parameters: parameters.getParameters(),
       errors: errors.getErrors(),

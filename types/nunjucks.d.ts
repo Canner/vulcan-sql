@@ -305,9 +305,11 @@ declare module 'nunjucks' {
       addChild(child: Node): void;
     }
 
+    class Root extends NodeList {}
+
     class CallExtension extends Node {
       constructor(
-        ext: object,
+        ext: object | string,
         prop: string,
         args: nodes.NodeList | null,
         contentArgs: nodes.Node[] | null
@@ -350,6 +352,8 @@ declare module 'nunjucks' {
       body: Node | null;
       targets: Node[];
     }
+
+    class TemplateData extends Literal {}
   }
 
   namespace lexer {

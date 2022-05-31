@@ -7,6 +7,9 @@ export const walkAst = (
 ): void => {
   visitors.forEach((visitor) => visitor.visit(root));
   visitChildren(root, (node) => walkAst(node, visitors));
+  if (root instanceof nunjucks.nodes.Root) {
+    visitors.forEach((visitor) => visitor.finish?.());
+  }
 };
 
 export type VisitChildCallback = (
