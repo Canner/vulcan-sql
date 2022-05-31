@@ -284,6 +284,7 @@ declare module 'nunjucks' {
       parseUntilBlocks(...blockName: string[]): nodes.NodeList;
       advanceAfterBlockEnd(): Token;
       fail(message: string, lineno?: number, colno?: number): void;
+      parseExpression(): Nodes;
     }
   }
 
@@ -353,6 +354,32 @@ declare module 'nunjucks' {
 
   namespace lexer {
     function lexer(src: string, opts: any): any;
+    const TOKEN_STRING: string;
+    const TOKEN_WHITESPACE: string;
+    const TOKEN_DATA: string;
+    const TOKEN_BLOCK_START: string;
+    const TOKEN_BLOCK_END: string;
+    const TOKEN_VARIABLE_START: string;
+    const TOKEN_VARIABLE_END: string;
+    const TOKEN_COMMENT: string;
+    const TOKEN_LEFT_PAREN: string;
+    const TOKEN_RIGHT_PAREN: string;
+    const TOKEN_LEFT_BRACKET: string;
+    const TOKEN_RIGHT_BRACKET: string;
+    const TOKEN_LEFT_CURLY: string;
+    const TOKEN_RIGHT_CURLY: string;
+    const TOKEN_OPERATOR: string;
+    const TOKEN_COMMA: string;
+    const TOKEN_COLON: string;
+    const TOKEN_TILDE: string;
+    const TOKEN_PIPE: string;
+    const TOKEN_INT: string;
+    const TOKEN_FLOAT: string;
+    const TOKEN_BOOLEAN: string;
+    const TOKEN_NONE: string;
+    const TOKEN_SYMBOL: string;
+    const TOKEN_SPECIAL: string;
+    const TOKEN_REGEX: string;
   }
 
   interface Token {

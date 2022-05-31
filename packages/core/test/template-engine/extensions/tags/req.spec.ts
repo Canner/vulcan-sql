@@ -38,7 +38,7 @@ afterEach(() => {
   container.unbindAll();
 });
 
-it('req extension should execute correct query and set variable', async () => {
+it.only('req extension should execute correct query and set variable', async () => {
   // Arrange
   const compiler = container.get<Compiler>(TYPES.Compiler);
   const loader = container.get<InMemoryCodeLoader>(TYPES.CompilerLoader);
@@ -72,7 +72,7 @@ it('if argument is not a symbol, extension should throw', async () => {
 select count(*) as count from user where user.id = '{{ params.userId }}';
 {% endreq %}
   `)
-  ).toThrow(`Expected a symbol, but got Literal`);
+  ).toThrow(`Expected a symbol, but got string`);
 });
 
 it('if argument is missing, extension should throw', async () => {
@@ -87,4 +87,39 @@ select count(*) as count from user where user.id = '{{ params.userId }}';
 {% endreq %}
   `)
   ).toThrow(`Expected a variable`);
+});
+
+it('if the main denotation is replaces other keywords than "main", extension should throw an error', async () => {
+  // Arrange
+  const compiler = container.get<Compiler>(TYPES.Compiler);
+
+  // Action, Assert
+  expect(() =>
+    compiler.compile(`
+{% req user super %}
+some statement
+{% endreq %}
+  `)
+  ).toThrow(`Expected a symbol "main"`);
+});
+
+it('the main denotation should be parsed into the second args node', async () => {
+  // Arrange
+  const compiler = container.get<NunjucksCompiler>(TYPES.Compiler);
+
+  // Action
+  const { ast: astWithMainBuilder } = compiler.generateAst(
+    `{% req user main %} some statement {% endreq %}`
+  );
+  const { ast: astWithoutMainBuilder } = compiler.generateAst(
+    `{% req user %} some statement {% endreq %}`
+  );
+
+  // Assert
+  expect((astWithMainBuilder as any).children[0].args.children[1].value).toBe(
+    'true'
+  );
+  expect(
+    (astWithoutMainBuilder as any).children[0].args.children[1].value
+  ).toBe('false');
 });
