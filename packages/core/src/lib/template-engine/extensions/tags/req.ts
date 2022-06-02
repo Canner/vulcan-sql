@@ -100,10 +100,17 @@ export class ReqExtension implements NunjucksTagExtension {
     };
   }
 
-  public async run({ context, args }: NunjucksTagExtensionRunOptions) {
-    const name: string = args[0];
-    const requestQuery: () => string = args[2];
-    const query = requestQuery()
+  public async run({
+    context,
+    args,
+    contentArgs,
+  }: NunjucksTagExtensionRunOptions) {
+    const name = args[0];
+    let query = '';
+    for (let index = 0; index < contentArgs.length; index++) {
+      query += await contentArgs[index]();
+    }
+    query = query
       .split(/\r?\n/)
       .filter((line) => line.trim().length > 0)
       .join('\n');
@@ -112,6 +119,7 @@ export class ReqExtension implements NunjucksTagExtension {
 
     if (Boolean(args[1])) {
       context.setVariable(FINIAL_BUILDER_NAME, builder);
+      context.addExport(FINIAL_BUILDER_NAME);
     }
   }
 }

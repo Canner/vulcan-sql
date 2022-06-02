@@ -35,9 +35,9 @@ export class ErrorExtension implements NunjucksTagExtension {
   }
 
   public async run({ args }: NunjucksTagExtensionRunOptions) {
-    const message: string = args[0];
-    const lineno: number = args[1];
-    const colno: number = args[2];
+    const message = args[0];
+    const lineno = args[1];
+    const colno = args[2];
     throw new Error(`${message} at ${lineno}:${colno}`);
   }
 }

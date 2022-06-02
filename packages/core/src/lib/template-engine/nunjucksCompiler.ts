@@ -6,6 +6,7 @@ import {
   NunjucksCompilerExtension,
   NunjucksFilterExtensionWrapper,
   NunjucksTagExtensionWrapper,
+  QueryBuilder,
 } from './extensions';
 import * as transformer from 'nunjucks/src/transformer';
 import { walkAst } from './visitors/astWalker';
@@ -58,29 +59,8 @@ export class NunjucksCompiler implements Compiler {
     templateName: string,
     data: T
   ): Promise<any> {
-    const template = this.env.getTemplate(templateName, true);
-
-    // const query = await this.render(template, data);
-    // console.log(data);
-  }
-
-  public async render<T extends object>(
-    templateName: string,
-    data: T
-  ): Promise<string> {
-    return new Promise((resolve, reject) => {
-      this.env.render(templateName, data, (err, res) => {
-        if (err) return reject(err);
-        if (!res) return resolve('');
-        else
-          return resolve(
-            res
-              .split(/\r?\n/)
-              .filter((line) => line.trim().length > 0)
-              .join('\n')
-          );
-      });
-    });
+    const builder = await this.renderAndGetMainBuilder(templateName, data);
+    return builder.value();
   }
 
   public loadExtension(extension: NunjucksCompilerExtension): void {
@@ -124,5 +104,18 @@ export class NunjucksCompiler implements Compiler {
   private preProcess(ast: nunjucks.nodes.Node): nunjucks.nodes.Node {
     // Nunjucks'll handle the async filter via pre-process functions
     return transformer.transform(ast, this.env.asyncFilters);
+  }
+
+  private renderAndGetMainBuilder(templateName: string, data: any) {
+    const template = this.env.getTemplate(templateName, true);
+    return new Promise<QueryBuilder>((resolve, reject) => {
+      template.getExported<{ FINAL_BUILDER: QueryBuilder }>(
+        data,
+        (err, res) => {
+          if (err) return reject(err);
+          else resolve(res.FINAL_BUILDER);
+        }
+      );
+    });
   }
 }

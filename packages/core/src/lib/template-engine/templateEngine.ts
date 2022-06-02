@@ -46,10 +46,10 @@ export class TemplateEngine {
     };
   }
 
-  public async render<T extends object>(
+  public async execute<T extends object>(
     templateName: string,
     data: T
-  ): Promise<string> {
-    return this.compiler.render(templateName, data);
+  ): Promise<any> {
+    return this.compiler.execute(templateName, data);
   }
 }

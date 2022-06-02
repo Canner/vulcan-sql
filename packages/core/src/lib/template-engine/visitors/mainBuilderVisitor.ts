@@ -46,7 +46,7 @@ export class MainBuilderVisitor implements Visitor {
     args.addChild(new nunjucks.nodes.Literal(0, 0, 'true'));
     const builder = new nunjucks.nodes.CallExtensionAsync(
       ReqExtensionName,
-      'run',
+      '__run',
       args,
       originalChildren
     );

@@ -1,32 +1,8 @@
-import { TYPES } from '@vulcan/core/containers';
-import {
-  NunjucksCompiler,
-  InMemoryCodeLoader,
-  UniqueExtension,
-  Compiler,
-} from '@vulcan/core/template-engine';
-import { Container } from 'inversify';
-
-let container: Container;
-
-beforeEach(() => {
-  container = new Container();
-  container
-    .bind(TYPES.CompilerLoader)
-    .to(InMemoryCodeLoader)
-    .inSingletonScope();
-  container.bind(TYPES.Compiler).to(NunjucksCompiler).inSingletonScope();
-  container.bind(TYPES.CompilerExtension).to(UniqueExtension);
-});
-
-afterEach(() => {
-  container.unbindAll();
-});
+import { createTestCompiler } from '../../testCompiler';
 
 it('Extension should return correct values without unique by argument', async () => {
   // Arrange
-  const compiler = container.get<Compiler>(TYPES.Compiler);
-  const loader = container.get<InMemoryCodeLoader>(TYPES.CompilerLoader);
+  const { compiler, loader, executor } = createTestCompiler();
   const { compiledData } = compiler.compile(
     `
 {% set array = [1,2,3,4,4] %}
@@ -37,15 +13,14 @@ it('Extension should return correct values without unique by argument', async ()
   );
   // Action
   loader.setSource('test', compiledData);
-  const result = await compiler.render('test', {});
+  await compiler.execute('test', {});
   // Assert
-  expect(result).toBe('1\n2\n3\n4');
+  expect(executor.createBuilder.firstCall.args[0]).toBe('1\n2\n3\n4');
 });
 
 it('Extension should return correct values with unique by keyword argument', async () => {
   // Arrange
-  const compiler = container.get<Compiler>(TYPES.Compiler);
-  const loader = container.get<InMemoryCodeLoader>(TYPES.CompilerLoader);
+  const { compiler, loader, executor } = createTestCompiler();
   const { compiledData } = compiler.compile(
     `
 {% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
@@ -56,15 +31,14 @@ it('Extension should return correct values with unique by keyword argument', asy
   );
   // Action
   loader.setSource('test', compiledData);
-  const result = await compiler.render('test', {});
+  await compiler.execute('test', {});
   // Assert
-  expect(result).toBe('Tom\nJoy');
+  expect(executor.createBuilder.firstCall.args[0]).toBe('Tom\nJoy');
 });
 
 it('Extension should return correct values with unique by argument', async () => {
   // Arrange
-  const compiler = container.get<Compiler>(TYPES.Compiler);
-  const loader = container.get<InMemoryCodeLoader>(TYPES.CompilerLoader);
+  const { compiler, loader, executor } = createTestCompiler();
   const { compiledData } = compiler.compile(
     `
 {% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
@@ -75,7 +49,7 @@ it('Extension should return correct values with unique by argument', async () =>
   );
   // Action
   loader.setSource('test', compiledData);
-  const result = await compiler.render('test', {});
+  await compiler.execute('test', {});
   // Assert
-  expect(result).toBe('Tom\nJoy');
+  expect(executor.createBuilder.firstCall.args[0]).toBe('Tom\nJoy');
 });

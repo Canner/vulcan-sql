@@ -31,5 +31,4 @@ export interface Compiler {
    */
   compile(template: string): CompileResult;
   execute<T extends object>(template: string, data: T): Promise<any>;
-  render<T extends object>(templateName: string, data: T): Promise<string>;
 }

@@ -31,7 +31,7 @@ beforeEach(() => {
       errors: [],
     },
   });
-  stubCompiler.render.resolves('sql-statement');
+  stubCompiler.execute.resolves('sql-statement');
 
   const generator = async function* () {
     yield {
@@ -76,9 +76,9 @@ it('Template engine render function should forward correct data to compiler', as
   };
 
   // Act
-  const result = await templateEngine.render('template-name', context);
+  const result = await templateEngine.execute('template-name', context);
 
   // Assert
-  expect(stubCompiler.render.calledWith('template-name', context)).toBe(true);
+  expect(stubCompiler.execute.calledWith('template-name', context)).toBe(true);
   expect(result).toBe('sql-statement');
 });

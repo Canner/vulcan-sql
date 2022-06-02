@@ -11,9 +11,14 @@ export interface NunjucksTagExtensionParseResult {
   contentNodes: nunjucks.nodes.Node[];
 }
 
+export type TagExtensionContentArgGetter = () => Promise<string>;
+
+export type TagExtensionArgTypes = string | number | boolean;
+
 export interface NunjucksTagExtensionRunOptions {
   context: any;
-  args: any[];
+  args: TagExtensionArgTypes[];
+  contentArgs: TagExtensionContentArgGetter[];
 }
 
 class WrapperTagExtension {
@@ -44,14 +49,28 @@ class WrapperTagExtension {
     );
   }
 
-  public async __run(...args: any[]) {
-    const context = args[0];
+  public __run(...originalArgs: any[]) {
+    const context = originalArgs[0];
     // Nunjucks use the pass the callback function for async extension at the last argument
     // https://github.com/mozilla/nunjucks/blob/master/nunjucks/src/compiler.js#L256
-    const callback = args[args.length - 1];
-    const otherArgs = args.slice(1, args.length - 1);
+    const callback = originalArgs[originalArgs.length - 1];
+    const args = originalArgs
+      .slice(1, originalArgs.length - 1)
+      .filter((value) => typeof value !== 'function');
+    const contentArgs = originalArgs
+      .slice(1, originalArgs.length - 1)
+      .filter((value) => typeof value === 'function')
+      .map((cb) => () => {
+        return new Promise<string>((resolve, reject) => {
+          cb((err: any, result: any) => {
+            if (err) reject(err);
+            else resolve(result);
+          });
+        });
+      });
+
     this.extension
-      .run({ context, args: otherArgs })
+      .run({ context, args, contentArgs })
       .then((result) => callback(null, result))
       .catch((err) => callback(err, null));
   }

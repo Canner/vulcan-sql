@@ -6,6 +6,10 @@ declare module 'nunjucks' {
     err: lib.TemplateError | null,
     res: T | null
   ) => void;
+  export type TemplateExportCallback<T> = (
+    err: lib.TemplateError | null,
+    res: T
+  ) => void;
   export type Callback<E, T> = (err: E | null, res: T | null) => void;
 
   export function render(name: string, context?: object): string;
@@ -56,6 +60,16 @@ declare module 'nunjucks' {
     );
     render(context?: object): string;
     render(context?: object, callback?: TemplateCallback<string>): void;
+    getExported<T>(callback: TemplateExportCallback<T>): void;
+    getExported<T>(
+      context: object,
+      callback: TemplateExportCallback<T>
+    ): string;
+    getExported<T>(
+      context: object,
+      parentFrame: any,
+      callback: TemplateExportCallback<T>
+    ): string;
   }
 
   export function configure(options: ConfigureOptions): Environment;
