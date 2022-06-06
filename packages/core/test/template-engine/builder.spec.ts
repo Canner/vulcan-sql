@@ -11,7 +11,7 @@ select * from public.users limit 1 where id = '{{ params.userId }}';
 {% if user.count().value() == 1 %}
 select * from public.user where id = '{{ user.id }}';
 {% else %}
-error "User not found"
+{% error "User not found" %}
 {% endif %}
 
   `);

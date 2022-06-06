@@ -69,3 +69,19 @@ where id = {{ params.id }};
   );
   expect((ast.children[0] as any).args.children[1].value).toBe('true'); // main builder notation
 });
+
+it('Should throw an error if there is no root node', async () => {
+  // Arrange
+  const ast = nunjucks.parser.parse(
+    `
+select * from users
+where id = {{ params.id }};
+    `,
+    extensions,
+    {}
+  );
+  const visitor = new MainBuilderVisitor();
+  // Act, Arrange
+  walkAst(ast.children[0], [visitor]); // We start visiting the children of the root node, skipping the root node itself
+  expect(() => visitor.finish()).toThrow('No root node found.');
+});

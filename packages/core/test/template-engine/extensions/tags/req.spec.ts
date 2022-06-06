@@ -1,6 +1,6 @@
 import { createTestCompiler } from '../../testCompiler';
 
-it('req extension should execute correct query and set variable', async () => {
+it('req extension should execute correct query and set/export the variable', async () => {
   // Arrange
   const { compiler, loader, builder, executor } = createTestCompiler();
   const { compiledData } = compiler.compile(`
@@ -61,6 +61,20 @@ some statement
 {% endreq %}
   `)
   ).toThrow(`Expected a symbol "main"`);
+});
+
+it('if argument have too many elements, extension should throw an error', async () => {
+  // Arrange
+  const { compiler } = createTestCompiler();
+
+  // Action, Assert
+  expect(() =>
+    compiler.compile(`
+{% req user main more %}
+select count(*) as count from user where user.id = '{{ params.userId }}';
+{% endreq %}
+  `)
+  ).toThrow(`Expected a block end, but got symbol`);
 });
 
 it('the main denotation should be parsed into the second args node', async () => {
