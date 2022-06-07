@@ -13,6 +13,7 @@
       // specify vulcan/core package for link and make us could import by @vulcan/core
       "@vulcan/core": ["packages/core/src/index.ts"],
       "@route/*": ["packages/serve/src/lib/route/*"],
+      "@data-query/*": ["packages/serve/src/lib/data-query/*"],
       "@app": ["packages/serve/src/lib/app.ts"]
     }
   },
