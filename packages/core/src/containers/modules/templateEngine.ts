@@ -4,24 +4,21 @@ import {
   TemplateProviderType,
 } from '@vulcan/core/models';
 import {
-  ErrorExtension,
   FileTemplateProvider,
-  NunjucksCompilerExtension,
-  ReqExtension,
   TemplateProvider,
-  UniqueExtension,
   InMemoryCodeLoader,
   NunjucksCompiler,
   Compiler,
   TemplateEngine,
-  ExecuteExtension,
 } from '@vulcan/core/template-engine';
-import { ContainerModule, interfaces } from 'inversify';
+import { AsyncContainerModule, interfaces } from 'inversify';
 import { TemplateEngineOptions } from '../../options';
 import * as nunjucks from 'nunjucks';
+// TODO: fix the path
+import { bindExtensions } from '@vulcan/core/template-engine/extension-loader';
 
 export const templateEngineModule = (options: ITemplateEngineOptions) =>
-  new ContainerModule((bind) => {
+  new AsyncContainerModule(async (bind) => {
     // Options
     bind<ITemplateEngineOptions>(
       TYPES.TemplateEngineInputOptions
@@ -40,19 +37,23 @@ export const templateEngineModule = (options: ITemplateEngineOptions) =>
       TYPES.Factory_TemplateProvider
     ).toAutoNamedFactory<TemplateProvider>(TYPES.TemplateProvider);
 
-    // Extensions
-    bind<NunjucksCompilerExtension>(TYPES.CompilerExtension)
-      .to(UniqueExtension)
-      .inSingletonScope();
-    bind<NunjucksCompilerExtension>(TYPES.CompilerExtension)
-      .to(ErrorExtension)
-      .inSingletonScope();
-    bind<NunjucksCompilerExtension>(TYPES.CompilerExtension)
-      .to(ReqExtension)
-      .inSingletonScope();
-    bind<NunjucksCompilerExtension>(TYPES.CompilerExtension)
-      .to(ExecuteExtension)
-      .inSingletonScope();
+    // Compiler environment
+    bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
+      .toDynamicValue((context) => {
+        // We only need loader in runtime
+        const loader = context.container.get<nunjucks.ILoader>(
+          TYPES.CompilerLoader
+        );
+        return new nunjucks.Environment(loader);
+      })
+      .inSingletonScope()
+      .whenTargetNamed('runtime');
+    bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
+      .toDynamicValue(() => {
+        return new nunjucks.Environment();
+      })
+      .inSingletonScope()
+      .whenTargetNamed('compileTime');
 
     // Loader
     bind<nunjucks.ILoader>(TYPES.CompilerLoader)
@@ -66,4 +67,7 @@ export const templateEngineModule = (options: ITemplateEngineOptions) =>
     bind<TemplateEngine>(TYPES.TemplateEngine)
       .to(TemplateEngine)
       .inSingletonScope();
+
+    // Load Extensions
+    await bindExtensions(bind);
   });

@@ -13,11 +13,7 @@ export interface TemplateParameterMetadata {
   locations: TemplateLocation[];
 }
 
-export interface TemplateMetadata {
-  parameters: TemplateParameterMetadata[];
-  errors: TemplateErrorMetadata[];
-}
-
+export type TemplateMetadata = Record<string, any>;
 export interface CompileResult {
   compiledData: string;
   metadata: TemplateMetadata;

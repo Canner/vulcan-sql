@@ -1,9 +1,8 @@
-import { NunjucksCompilerExtension } from '@vulcan/core/template-engine';
 import { createTestCompiler } from './testCompiler';
 
 it('Nunjucks compiler should compile template without error.', async () => {
   // Arrange
-  const { compiler } = createTestCompiler();
+  const { compiler } = await createTestCompiler();
 
   // Action
   const compilerCode = compiler.compile('Hello {{ name }}');
@@ -14,7 +13,7 @@ it('Nunjucks compiler should compile template without error.', async () => {
 
 it('Nunjucks compiler should load compiled code and execute rendered template with it', async () => {
   // Arrange
-  const { compiler, loader, getCreatedQueries } = createTestCompiler();
+  const { compiler, loader, getCreatedQueries } = await createTestCompiler();
   const { compiledData } = compiler.compile('Hello {{ name }}!');
 
   // Action
@@ -26,12 +25,11 @@ it('Nunjucks compiler should load compiled code and execute rendered template wi
   expect(queries[0]).toBe('Hello World!');
 });
 
-it('Nunjucks compiler should reject unsupported extensions', async () => {
+it('Nunjucks compiler should reject the extension which has no valid super class', async () => {
   // Arrange
-  const { compiler } = createTestCompiler();
+  const { compiler } = await createTestCompiler();
   // Action, Assert
-  // extension should have parse and name property
-  expect(() =>
-    compiler.loadExtension({ tags: ['test'] } as NunjucksCompilerExtension)
-  ).toThrow('Unsupported extension');
+  expect(() => compiler.loadExtension({})).toThrow(
+    'Extension must be of type RuntimeExtension or CompileTimeExtension'
+  );
 });

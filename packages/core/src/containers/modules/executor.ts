@@ -1,5 +1,9 @@
 import { ContainerModule } from 'inversify';
-import { Executor, QueryBuilder } from '@vulcan/core/template-engine';
+// TODO: Should replace with a real implementation
+import {
+  QueryBuilder,
+  Executor,
+} from '../../lib/template-engine/built-in-extensions/query-builder/reqTagRunner';
 import { TYPES } from '../types';
 
 class MockBuilder implements QueryBuilder {

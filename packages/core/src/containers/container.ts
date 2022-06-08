@@ -14,10 +14,12 @@ export class Container {
     return this.inversifyContainer.get<T>(type);
   }
 
-  public load(options: ICoreOptions) {
+  public async load(options: ICoreOptions) {
     this.inversifyContainer.load(artifactBuilderModule(options.artifact));
     this.inversifyContainer.load(executorModule());
-    this.inversifyContainer.load(templateEngineModule(options.template));
+    await this.inversifyContainer.loadAsync(
+      templateEngineModule(options.template)
+    );
     this.inversifyContainer.load(validatorModule());
   }
 
