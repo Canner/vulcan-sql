@@ -1,3 +1,4 @@
+import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
 import {
   DataQueryBuilder,
@@ -8,8 +9,15 @@ import {
   AliasDataQueryBuilder,
   IDataQueryBuilder,
 } from '@data-query/.';
+import { IDataSource } from '@data-source/.';
 
 describe('Test data query builder > where clause', () => {
+  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+
+  beforeEach(() => {
+    stubDataSource = sinon.stubInterface<IDataSource>();
+  });
+
   it.each([
     {
       where: {
@@ -20,7 +28,10 @@ describe('Test data query builder > where clause', () => {
       and: {
         column: faker.database.column(),
         operator: '=',
-        value: new DataQueryBuilder({ statement: 'select * from products' }),
+        value: new DataQueryBuilder({
+          statement: 'select * from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
+        }),
       },
       andNot: {
         column: faker.database.column(),
@@ -32,7 +43,10 @@ describe('Test data query builder > where clause', () => {
       where: {
         column: faker.database.column(),
         operator: '=',
-        value: new DataQueryBuilder({ statement: 'select avg(*) from users' }),
+        value: new DataQueryBuilder({
+          statement: 'select avg(*) from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
+        }),
       },
       and: {
         column: faker.database.column(),
@@ -60,14 +74,15 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (where) builder.where(where.column, where.operator, where.value);
       if (and) builder.andWhere(and.column, and.operator, and.value);
       if (andNot)
         builder.andWhereNot(andNot.column, andNot.operator, andNot.value);
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -82,7 +97,10 @@ describe('Test data query builder > where clause', () => {
       or: {
         column: faker.database.column(),
         operator: '=',
-        value: new DataQueryBuilder({ statement: 'select * from products' }),
+        value: new DataQueryBuilder({
+          statement: 'select * from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
+        }),
       },
       orNot: {
         column: faker.database.column(),
@@ -94,7 +112,10 @@ describe('Test data query builder > where clause', () => {
       whereNot: {
         column: faker.database.column(),
         operator: '=',
-        value: new DataQueryBuilder({ statement: 'select avg(*) from users' }),
+        value: new DataQueryBuilder({
+          statement: 'select avg(*) from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
+        }),
       },
       or: {
         column: faker.database.column(),
@@ -123,14 +144,15 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (whereNot)
         builder.whereNot(whereNot.column, whereNot.operator, whereNot.value);
       if (or) builder.orWhere(or.column, or.operator, or.value);
       if (orNot) builder.orWhereNot(orNot.column, orNot.operator, orNot.value);
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -167,6 +189,7 @@ describe('Test data query builder > where clause', () => {
         column: faker.database.column(),
         values: new DataQueryBuilder({
           statement: 'select type from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
       },
       and: {
@@ -179,7 +202,10 @@ describe('Test data query builder > where clause', () => {
       },
       andNot: {
         column: faker.database.column(),
-        values: new DataQueryBuilder({ statement: 'select age from users' }),
+        values: new DataQueryBuilder({
+          statement: 'select age from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
+        }),
       },
     },
   ])(
@@ -197,13 +223,14 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (whereIn) builder.whereIn(whereIn.column, whereIn.values);
       if (and) builder.andWhereIn(and.column, and.values);
       if (andNot) builder.andWhereNotIn(andNot.column, andNot.values);
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -240,6 +267,7 @@ describe('Test data query builder > where clause', () => {
         column: faker.database.column(),
         values: new DataQueryBuilder({
           statement: 'select type from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
       },
       or: {
@@ -252,7 +280,10 @@ describe('Test data query builder > where clause', () => {
       },
       orNot: {
         column: faker.database.column(),
-        values: new DataQueryBuilder({ statement: 'select age from users' }),
+        values: new DataQueryBuilder({
+          statement: 'select age from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
+        }),
       },
     },
   ])(
@@ -271,13 +302,14 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (notIn) builder.whereNotIn(notIn.column, notIn.values);
       if (or) builder.orWhereIn(or.column, or.values);
       if (orNot) builder.orWhereNotIn(orNot.column, orNot.values);
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -332,6 +364,7 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (between)
         builder.whereBetween(between.column, between.min, between.max);
@@ -339,8 +372,8 @@ describe('Test data query builder > where clause', () => {
       if (andNot)
         builder.andWhereNotBetween(andNot.column, andNot.min, andNot.max);
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -396,6 +429,7 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (notBetween)
         builder.whereNotBetween(
@@ -406,8 +440,8 @@ describe('Test data query builder > where clause', () => {
       if (or) builder.orWhereBetween(or.column, or.min, or.max);
       if (orNot) builder.orWhereNotBetween(orNot.column, orNot.min, orNot.max);
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -450,13 +484,14 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (isNull) builder.whereNull(isNull.column);
       if (and) builder.andWhereNull(and.column);
       if (andNot) builder.andWhereNotNull(andNot.column);
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -500,13 +535,14 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (notNull) builder.whereNotNull(notNull.column);
       if (or) builder.orWhereNull(or.column);
       if (orNot) builder.orWhereNotNull(orNot.column);
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -544,13 +580,14 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (like) builder.whereLike(like.column, like.searchValue);
       if (and) builder.andWhereLike(and.column, and.searchValue);
 
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -588,13 +625,14 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (like) builder.whereLike(like.column, like.searchValue);
       if (or) builder.orWhereLike(or.column, or.searchValue);
 
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -604,18 +642,21 @@ describe('Test data query builder > where clause', () => {
       exists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       and: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       andNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -624,6 +665,7 @@ describe('Test data query builder > where clause', () => {
       exists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -631,6 +673,7 @@ describe('Test data query builder > where clause', () => {
       and: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -638,6 +681,7 @@ describe('Test data query builder > where clause', () => {
       andNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -657,13 +701,14 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (exists) builder.whereExists(exists);
       if (and) builder.andWhereExists(and);
       if (andNot) builder.andWhereNotExists(andNot);
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -673,18 +718,21 @@ describe('Test data query builder > where clause', () => {
       notExists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       or: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       orNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -693,18 +741,21 @@ describe('Test data query builder > where clause', () => {
       notExists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       or: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       orNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -725,13 +776,14 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (notExists) builder.whereNotExists(notExists);
       if (or) builder.orWhereExists(or);
       if (orNot) builder.orWhereNotExists(orNot);
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -758,7 +810,10 @@ describe('Test data query builder > where clause', () => {
           .whereNot(
             'tags',
             '>',
-            new DataQueryBuilder({ statement: 'select count(*) from tags' })
+            new DataQueryBuilder({
+              statement: 'select count(*) from tags',
+              dataSource: sinon.stubInterface<IDataSource>(),
+            })
           )
           .orWhereNotBetween('price', 1, 1000);
       },
@@ -777,11 +832,20 @@ describe('Test data query builder > where clause', () => {
     'Should record successfully when call whereWrapped(...).andWhereWrapped(...).andWhereNotWrapped(...)',
     async ({ wrapped, and, andNot }) => {
       // Arrange
-      const wrappedBuilder = new DataQueryBuilder({ statement: '' });
+      const wrappedBuilder = new DataQueryBuilder({
+        statement: '',
+        dataSource: stubDataSource,
+      });
       wrapped(wrappedBuilder);
-      const andBuilder = new DataQueryBuilder({ statement: '' });
+      const andBuilder = new DataQueryBuilder({
+        statement: '',
+        dataSource: stubDataSource,
+      });
       and(andBuilder);
-      const andNotBuilder = new DataQueryBuilder({ statement: '' });
+      const andNotBuilder = new DataQueryBuilder({
+        statement: '',
+        dataSource: stubDataSource,
+      });
       andNot(andNotBuilder);
 
       const expected: Array<WhereClauseOperation> = [
@@ -801,13 +865,14 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (wrapped) builder.whereWrapped(wrapped);
       if (and) builder.andWhereWrapped(and);
       if (andNot) builder.andWhereNotWrapped(andNot);
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -834,7 +899,10 @@ describe('Test data query builder > where clause', () => {
           .whereNot(
             'tags',
             '>',
-            new DataQueryBuilder({ statement: 'select count(*) from tags' })
+            new DataQueryBuilder({
+              statement: 'select count(*) from tags',
+              dataSource: sinon.stubInterface<IDataSource>(),
+            })
           )
           .orWhereNotBetween('price', 1, 1000);
       },
@@ -853,11 +921,20 @@ describe('Test data query builder > where clause', () => {
     'Should record successfully when call whereNotWrapped(...).orWhereWrapped(...).orWhereNotWrapped(...)',
     async ({ notWrapped, or, orNot }) => {
       // Arrange
-      const notWrappedBuilder = new DataQueryBuilder({ statement: '' });
+      const notWrappedBuilder = new DataQueryBuilder({
+        statement: '',
+        dataSource: stubDataSource,
+      });
       notWrapped(notWrappedBuilder);
-      const orBuilder = new DataQueryBuilder({ statement: '' });
+      const orBuilder = new DataQueryBuilder({
+        statement: '',
+        dataSource: stubDataSource,
+      });
       or(orBuilder);
-      const orNotBuilder = new DataQueryBuilder({ statement: '' });
+      const orNotBuilder = new DataQueryBuilder({
+        statement: '',
+        dataSource: stubDataSource,
+      });
       orNot(orNotBuilder);
 
       const expected: Array<WhereClauseOperation> = [
@@ -878,13 +955,14 @@ describe('Test data query builder > where clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (notWrapped) builder.whereNotWrapped(notWrapped);
       if (or) builder.orWhereWrapped(or);
       if (orNot) builder.orWhereNotWrapped(orNot);
       // Asset
-      expect(builder.operations.where).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.where)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );

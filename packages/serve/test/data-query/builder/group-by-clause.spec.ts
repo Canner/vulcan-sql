@@ -1,7 +1,15 @@
-import { GroupByClauseOperations, DataQueryBuilder } from '@data-query/.';
+import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
+import { GroupByClauseOperations, DataQueryBuilder } from '@data-query/.';
+import { IDataSource } from '@data-source/.';
 
 describe('Test data query builder > group by clause', () => {
+  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+
+  beforeEach(() => {
+    stubDataSource = sinon.stubInterface<IDataSource>();
+  });
+
   it.each([
     {
       columns: [faker.database.column()],
@@ -18,13 +26,16 @@ describe('Test data query builder > group by clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       columns.map((column) => {
         builder = builder.groupBy(column);
       });
 
       // Assert
-      expect(builder.operations.groupBy).toEqual(expected);
+      expect(JSON.stringify(builder.operations.groupBy)).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 
@@ -40,11 +51,14 @@ describe('Test data query builder > group by clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       builder.groupBy(first, second, third);
 
       // Assert
-      expect(builder.operations.groupBy).toEqual(expected);
+      expect(JSON.stringify(builder.operations.groupBy)).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 });

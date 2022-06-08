@@ -1,8 +1,8 @@
 import { APISchema, TemplateEngine } from '@vulcan/core';
-import { IRequestTransformer, RequestParameters } from './requestTransformer';
+import { IRequestTransformer } from './requestTransformer';
 import { IRequestValidator } from './requestValidator';
 import { BaseRoute, KoaRouterContext } from './baseRoute';
-
+import { IPaginationTransformer } from './paginationTransformer';
 export class RestfulRoute extends BaseRoute {
   public readonly urlPath: string;
 
@@ -10,24 +10,48 @@ export class RestfulRoute extends BaseRoute {
     apiSchema,
     reqTransformer,
     reqValidator,
+    paginationTransformer,
     templateEngine,
   }: {
     apiSchema: APISchema;
     reqTransformer: IRequestTransformer;
     reqValidator: IRequestValidator;
+    paginationTransformer: IPaginationTransformer;
     templateEngine: TemplateEngine;
   }) {
-    super({ apiSchema, reqTransformer, reqValidator, templateEngine });
+    super({
+      apiSchema,
+      reqTransformer,
+      reqValidator,
+      paginationTransformer,
+      templateEngine,
+    });
 
     this.urlPath = apiSchema.urlPath;
   }
 
-  protected async handleRequest(
-    ctx: KoaRouterContext,
-    reqParams: RequestParameters
-  ) {
-    // TODO: implement query by dataset
-    ctx.response.body = reqParams;
-    return;
+  public async respond(ctx: KoaRouterContext) {
+    const transformed = await this.prepare(ctx);
+    await this.handle(transformed);
+    // TODO: get template engine handled result and return response by checking API schema
+    ctx.response.body = {
+      ...transformed,
+    };
+  }
+
+  protected async prepare(ctx: KoaRouterContext) {
+    // get request data from context
+    const reqParams = await this.reqTransformer.transform(ctx, this.apiSchema);
+    // validate request format
+    await this.reqValidator.validate(reqParams, this.apiSchema);
+    // get pagination data from context
+    const pagination = await this.paginationTransformer.transform(
+      ctx,
+      this.apiSchema
+    );
+    return {
+      reqParams,
+      pagination,
+    };
   }
 }

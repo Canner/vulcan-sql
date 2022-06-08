@@ -4,9 +4,7 @@ import {
   JoinOnClauseOperation,
   JoinOnOperatorInput,
   LogicalOperator,
-  BetweenPredicateInput,
   ComparisonPredicate,
-  InPredicateInput,
 } from '@data-query/.';
 
 describe('Test join on clause > on operations', () => {
@@ -59,7 +57,9 @@ describe('Test join on clause > on operations', () => {
       const clause = new JoinOnClause();
       clause.on(leftColumn, operator, rightColumn);
       // Asset
-      expect(clause.operations).toEqual(expect.arrayContaining(expected));
+      expect(JSON.stringify(clause.operations)).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 
@@ -86,7 +86,7 @@ describe('Test join on clause > on operations', () => {
   );
   it('Should record successfully when call join on(...).andOn(...).OrOn(...)', async () => {
     // Arrange
-    const fakeInputParams = [
+    const fakeInputParams: Array<JoinOnOperatorInput> = [
       {
         leftColumn: `table1.${faker.database.column()}`,
         operator: '=',
@@ -103,14 +103,14 @@ describe('Test join on clause > on operations', () => {
         rightColumn: `table2.${faker.database.column()}`,
       },
     ];
-    const expected: Array<JoinOnClauseOperation> = fakeInputParams.map(
-      (params) => {
-        return {
-          command: null,
-          data: params as JoinOnOperatorInput,
-        };
-      }
-    );
+    const expected: Array<JoinOnClauseOperation> = [
+      { command: null, data: fakeInputParams[0] },
+      { command: LogicalOperator.AND },
+      { command: null, data: fakeInputParams[1] },
+      { command: LogicalOperator.OR },
+      { command: null, data: fakeInputParams[2] },
+    ];
+
     // Act
     const clause = new JoinOnClause();
     clause
@@ -130,7 +130,7 @@ describe('Test join on clause > on operations', () => {
         fakeInputParams[2].rightColumn
       );
     // Asset
-    expect(clause.operations).toEqual(expect.arrayContaining(expected));
+    expect(JSON.stringify(clause.operations)).toEqual(JSON.stringify(expected));
   });
 });
 
@@ -173,14 +173,14 @@ describe('Test join on clause > between operations', () => {
   });
   it('Should record successfully when call join onBetween(...).andBetween(...).OrBetween(...)', async () => {
     // Arrange
-    const expected: Array<JoinOnClauseOperation> = fakeInputParams.map(
-      (params) => {
-        return {
-          command: ComparisonPredicate.BETWEEN,
-          data: params as BetweenPredicateInput,
-        };
-      }
-    );
+    const expected: Array<JoinOnClauseOperation> = [
+      { command: ComparisonPredicate.BETWEEN, data: fakeInputParams[0] },
+      { command: LogicalOperator.AND },
+      { command: ComparisonPredicate.BETWEEN, data: fakeInputParams[1] },
+      { command: LogicalOperator.OR },
+      { command: ComparisonPredicate.BETWEEN, data: fakeInputParams[2] },
+    ];
+
     // Act
     const clause = new JoinOnClause();
     clause
@@ -200,22 +200,21 @@ describe('Test join on clause > between operations', () => {
         fakeInputParams[2].max
       );
     // Asset
-    expect(clause.operations).toEqual(expect.arrayContaining(expected));
+    expect(JSON.stringify(clause.operations)).toEqual(JSON.stringify(expected));
   });
 
   it('Should record successfully when call join onNotBetween(...).andNotBetween(...).OrNotBetween(...)', async () => {
     // Arrange
-    const expected: Array<JoinOnClauseOperation> = fakeInputParams.reduce(
-      (operations, currentParams) => {
-        operations.push({ command: LogicalOperator.NOT });
-        operations.push({
-          command: ComparisonPredicate.BETWEEN,
-          data: currentParams,
-        });
-        return operations;
-      },
-      [] as Array<JoinOnClauseOperation>
-    );
+    const expected: Array<JoinOnClauseOperation> = [
+      { command: LogicalOperator.NOT },
+      { command: ComparisonPredicate.BETWEEN, data: fakeInputParams[0] },
+      { command: LogicalOperator.AND },
+      { command: LogicalOperator.NOT },
+      { command: ComparisonPredicate.BETWEEN, data: fakeInputParams[1] },
+      { command: LogicalOperator.OR },
+      { command: LogicalOperator.NOT },
+      { command: ComparisonPredicate.BETWEEN, data: fakeInputParams[2] },
+    ];
     // Act
     const clause = new JoinOnClause();
     clause
@@ -235,7 +234,7 @@ describe('Test join on clause > between operations', () => {
         fakeInputParams[2].max
       );
     // Asset
-    expect(clause.operations).toEqual(expect.arrayContaining(expected));
+    expect(JSON.stringify(clause.operations)).toEqual(JSON.stringify(expected));
   });
 });
 
@@ -256,14 +255,14 @@ describe('Test join on clause > in operations', () => {
   ];
   it('Should record successfully when call join onIn(...).andIn(...).OrIn(...)', async () => {
     // Arrange
-    const expected: Array<JoinOnClauseOperation> = fakeInputParams.map(
-      (params) => {
-        return {
-          command: ComparisonPredicate.IN,
-          data: params as InPredicateInput,
-        };
-      }
-    );
+    const expected: Array<JoinOnClauseOperation> = [
+      { command: ComparisonPredicate.IN, data: fakeInputParams[0] },
+      { command: LogicalOperator.AND },
+      { command: ComparisonPredicate.IN, data: fakeInputParams[1] },
+      { command: LogicalOperator.OR },
+      { command: ComparisonPredicate.IN, data: fakeInputParams[2] },
+    ];
+
     // Act
     const clause = new JoinOnClause();
     clause
@@ -271,23 +270,22 @@ describe('Test join on clause > in operations', () => {
       .andOnIn(fakeInputParams[1].column, fakeInputParams[1].values)
       .orOnIn(fakeInputParams[2].column, fakeInputParams[2].values);
     // Asset
-    expect(clause.operations).toEqual(expect.arrayContaining(expected));
+    expect(JSON.stringify(clause.operations)).toEqual(JSON.stringify(expected));
   });
 
   it('Should record successfully when call join onNotIn(...).andNotIn(...).OrNotIn(...)', async () => {
     // Arrange
+    const expected: Array<JoinOnClauseOperation> = [
+      { command: LogicalOperator.NOT },
+      { command: ComparisonPredicate.IN, data: fakeInputParams[0] },
+      { command: LogicalOperator.AND },
+      { command: LogicalOperator.NOT },
+      { command: ComparisonPredicate.IN, data: fakeInputParams[1] },
+      { command: LogicalOperator.OR },
+      { command: LogicalOperator.NOT },
+      { command: ComparisonPredicate.IN, data: fakeInputParams[2] },
+    ];
 
-    const expected: Array<JoinOnClauseOperation> = fakeInputParams.reduce(
-      (operations, currentParams) => {
-        operations.push({ command: LogicalOperator.NOT });
-        operations.push({
-          command: ComparisonPredicate.IN,
-          data: currentParams,
-        });
-        return operations;
-      },
-      [] as Array<JoinOnClauseOperation>
-    );
     // Act
     const clause = new JoinOnClause();
     clause
@@ -295,7 +293,7 @@ describe('Test join on clause > in operations', () => {
       .andOnNotIn(fakeInputParams[1].column, fakeInputParams[1].values)
       .orOnNotIn(fakeInputParams[2].column, fakeInputParams[2].values);
     // Asset
-    expect(clause.operations).toEqual(expect.arrayContaining(expected));
+    expect(JSON.stringify(clause.operations)).toEqual(JSON.stringify(expected));
   });
 });
 
@@ -313,14 +311,13 @@ describe('Test join on clause > null operations', () => {
   ];
   it('Should record successfully when call join onNull(...).andNull(...).OrNull(...)', async () => {
     // Arrange
-    const expected: Array<JoinOnClauseOperation> = fakeInputParams.map(
-      (params) => {
-        return {
-          command: ComparisonPredicate.IS_NULL,
-          data: params as BetweenPredicateInput,
-        };
-      }
-    );
+    const expected: Array<JoinOnClauseOperation> = [
+      { command: ComparisonPredicate.IS_NULL, data: fakeInputParams[0] },
+      { command: LogicalOperator.AND },
+      { command: ComparisonPredicate.IS_NULL, data: fakeInputParams[1] },
+      { command: LogicalOperator.OR },
+      { command: ComparisonPredicate.IS_NULL, data: fakeInputParams[2] },
+    ];
     // Act
     const clause = new JoinOnClause();
     clause
@@ -328,22 +325,21 @@ describe('Test join on clause > null operations', () => {
       .andOnNull(fakeInputParams[1].column)
       .orOnNull(fakeInputParams[2].column);
     // Asset
-    expect(clause.operations).toEqual(expect.arrayContaining(expected));
+    expect(JSON.stringify(clause.operations)).toEqual(JSON.stringify(expected));
   });
 
-  it('Should record successfully when call join onNotBetween(...).andNotBetween(...).OrNotBetween(...)', async () => {
+  it('Should record successfully when call join onNotNull(...).andNotNull(...).OrNotNull(...)', async () => {
     // Arrange
-    const expected: Array<JoinOnClauseOperation> = fakeInputParams.reduce(
-      (operations, currentParams) => {
-        operations.push({ command: LogicalOperator.NOT });
-        operations.push({
-          command: ComparisonPredicate.IS_NULL,
-          data: currentParams,
-        });
-        return operations;
-      },
-      [] as Array<JoinOnClauseOperation>
-    );
+    const expected: Array<JoinOnClauseOperation> = [
+      { command: LogicalOperator.NOT },
+      { command: ComparisonPredicate.IS_NULL, data: fakeInputParams[0] },
+      { command: LogicalOperator.AND },
+      { command: LogicalOperator.NOT },
+      { command: ComparisonPredicate.IS_NULL, data: fakeInputParams[1] },
+      { command: LogicalOperator.OR },
+      { command: LogicalOperator.NOT },
+      { command: ComparisonPredicate.IS_NULL, data: fakeInputParams[2] },
+    ];
     // Act
     const clause = new JoinOnClause();
     clause
@@ -351,6 +347,6 @@ describe('Test join on clause > null operations', () => {
       .andOnNotNull(fakeInputParams[1].column)
       .orOnNotNull(fakeInputParams[2].column);
     // Asset
-    expect(clause.operations).toEqual(expect.arrayContaining(expected));
+    expect(JSON.stringify(clause.operations)).toEqual(JSON.stringify(expected));
   });
 });
