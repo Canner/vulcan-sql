@@ -12,18 +12,19 @@ it('Should add missing error codes', async () => {
   };
   const metadata: AllTemplateMetadata = {
     'some-name': {
-      parameters: [],
-      errors: [
-        {
-          code: 'ERROR 1',
-          locations: [
-            {
-              lineNo: 0,
-              columnNo: 0,
-            },
-          ],
-        },
-      ],
+      'error.vulcan.com': {
+        errorCodes: [
+          {
+            code: 'ERROR 1',
+            locations: [
+              {
+                lineNo: 0,
+                columnNo: 0,
+              },
+            ],
+          },
+        ],
+      },
     },
   };
   // Act
@@ -48,17 +49,19 @@ it('Existed error codes should be kept', async () => {
   const metadata: AllTemplateMetadata = {
     'some-name': {
       parameters: [],
-      errors: [
-        {
-          code: 'ERROR 1',
-          locations: [
-            {
-              lineNo: 0,
-              columnNo: 0,
-            },
-          ],
-        },
-      ],
+      'error.vulcan.com': {
+        errorCodes: [
+          {
+            code: 'ERROR 1',
+            locations: [
+              {
+                lineNo: 0,
+                columnNo: 0,
+              },
+            ],
+          },
+        ],
+      },
     },
   };
   // Act
@@ -82,7 +85,7 @@ it('Should tolerate empty error data', async () => {
   const metadata: object = {
     'some-name': {
       parameters: [],
-      errors: null,
+      'error.vulcan.com': null,
     },
   };
   // Act

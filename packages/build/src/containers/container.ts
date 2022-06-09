@@ -10,9 +10,9 @@ export class Container {
     return this.inversifyContainer.get<T>(type);
   }
 
-  public load(options: IBuildOptions) {
+  public async load(options: IBuildOptions) {
     const coreContainer = new CoreContainer();
-    coreContainer.load(options);
+    await coreContainer.load(options);
     this.inversifyContainer.parent = coreContainer.getInversifyContainer();
     this.inversifyContainer.load(schemaParserModule(options.schemaParser));
   }
