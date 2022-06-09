@@ -13,7 +13,7 @@ export interface DateInputArgs {
   format?: string;
 }
 
-export class DateTypeValidator implements IValidator {
+export default class DateTypeValidator implements IValidator {
   public readonly name = 'date';
   // Validator for arguments schema in schema.yaml, should match DateInputArgs
   private argsValidator = Joi.object({

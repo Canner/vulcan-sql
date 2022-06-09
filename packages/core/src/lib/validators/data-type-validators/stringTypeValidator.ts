@@ -13,7 +13,7 @@ export interface StringInputArgs {
   max?: number;
 }
 
-export class StringTypeValidator implements IValidator {
+export default class StringTypeValidator implements IValidator {
   public readonly name = 'string';
   // Validator for arguments schema in schema.yaml, should match StringInputArgs
   private argsValidator = Joi.object({

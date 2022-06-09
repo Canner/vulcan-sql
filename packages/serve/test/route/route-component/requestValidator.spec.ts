@@ -7,6 +7,7 @@ import {
   FieldInType,
   RequestSchema,
   ValidatorDefinition,
+  ValidatorLoader,
 } from '@vulcan/core';
 
 describe('Test request validator - validate successfully', () => {
@@ -141,7 +142,7 @@ describe('Test request validator - validate successfully', () => {
     'Should success when give matched request parameters and api schema',
     async (schema: APISchema, reqParams: RequestParameters) => {
       // Act
-      const validator = new RequestValidator();
+      const validator = new RequestValidator(new ValidatorLoader());
       const validateAction = validator.validate(reqParams, schema);
       const result = expect(validateAction).resolves;
       await result.not.toThrow();
