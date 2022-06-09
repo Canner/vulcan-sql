@@ -14,6 +14,11 @@ import {
   REFERENCE_SEARCH_MAX_DEPTH,
 } from './constants';
 
+interface DeclarationLocation {
+  lineNo: number;
+  colNo: number;
+}
+
 export class ReqTagBuilder
   extends TagBuilder
   implements OnAstVisit, ProvideMetadata
@@ -22,7 +27,7 @@ export class ReqTagBuilder
   public metadataName = METADATA_NAME;
   private root?: nunjucks.nodes.Root;
   private hasMainBuilder = false;
-  private variableList = new Set<string>();
+  private variableList = new Map<string, DeclarationLocation>();
 
   public parse(
     parser: nunjucks.parser.Parser,
@@ -79,14 +84,14 @@ export class ReqTagBuilder
     // variable name
     argsNodeToPass.addChild(
       new nodes.Literal(
-        variable.colno,
         variable.lineno,
+        variable.colno,
         (variable as nunjucks.nodes.Symbol).value
       )
     );
     // is main builder
     argsNodeToPass.addChild(
-      new nodes.Literal(variable.colno, variable.lineno, String(mainBuilder))
+      new nodes.Literal(variable.lineNo, variable.colno, String(mainBuilder))
     );
 
     return this.createAsyncExtensionNode(argsNodeToPass, [requestQuery]);
@@ -100,8 +105,7 @@ export class ReqTagBuilder
       node instanceof nunjucks.nodes.CallExtensionAsync &&
       node.extName === this.getName()
     ) {
-      const variable = node.args.children[0] as nunjucks.nodes.Literal;
-      this.variableList.add(variable.value);
+      this.checkBuilder(node);
       this.checkMainBuilder(node);
     } else {
       visitChildren(node, this.replaceExecuteFunction.bind(this));
@@ -118,6 +122,20 @@ export class ReqTagBuilder
     return {
       finalBuilderName: FINIAL_BUILDER_NAME,
     };
+  }
+
+  private checkBuilder(node: nunjucks.nodes.CallExtensionAsync) {
+    const variable = node.args.children[0] as nunjucks.nodes.Literal;
+    if (this.variableList.has(variable.value)) {
+      const previousDeclaration = this.variableList.get(variable.value);
+      throw new Error(
+        `We can't declare multiple builder with same name. Duplicated name: ${variable.value} (declared at ${previousDeclaration?.lineNo}:${previousDeclaration?.colNo} and ${variable.lineno}:${variable.colno})`
+      );
+    }
+    this.variableList.set(variable.value, {
+      lineNo: variable.lineno,
+      colNo: variable.colno,
+    });
   }
 
   private checkMainBuilder(node: nunjucks.nodes.CallExtensionAsync) {

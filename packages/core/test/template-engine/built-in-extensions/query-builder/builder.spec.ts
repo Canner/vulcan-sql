@@ -105,3 +105,19 @@ it('Extension should throw an error if there are tow main builders', async () =>
     )
   ).toThrowError(`Only one main builder is allowed.`);
 });
+
+it('Extension should throw an error if there are multiple builders using same name', async () => {
+  // Arrange
+  const { compiler } = await createTestCompiler();
+  // Act, Arrange
+  expect(() =>
+    compiler.compile(
+      `
+{% req user %} select * from users; {% endreq %}
+{% req user %} select * from users; {% endreq %}
+    `
+    )
+  ).toThrowError(
+    `We can't declare multiple builder with same name. Duplicated name: user (declared at 1:7 and 2:7)`
+  );
+});
