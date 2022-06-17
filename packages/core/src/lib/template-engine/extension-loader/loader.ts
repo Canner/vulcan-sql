@@ -1,5 +1,3 @@
-// Import built in extensions to ensure TypeScript compiler includes them.
-import '../built-in-extensions';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { flatten } from 'lodash';
