@@ -38,6 +38,12 @@
       "@vulcan/build/schema-parser/*": [
         "packages/build/src/lib/schema-parser/*"
       ],
+      "@vulcan/build/spec-generator": [
+        "packages/build/src/lib/spec-generator/index"
+      ],
+      "@vulcan/build/spec-generator/*": [
+        "packages/build/src/lib/spec-generator/*"
+      ],
       "@vulcan/build/models": ["packages/build/src/models/index"],
       "@vulcan/build/containers": ["packages/build/src/containers/index"],
       "@vulcan/build/options": ["packages/build/src/options/index"]

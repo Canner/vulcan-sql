@@ -1,0 +1,7 @@
+name: 'user order'
+urlPath: /user/:id/order/:oid
+request:
+  - fieldName: id
+    fieldIn: path
+  - fieldName: oid
+    fieldIn: path

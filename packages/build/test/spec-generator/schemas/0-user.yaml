@@ -1,0 +1,12 @@
+name: user
+urlPath: /user/:id
+request:
+  - fieldName: id
+    fieldIn: path
+    validators:
+      - required
+  - fieldName: agent
+    fieldIn: header
+  - fieldName: force
+    fieldIn: query
+    type: boolean
