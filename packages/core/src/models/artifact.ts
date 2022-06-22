@@ -20,6 +20,13 @@ error:
 export enum FieldInType {
   QUERY = 'QUERY',
   HEADER = 'HEADER',
+  PATH = 'PATH',
+}
+
+export enum FieldDataType {
+  BOOLEAN = 'BOOLEAN',
+  NUMBER = 'NUMBER',
+  STRING = 'STRING',
 }
 
 export interface ValidatorDefinition<T = any> {
@@ -32,6 +39,7 @@ export interface RequestParameter {
   // the field put in query parameter or headers
   fieldIn: FieldInType;
   description: string;
+  type: FieldDataType;
   validators: Array<ValidatorDefinition>;
 }
 
@@ -50,6 +58,7 @@ export interface APISchema {
   request: Array<RequestParameter>;
   errors: Array<ErrorInfo>;
   response: any;
+  description?: string;
 }
 
 export interface BuiltArtifact {
