@@ -22,14 +22,18 @@ export class PaginationTransformer {
     const { pagination } = apiSchema;
 
     if (pagination) {
-      if (!(pagination.mode in PaginationMode))
+      if (!Object.values(PaginationMode).includes(pagination.mode))
         throw new Error(
           `The pagination only support ${Object.keys(PaginationMode)}`
         );
+
+      const offset = new OffsetBasedStrategy();
+      const cursor = new CursorBasedStrategy();
+      const keyset = new KeysetBasedStrategy(pagination);
       const strategyMapper = {
-        [PaginationMode.OFFSET]: new OffsetBasedStrategy().transform,
-        [PaginationMode.CURSOR]: new CursorBasedStrategy().transform,
-        [PaginationMode.KEYSET]: new KeysetBasedStrategy(pagination).transform,
+        [PaginationMode.OFFSET]: offset.transform.bind(offset),
+        [PaginationMode.CURSOR]: cursor.transform.bind(cursor),
+        [PaginationMode.KEYSET]: keyset.transform.bind(keyset),
       };
       return await strategyMapper[pagination.mode](ctx);
     }

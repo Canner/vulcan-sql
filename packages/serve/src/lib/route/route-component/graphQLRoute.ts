@@ -1,8 +1,8 @@
 import { APISchema, TemplateEngine } from '@vulcan/core';
-import { IRequestTransformer, RequestParameters } from './requestTransformer';
+import { IRequestTransformer } from './requestTransformer';
 import { IRequestValidator } from './requestValidator';
 import { BaseRoute, KoaRouterContext } from './baseRoute';
-import { IPaginationTransformer, Pagination } from './paginationTransformer';
+import { IPaginationTransformer } from './paginationTransformer';
 
 export class GraphQLRoute extends BaseRoute {
   public readonly operationName: string;
@@ -35,6 +35,13 @@ export class GraphQLRoute extends BaseRoute {
     // TODO: generate graphql type by api schema
   }
 
+  public async respond(ctx: KoaRouterContext) {
+    const transformed = await this.prepare(ctx);
+    await this.handle(transformed);
+    // TODO: get template engine handled result and return response by checking API schema
+    return transformed;
+  }
+
   protected async prepare(ctx: KoaRouterContext) {
     /**
      * TODO: the graphql need to transform from body.
@@ -44,12 +51,5 @@ export class GraphQLRoute extends BaseRoute {
     return {
       reqParams: {},
     };
-  }
-
-  public async respond(ctx: KoaRouterContext) {
-    const transformed = await this.prepare(ctx);
-    await this.handle(transformed);
-    // TODO: get template engine handled result and return response by checking API schema
-    return transformed;
   }
 }

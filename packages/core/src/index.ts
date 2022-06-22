@@ -1,3 +1,4 @@
+export * from './lib/utils';
 export * from './lib/validators';
 // Export all other modules
 export * from './models';

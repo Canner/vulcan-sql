@@ -9,10 +9,10 @@ export interface OffsetPagination {
 
 export class OffsetBasedStrategy extends PaginationStrategy<OffsetPagination> {
   public async transform(ctx: KoaRouterContext) {
-    const checkFelidInHeader = ['limit', 'offset'].every((field) =>
+    const checkFelidInQueryString = ['limit', 'offset'].every((field) =>
       Object.keys(ctx.request.query).includes(field)
     );
-    if (!checkFelidInHeader)
+    if (!checkFelidInQueryString)
       throw new Error(
         `The ${PaginationMode.OFFSET} must provide limit and offset in query string.`
       );

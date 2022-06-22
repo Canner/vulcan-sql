@@ -74,15 +74,9 @@ export class RequestTransformer implements IRequestTransformer {
     value: string,
     type: FieldDataType
   ) {
-    try {
-      if (!(type in FieldDataType))
-        throw new Error(`The ${type} type not been implemented now.`);
+    if (!Object.values(FieldDataType).includes(type))
+      throw new Error(`The ${type} type not been implemented now.`);
 
-      return RequestTransformer.convertTypeMapper[type](value, name);
-    } catch {
-      throw new Error(
-        `The value of field "${name}" not belong to ${type} type`
-      );
-    }
+    return RequestTransformer.convertTypeMapper[type](value, name);
   }
 }
