@@ -2,7 +2,7 @@ import * as Joi from 'joi';
 import { isUndefined } from 'lodash';
 import * as dayjs from 'dayjs';
 import customParseFormat = require('dayjs/plugin/customParseFormat');
-import IValidator from '../validator';
+import { IValidator } from '../validator';
 
 // Support custom date format -> dayjs.format(...)
 dayjs.extend(customParseFormat);
@@ -13,7 +13,7 @@ export interface DateInputArgs {
   format?: string;
 }
 
-export default class DateTypeValidator implements IValidator {
+export class DateTypeValidator implements IValidator {
   public readonly name = 'date';
   // Validator for arguments schema in schema.yaml, should match DateInputArgs
   private argsValidator = Joi.object({

@@ -22,8 +22,8 @@ export enum LoggingLevel {
 }
 
 export interface LoggerOptions {
-  level: LoggingLevel;
-  displayRequestId: boolean;
+  level?: LoggingLevel;
+  displayRequestId?: boolean;
 }
 
 type LoggerMapConfig = {
@@ -49,12 +49,13 @@ const defaultMapConfig: LoggerMapConfig = {
   },
 };
 
+export type AsyncRequestIdStorage = AsyncLocalStorage<{ requestId: string }>;
 class LoggerFactory {
   private loggerMap: { [scope: string]: Logger };
-  public readonly asyncLocalStorage: AsyncLocalStorage<{ requestId: string }>;
+  public readonly asyncReqIdStorage: AsyncRequestIdStorage;
 
   constructor() {
-    this.asyncLocalStorage = new AsyncLocalStorage();
+    this.asyncReqIdStorage = new AsyncLocalStorage();
 
     this.loggerMap = {
       [LoggingScope.CORE]: this.createLogger(LoggingScope.CORE),
@@ -76,7 +77,11 @@ class LoggerFactory {
       );
     // if scope name exist in mapper and not update config
     if (scopeName in this.loggerMap) {
-      return this.loggerMap[scopeName];
+      if (!options) return this.loggerMap[scopeName];
+      // if options existed, update settings.
+      const logger = this.loggerMap[scopeName];
+      this.updateSettings(logger, options);
+      return logger;
     }
     // if scope name does not exist in map or exist but would like to update config
     const newLogger = this.createLogger(scopeName as LoggingScope, options);
@@ -84,11 +89,21 @@ class LoggerFactory {
     return newLogger;
   }
 
+  private updateSettings(logger: Logger, options: LoggerOptions) {
+    const prevSettings = logger.settings;
+    logger.setSettings({
+      minLevel: options.level || prevSettings.minLevel,
+      displayRequestId:
+        options.displayRequestId || prevSettings.displayRequestId,
+    });
+  }
+
   private createLogger(name: LoggingScope, options?: LoggerOptions) {
     return new Logger({
       name,
       minLevel: options?.level || defaultMapConfig[name].level,
-      requestId: () => this.asyncLocalStorage.getStore()?.requestId as string,
+      // use function call for requestId, then when logger get requestId, it will get newest store again
+      requestId: () => this.asyncReqIdStorage.getStore()?.requestId as string,
       displayRequestId:
         options?.displayRequestId || defaultMapConfig[name].displayRequestId,
     });
@@ -97,4 +112,4 @@ class LoggerFactory {
 
 const factory = new LoggerFactory();
 export const getLogger = factory.getLogger.bind(factory);
-export const asyncLocalStorage = new LoggerFactory().asyncLocalStorage;
+export const asyncReqIdStorage = factory.asyncReqIdStorage;

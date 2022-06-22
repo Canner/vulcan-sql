@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 import { isUndefined } from 'lodash';
-import IValidator from '../validator';
+import { IValidator } from '../validator';
 
 export interface IntInputArgs {
   // The integer minimum value
@@ -13,7 +13,7 @@ export interface IntInputArgs {
   less?: number;
 }
 
-export default class IntegerTypeValidator implements IValidator {
+export class IntegerTypeValidator implements IValidator {
   public readonly name = 'integer';
   // Validator for arguments schema in schema.yaml, should match IntInputArgs
   private argsValidator = Joi.object({

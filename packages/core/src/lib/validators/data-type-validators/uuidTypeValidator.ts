@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 import { GuidVersions } from 'joi';
 import { isUndefined } from 'lodash';
-import IValidator from '../validator';
+import { IValidator } from '../validator';
 
 type UUIDVersion = 'uuid_v1' | 'uuid_v4' | 'uuid_v5';
 
@@ -10,7 +10,7 @@ export interface UUIDInputArgs {
   version?: UUIDVersion;
 }
 
-export default class UUIDTypeValidator implements IValidator {
+export class UUIDTypeValidator implements IValidator {
   public readonly name = 'uuid';
   // Validator for arguments schema in schema.yaml, should match UUIDInputArgs
   private argsValidator = Joi.object({

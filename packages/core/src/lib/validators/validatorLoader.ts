@@ -1,41 +1,46 @@
-import IValidator from './validator';
+import { IValidator } from './validator';
 import * as glob from 'glob';
 import * as path from 'path';
+import { ModuleLoader, Type } from '../utils';
+
+// The extension module interface
+export interface ExtensionModule {
+  validators?: Type<IValidator>[];
+}
 
 export interface IValidatorLoader {
   load(validatorName: string): Promise<IValidator>;
 }
 
-export class ValidatorLoader implements IValidatorLoader {
+export class ValidatorLoader extends ModuleLoader implements IValidatorLoader {
   // only found built-in validators in sub folders
-  private builtInFolderPath: string = path.resolve(__dirname, '*', '*.ts');
-  private userDefinedFolderPath?: string;
+  private builtInFolder: string = path.join(__dirname, 'data-type-validators');
+  private extensionPath?: string;
 
   constructor(folderPath?: string) {
-    this.userDefinedFolderPath = folderPath;
+    super();
+    this.extensionPath = folderPath;
   }
   public async load(validatorName: string) {
-    let validatorFiles = [
-      ...(await this.getValidatorFilePaths(this.builtInFolderPath)),
-    ];
-    if (this.userDefinedFolderPath) {
-      // include sub-folder or non sub-folders
-      const userDefinedValidatorFiles = await this.getValidatorFilePaths(
-        path.resolve(this.userDefinedFolderPath, '**', '*.ts')
-      );
-      validatorFiles = validatorFiles.concat(userDefinedValidatorFiles);
+    // read built-in validators in index.ts, the content is an array middleware class
+    const builtInClass = await this.import<Type<IValidator>[]>(
+      this.builtInFolder
+    );
+
+    // if extension path setup, load extension middlewares classes
+    let extensionClass: Type<IValidator>[] = [];
+    if (this.extensionPath) {
+      // import extension which user customized
+      const module = await this.import<ExtensionModule>(this.extensionPath);
+      extensionClass = module.validators || [];
     }
 
-    for (const file of validatorFiles) {
-      // import validator files to module
-      const validatorModule = await import(file);
-      // get validator class by getting default.
-      if (validatorModule && validatorModule.default) {
-        const validatorClass = validatorModule.default;
-        const validator = new validatorClass() as IValidator;
-        if (validator.name === validatorName) return validator;
-      }
+    // create all middlewares by new it.
+    for (const validatorClass of [...builtInClass, ...extensionClass]) {
+      const validator = new validatorClass() as IValidator;
+      if (validator.name === validatorName) return validator;
     }
+
     // throw error if not found
     throw new Error(
       `The name "${validatorName}" of validator not defined in built-in validators and passed folder path, or the defined validator not export as default.`
