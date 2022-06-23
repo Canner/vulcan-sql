@@ -7,6 +7,11 @@ request:
       - required
   - fieldName: agent
     fieldIn: header
+    type: number
+    validators:
+      - name: minValue
+        args:
+          value: 10
   - fieldName: force
     fieldIn: query
     type: boolean

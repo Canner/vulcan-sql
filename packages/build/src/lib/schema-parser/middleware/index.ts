@@ -11,3 +11,4 @@ export * from './generateDataType';
 export * from './normalizeDataType';
 export * from './generatePathParameters';
 export * from './addRequiredValidatorForPath';
+export * from './setConstraints';

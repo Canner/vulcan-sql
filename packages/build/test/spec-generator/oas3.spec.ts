@@ -3,7 +3,6 @@ import { getSchemas, getConfig } from './schema';
 import * as jsYaml from 'js-yaml';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import _ = require('lodash');
 
 const getGenerator = async () => {
   const schema = await getSchemas();
@@ -49,6 +48,7 @@ it('Should extract the correct parameters', async () => {
       schema: expect.objectContaining({
         type: 'string',
       }),
+      required: true,
     })
   );
   expect(spec.paths['/user/{id}']?.get.parameters[1]).toEqual(
@@ -56,8 +56,10 @@ it('Should extract the correct parameters', async () => {
       name: 'agent',
       in: 'header',
       schema: expect.objectContaining({
-        type: 'string',
+        type: 'number',
+        minimum: 10,
       }),
+      required: false,
     })
   );
   expect(spec.paths['/user/{id}']?.get.parameters[2]).toEqual(
@@ -67,6 +69,7 @@ it('Should extract the correct parameters', async () => {
       schema: expect.objectContaining({
         type: 'boolean',
       }),
+      required: false,
     })
   );
 });

@@ -17,6 +17,8 @@ error:
     message: 'You are not allowed to access this resource'
  */
 
+import { Constraint } from '../validators';
+
 export enum FieldInType {
   QUERY = 'QUERY',
   HEADER = 'HEADER',
@@ -41,6 +43,7 @@ export interface RequestParameter {
   description: string;
   type: FieldDataType;
   validators: Array<ValidatorDefinition>;
+  constraints: Array<Constraint>;
 }
 
 export interface ErrorInfo {

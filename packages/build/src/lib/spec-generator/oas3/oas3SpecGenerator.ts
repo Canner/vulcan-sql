@@ -4,7 +4,9 @@ import {
   APISchema,
   FieldDataType,
   FieldInType,
+  MinValueConstraint,
   RequestParameter,
+  RequiredConstraint,
 } from '@vulcan/core';
 
 export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
@@ -70,15 +72,16 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
     for (const param of requests) {
       parameters.push({
         name: param.fieldName,
-        in: this.convertFileInTypeToOASIn(param.fieldIn),
+        in: this.convertFieldInTypeToOASIn(param.fieldIn),
         schema: this.getSchemaObject(param),
+        required: this.isParameterRequired(param),
       });
     }
 
     return parameters;
   }
 
-  private convertFileInTypeToOASIn(
+  private convertFieldInTypeToOASIn(
     fieldInType: FieldInType
   ): oas3.ParameterLocation {
     switch (fieldInType) {
@@ -94,9 +97,15 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
   }
 
   private getSchemaObject(parameter: RequestParameter): oas3.SchemaObject {
-    return {
+    const schema: oas3.SchemaObject = {
       type: this.convertFieldDataTypeToOASType(parameter.type),
     };
+    const minValueConstraint = parameter.constraints.find(
+      (constraint) => constraint instanceof MinValueConstraint
+    ) as MinValueConstraint;
+    if (minValueConstraint) schema.minimum = minValueConstraint.getMinValue();
+
+    return schema;
   }
 
   private convertFieldDataTypeToOASType(
@@ -112,5 +121,11 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
       default:
         throw new Error(`FieldDataType ${fieldDataType} is not supported`);
     }
+  }
+
+  private isParameterRequired(parameter: RequestParameter) {
+    return parameter.constraints.some(
+      (constraint) => constraint instanceof RequiredConstraint
+    );
   }
 }

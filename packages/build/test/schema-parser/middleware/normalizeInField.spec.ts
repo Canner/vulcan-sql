@@ -1,4 +1,4 @@
-import { RawAPISchema } from '@vulcan/build/schema-parser/.';
+import { RawAPISchema } from '@vulcan/build/schema-parser';
 import { normalizeFieldIn } from '@vulcan/build/schema-parser/middleware';
 import { FieldInType } from '@vulcan/core';
 
