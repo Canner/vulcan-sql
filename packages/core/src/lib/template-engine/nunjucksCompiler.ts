@@ -76,6 +76,8 @@ export class NunjucksCompiler implements Compiler {
     this.extensions.forEach((ext) => this.loadExtension(ext));
   }
 
+  /** Get some metadata from the AST tree, e.g. the errors defined by templates.
+   * It'll help use to validate templates, validate schema ...etc. */
   private getMetadata(ast: nunjucks.nodes.Node) {
     const parameters = new ParametersVisitor();
     const errors = new ErrorsVisitor();
@@ -87,7 +89,9 @@ export class NunjucksCompiler implements Compiler {
     };
   }
 
+  /** Process the AST tree before compiling */
   private preProcess(ast: nunjucks.nodes.Node): nunjucks.nodes.Node {
+    // Nunjucks'll handle the async filter via pre-process functions
     return transformer.transform(ast, this.env.asyncFilters);
   }
 }

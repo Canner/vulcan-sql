@@ -5,7 +5,9 @@ export type NunjucksCompilerExtension =
   | NunjucksFilterExtension;
 
 export interface NunjucksTagExtensionParseResult {
+  /** The arguments if this extension, they'll be render to string and passed to run function */
   argsNodeList: nunjucks.nodes.NodeList;
+  /** The content (usually the body) of this extension, they'll be passed to run function as render functions */
   contentNodes: nunjucks.nodes.Node[];
 }
 
@@ -44,6 +46,8 @@ class WrapperTagExtension {
 
   public async __run(...args: any[]) {
     const context = args[0];
+    // Nunjucks use the pass the callback function for async extension at the last argument
+    // https://github.com/mozilla/nunjucks/blob/master/nunjucks/src/compiler.js#L256
     const callback = args[args.length - 1];
     const otherArgs = args.slice(1, args.length - 1);
     this.extension
@@ -86,6 +90,8 @@ export const NunjucksFilterExtensionWrapper = (
   return {
     name: extension.name,
     transform: (value: any, ...args: any[]) => {
+      // Nunjucks use the pass the callback function for async filter at the last argument
+      // https://github.com/mozilla/nunjucks/blob/master/nunjucks/src/compiler.js#L514
       const callback = args[args.length - 1];
       const otherArgs = args.slice(0, args.length - 1);
       extension

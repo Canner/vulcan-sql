@@ -26,7 +26,6 @@ export class ErrorExtension implements NunjucksTagExtension {
       new nodes.Literal(token.lineno, token.colno, token.colno)
     );
 
-    // See above for notes about CallExtension
     return {
       argsNodeList: errorMessage,
       contentNodes: [],

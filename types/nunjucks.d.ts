@@ -268,10 +268,18 @@ declare module 'nunjucks' {
     class Parser {
       nextToken(withWhitespace = false): Token;
       peekToken(): Token;
+      /**
+       * Parse a list of arguments. e.g. (foo, bar, arg=18) ...
+       * @param tolerant throw when parsing failed
+       * @param noParens set true if your argument aren't enclosed in parentheses
+       */
       parseSignature(
         tolerant: boolean | null,
         noParens: boolean
       ): nodes.NodeList;
+      /**
+       * Advance to the block end (%})
+       */
       advanceAfterBlockEnd(name: string): Token;
       parseUntilBlocks(...blockName: string[]): nodes.NodeList;
       advanceAfterBlockEnd(): Token;
