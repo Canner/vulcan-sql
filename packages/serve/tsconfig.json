@@ -16,6 +16,8 @@
       "@data-query/*": ["packages/serve/src/lib/data-query/*"],
       "@data-source/*": ["packages/serve/src/lib/data-source/*"],
       "@pagination/*": ["packages/serve/src/lib/pagination/*"],
+      "@middleware/*": ["packages/serve/src/lib/middleware/*"],
+      "@config": ["packages/serve/src/lib/config.ts"],
       "@app": ["packages/serve/src/lib/app.ts"]
     }
   },
