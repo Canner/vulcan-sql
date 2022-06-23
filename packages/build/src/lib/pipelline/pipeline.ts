@@ -66,10 +66,9 @@ export class BuildPipeline {
 
   public async build() {
     const { schemas } = await this.schemaParser.parse();
-    const { compiler, templates } = await this.templateEngine.compile();
+    const { templates } = await this.templateEngine.compile();
     await this.artifactBuilder.build({
       schemas,
-      compiler,
       templates,
     });
   }

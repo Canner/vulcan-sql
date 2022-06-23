@@ -14,7 +14,6 @@ it('Should persist artifacts to file', async () => {
     persistentStore: ps,
   });
   const data: Artifact = {
-    compiler: '',
     schemas: [],
     templates: {},
   };
@@ -31,7 +30,6 @@ it('Should load persisted artifacts from file with correct data', async () => {
     persistentStore: ps,
   });
   const data: Artifact = {
-    compiler: '',
     schemas: [],
     templates: {},
   };

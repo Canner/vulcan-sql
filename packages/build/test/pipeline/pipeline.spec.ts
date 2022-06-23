@@ -30,9 +30,9 @@ it('Default pipeline should load the built artifacts correctly', async () => {
     filePath: path.resolve(__dirname, 'result.json'),
   });
   const artifactBuilder = new VulcanArtifactBuilder({ persistentStore: ps });
-  const { compiler, templates } = await artifactBuilder.load();
+  const { templates } = await artifactBuilder.load();
   const templateEngine = TemplateEngine.useDefaultLoader({
-    compiledResult: { compiler, templates },
+    compiledResult: { templates },
   });
   const query = await templateEngine.render('user', {
     context: { params: { id: '7c245513-823e-4225-9833-b88c7652b996' } },

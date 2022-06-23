@@ -2,7 +2,6 @@ import { Compiler, InMemoryCodeLoader, NunjucksCompiler } from './compilers';
 import { TemplateProvider } from './template-providers';
 
 export interface PreCompiledResult {
-  compiler: string;
   templates: Record<string, string>;
 }
 
@@ -49,7 +48,6 @@ export class TemplateEngine {
     }
 
     return {
-      compiler: this.compiler.name,
       templates: templateResult,
     };
   }

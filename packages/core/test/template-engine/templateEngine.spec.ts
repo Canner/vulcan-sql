@@ -31,7 +31,6 @@ it('Template engine compile function should wrap correct result', async () => {
   // Assert
   expect(stubCompiler.compile.calledWith('template-statement')).toBe(true);
   expect(result).toEqual({
-    compiler: stubCompiler.name,
     templates: {
       'template-name': 'compiled-template',
     },
