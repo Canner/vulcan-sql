@@ -1,4 +1,4 @@
-import { SchemaDataType, SchemaData, SchemaReader } from './schemaReader';
+import { SchemaFormat, SchemaData, SchemaReader } from './schemaReader';
 import * as glob from 'glob';
 import { promises as fs } from 'fs';
 import * as path from 'path';
@@ -25,7 +25,7 @@ export class FileSchemaReader extends SchemaReader {
       yield {
         name,
         content: await fs.readFile(file, 'utf8'),
-        type: SchemaDataType.YAML,
+        type: SchemaFormat.YAML,
       };
     }
   }

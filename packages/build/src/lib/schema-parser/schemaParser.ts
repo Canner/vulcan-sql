@@ -1,5 +1,5 @@
 import { APISchema, IValidator } from '@vulcan/core';
-import { SchemaData, SchemaDataType, SchemaReader } from './schema-reader';
+import { SchemaData, SchemaFormat, SchemaReader } from './schema-reader';
 import * as yaml from 'js-yaml';
 import {
   RawAPISchema,
@@ -60,7 +60,7 @@ export class SchemaParser {
 
   private async parseContent(schemaData: SchemaData): Promise<RawAPISchema> {
     switch (schemaData.type) {
-      case SchemaDataType.YAML:
+      case SchemaFormat.YAML:
         return {
           sourceName: schemaData.name,
           ...(yaml.load(schemaData.content) as object),

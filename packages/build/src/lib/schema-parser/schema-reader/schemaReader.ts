@@ -1,11 +1,11 @@
-export enum SchemaDataType {
+export enum SchemaFormat {
   YAML = 'YAML',
 }
 
 export interface SchemaData {
   name: string;
   content: string;
-  type: SchemaDataType;
+  type: SchemaFormat;
 }
 
 export abstract class SchemaReader {

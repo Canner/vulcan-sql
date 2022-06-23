@@ -1,5 +1,5 @@
 import {
-  SchemaDataType,
+  SchemaFormat,
   SchemaParser,
   SchemaReader,
   ValidatorLoader,
@@ -20,7 +20,7 @@ request:
     validators:
       - name: uuid
       `,
-      type: SchemaDataType.YAML,
+      type: SchemaFormat.YAML,
     };
   };
   stubSchemaReader.readSchema.returns(generator());
@@ -50,7 +50,7 @@ it('Schema parser parse should throw with unsupported schema type', async () => 
     yield {
       name: 'detail/role',
       content: ``,
-      type: 'unsupported' as SchemaDataType,
+      type: 'unsupported' as SchemaFormat,
     };
   };
   stubSchemaReader.readSchema.returns(generator());
