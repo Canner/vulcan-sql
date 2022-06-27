@@ -179,3 +179,45 @@ it('Should extract the correct response', async () => {
     )
   ).toEqual(['id', 'groupName']);
 });
+
+it('Should extract correct errors', async () => {
+  // Arrange
+  const generator = await getGenerator();
+  // Act
+  const spec = generator.getSpec();
+  // Arrange
+  expect(
+    get(
+      spec,
+      'paths./user/{id}.get.responses.400.content.application/json.examples.USER_NOT_FOUND'
+    )
+  ).toEqual(
+    expect.objectContaining({
+      description: `We can't find any user with the provided id`,
+      value: expect.objectContaining({
+        code: 'USER_NOT_FOUND',
+        message: `We can't find any user with the provided id`,
+      }),
+    })
+  );
+
+  expect(
+    get(
+      spec,
+      'paths./user/{id}.get.responses.400.content.application/json.examples.AGENT_NOT_ALLOW'
+    )
+  ).toEqual(
+    expect.objectContaining({
+      description: `The agent is not allow`,
+      value: expect.objectContaining({
+        code: 'AGENT_NOT_ALLOW',
+        message: `The agent is not allow`,
+      }),
+    })
+  );
+
+  // We shouldn't set 400 error when there is no error code defined
+  expect(
+    get(spec, 'paths./user/{id}/order/{oid}.get.responses.400')
+  ).toBeUndefined();
+});

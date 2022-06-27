@@ -2,6 +2,7 @@ import { SpecGenerator } from '../specGenerator';
 import * as oas3 from 'openapi3-ts';
 import {
   APISchema,
+  ErrorInfo,
   FieldDataType,
   FieldInType,
   MinValueConstraint,
@@ -9,6 +10,7 @@ import {
   RequiredConstraint,
   ResponseProperty,
 } from '@vulcan/core';
+import { isEmpty } from 'lodash';
 
 export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
   // Follow the OpenAPI specification version 3.0.3
@@ -133,6 +135,21 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
   }
 
   private getResponsesObject(schema: APISchema): oas3.ResponsesObject {
+    const clientError = {
+      description: 'Client error',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              code: { type: 'string' },
+              message: { type: 'string' },
+            },
+          },
+          examples: this.getErrorCodes(schema.errors || []),
+        },
+      },
+    };
     return {
       '200': {
         description: 'The default response',
@@ -148,6 +165,12 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
             },
           },
         },
+      },
+      '400': isEmpty(clientError.content['application/json'].examples)
+        ? undefined
+        : clientError,
+      '5XX': {
+        description: 'Server error',
       },
     };
   }
@@ -199,5 +222,19 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
         ),
       };
     }
+  }
+
+  private getErrorCodes(errorInfos: ErrorInfo[]): oas3.ExamplesObject {
+    const examples: oas3.ExamplesObject = {};
+    for (const errorInfo of errorInfos) {
+      examples[errorInfo.code] = {
+        description: errorInfo.message,
+        value: {
+          code: errorInfo.code,
+          message: errorInfo.message,
+        },
+      };
+    }
+    return examples;
   }
 }

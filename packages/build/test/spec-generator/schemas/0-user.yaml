@@ -40,3 +40,8 @@ response:
         description: Whether the group was public
         required: false
         type: boolean
+errors:
+  - code: USER_NOT_FOUND
+    message: We can't find any user with the provided id
+  - code: AGENT_NOT_ALLOW
+    message: The agent is not allow
