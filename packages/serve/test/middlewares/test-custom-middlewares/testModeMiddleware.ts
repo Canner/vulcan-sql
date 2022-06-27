@@ -6,12 +6,13 @@ export class TestModeMiddleware extends BaseRouteMiddleware {
   private mode: boolean;
   constructor(config: ServeConfig) {
     super('test-mode', config);
-    this.mode = config.middlewares
-      ? (config.middlewares[this.keyName] as boolean)
-      : false;
+    this.mode =
+      config.middlewares && config.middlewares[this.keyName]
+        ? (config.middlewares[this.keyName] as boolean)
+        : false;
   }
   public async handle(context: KoaRouterContext, next: RouteMiddlewareNext) {
-    context.header['test-mode'] = String(this.mode);
+    context.response.set('test-mode', String(this.mode));
     await next();
   }
 }

@@ -1,9 +1,10 @@
 import * as sinon from 'ts-sinon';
 import * as supertest from 'supertest';
+import * as path from 'path';
 import faker from '@faker-js/faker';
 import { Request } from 'koa';
 import * as KoaRouter from 'koa-router';
-import { VulcanApplication, VulcanServer } from '@app';
+import { VulcanApplication } from '@app';
 import {
   APISchema,
   FieldDataType,
@@ -24,8 +25,69 @@ import {
 } from '@route/.';
 import { PaginationTransformer } from '@route/.';
 
-describe('Test vulcan server to call restful APIs', () => {
-  let server: VulcanServer;
+describe('Test vulcan server for practicing middleware', () => {
+  let generator: RouteGenerator;
+  let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
+
+  beforeEach(() => {
+    stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
+
+    const reqTransformer = new RequestTransformer();
+    const reqValidator = new RequestValidator(new ValidatorLoader());
+    const paginationTransformer = new PaginationTransformer();
+
+    generator = new RouteGenerator({
+      reqTransformer,
+      reqValidator,
+      paginationTransformer,
+      templateEngine: stubTemplateEngine,
+    });
+  });
+  it('Should show test middleware info when given middleware extension path', async () => {
+    // Arrange
+    const fakeSchema = {
+      ...sinon.stubInterface<APISchema>(),
+      urlPath: '/' + faker.internet.domainName(),
+      request: [],
+    } as APISchema;
+
+    const app = new VulcanApplication({
+      config: {
+        middlewares: {
+          'test-mode': true,
+        },
+        extension: path.resolve(
+          __dirname,
+          './middlewares/test-custom-middlewares'
+        ),
+      },
+      generator,
+    });
+    const server = await app.run({
+      apiTypes: [APIProviderType.RESTFUL],
+      schemas: [fakeSchema],
+      port: 3000,
+    });
+
+    // arrange expected result
+    const expected = {
+      'test-mode': 'true',
+    };
+
+    // Act
+    const reqOperation = supertest(server).get(fakeSchema.urlPath);
+
+    const response = await reqOperation;
+    // Assert
+    expect(response.headers).toEqual(expect.objectContaining(expected));
+
+    // close server
+    server.close();
+  });
+});
+
+describe('Test vulcan server for calling restful APIs', () => {
+  let generator: RouteGenerator;
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
   const fakeSchemas: Array<APISchema> = [
     {
@@ -174,29 +236,19 @@ describe('Test vulcan server to call restful APIs', () => {
     },
   ];
 
-  beforeAll(async () => {
+  beforeEach(() => {
+    stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
+
     const reqTransformer = new RequestTransformer();
     const reqValidator = new RequestValidator(new ValidatorLoader());
     const paginationTransformer = new PaginationTransformer();
-    stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
 
-    const generator = new RouteGenerator({
+    generator = new RouteGenerator({
       reqTransformer,
       reqValidator,
       paginationTransformer,
       templateEngine: stubTemplateEngine,
     });
-    const routes = await generator.multiGenerate(
-      fakeSchemas,
-      APIProviderType.RESTFUL
-    );
-    const app = new VulcanApplication();
-    await app.setRoutes(routes, APIProviderType.RESTFUL);
-    server = app.listen(3000);
-  });
-
-  afterAll(() => {
-    server.close();
   });
 
   it.each([
@@ -208,7 +260,12 @@ describe('Test vulcan server to call restful APIs', () => {
     'Should be correct when given validated koa context request from %p',
     async (_: string, schema: APISchema, ctx: KoaRouterContext) => {
       // Arrange
-
+      const app = new VulcanApplication({ config: {}, generator });
+      const server = await app.run({
+        apiTypes: [APIProviderType.RESTFUL],
+        schemas: [schema],
+        port: 3000,
+      });
       // arrange input api url
       const apiUrl = KoaRouter.url(schema.urlPath, ctx.params);
 
@@ -242,6 +299,8 @@ describe('Test vulcan server to call restful APIs', () => {
 
       // Assert
       expect(response.body.reqParams).toEqual(expected);
+      // close server
+      server.close();
     }
   );
 });

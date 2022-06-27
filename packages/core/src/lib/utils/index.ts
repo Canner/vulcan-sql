@@ -1,3 +1,3 @@
 export * from './normalizedStringValue';
 export * from './logger';
-export * from './moduleLoader';
+export * from './module';

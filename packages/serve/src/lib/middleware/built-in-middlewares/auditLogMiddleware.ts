@@ -9,9 +9,10 @@ export class AuditLoggingMiddleware extends BaseRouteMiddleware {
   constructor(config: ServeConfig) {
     super('audit-log', config);
     // read logger options from config.
-    this.options = config.middlewares
-      ? (config.middlewares[this.keyName] as LoggerOptions)
-      : undefined;
+    this.options =
+      config.middlewares && config.middlewares[this.keyName]
+        ? (config.middlewares[this.keyName] as LoggerOptions)
+        : undefined;
     this.logger = getLogger({ scopeName: 'AUDIT', options: this.options });
   }
 

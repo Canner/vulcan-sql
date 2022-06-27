@@ -11,9 +11,10 @@ export class CorsMiddleware extends BaseRouteMiddleware {
 
   constructor(config: ServeConfig) {
     super('cors', config);
-    const options = config.middlewares
-      ? (config.middlewares[this.keyName] as CorsOptions)
-      : undefined;
+    const options =
+      config.middlewares && config.middlewares[this.keyName]
+        ? (config.middlewares[this.keyName] as CorsOptions)
+        : undefined;
     this.koaCors = cors(options);
   }
   public async handle(context: KoaRouterContext, next: RouteMiddlewareNext) {

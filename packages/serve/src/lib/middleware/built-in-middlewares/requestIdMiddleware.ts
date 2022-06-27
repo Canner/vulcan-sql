@@ -15,12 +15,13 @@ export class RequestIdMiddleware extends BaseRouteMiddleware {
   constructor(config: ServeConfig) {
     super('request-id', config);
     // read request-id options from config.
-    this.options = config.middlewares
-      ? (config.middlewares[this.keyName] as RequestIdOptions)
-      : {
-          name: 'X-Request-ID',
-          fieldIn: FieldInType.HEADER,
-        };
+    this.options =
+      config.middlewares && config.middlewares[this.keyName]
+        ? (config.middlewares[this.keyName] as RequestIdOptions)
+        : {
+            name: 'X-Request-ID',
+            fieldIn: FieldInType.HEADER,
+          };
   }
   public async handle(context: KoaRouterContext, next: RouteMiddlewareNext) {
     const { request } = context;

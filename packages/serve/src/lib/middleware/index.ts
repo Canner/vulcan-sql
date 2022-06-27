@@ -1,4 +1,4 @@
 // export non-default
 export * from './middleware';
-export * from './middlewareLoader';
+export * from './loader';
 export * from './built-in-middlewares';
