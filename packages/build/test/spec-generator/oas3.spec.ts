@@ -3,6 +3,7 @@ import { getSchemas, getConfig } from './schema';
 import * as jsYaml from 'js-yaml';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { get } from 'lodash';
 
 const getGenerator = async () => {
   const schema = await getSchemas();
@@ -72,4 +73,109 @@ it('Should extract the correct parameters', async () => {
       required: false,
     })
   );
+});
+
+it('Should extract the correct response', async () => {
+  // Arrange
+  const generator = await getGenerator();
+  // Act
+  const spec = generator.getSpec();
+  // Arrange
+  expect(
+    get(
+      spec,
+      'paths./user/{id}.get.responses.200.content.application/json.schema.properties.id'
+    )
+  ).toEqual(
+    expect.objectContaining({
+      type: 'string',
+      description: 'The unique-id of the user',
+    })
+  );
+
+  expect(
+    get(
+      spec,
+      'paths./user/{id}.get.responses.200.content.application/json.schema.properties.id'
+    )
+  ).toEqual(
+    expect.objectContaining({
+      type: 'string',
+      description: 'The unique-id of the user',
+    })
+  );
+
+  expect(
+    get(
+      spec,
+      'paths./user/{id}.get.responses.200.content.application/json.schema.properties.username'
+    )
+  ).toEqual(
+    expect.objectContaining({
+      type: 'string',
+      description: 'The username of the user',
+    })
+  );
+
+  expect(
+    get(
+      spec,
+      'paths./user/{id}.get.responses.200.content.application/json.schema.required'
+    )
+  ).toEqual(['id', 'username']);
+
+  expect(
+    get(
+      spec,
+      'paths./user/{id}.get.responses.200.content.application/json.schema.properties.groups'
+    )
+  ).toEqual(
+    expect.objectContaining({
+      type: 'object',
+      description: 'The groups that the user has joined',
+    })
+  );
+
+  expect(
+    get(
+      spec,
+      'paths./user/{id}.get.responses.200.content.application/json.schema.properties.groups.properties.id'
+    )
+  ).toEqual(
+    expect.objectContaining({
+      type: 'string',
+      description: 'The unique-id of the group',
+    })
+  );
+
+  expect(
+    get(
+      spec,
+      'paths./user/{id}.get.responses.200.content.application/json.schema.properties.groups.properties.groupName'
+    )
+  ).toEqual(
+    expect.objectContaining({
+      type: 'string',
+      description: 'The groupName of the group',
+    })
+  );
+
+  expect(
+    get(
+      spec,
+      'paths./user/{id}.get.responses.200.content.application/json.schema.properties.groups.properties.public'
+    )
+  ).toEqual(
+    expect.objectContaining({
+      type: 'boolean',
+      description: 'Whether the group was public',
+    })
+  );
+
+  expect(
+    get(
+      spec,
+      'paths./user/{id}.get.responses.200.content.application/json.schema.properties.groups.required'
+    )
+  ).toEqual(['id', 'groupName']);
 });

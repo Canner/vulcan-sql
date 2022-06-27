@@ -15,3 +15,28 @@ request:
   - fieldName: force
     fieldIn: query
     type: boolean
+response:
+  - name: id
+    description: The unique-id of the user
+    type: string
+    required: true
+  - name: username
+    description: The username of the user
+    type: string
+    required: true
+  - name: age
+    description: The age of the user
+    type: number
+  - name: groups
+    description: The groups that the user has joined
+    type:
+      - name: id
+        description: The unique-id of the group
+        required: true
+      - name: groupName
+        description: The groupName of the group
+        required: true
+      - name: public
+        description: Whether the group was public
+        required: false
+        type: boolean

@@ -46,6 +46,13 @@ export interface RequestParameter {
   constraints: Array<Constraint>;
 }
 
+export interface ResponseProperty {
+  name: string;
+  description?: string;
+  type: FieldDataType | Array<ResponseProperty>;
+  required?: boolean;
+}
+
 export interface ErrorInfo {
   code: string;
   message: string;
@@ -60,7 +67,7 @@ export interface APISchema {
   templateSource: string;
   request: Array<RequestParameter>;
   errors: Array<ErrorInfo>;
-  response: any;
+  response: Array<ResponseProperty>;
   description?: string;
 }
 

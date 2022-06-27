@@ -7,6 +7,7 @@ import {
   MinValueConstraint,
   RequestParameter,
   RequiredConstraint,
+  ResponseProperty,
 } from '@vulcan/core';
 
 export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
@@ -60,7 +61,7 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
   private getOperationObject(schema: APISchema): oas3.OperationObject {
     return {
       description: schema.description,
-      responses: {},
+      responses: this.getResponsesObject(schema),
       parameters: this.getParameterObject(schema),
     };
   }
@@ -73,7 +74,7 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
       parameters.push({
         name: param.fieldName,
         in: this.convertFieldInTypeToOASIn(param.fieldIn),
-        schema: this.getSchemaObject(param),
+        schema: this.getSchemaObjectFromParameter(param),
         required: this.isParameterRequired(param),
       });
     }
@@ -96,7 +97,9 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
     }
   }
 
-  private getSchemaObject(parameter: RequestParameter): oas3.SchemaObject {
+  private getSchemaObjectFromParameter(
+    parameter: RequestParameter
+  ): oas3.SchemaObject {
     const schema: oas3.SchemaObject = {
       type: this.convertFieldDataTypeToOASType(parameter.type),
     };
@@ -127,5 +130,74 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
     return parameter.constraints.some(
       (constraint) => constraint instanceof RequiredConstraint
     );
+  }
+
+  private getResponsesObject(schema: APISchema): oas3.ResponsesObject {
+    return {
+      '200': {
+        description: 'The default response',
+        content: {
+          'application/json': {
+            schema: this.getSchemaObjectFroResponseProperties(
+              schema.response || []
+            ),
+          },
+          'text/csv': {
+            schema: {
+              type: 'string',
+            },
+          },
+        },
+      },
+    };
+  }
+
+  private getSchemaObjectFroResponseProperties(
+    responseProperties: ResponseProperty[]
+  ): oas3.SchemaObject {
+    const required = responseProperties
+      .filter((property) => property.required)
+      .map((property) => property.name);
+    const properties: Record<string, oas3.SchemaObject> = {};
+    for (const property of responseProperties) {
+      properties[property.name] =
+        this.getSchemaObjectFroResponseProperty(property);
+    }
+    return {
+      type: 'object',
+      properties,
+      required: required.length === 0 ? undefined : required,
+    };
+  }
+
+  private getSchemaObjectFroResponseProperty(
+    responseProperty: ResponseProperty
+  ): oas3.SchemaObject {
+    const basicContent = {
+      description: responseProperty.description,
+    };
+    if (responseProperty.type === FieldDataType.BOOLEAN) {
+      return {
+        ...basicContent,
+        type: 'boolean',
+      };
+    } else if (responseProperty.type === FieldDataType.STRING) {
+      return {
+        ...basicContent,
+        type: 'string',
+      };
+    } else if (responseProperty.type === FieldDataType.NUMBER) {
+      return {
+        ...basicContent,
+        type: 'number',
+      };
+    } else {
+      return {
+        ...basicContent,
+        ...this.getSchemaObjectFroResponseProperties(
+          responseProperty.type || []
+        ),
+      };
+    }
   }
 }

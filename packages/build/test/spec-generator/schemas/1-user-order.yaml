@@ -3,5 +3,9 @@ urlPath: /user/:id/order/:oid
 request:
   - fieldName: id
     fieldIn: path
+    validators:
+      - required
   - fieldName: oid
     fieldIn: path
+    validators:
+      - required
