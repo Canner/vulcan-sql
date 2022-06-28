@@ -2,10 +2,15 @@ import { SpecGenerator } from '../specGenerator';
 import * as oas3 from 'openapi3-ts';
 import {
   APISchema,
+  EnumConstraint,
   ErrorInfo,
   FieldDataType,
   FieldInType,
+  MaxLengthConstraint,
+  MaxValueConstraint,
+  MinLengthConstraint,
   MinValueConstraint,
+  RegexConstraint,
   RequestParameter,
   RequiredConstraint,
   ResponseProperty,
@@ -105,10 +110,22 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
     const schema: oas3.SchemaObject = {
       type: this.convertFieldDataTypeToOASType(parameter.type),
     };
-    const minValueConstraint = parameter.constraints.find(
-      (constraint) => constraint instanceof MinValueConstraint
-    ) as MinValueConstraint;
-    if (minValueConstraint) schema.minimum = minValueConstraint.getMinValue();
+
+    for (const constraint of parameter.constraints) {
+      if (constraint instanceof MinValueConstraint) {
+        schema.minimum = constraint.getMinValue();
+      } else if (constraint instanceof MaxValueConstraint) {
+        schema.maximum = constraint.getMaxValue();
+      } else if (constraint instanceof MinLengthConstraint) {
+        schema.minLength = constraint.getMinLength();
+      } else if (constraint instanceof MaxLengthConstraint) {
+        schema.maxLength = constraint.getMaxLength();
+      } else if (constraint instanceof RegexConstraint) {
+        schema.pattern = constraint.getRegex();
+      } else if (constraint instanceof EnumConstraint) {
+        schema.enum = constraint.getList();
+      }
+    }
 
     return schema;
   }

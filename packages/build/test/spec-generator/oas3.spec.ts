@@ -48,6 +48,9 @@ it('Should extract the correct parameters', async () => {
       in: 'path',
       schema: expect.objectContaining({
         type: 'string',
+        minLength: 3,
+        maxLength: 10,
+        pattern: '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',
       }),
       required: true,
     })
@@ -59,6 +62,7 @@ it('Should extract the correct parameters', async () => {
       schema: expect.objectContaining({
         type: 'number',
         minimum: 10,
+        maximum: 15,
       }),
       required: false,
     })
@@ -69,6 +73,17 @@ it('Should extract the correct parameters', async () => {
       in: 'query',
       schema: expect.objectContaining({
         type: 'boolean',
+      }),
+      required: false,
+    })
+  );
+  expect(spec.paths['/user/{id}']?.get.parameters[3]).toEqual(
+    expect.objectContaining({
+      name: 'username',
+      in: 'query',
+      schema: expect.objectContaining({
+        type: 'string',
+        enum: ['ivan', 'eason', 'freda'],
       }),
       required: false,
     })

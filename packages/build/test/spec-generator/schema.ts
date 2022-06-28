@@ -50,6 +50,41 @@ const getStubLoader = () => {
           validateData: () => true,
           getConstraints: (args) => [Constraint.MinValue(args.value)],
         };
+      case 'maxValue':
+        return {
+          name: 'maxValue',
+          validateSchema: () => true,
+          validateData: () => true,
+          getConstraints: (args) => [Constraint.MaxValue(args.value)],
+        };
+      case 'minLength':
+        return {
+          name: 'minLength',
+          validateSchema: () => true,
+          validateData: () => true,
+          getConstraints: (args) => [Constraint.MinLength(args.value)],
+        };
+      case 'maxLength':
+        return {
+          name: 'maxLength',
+          validateSchema: () => true,
+          validateData: () => true,
+          getConstraints: (args) => [Constraint.MaxLength(args.value)],
+        };
+      case 'regex':
+        return {
+          name: 'regex',
+          validateSchema: () => true,
+          validateData: () => true,
+          getConstraints: (args) => [Constraint.Regex(args.value)],
+        };
+      case 'enum':
+        return {
+          name: 'enum',
+          validateSchema: () => true,
+          validateData: () => true,
+          getConstraints: (args) => [Constraint.Enum(args.value)],
+        };
       default:
         throw new Error(`Validator ${name} is not implemented in test bed.`);
     }
