@@ -3,7 +3,7 @@ import {
   Compiler,
   TemplateProvider,
   FileTemplateProvider,
-} from '@template-engine/.';
+} from '@template-engine';
 import * as sinon from 'ts-sinon';
 import * as path from 'path';
 
@@ -11,7 +11,13 @@ it('Template engine compile function should wrap correct result', async () => {
   // Assert
   const stubCompiler = sinon.stubInterface<Compiler>();
   stubCompiler.name = 'stub-compiler';
-  stubCompiler.compile.returns('compiled-template');
+  stubCompiler.compile.returns({
+    compiledData: 'compiled-template',
+    metadata: {
+      parameters: [],
+      errors: [],
+    },
+  });
   const stubTemplateProvider = sinon.stubInterface<TemplateProvider>();
   const generator = async function* () {
     yield {
@@ -33,6 +39,12 @@ it('Template engine compile function should wrap correct result', async () => {
   expect(result).toEqual({
     templates: {
       'template-name': 'compiled-template',
+    },
+    metadata: {
+      'template-name': {
+        parameters: [],
+        errors: [],
+      },
     },
   });
 });

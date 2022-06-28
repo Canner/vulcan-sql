@@ -1,4 +1,4 @@
-import { FileTemplateProvider } from '@template-engine/.';
+import { FileTemplateProvider } from '@template-engine';
 
 jest.mock('glob', () => {
   return (

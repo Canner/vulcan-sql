@@ -1,4 +1,4 @@
-import { APISchema, IValidator } from '@vulcan/core';
+import { APISchema, IValidator, TemplateMetadata } from '@vulcan/core';
 import { SchemaData, SchemaFormat, SchemaReader } from './schema-reader';
 import * as yaml from 'js-yaml';
 import {
@@ -8,6 +8,9 @@ import {
   checkValidator,
   transformValidator,
   generateTemplateSource,
+  checkParameter,
+  fallbackErrors,
+  addMissingErrors,
 } from './middleware';
 import * as compose from 'koa-compose';
 
@@ -35,14 +38,25 @@ export class SchemaParser {
     validatorLoader: ValidatorLoader;
   }) {
     this.schemaReader = schemaReader;
+    // Global middleware
     this.use(generateUrl());
     this.use(generateTemplateSource());
     this.use(transformValidator());
     this.use(checkValidator(validatorLoader));
+    this.use(fallbackErrors());
   }
 
-  public async parse(): Promise<SchemaParseResult> {
-    const execute = compose(this.middleware);
+  public async parse({
+    metadata,
+  }: {
+    metadata?: Record<string, TemplateMetadata>;
+  } = {}): Promise<SchemaParseResult> {
+    const middleware = [...this.middleware];
+    if (metadata) {
+      middleware.push(checkParameter(metadata));
+      middleware.push(addMissingErrors(metadata));
+    }
+    const execute = compose(middleware);
     const schemas: APISchema[] = [];
     for await (const schemaData of this.schemaReader.readSchema()) {
       const schema = await this.parseContent(schemaData);

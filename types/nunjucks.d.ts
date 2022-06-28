@@ -94,6 +94,9 @@ declare module 'nunjucks' {
     options: {
       autoescape: boolean;
     };
+    opts: any;
+    extensionsList: Extension[];
+    asyncFilters: string[];
 
     constructor(loader?: ILoader | ILoader[] | null, opts?: ConfigureOptions);
     render(name: string, context?: object): string;
@@ -250,4 +253,110 @@ declare module 'nunjucks' {
       colno: number;
     }
   }
+
+  export namespace compiler {
+    class Compiler {
+      constructor(name: string, throwOnUndefined: boolean);
+      compile(ast: any): void;
+      getCode(): string;
+    }
+  }
+
+  export namespace parser {
+    function parse(src: string, extensions: Extension[], opts: any): any;
+
+    class Parser {
+      nextToken(withWhitespace = false): Token;
+      peekToken(): Token;
+      /**
+       * Parse a list of arguments. e.g. (foo, bar, arg=18) ...
+       * @param tolerant throw when parsing failed
+       * @param noParens set true if your argument aren't enclosed in parentheses
+       */
+      parseSignature(
+        tolerant: boolean | null,
+        noParens: boolean
+      ): nodes.NodeList;
+      /**
+       * Advance to the block end (%})
+       */
+      advanceAfterBlockEnd(name: string): Token;
+      parseUntilBlocks(...blockName: string[]): nodes.NodeList;
+      advanceAfterBlockEnd(): Token;
+      fail(message: string, lineno?: number, colno?: number): void;
+    }
+  }
+
+  export namespace nodes {
+    class Node {
+      constructor(lineno: number, colno: number, ...args: any[]);
+      typename: string;
+      iterFields(
+        cb: (node: Node | NodeList | CallExtension, fieldName: string) => void
+      ): void;
+      lineno: number;
+      colno: number;
+    }
+
+    class NodeList extends Node {
+      typename: string;
+      children: Node[];
+      addChild(child: Node): void;
+    }
+
+    class CallExtension extends Node {
+      constructor(
+        ext: object,
+        prop: string,
+        args: nodes.NodeList | null,
+        contentArgs: nodes.Node[] | null
+      );
+      extName: string;
+      args: NodeList;
+      contentArgs?: (NodeList | Node)[];
+    }
+
+    class CallExtensionAsync extends CallExtension {}
+
+    class LookupVal extends Node {
+      target: Literal | Symbol;
+      val: Value;
+    }
+
+    class Value extends Node {
+      value: string;
+    }
+
+    class Literal extends Value {}
+
+    class Symbol extends Value {}
+
+    class FunCall extends Node {
+      name: Node;
+      args: NodeList;
+    }
+
+    class Filter extends FunCall {}
+
+    class Set extends Node {
+      value: Node | null;
+      body: Node | null;
+      targets: Node[];
+    }
+  }
+
+  namespace lexer {
+    function lexer(src: string, opts: any): any;
+  }
+
+  interface Token {
+    type: string;
+    lineno: number;
+    colno: number;
+    value: string;
+  }
+}
+
+declare module 'nunjucks/src/transformer' {
+  export function transform(ast: any, filter: any);
 }
