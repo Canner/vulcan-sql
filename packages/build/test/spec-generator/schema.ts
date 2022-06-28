@@ -81,6 +81,9 @@ export const getSchemas = async () => {
 
 export const getConfig = (): IBuildOptions => {
   return {
+    name: 'An API schema for testing',
+    version: '1.2.3',
+    description: `Some description with **markdown** supported.`,
     // We don't care about the options of these components.
     template: {} as any,
     artifact: {} as any,

@@ -15,6 +15,7 @@ request:
   - fieldName: force
     fieldIn: query
     type: boolean
+description: Get user information
 response:
   - name: id
     description: The unique-id of the user

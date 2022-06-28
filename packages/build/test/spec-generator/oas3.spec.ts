@@ -221,3 +221,14 @@ it('Should extract correct errors', async () => {
     get(spec, 'paths./user/{id}/order/{oid}.get.responses.400')
   ).toBeUndefined();
 });
+
+it('Should extract correct API description', async () => {
+  // Arrange
+  const generator = await getGenerator();
+  // Act
+  const spec = generator.getSpec();
+  // Arrange
+  expect(get(spec, 'paths./user/{id}.get.description')).toBe(
+    'Get user information'
+  );
+});
