@@ -1,0 +1,12 @@
+url: /user/:id
+request:
+  parameters:
+    id:
+      in: query # path / query / header
+      description: user id
+      validators:
+        - uuid
+        - required
+error:
+  - code: Forbidden
+    message: 'You are not allowed to access this resource'

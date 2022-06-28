@@ -1,0 +1,12 @@
+name: User
+url: /user/:id
+request:
+  - name: id
+    in: query
+    description: user id
+    validators:
+      - uuid
+      - required
+error:
+  - code: Forbidden
+    message: 'You are not allowed to access this resource'

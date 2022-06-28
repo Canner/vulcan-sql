@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@vulcan/build": ["packages/build/src/index.ts"],
       "@vulcan/core": ["packages/core/src/index.ts"]
     }
   },
