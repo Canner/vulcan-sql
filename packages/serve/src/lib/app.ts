@@ -10,6 +10,7 @@ import {
   CorsMiddleware,
   RequestIdMiddleware,
   loadExtensions,
+  RateLimitMiddleware,
 } from './middleware';
 import {
   RestfulRoute,
@@ -96,6 +97,7 @@ export class VulcanApplication {
   private async setMiddleware() {
     // load built-in middleware
     await this.use(CorsMiddleware);
+    await this.use(RateLimitMiddleware);
     await this.use(RequestIdMiddleware);
     await this.use(AuditLoggingMiddleware);
 

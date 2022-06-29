@@ -14,14 +14,16 @@ describe('Test cors middlewares', () => {
     const middleware = new CorsMiddleware({
       middlewares: {
         cors: {
-          origin: domain,
-        } as CorsOptions,
+          options: {
+            origin: domain,
+          } as CorsOptions,
+        },
       },
     });
     // use middleware in koa app
     app.use(middleware.handle.bind(middleware));
     // Act
-    server = app.listen(3000);
+    server = app.listen(faker.internet.port());
   });
 
   afterAll(() => {

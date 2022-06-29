@@ -1,23 +1,21 @@
 import * as Koa from 'koa';
 import * as cors from '@koa/cors';
 import { KoaRouterContext } from '@route/.';
-import { BaseRouteMiddleware, RouteMiddlewareNext } from '../middleware';
+import { BuiltInMiddleware, RouteMiddlewareNext } from '../middleware';
 import { ServeConfig } from '@config';
 
 export type CorsOptions = cors.Options;
 
-export class CorsMiddleware extends BaseRouteMiddleware {
+export class CorsMiddleware extends BuiltInMiddleware {
   private koaCors: Koa.Middleware;
 
   constructor(config: ServeConfig) {
     super('cors', config);
-    const options =
-      config.middlewares && config.middlewares[this.keyName]
-        ? (config.middlewares[this.keyName] as CorsOptions)
-        : undefined;
+    const options = this.getOptions() as CorsOptions;
     this.koaCors = cors(options);
   }
   public async handle(context: KoaRouterContext, next: RouteMiddlewareNext) {
-    return this.koaCors(context, next);
+    if (!this.enabled) await next();
+    else return this.koaCors(context, next);
   }
 }

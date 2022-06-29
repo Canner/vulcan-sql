@@ -10,6 +10,7 @@ import {
 } from '@middleware/built-in-middlewares';
 import * as core from '@vulcan/core';
 import * as uuid from 'uuid';
+import { LoggerOptions } from '@vulcan/core';
 
 describe('Test audit logging middlewares', () => {
   afterEach(() => {
@@ -108,7 +109,9 @@ describe('Test audit logging middlewares', () => {
     const middleware = new AuditLoggingMiddleware({
       middlewares: {
         'audit-log': {
-          displayRequestId: true,
+          options: {
+            displayRequestId: true,
+          } as LoggerOptions,
         },
       },
     });

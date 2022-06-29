@@ -54,7 +54,9 @@ describe('Test vulcan server for practicing middleware', () => {
     const app = new VulcanApplication({
       config: {
         middlewares: {
-          'test-mode': true,
+          'test-mode': {
+            mode: true,
+          },
         },
         extension: path.resolve(
           __dirname,

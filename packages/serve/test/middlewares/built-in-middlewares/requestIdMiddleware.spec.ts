@@ -51,9 +51,11 @@ describe('Test request-id middlewares', () => {
     const middleware = new RequestIdMiddleware({
       middlewares: {
         'request-id': {
-          name: 'Test-Request-ID',
-          fieldIn: FieldInType.QUERY,
-        } as RequestIdOptions,
+          options: {
+            name: 'Test-Request-ID',
+            fieldIn: FieldInType.QUERY,
+          } as RequestIdOptions,
+        },
       },
     });
 
