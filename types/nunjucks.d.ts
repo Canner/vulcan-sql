@@ -297,7 +297,7 @@ declare module 'nunjucks' {
       advanceAfterBlockEnd(name: string): Token;
       parseUntilBlocks(...blockName: string[]): nodes.NodeList;
       advanceAfterBlockEnd(): Token;
-      fail(message: string, lineno?: number, colno?: number): void;
+      fail(message: string, lineno?: number, colno?: number): never;
       parseExpression(): Nodes;
     }
   }
