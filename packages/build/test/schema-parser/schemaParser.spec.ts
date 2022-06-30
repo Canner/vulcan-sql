@@ -25,7 +25,7 @@ beforeEach(() => {
   container
     .bind<Partial<ISchemaParserOptions>>(TYPES.SchemaParserInputOptions)
     .toConstantValue({
-      schemaPath: '',
+      folderPath: '',
       reader: SchemaReaderType.LocalFile,
     });
   container

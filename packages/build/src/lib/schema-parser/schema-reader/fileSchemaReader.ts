@@ -22,7 +22,7 @@ export class FileSchemaReader implements SchemaReader {
     const files = await this.getSchemaFilePaths();
 
     for (const file of files) {
-      const fileName = path.relative(this.options.schemaPath, file);
+      const fileName = path.relative(this.options.folderPath, file);
       const { ext } = path.parse(fileName);
       const sourceName = fileName.replace(new RegExp(`\\${ext}$`), '');
       yield {
@@ -36,7 +36,7 @@ export class FileSchemaReader implements SchemaReader {
   private async getSchemaFilePaths(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       glob(
-        path.resolve(this.options.schemaPath, '**', '*.yaml'),
+        path.resolve(this.options.folderPath, '**', '*.yaml'),
         { nodir: true },
         (err, files) => {
           if (err) return reject(err);

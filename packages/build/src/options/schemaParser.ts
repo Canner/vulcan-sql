@@ -10,7 +10,7 @@ export class SchemaParserOptions implements ISchemaParserOptions {
 
   @IsString()
   @IsOptional()
-  public readonly schemaPath!: string;
+  public readonly folderPath!: string;
 
   constructor(
     @inject(TYPES.SchemaParserInputOptions)

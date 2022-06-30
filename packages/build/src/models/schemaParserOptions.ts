@@ -1,6 +1,6 @@
 export interface ISchemaParserOptions {
   reader: SchemaReaderType;
-  schemaPath: string;
+  folderPath: string;
 }
 
 export enum SchemaReaderType {

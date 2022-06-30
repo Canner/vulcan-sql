@@ -24,12 +24,12 @@ it('Can override some option properties', async () => {
   container
     .bind<Partial<ISchemaParserOptions>>(TYPES.SchemaParserInputOptions)
     .toConstantValue({
-      schemaPath: './test/schemas',
+      folderPath: './test/schemas',
     });
   const options = container.get<SchemaParserOptions>(TYPES.SchemaParserOptions);
   // Assert
   expect(options.reader).toBe(SchemaReaderType.LocalFile);
-  expect(options.schemaPath).toBe('./test/schemas');
+  expect(options.folderPath).toBe('./test/schemas');
 });
 
 it('Schema validation should work', async () => {

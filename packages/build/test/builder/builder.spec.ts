@@ -13,7 +13,7 @@ it('Builder.build should work', async () => {
   const options: IBuildOptions = {
     schemaParser: {
       reader: SchemaReaderType.LocalFile,
-      schemaPath: path.resolve(__dirname, 'source'),
+      folderPath: path.resolve(__dirname, 'source'),
     },
     artifact: {
       provider: PersistentStoreType.LocalFile,
