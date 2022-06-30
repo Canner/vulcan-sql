@@ -14,7 +14,7 @@ export class TemplateEngineOptions implements ITemplateEngineOptions {
 
   @IsString()
   @IsOptional()
-  public readonly templatePath!: string;
+  public readonly folderPath!: string;
 
   constructor(
     @inject(TYPES.TemplateEngineInputOptions)

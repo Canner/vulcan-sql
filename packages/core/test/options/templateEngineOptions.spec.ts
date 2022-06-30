@@ -26,14 +26,14 @@ it('Can override some option properties', async () => {
   container
     .bind<Partial<ITemplateEngineOptions>>(TYPES.TemplateEngineInputOptions)
     .toConstantValue({
-      templatePath: './test/schemas',
+      folderPath: './test/schemas',
     });
   const options = container.get<TemplateEngineOptions>(
     TYPES.TemplateEngineOptions
   );
   // Assert
   expect(options.provider).toBe(TemplateProviderType.LocalFile);
-  expect(options.templatePath).toBe('./test/schemas');
+  expect(options.folderPath).toBe('./test/schemas');
 });
 
 it('Schema validation should work', async () => {

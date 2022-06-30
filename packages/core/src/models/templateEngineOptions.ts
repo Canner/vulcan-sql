@@ -4,5 +4,5 @@ export enum TemplateProviderType {
 
 export interface ITemplateEngineOptions {
   provider: TemplateProviderType;
-  templatePath: string;
+  folderPath: string;
 }

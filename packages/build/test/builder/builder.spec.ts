@@ -22,7 +22,7 @@ it('Builder.build should work', async () => {
     },
     template: {
       provider: TemplateProviderType.LocalFile,
-      templatePath: path.resolve(__dirname, 'source'),
+      folderPath: path.resolve(__dirname, 'source'),
     },
   };
 
