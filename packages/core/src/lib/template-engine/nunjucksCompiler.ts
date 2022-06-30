@@ -64,7 +64,7 @@ export class NunjucksCompiler implements Compiler {
       this.compileTimeEnv.extensionsList,
       {}
     );
-    this.traverseAST(ast);
+    this.traverseAst(ast);
     const metadata = this.getMetadata();
     const preProcessedAst = this.preProcess(ast);
     return { ast: preProcessedAst, metadata };
@@ -126,7 +126,7 @@ export class NunjucksCompiler implements Compiler {
     }
   }
 
-  private traverseAST(ast: nunjucks.nodes.Node) {
+  private traverseAst(ast: nunjucks.nodes.Node) {
     walkAst(ast, this.astVisitors);
   }
 
