@@ -24,9 +24,9 @@ export class FileSchemaReader implements SchemaReader {
     for (const file of files) {
       const fileName = path.relative(this.options.schemaPath, file);
       const { ext } = path.parse(fileName);
-      const name = fileName.replace(new RegExp(`\\${ext}$`), '');
+      const sourceName = fileName.replace(new RegExp(`\\${ext}$`), '');
       yield {
-        name,
+        sourceName,
         content: await fs.readFile(file, 'utf8'),
         type: SchemaFormat.YAML,
       };

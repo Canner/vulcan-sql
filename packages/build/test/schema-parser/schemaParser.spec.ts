@@ -46,7 +46,7 @@ it('Schema parser parse should return correct result', async () => {
   // Assert
   const generator = async function* () {
     yield {
-      name: 'detail/role',
+      sourceName: 'detail/role',
       content: `
 request:
   - fieldName: id
@@ -78,7 +78,7 @@ it('Schema parser parse should throw with unsupported schema type', async () => 
   // Assert
   const generator = async function* () {
     yield {
-      name: 'detail/role',
+      sourceName: 'detail/role',
       content: ``,
       type: 'unsupported' as SchemaFormat,
     };

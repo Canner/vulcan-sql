@@ -77,7 +77,7 @@ export class SchemaParser {
     switch (schemaData.type) {
       case SchemaFormat.YAML:
         return {
-          sourceName: schemaData.name,
+          sourceName: schemaData.sourceName,
           ...(yaml.load(schemaData.content) as object),
         } as RawAPISchema;
       default:

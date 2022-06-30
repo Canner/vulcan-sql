@@ -39,12 +39,12 @@ it('File schema reader should provide correct files and contents', async () => {
   // Assert
   expect(schemas.length).toBe(2);
   expect(schemas).toContainEqual({
-    name: 'user',
+    sourceName: 'user',
     type: 'YAML',
     content: expect.stringContaining('url: /user/:id'),
   });
   expect(schemas).toContainEqual({
-    name: 'detail/role',
+    sourceName: 'detail/role',
     type: 'YAML',
     content: expect.stringContaining('url: /detail/role/:id'),
   });
