@@ -8,6 +8,7 @@ export interface IPInputArgs {
   version?: IPVersion[];
 }
 
+/* istanbul ignore file */
 export class IPTypeValidator implements IValidator {
   public readonly name = 'ip';
   // Validator for arguments schema in schema.yaml, should match DateInputArgs

@@ -19,21 +19,21 @@ error:
  */
 
 export enum PaginationMode {
-  CURSOR = 'cursor',
-  OFFSET = 'offset',
-  KEYSET = 'keyset',
+  CURSOR = 'CURSOR',
+  OFFSET = 'OFFSET',
+  KEYSET = 'KEYSET',
 }
 
 export enum FieldInType {
-  QUERY = 'query',
-  HEADER = 'header',
-  PATH = 'path',
+  QUERY = 'QUERY',
+  HEADER = 'HEADER',
+  PATH = 'PATH',
 }
 
 export enum FieldDataType {
-  BOOLEAN = 'boolean',
-  NUMBER = 'number',
-  STRING = 'string',
+  BOOLEAN = 'BOOLEAN',
+  NUMBER = 'NUMBER',
+  STRING = 'STRING',
 }
 
 export interface ValidatorDefinition<T = any> {
