@@ -16,6 +16,12 @@ import {
   checkParameter,
   fallbackErrors,
   addMissingErrors,
+  normalizeFieldIn,
+  generateDataType,
+  normalizeDataType,
+  generatePathParameters,
+  addRequiredValidatorForPath,
+  setConstraints,
 } from './middleware';
 import * as compose from 'koa-compose';
 import { inject, injectable, interfaces } from 'inversify';
@@ -45,6 +51,12 @@ export class SchemaParser {
     this.use(transformValidator());
     this.use(checkValidator(validatorLoader));
     this.use(fallbackErrors());
+    this.use(normalizeFieldIn());
+    this.use(generateDataType());
+    this.use(normalizeDataType());
+    this.use(generatePathParameters());
+    this.use(addRequiredValidatorForPath());
+    this.use(setConstraints(validatorLoader));
   }
 
   public async parse({

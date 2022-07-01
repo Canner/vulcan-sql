@@ -17,9 +17,18 @@ error:
     message: 'You are not allowed to access this resource'
  */
 
+import { Constraint } from '../validators';
+
 export enum FieldInType {
   QUERY = 'QUERY',
   HEADER = 'HEADER',
+  PATH = 'PATH',
+}
+
+export enum FieldDataType {
+  BOOLEAN = 'BOOLEAN',
+  NUMBER = 'NUMBER',
+  STRING = 'STRING',
 }
 
 export interface ValidatorDefinition<T = any> {
@@ -32,7 +41,16 @@ export interface RequestParameter {
   // the field put in query parameter or headers
   fieldIn: FieldInType;
   description: string;
+  type: FieldDataType;
   validators: Array<ValidatorDefinition>;
+  constraints: Array<Constraint>;
+}
+
+export interface ResponseProperty {
+  name: string;
+  description?: string;
+  type: FieldDataType | Array<ResponseProperty>;
+  required?: boolean;
 }
 
 export interface ErrorInfo {
@@ -49,7 +67,8 @@ export interface APISchema {
   templateSource: string;
   request: Array<RequestParameter>;
   errors: Array<ErrorInfo>;
-  response: any;
+  response: Array<ResponseProperty>;
+  description?: string;
 }
 
 export interface BuiltArtifact {
