@@ -41,9 +41,16 @@ export abstract class TagBuilder extends CompileTimeExtension {
   }
 
   protected createAsyncExtensionNode(
-    /** The arguments if this extension, they'll be render to string and passed to run function */
+    /**
+     * The arguments of this extension, they'll be rendered and passed to run function.
+     * It usually contains the configuration of the extension, e.g. {% req variable %} The variable name of req extension.
+     * Note that these arguments will be pass to run function directly: Literal('123') => "123", so adding Output nodes causes compiling issues. Output("123") => t += "123"
+     */
     argsNodeList: nunjucks.nodes.NodeList,
-    /** The content (usually the body) of this extension, they'll be passed to run function as render functions */
+    /** The content (usually the body) of this extension, they'll be passed to run function as render functions
+     * It usually contains the Output of your extension, e.g. {% req variable %} select * from user {% endreq %}, the "select * from user" should be put in this field.
+     * Note that these nodes will be rendered as the output of template: Output("123") => t = ""; t += "123", so adding nodes with no output like Symbol, Literal ... might cause compiling issues.  Literal('123') => t = ""; 123
+     */
     contentNodes: nunjucks.nodes.Node[] = []
   ) {
     return new nunjucks.nodes.CallExtensionAsync(
