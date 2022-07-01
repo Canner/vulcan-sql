@@ -1,4 +1,3 @@
-import * as path from 'path';
 import { BaseRouteMiddleware } from './middleware';
 import { defaultImport, ClassType } from '@vulcan/core';
 // The extension module interface
@@ -15,13 +14,4 @@ export const loadExtensions = async (folder?: string) => {
     return module.middlewares || [];
   }
   return [];
-};
-
-export const loadBuiltIn = async () => {
-  // built-in middleware folder
-  const builtInFolder = path.join(__dirname, 'built-in-middlewares');
-  // read built-in middlewares in index.ts, the content is an array middleware class
-  return (
-    (await defaultImport<ClassType<BaseRouteMiddleware>[]>(builtInFolder)) || []
-  );
 };

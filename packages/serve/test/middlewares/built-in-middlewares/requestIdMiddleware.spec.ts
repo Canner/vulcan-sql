@@ -12,7 +12,11 @@ import {
 import * as uuid from 'uuid';
 
 describe('Test request-id middlewares', () => {
-  it('Should get same request-id when option is default and pass X-Request-ID', async () => {
+  afterEach(() => {
+    // restore spying global object asyncReqIdStorage to un-spy.
+    sinon.default.restore();
+  });
+  it('Should get same request-id when option is default and pass "x-request-id"', async () => {
     // Arrange
     const expected = faker.datatype.uuid();
     const ctx: KoaRouterContext = {
@@ -21,20 +25,23 @@ describe('Test request-id middlewares', () => {
         ...sinon.stubInterface<Request>(),
         header: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
-          'X-Request-ID': expected,
+          // simulate koa context, it will transfer to lower case actual when sending request
+          // https://medium.com/@andrelimamail/http-node-server-lower-casing-headers-365764218527
+          'x-request-id': expected,
         },
       },
     };
+    // spy the asyncReqIdStorage behavior
+    const spy = sinon.default.spy(asyncReqIdStorage);
     // Act
     const middleware = new RequestIdMiddleware({});
     await middleware.handle(ctx, async () => Promise.resolve());
-    const actual = asyncReqIdStorage.getStore()?.requestId;
 
-    // Assert,
-    expect(actual).toEqual(expected);
+    // Assert
+    expect(spy.run.getCall(0).args[0].requestId).toEqual(expected);
   });
 
-  it('Should get same request-id when setup option "Test-Request-ID" in query and pass request-id', async () => {
+  it('Should get same request-id when setup option "Test-Request-ID" in query and pass "test-request-id"', async () => {
     // Arrange
     const expected = faker.datatype.uuid();
     const ctx: KoaRouterContext = {
@@ -43,7 +50,9 @@ describe('Test request-id middlewares', () => {
         ...sinon.stubInterface<Request>(),
         query: {
           ...sinon.stubInterface<ParsedUrlQuery>(),
-          'Test-Request-ID': expected,
+          // simulate koa context, it will transfer to lower case actual when sending request
+          // https://medium.com/@andrelimamail/http-node-server-lower-casing-headers-365764218527
+          'test-request-id': expected,
         },
       },
     };
@@ -59,10 +68,42 @@ describe('Test request-id middlewares', () => {
       },
     });
 
+    // spy the asyncReqIdStorage behavior
+    const spy = sinon.default.spy(asyncReqIdStorage);
     await middleware.handle(ctx, async () => Promise.resolve());
-    const actual = asyncReqIdStorage.getStore()?.requestId;
     // Assert,
-    expect(actual).toEqual(expected);
+    expect(spy.run.getCall(0).args[0].requestId).toEqual(expected);
+  });
+
+  it('Should generate default request-id when setup option field in query', async () => {
+    // Arrange
+    // the uuid.v4() result is the mock result in __mocks__/uuid.ts
+    const expected = uuid.v4();
+    const ctx: KoaRouterContext = {
+      ...sinon.stubInterface<KoaRouterContext>(),
+      request: {
+        ...sinon.stubInterface<Request>(),
+        query: {
+          ...sinon.stubInterface<ParsedUrlQuery>(),
+        },
+      },
+    };
+    // Act
+    const middleware = new RequestIdMiddleware({
+      middlewares: {
+        'request-id': {
+          options: {
+            fieldIn: FieldInType.QUERY,
+          } as RequestIdOptions,
+        },
+      },
+    });
+
+    // spy the asyncReqIdStorage behavior
+    const spy = sinon.default.spy(asyncReqIdStorage);
+    await middleware.handle(ctx, async () => Promise.resolve());
+    // Assert
+    expect(spy.run.getCall(0).args[0].requestId).toEqual(expected);
   });
 
   it('Should generate default request-id when request-id does not setup', async () => {
@@ -79,13 +120,13 @@ describe('Test request-id middlewares', () => {
       },
     };
 
+    // spy the asyncReqIdStorage behavior
+    const spy = sinon.default.spy(asyncReqIdStorage);
     // Act
     const middleware = new RequestIdMiddleware({});
-
     await middleware.handle(ctx, async () => Promise.resolve());
-    const actual = asyncReqIdStorage.getStore()?.requestId;
 
     // Assert,
-    expect(actual).toEqual(expected);
+    expect(spy.run.getCall(0).args[0].requestId).toEqual(expected);
   });
 });

@@ -16,7 +16,7 @@ export class RateLimitMiddleware extends BuiltInMiddleware {
   }
 
   public async handle(context: KoaRouterContext, next: RouteMiddlewareNext) {
-    if (!this.enabled) await next();
-    else return this.koaRateLimit(context, next);
+    if (!this.enabled) return next();
+    return this.koaRateLimit(context, next);
   }
 }

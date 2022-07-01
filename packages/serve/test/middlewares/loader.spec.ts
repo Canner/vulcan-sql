@@ -1,14 +1,24 @@
 import * as path from 'path';
 import * as sinon from 'ts-sinon';
-import {
-  BaseRouteMiddleware,
-  loadExtensions,
-  loadBuiltIn,
-} from '@middleware/.';
+import { BaseRouteMiddleware, loadExtensions } from '@middleware/.';
 import middlewares from '@middleware/built-in-middlewares';
 import { TestModeMiddleware } from './test-custom-middlewares';
-import { ClassType } from '@vulcan/core';
+import { ClassType, defaultImport } from '@vulcan/core';
 import { ServeConfig } from '@config';
+
+// the load Built-in used for tests
+const loadBuiltIn = async () => {
+  // built-in middleware folder
+  const builtInFolder = path.resolve(
+    __dirname,
+    '../../src/lib/middleware',
+    'built-in-middlewares'
+  );
+  // read built-in middlewares in index.ts, the content is an array middleware class
+  return (
+    (await defaultImport<ClassType<BaseRouteMiddleware>[]>(builtInFolder)) || []
+  );
+};
 
 describe('Test middleware loader', () => {
   it('Should load successfully when loading built-in middlewares', async () => {

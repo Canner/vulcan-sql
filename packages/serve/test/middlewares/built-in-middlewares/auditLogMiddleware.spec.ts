@@ -103,9 +103,6 @@ describe('Test audit logging middlewares', () => {
 
     // setup request-id middleware run first.
     const stubReqIdMiddleware = new RequestIdMiddleware({});
-    await stubReqIdMiddleware.handle(ctx, async () => Promise.resolve());
-
-    // Act
     const middleware = new AuditLoggingMiddleware({
       middlewares: {
         'audit-log': {
@@ -122,7 +119,9 @@ describe('Test audit logging middlewares', () => {
         scopeName: 'AUDIT',
       })
     );
-    await middleware.handle(ctx, async () => Promise.resolve());
+    // Act
+    const next = () => middleware.handle(ctx, async () => Promise.resolve());
+    await stubReqIdMiddleware.handle(ctx, next);
 
     // Assert
     // check logger.info message

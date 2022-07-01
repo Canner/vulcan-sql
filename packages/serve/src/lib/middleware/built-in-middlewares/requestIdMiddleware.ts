@@ -19,22 +19,29 @@ export class RequestIdMiddleware extends BuiltInMiddleware {
       name: 'X-Request-ID',
       fieldIn: FieldInType.HEADER,
     };
+    // if options has value, but not exist name / field, add default value.
+    if (!this.options['name']) this.options['name'] = 'X-Request-ID';
+    if (!this.options['fieldIn']) this.options['fieldIn'] = FieldInType.HEADER;
   }
   public async handle(context: KoaRouterContext, next: RouteMiddlewareNext) {
-    if (!this.enabled) await next();
-    else {
-      const { request } = context;
-      const { name, fieldIn } = this.options;
+    if (!this.enabled) return next();
 
-      // if header or query location not found request id, set default to uuid
-      const requestId =
-        (fieldIn === FieldInType.HEADER
-          ? (request.header[name] as string)
-          : (request.query[name] as string)) || uuid.v4();
+    const { request } = context;
+    const { name, fieldIn } = this.options;
 
-      // keep request id for logger used
-      await asyncReqIdStorage.enterWith({ requestId });
+    // if header or query location not found request id, set default to uuid
+    const requestId =
+      (fieldIn === FieldInType.HEADER
+        ? // make the name to lowercase for consistency in request, because the field name in request will be lowercase
+          (request.header[name.toLowerCase()] as string)
+        : (request.query[name.toLowerCase()] as string)) || uuid.v4();
+
+    /**
+     * The asyncReqIdStorage.getStore(...) only worked in context of the asyncReqIdStorage.run(...)
+     * so here it worked if the asyncReqIdStorage.getStore(...) called in the next function or inner scope of asyncReqIdStorage.run(...)
+     * */
+    await asyncReqIdStorage.run({ requestId }, async () => {
       await next();
-    }
+    });
   }
 }

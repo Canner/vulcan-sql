@@ -5,7 +5,7 @@ import { KoaRouterContext } from '@route/route-component';
 export interface TestModeOptions {
   mode: boolean;
 }
-
+/* istanbul ignore file */
 export class TestModeMiddleware extends BaseRouteMiddleware {
   private mode: boolean;
   constructor(config: ServeConfig) {
