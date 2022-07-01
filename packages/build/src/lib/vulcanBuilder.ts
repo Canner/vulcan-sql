@@ -10,7 +10,7 @@ import {
 export class VulcanBuilder {
   public async build(options: IBuildOptions) {
     const container = new Container();
-    container.load(options);
+    await container.load(options);
     const schemaParser = container.get<SchemaParser>(TYPES.SchemaParser);
     const templateEngine = container.get<TemplateEngine>(
       CORE_TYPES.TemplateEngine

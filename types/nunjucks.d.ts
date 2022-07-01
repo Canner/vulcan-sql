@@ -6,6 +6,10 @@ declare module 'nunjucks' {
     err: lib.TemplateError | null,
     res: T | null
   ) => void;
+  export type TemplateExportCallback<T> = (
+    err: lib.TemplateError | null,
+    res: T
+  ) => void;
   export type Callback<E, T> = (err: E | null, res: T | null) => void;
 
   export function render(name: string, context?: object): string;
@@ -56,6 +60,16 @@ declare module 'nunjucks' {
     );
     render(context?: object): string;
     render(context?: object, callback?: TemplateCallback<string>): void;
+    getExported<T>(callback: TemplateExportCallback<T>): void;
+    getExported<T>(
+      context: object,
+      callback: TemplateExportCallback<T>
+    ): string;
+    getExported<T>(
+      context: object,
+      parentFrame: any,
+      callback: TemplateExportCallback<T>
+    ): string;
   }
 
   export function configure(options: ConfigureOptions): Environment;
@@ -150,7 +164,7 @@ declare module 'nunjucks' {
   export interface Extension {
     tags: string[];
     // Parser API is undocumented it is suggested to check the source: https://github.com/mozilla/nunjucks/blob/master/src/parser.js
-    parse(parser: any, nodes: any, lexer: any): any;
+    parse?(parser: any, nodes: any, lexer: any): any;
   }
 
   export function installJinjaCompat(): void;
@@ -283,7 +297,8 @@ declare module 'nunjucks' {
       advanceAfterBlockEnd(name: string): Token;
       parseUntilBlocks(...blockName: string[]): nodes.NodeList;
       advanceAfterBlockEnd(): Token;
-      fail(message: string, lineno?: number, colno?: number): void;
+      fail(message: string, lineno?: number, colno?: number): never;
+      parseExpression(): Nodes;
     }
   }
 
@@ -304,9 +319,11 @@ declare module 'nunjucks' {
       addChild(child: Node): void;
     }
 
+    class Root extends NodeList {}
+
     class CallExtension extends Node {
       constructor(
-        ext: object,
+        ext: object | string,
         prop: string,
         args: nodes.NodeList | null,
         contentArgs: nodes.Node[] | null
@@ -319,7 +336,10 @@ declare module 'nunjucks' {
     class CallExtensionAsync extends CallExtension {}
 
     class LookupVal extends Node {
-      target: Literal | Symbol;
+      target:
+        | Symbol // a.b
+        | FunCall // a().b
+        | LookupVal; // a.b.c
       val: Value;
     }
 
@@ -332,7 +352,10 @@ declare module 'nunjucks' {
     class Symbol extends Value {}
 
     class FunCall extends Node {
-      name: Node;
+      name:
+        | Symbol // a()
+        | LookupVal // a.b()
+        | FunCall; // a().b()
       args: NodeList;
     }
 
@@ -343,10 +366,38 @@ declare module 'nunjucks' {
       body: Node | null;
       targets: Node[];
     }
+
+    class TemplateData extends Literal {}
   }
 
   namespace lexer {
     function lexer(src: string, opts: any): any;
+    const TOKEN_STRING: string;
+    const TOKEN_WHITESPACE: string;
+    const TOKEN_DATA: string;
+    const TOKEN_BLOCK_START: string;
+    const TOKEN_BLOCK_END: string;
+    const TOKEN_VARIABLE_START: string;
+    const TOKEN_VARIABLE_END: string;
+    const TOKEN_COMMENT: string;
+    const TOKEN_LEFT_PAREN: string;
+    const TOKEN_RIGHT_PAREN: string;
+    const TOKEN_LEFT_BRACKET: string;
+    const TOKEN_RIGHT_BRACKET: string;
+    const TOKEN_LEFT_CURLY: string;
+    const TOKEN_RIGHT_CURLY: string;
+    const TOKEN_OPERATOR: string;
+    const TOKEN_COMMA: string;
+    const TOKEN_COLON: string;
+    const TOKEN_TILDE: string;
+    const TOKEN_PIPE: string;
+    const TOKEN_INT: string;
+    const TOKEN_FLOAT: string;
+    const TOKEN_BOOLEAN: string;
+    const TOKEN_NONE: string;
+    const TOKEN_SYMBOL: string;
+    const TOKEN_SPECIAL: string;
+    const TOKEN_REGEX: string;
   }
 
   interface Token {

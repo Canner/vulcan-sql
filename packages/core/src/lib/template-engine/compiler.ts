@@ -13,11 +13,7 @@ export interface TemplateParameterMetadata {
   locations: TemplateLocation[];
 }
 
-export interface TemplateMetadata {
-  parameters: TemplateParameterMetadata[];
-  errors: TemplateErrorMetadata[];
-}
-
+export type TemplateMetadata = Record<string, any>;
 export interface CompileResult {
   compiledData: string;
   metadata: TemplateMetadata;
@@ -30,5 +26,5 @@ export interface Compiler {
    * @param template The path or identifier of a template source
    */
   compile(template: string): CompileResult;
-  render<T extends object>(templateName: string, data: T): Promise<string>;
+  execute<T extends object>(template: string, data: T): Promise<any>;
 }

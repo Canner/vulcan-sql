@@ -1,6 +1,12 @@
 import { AllTemplateMetadata, APISchema } from '@vulcan/core';
 import { SchemaParserMiddleware } from './middleware';
 
+interface Parameter {
+  name: string;
+  lineNo: number;
+  columnNo: number;
+}
+
 export const checkParameter =
   (allMetadata: AllTemplateMetadata): SchemaParserMiddleware =>
   async (schemas, next) => {
@@ -9,9 +15,9 @@ export const checkParameter =
     const templateName = transformedSchemas.templateSource;
     const metadata = allMetadata[templateName];
     // Skip validation if no metadata found
-    if (!metadata?.parameters) return;
+    if (!metadata?.['parameter.vulcan.com']) return;
 
-    const parameters = metadata.parameters;
+    const parameters: Parameter[] = metadata['parameter.vulcan.com'];
     parameters.forEach((parameter) => {
       // We only check the first value of nested parameters
       const name = parameter.name.split('.')[0];

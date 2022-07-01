@@ -50,7 +50,7 @@ it(`Should throw when any parameter hasn't be defined`, async () => {
   };
   const metadata: AllTemplateMetadata = {
     'some-name': {
-      parameters: [
+      'parameter.vulcan.com': [
         {
           name: 'param1',
           locations: [],
@@ -81,7 +81,7 @@ it('Should tolerate empty parameter data', async () => {
   };
   const metadata: object = {
     'some-name': {
-      parameters: null,
+      'parameter.vulcan.com': null,
       errors: [],
     },
   };

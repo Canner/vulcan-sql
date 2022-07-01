@@ -12,6 +12,7 @@ export const TYPES = {
   Factory_TemplateProvider: Symbol.for('Factory_TemplateProvider'),
   CompilerExtension: Symbol.for('CompilerExtension'),
   CompilerLoader: Symbol.for('CompilerLoader'),
+  CompilerEnvironment: Symbol.for('CompilerEnvironment'),
   Compiler: Symbol.for('Compiler'),
   TemplateEngine: Symbol.for('TemplateEngine'),
   TemplateEngineOptions: Symbol.for('TemplateEngineOptions'),

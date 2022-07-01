@@ -16,7 +16,7 @@ it('Container should load options and resolve all dependencies', async () => {
     fs.unlinkSync(resultPath);
   }
   const container = new Container();
-  container.load({
+  await container.load({
     artifact: {
       provider: PersistentStoreType.LocalFile,
       filePath: resultPath,
