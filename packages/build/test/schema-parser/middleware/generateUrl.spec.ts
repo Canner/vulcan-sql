@@ -1,5 +1,5 @@
-import { RawAPISchema } from '@schema-parser/.';
-import { generateUrl } from '@schema-parser/middleware/generateUrl';
+import { RawAPISchema } from '@vulcan/build/schema-parser/.';
+import { generateUrl } from '@vulcan/build/schema-parser/middleware/generateUrl';
 
 it('Should keep url in schema', async () => {
   // Arrange

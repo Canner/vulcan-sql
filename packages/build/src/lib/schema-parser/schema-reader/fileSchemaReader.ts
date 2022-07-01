@@ -2,16 +2,19 @@ import { SchemaFormat, SchemaData, SchemaReader } from './schemaReader';
 import * as glob from 'glob';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+import { inject, injectable } from 'inversify';
+import { TYPES } from '@vulcan/build/containers';
+import { SchemaParserOptions } from '@vulcan/build/options';
 
 export interface FileSchemaReaderOptions {
   folderPath: string;
 }
 
-export class FileSchemaReader extends SchemaReader {
-  private options: FileSchemaReaderOptions;
+@injectable()
+export class FileSchemaReader implements SchemaReader {
+  private options: SchemaParserOptions;
 
-  constructor(options: FileSchemaReaderOptions) {
-    super();
+  constructor(@inject(TYPES.SchemaParserOptions) options: SchemaParserOptions) {
     this.options = options;
   }
 
@@ -21,9 +24,9 @@ export class FileSchemaReader extends SchemaReader {
     for (const file of files) {
       const fileName = path.relative(this.options.folderPath, file);
       const { ext } = path.parse(fileName);
-      const name = fileName.replace(new RegExp(`\\${ext}$`), '');
+      const sourceName = fileName.replace(new RegExp(`\\${ext}$`), '');
       yield {
-        name,
+        sourceName,
         content: await fs.readFile(file, 'utf8'),
         type: SchemaFormat.YAML,
       };

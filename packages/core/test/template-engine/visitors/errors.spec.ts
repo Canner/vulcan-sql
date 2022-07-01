@@ -1,9 +1,9 @@
 import * as nunjucks from 'nunjucks';
-import { walkAst, ErrorsVisitor } from '@template-engine';
+import { walkAst, ErrorsVisitor } from '@vulcan/core/template-engine';
 import {
   ErrorExtension,
   NunjucksTagExtensionWrapper,
-} from '@template-engine/extensions';
+} from '@vulcan/core/template-engine/extensions';
 
 it('Visitor should return correct error list', async () => {
   // Arrange

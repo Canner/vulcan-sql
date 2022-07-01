@@ -1,4 +1,9 @@
-import { APISchema, IValidator, TemplateMetadata } from '@vulcan/core';
+import {
+  APISchema,
+  TemplateMetadata,
+  TYPES as CORE_TYPES,
+  ValidatorLoader,
+} from '@vulcan/core';
 import { SchemaData, SchemaFormat, SchemaReader } from './schema-reader';
 import * as yaml from 'js-yaml';
 import {
@@ -13,31 +18,27 @@ import {
   addMissingErrors,
 } from './middleware';
 import * as compose from 'koa-compose';
-
-/**
- * Temporary interface
- * @deprecated
- */
-export interface ValidatorLoader {
-  getLoader(name: string): IValidator;
-}
+import { inject, injectable, interfaces } from 'inversify';
+import { TYPES } from '@vulcan/build/containers';
+import { SchemaParserOptions } from '@vulcan/build/options';
 
 export interface SchemaParseResult {
   schemas: APISchema[];
 }
 
+@injectable()
 export class SchemaParser {
   private schemaReader: SchemaReader;
   private middleware: SchemaParserMiddleware[] = [];
 
-  constructor({
-    schemaReader,
-    validatorLoader,
-  }: {
-    schemaReader: SchemaReader;
-    validatorLoader: ValidatorLoader;
-  }) {
-    this.schemaReader = schemaReader;
+  constructor(
+    @inject(TYPES.Factory_SchemaReader)
+    schemaReaderFactory: interfaces.AutoNamedFactory<SchemaReader>,
+    @inject(TYPES.SchemaParserOptions) schemaParserOptions: SchemaParserOptions,
+    @inject(CORE_TYPES.ValidatorLoader) validatorLoader: ValidatorLoader
+  ) {
+    this.schemaReader = schemaReaderFactory(schemaParserOptions.reader);
+
     // Global middleware
     this.use(generateUrl());
     this.use(generateTemplateSource());
@@ -76,7 +77,7 @@ export class SchemaParser {
     switch (schemaData.type) {
       case SchemaFormat.YAML:
         return {
-          sourceName: schemaData.name,
+          sourceName: schemaData.sourceName,
           ...(yaml.load(schemaData.content) as object),
         } as RawAPISchema;
       default:

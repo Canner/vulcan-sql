@@ -3,11 +3,12 @@ export enum SchemaFormat {
 }
 
 export interface SchemaData {
-  name: string;
+  /** The identifier of this schema, we might use this name to mapping SQL sources. */
+  sourceName: string;
   content: string;
   type: SchemaFormat;
 }
 
-export abstract class SchemaReader {
-  abstract readSchema(): AsyncGenerator<SchemaData>;
+export interface SchemaReader {
+  readSchema(): AsyncGenerator<SchemaData>;
 }

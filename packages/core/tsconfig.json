@@ -8,13 +8,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "typeRoots": ["../../node_modules/@types"],
-    "paths": {
-      "@artifact-builder": ["packages/core/src/lib/artifact-builder/index"],
-      "@artifact-builder/*": ["packages/core/src/lib/artifact-builder/*"],
-      "@template-engine": ["packages/core/src/lib/template-engine/index"],
-      "@template-engine/*": ["packages/core/src/lib/template-engine/*"]
-    }
+    "typeRoots": ["../../node_modules/@types"]
   },
   "references": [
     {

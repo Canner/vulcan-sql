@@ -1,16 +1,32 @@
+import { TYPES } from '@vulcan/core/containers';
 import {
   NunjucksCompiler,
   InMemoryCodeLoader,
   UniqueExtension,
-} from '@template-engine';
+  Compiler,
+} from '@vulcan/core/template-engine';
+import { Container } from 'inversify';
+
+let container: Container;
+
+beforeEach(() => {
+  container = new Container();
+  container
+    .bind(TYPES.CompilerLoader)
+    .to(InMemoryCodeLoader)
+    .inSingletonScope();
+  container.bind(TYPES.Compiler).to(NunjucksCompiler).inSingletonScope();
+  container.bind(TYPES.CompilerExtension).to(UniqueExtension);
+});
+
+afterEach(() => {
+  container.unbindAll();
+});
 
 it('Extension should return correct values without unique by argument', async () => {
   // Arrange
-  const loader = new InMemoryCodeLoader();
-  const compiler = new NunjucksCompiler({
-    loader,
-    extensions: [new UniqueExtension()],
-  });
+  const compiler = container.get<Compiler>(TYPES.Compiler);
+  const loader = container.get<InMemoryCodeLoader>(TYPES.CompilerLoader);
   const { compiledData } = compiler.compile(
     `
 {% set array = [1,2,3,4,4] %}
@@ -28,11 +44,8 @@ it('Extension should return correct values without unique by argument', async ()
 
 it('Extension should return correct values with unique by keyword argument', async () => {
   // Arrange
-  const loader = new InMemoryCodeLoader();
-  const compiler = new NunjucksCompiler({
-    loader,
-    extensions: [new UniqueExtension()],
-  });
+  const compiler = container.get<Compiler>(TYPES.Compiler);
+  const loader = container.get<InMemoryCodeLoader>(TYPES.CompilerLoader);
   const { compiledData } = compiler.compile(
     `
 {% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
@@ -50,11 +63,8 @@ it('Extension should return correct values with unique by keyword argument', asy
 
 it('Extension should return correct values with unique by argument', async () => {
   // Arrange
-  const loader = new InMemoryCodeLoader();
-  const compiler = new NunjucksCompiler({
-    loader,
-    extensions: [new UniqueExtension()],
-  });
+  const compiler = container.get<Compiler>(TYPES.Compiler);
+  const loader = container.get<InMemoryCodeLoader>(TYPES.CompilerLoader);
   const { compiledData } = compiler.compile(
     `
 {% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}

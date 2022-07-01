@@ -1,8 +1,8 @@
 import { Compiler, TemplateMetadata } from './compiler';
-import { ErrorExtension, ReqExtension, UniqueExtension } from './extensions';
-import { InMemoryCodeLoader } from './inMemoryCodeLoader';
-import { NunjucksCompiler } from './nunjucksCompiler';
 import { TemplateProvider } from './template-providers';
+import { injectable, inject, interfaces } from 'inversify';
+import { TYPES } from '@vulcan/core/containers';
+import { TemplateEngineOptions } from '../../options';
 
 export type AllTemplateMetadata = Record<string, TemplateMetadata>;
 
@@ -13,53 +13,22 @@ export interface PreCompiledResult {
   metadata?: AllTemplateMetadata;
 }
 
+@injectable()
 export class TemplateEngine {
   private compiler: Compiler;
-  private templateProvider?: TemplateProvider;
+  private templateProvider: TemplateProvider;
 
-  constructor({
-    compiler,
-    templateProvider,
-  }: {
-    compiler: Compiler;
-    templateProvider?: TemplateProvider;
-  }) {
+  constructor(
+    @inject(TYPES.Compiler) compiler: Compiler,
+    @inject(TYPES.Factory_TemplateProvider)
+    templateProviderFactory: interfaces.AutoNamedFactory<TemplateProvider>,
+    @inject(TYPES.TemplateEngineOptions) options: TemplateEngineOptions
+  ) {
     this.compiler = compiler;
-    this.templateProvider = templateProvider;
-  }
-
-  public static useDefaultLoader({
-    compiledResult,
-    templateProvider,
-  }: {
-    compiledResult?: PreCompiledResult;
-    templateProvider?: TemplateProvider;
-  } = {}): TemplateEngine {
-    const loader = new InMemoryCodeLoader();
-    // Put compiled templates into loader
-    if (compiledResult) {
-      Object.keys(compiledResult.templates).forEach((templateName) => {
-        loader.setSource(templateName, compiledResult.templates[templateName]);
-      });
-    }
-    const executor = {
-      // TODO: replace with real executor
-      executeQuery: async () => [],
-    };
-    const compiler = new NunjucksCompiler({
-      loader,
-      extensions: [
-        new ErrorExtension(),
-        new ReqExtension({ executor }),
-        new UniqueExtension(),
-      ],
-    });
-    return new TemplateEngine({ compiler, templateProvider });
+    this.templateProvider = templateProviderFactory(options.provider);
   }
 
   public async compile(): Promise<Required<PreCompiledResult>> {
-    if (!this.templateProvider) throw new Error('Template provider is not set');
-
     const templateResult: Record<string, string> = {};
     const metadataResult: Record<string, TemplateMetadata> = {};
 

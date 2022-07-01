@@ -1,19 +1,37 @@
+import { TYPES } from '@vulcan/core/containers';
 import {
   NunjucksCompiler,
   InMemoryCodeLoader,
   Executor,
   ReqExtension,
-} from '@template-engine';
+  Compiler,
+} from '@vulcan/core/template-engine';
+import { Container } from 'inversify';
 import * as sinon from 'ts-sinon';
+
+let container: Container;
+let mockExecutor: sinon.StubbedInstance<Executor>;
+
+beforeEach(() => {
+  container = new Container();
+  mockExecutor = sinon.stubInterface<Executor>();
+  container
+    .bind(TYPES.CompilerLoader)
+    .to(InMemoryCodeLoader)
+    .inSingletonScope();
+  container.bind(TYPES.Executor).toConstantValue(mockExecutor);
+  container.bind(TYPES.Compiler).to(NunjucksCompiler).inSingletonScope();
+  container.bind(TYPES.CompilerExtension).to(ReqExtension).inSingletonScope();
+});
+
+afterEach(() => {
+  container.unbindAll();
+});
 
 it('req extension should execute correct query and set variable', async () => {
   // Arrange
-  const loader = new InMemoryCodeLoader();
-  const mockExecutor = sinon.stubInterface<Executor>();
-  const compiler = new NunjucksCompiler({
-    loader,
-    extensions: [new ReqExtension({ executor: mockExecutor })],
-  });
+  const compiler = container.get<Compiler>(TYPES.Compiler);
+  const loader = container.get<InMemoryCodeLoader>(TYPES.CompilerLoader);
   const { compiledData } = compiler.compile(`
 {% req userCount %}
 select count(*) as count from user where user.id = '{{ params.userId }}';
@@ -36,12 +54,7 @@ select count(*) as count from user where user.id = '{{ params.userId }}';
 
 it('if argument is not a symbol, extension should throw', async () => {
   // Arrange
-  const loader = new InMemoryCodeLoader();
-  const mockExecutor = sinon.stubInterface<Executor>();
-  const compiler = new NunjucksCompiler({
-    loader,
-    extensions: [new ReqExtension({ executor: mockExecutor })],
-  });
+  const compiler = container.get<Compiler>(TYPES.Compiler);
 
   // Action, Assert
   expect(() =>
@@ -55,12 +68,7 @@ select count(*) as count from user where user.id = '{{ params.userId }}';
 
 it('if argument is missing, extension should throw', async () => {
   // Arrange
-  const loader = new InMemoryCodeLoader();
-  const mockExecutor = sinon.stubInterface<Executor>();
-  const compiler = new NunjucksCompiler({
-    loader,
-    extensions: [new ReqExtension({ executor: mockExecutor })],
-  });
+  const compiler = container.get<Compiler>(TYPES.Compiler);
 
   // Action, Assert
   expect(() =>

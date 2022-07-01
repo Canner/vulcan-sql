@@ -14,9 +14,33 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "types": ["reflect-metadata"],
     "paths": {
       "@vulcan/build": ["packages/build/src/index.ts"],
-      "@vulcan/core": ["packages/core/src/index.ts"]
+      "@vulcan/core": ["packages/core/src/index.ts"],
+      "@vulcan/core/artifact-builder": [
+        "packages/core/src/lib/artifact-builder/index"
+      ],
+      "@vulcan/core/artifact-builder/*": [
+        "packages/core/src/lib/artifact-builder/*"
+      ],
+      "@vulcan/core/template-engine": [
+        "packages/core/src/lib/template-engine/index"
+      ],
+      "@vulcan/core/template-engine/*": [
+        "packages/core/src/lib/template-engine/*"
+      ],
+      "@vulcan/core/containers": ["packages/core/src/containers/index"],
+      "@vulcan/core/models": ["packages/core/src/models/index"],
+      "@vulcan/build/schema-parser": [
+        "packages/build/src/lib/schema-parser/index"
+      ],
+      "@vulcan/build/schema-parser/*": [
+        "packages/build/src/lib/schema-parser/*"
+      ],
+      "@vulcan/build/models": ["packages/build/src/models/index"],
+      "@vulcan/build/containers": ["packages/build/src/containers/index"],
+      "@vulcan/build/options": ["packages/build/src/options/index"]
     }
   },
   "exclude": ["node_modules", "tmp"]

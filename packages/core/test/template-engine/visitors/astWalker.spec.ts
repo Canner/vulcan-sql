@@ -1,4 +1,4 @@
-import { walkAst } from '@template-engine';
+import { walkAst } from '@vulcan/core/template-engine';
 import * as nunjucks from 'nunjucks';
 
 it('AST walker should traversal all nodes', async () => {

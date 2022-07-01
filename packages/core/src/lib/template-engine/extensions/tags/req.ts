@@ -4,18 +4,21 @@ import {
   NunjucksTagExtensionRunOptions,
 } from '../extension';
 import * as nunjucks from 'nunjucks';
+import { injectable, inject } from 'inversify';
+import { TYPES } from '@vulcan/core/containers';
 
 // TODO: temporary interface
 export interface Executor {
   executeQuery(query: string): Promise<object>;
 }
 
+@injectable()
 export class ReqExtension implements NunjucksTagExtension {
   public name = 'built-in-req';
   public tags = ['req'];
   private executor: Executor;
 
-  constructor({ executor }: { executor: Executor }) {
+  constructor(@inject(TYPES.Executor) executor: Executor) {
     this.executor = executor;
   }
 

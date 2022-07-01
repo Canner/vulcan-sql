@@ -2,15 +2,17 @@ import { Template, TemplateProvider } from './templateProvider';
 import * as glob from 'glob';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+import { inject, injectable } from 'inversify';
+import { TYPES } from '@vulcan/core/containers';
+import { ITemplateEngineOptions } from '@vulcan/core/models';
 
-export interface FileTemplateProviderOptions {
-  folderPath: string;
-}
-
+@injectable()
 export class FileTemplateProvider implements TemplateProvider {
-  private options: FileTemplateProviderOptions;
+  private options: ITemplateEngineOptions;
 
-  constructor(options: FileTemplateProviderOptions) {
+  constructor(
+    @inject(TYPES.TemplateEngineOptions) options: ITemplateEngineOptions
+  ) {
     this.options = options;
   }
 

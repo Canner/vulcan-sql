@@ -7,11 +7,7 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "paths": {
-      "@vulcan/core": ["packages/core/src/index.ts"],
-      "@schema-parser/*": ["packages/build/src/lib/schema-parser/*"]
-    }
+    "noFallthroughCasesInSwitch": true
   },
   "references": [
     {
