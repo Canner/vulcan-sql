@@ -1,3 +1,4 @@
+import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
 import {
   AggregateFuncType,
@@ -8,6 +9,7 @@ import {
   SelectedColumn,
 } from '@vulcan/serve/data-query';
 import { find, isEmpty } from 'lodash';
+import { IDataSource } from '@vulcan/serve/data-source';
 
 // Use to generate select record expected results
 const generateSelectRecords = (
@@ -36,6 +38,10 @@ const generateSelectRecords = (
 };
 
 describe('Test data query builder > select clause', () => {
+  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+  beforeEach(() => {
+    stubDataSource = sinon.stubInterface<IDataSource>();
+  });
   it.each([
     ['*', '*', '*'],
     [undefined, '*', '*'],
@@ -76,12 +82,15 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
+        dataSource: stubDataSource,
       });
       columns.map((column) => {
         builder = column ? builder.select(column) : builder.select();
       });
       // Assert
-      expect(builder.operations.select).toEqual(expected);
+      expect(JSON.stringify(builder.operations.select)).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 
@@ -140,6 +149,7 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
+        dataSource: stubDataSource,
       });
 
       builder = !isEmpty(selectParam)
@@ -150,7 +160,9 @@ describe('Test data query builder > select clause', () => {
         : builder.column();
 
       // Assert
-      expect(builder.operations.select).toEqual(expected);
+      expect(JSON.stringify(builder.operations.select)).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 
@@ -209,6 +221,7 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
+        dataSource: stubDataSource,
       });
 
       builder = !isEmpty(selectParam)
@@ -219,7 +232,9 @@ describe('Test data query builder > select clause', () => {
         : builder.first();
 
       // Assert
-      expect(builder.operations.select).toEqual(expected);
+      expect(JSON.stringify(builder.operations.select)).toEqual(
+        JSON.stringify(expected)
+      );
       expect(builder.operations.limit).toEqual(1);
     }
   );
@@ -282,6 +297,7 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
+        dataSource: stubDataSource,
       });
 
       builder = !isEmpty(selectParam)
@@ -290,7 +306,9 @@ describe('Test data query builder > select clause', () => {
       builder = countParam ? builder.count(countParam) : builder.count();
 
       // Assert
-      expect(builder.operations.select).toEqual(expected);
+      expect(JSON.stringify(builder.operations.select)).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 
@@ -352,6 +370,7 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
+        dataSource: stubDataSource,
       });
 
       builder = !isEmpty(selectParam)
@@ -359,7 +378,9 @@ describe('Test data query builder > select clause', () => {
         : builder.select();
       builder.max(maxParam);
       // Assert
-      expect(builder.operations.select).toEqual(expected);
+      expect(JSON.stringify(builder.operations.select)).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 
@@ -421,6 +442,7 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
+        dataSource: stubDataSource,
       });
 
       builder = !isEmpty(selectParam)
@@ -428,7 +450,9 @@ describe('Test data query builder > select clause', () => {
         : builder.select();
       builder.min(minParam);
       // Assert
-      expect(builder.operations.select).toEqual(expected);
+      expect(JSON.stringify(builder.operations.select)).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 
@@ -490,6 +514,7 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
+        dataSource: stubDataSource,
       });
 
       builder = !isEmpty(selectParam)
@@ -497,7 +522,9 @@ describe('Test data query builder > select clause', () => {
         : builder.select();
       builder.avg(avgParam);
       // Assert
-      expect(builder.operations.select).toEqual(expected);
+      expect(JSON.stringify(builder.operations.select)).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 
@@ -559,6 +586,7 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
+        dataSource: stubDataSource,
       });
 
       builder = !isEmpty(selectParam)
@@ -566,7 +594,9 @@ describe('Test data query builder > select clause', () => {
         : builder.select();
       builder.sum(sumParam);
       // Assert
-      expect(builder.operations.select).toEqual(expected);
+      expect(JSON.stringify(builder.operations.select)).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 });

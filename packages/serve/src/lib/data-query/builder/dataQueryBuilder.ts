@@ -1,3 +1,6 @@
+import { IDataSource } from '@vulcan/serve/data-source';
+import { Pagination } from '@vulcan/serve/route';
+
 import { find, isEmpty } from 'lodash';
 import {
   ComparisonPredicate,
@@ -177,6 +180,8 @@ export interface SQLClauseOperation {
 export interface IDataQueryBuilder {
   readonly statement: string;
   readonly operations: SQLClauseOperation;
+  readonly dataSource: IDataSource;
+
   // Select clause methods
   select(...columns: Array<SelectedColumn | string>): DataQueryBuilder;
   distinct(...columns: Array<SelectedColumn | string>): DataQueryBuilder;
@@ -386,21 +391,29 @@ export interface IDataQueryBuilder {
   limit(size: number): DataQueryBuilder;
   offset(move: number): DataQueryBuilder;
   take(size: number, move: number): DataQueryBuilder;
+  // paginate
+  paginate(pagination: Pagination): void;
+  value(): Promise<object>;
+  clone(): IDataQueryBuilder;
 }
 
 export class DataQueryBuilder implements IDataQueryBuilder {
   public readonly statement: string;
   // record all operations for different SQL clauses
   public readonly operations: SQLClauseOperation;
-
+  public readonly dataSource: IDataSource;
+  public pagination?: Pagination;
   constructor({
     statement,
     operations,
+    dataSource,
   }: {
     statement: string;
     operations?: SQLClauseOperation;
+    dataSource: IDataSource;
   }) {
     this.statement = statement;
+    this.dataSource = dataSource;
     this.operations = operations || {
       select: null,
       where: [],
@@ -601,6 +614,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
   public whereWrapped(builderCallback: BuilderClauseCallback) {
     const wrappedBuilder = new DataQueryBuilder({
       statement: '',
+      dataSource: this.dataSource,
     });
     builderCallback(wrappedBuilder);
     this.recordWhere({
@@ -1043,6 +1057,33 @@ export class DataQueryBuilder implements IDataQueryBuilder {
     return this;
   }
 
+  public clone() {
+    return new DataQueryBuilder({
+      statement: this.statement,
+      dataSource: this.dataSource,
+      operations: this.operations,
+    });
+  }
+
+  // setup pagination if would like to do paginate
+  public paginate(pagination: Pagination) {
+    this.pagination = pagination;
+  }
+
+  public async value() {
+    // call data source
+    const result = await this.dataSource.execute({
+      statement: this.statement,
+      operations: this.operations,
+      pagination: this.pagination,
+    });
+
+    // Reset operations
+    await this.resetOperations();
+
+    return result;
+  }
+
   // record Select-On related operations
   private recordSelect({
     command,
@@ -1127,11 +1168,5 @@ export class DataQueryBuilder implements IDataQueryBuilder {
     this.operations.orderBy = [];
     this.operations.limit = null;
     this.operations.offset = null;
-  }
-  public value() {
-    // TODO: call Driver
-
-    // Reset operations
-    this.resetOperations();
   }
 }

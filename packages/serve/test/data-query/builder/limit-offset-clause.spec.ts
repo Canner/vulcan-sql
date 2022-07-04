@@ -1,7 +1,14 @@
-import { DataQueryBuilder } from '@vulcan/serve/data-query';
+import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
+import { DataQueryBuilder } from '@vulcan/serve/data-query';
+import { IDataSource } from '@vulcan/serve/data-source';
 
 describe('Test data query builder > limit-offset by clause', () => {
+  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+
+  beforeEach(() => {
+    stubDataSource = sinon.stubInterface<IDataSource>();
+  });
   it.each([
     {
       limit: faker.datatype.number({ max: 10 }),
@@ -23,6 +30,7 @@ describe('Test data query builder > limit-offset by clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       builder.limit(limit).offset(offset);
 
@@ -65,6 +73,7 @@ describe('Test data query builder > limit-offset by clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       builder
         .limit(first.limit)
@@ -111,6 +120,7 @@ describe('Test data query builder > limit-offset by clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       builder
         .limit(first.limit)

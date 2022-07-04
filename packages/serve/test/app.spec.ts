@@ -20,6 +20,7 @@ import {
   RequestParameters,
   RequestTransformer,
   RequestValidator,
+  PaginationTransformer,
 } from '@vulcan/serve/route';
 
 describe('Test vulcan server to call restful APIs', () => {
@@ -175,11 +176,13 @@ describe('Test vulcan server to call restful APIs', () => {
   beforeAll(async () => {
     const reqTransformer = new RequestTransformer();
     const reqValidator = new RequestValidator();
+    const paginationTransformer = new PaginationTransformer();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
 
     const generator = new RouteGenerator({
       reqTransformer,
       reqValidator,
+      paginationTransformer,
       templateEngine: stubTemplateEngine,
     });
     const routes = await generator.multiGenerate(
@@ -237,7 +240,7 @@ describe('Test vulcan server to call restful APIs', () => {
       const response = await reqOperation;
 
       // Assert
-      expect(response.body).toEqual(expected);
+      expect(response.body.reqParams).toEqual(expected);
     }
   );
 });

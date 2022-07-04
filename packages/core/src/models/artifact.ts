@@ -20,6 +20,12 @@ error:
 
 import { Constraint } from '../lib/validators/constraints';
 
+export enum PaginationMode {
+  CURSOR = 'CURSOR',
+  OFFSET = 'OFFSET',
+  KEYSET = 'KEYSET',
+}
+
 export enum FieldInType {
   QUERY = 'QUERY',
   HEADER = 'HEADER',
@@ -54,6 +60,12 @@ export interface ResponseProperty {
   required?: boolean;
 }
 
+export interface PaginationSchema {
+  mode: PaginationMode;
+  // The key name used for do filtering by key for keyset pagination.
+  keyName?: string;
+}
+
 export interface ErrorInfo {
   code: string;
   message: string;
@@ -70,6 +82,9 @@ export interface APISchema {
   errors: Array<ErrorInfo>;
   response: Array<ResponseProperty>;
   description?: string;
+  // The pagination strategy that do paginate when querying
+  // If not set pagination, then API request not provide the field to do it
+  pagination?: PaginationSchema;
 }
 
 export interface BuiltArtifact {

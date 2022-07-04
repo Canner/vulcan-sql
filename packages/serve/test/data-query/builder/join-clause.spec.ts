@@ -1,3 +1,4 @@
+import * as sinon from 'ts-sinon';
 import {
   BetweenPredicateInput,
   ComparisonPredicate,
@@ -12,10 +13,18 @@ import {
   LogicalOperator,
   NullPredicateInput,
 } from '@vulcan/serve/data-query';
+import { IDataSource } from '@vulcan/serve/data-source';
 
 describe('Test data query builder > join clause', () => {
+  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+
+  beforeEach(() => {
+    stubDataSource = sinon.stubInterface<IDataSource>();
+  });
+
   const joinBuilder = new DataQueryBuilder({
     statement: 'select * from products',
+    dataSource: sinon.stubInterface<IDataSource>(),
   });
   const alias = 'products';
   const joinOnClauseOperations: Array<JoinOnClauseOperation> = [
@@ -112,6 +121,7 @@ describe('Test data query builder > join clause', () => {
       // Act
       const queryBuilder = new DataQueryBuilder({
         statement,
+        dataSource: stubDataSource,
       });
       const joinCallMapper = {
         [JoinCommandType.INNER_JOIN]: (builder: IDataQueryBuilder) =>
@@ -124,8 +134,11 @@ describe('Test data query builder > join clause', () => {
           builder.fullJoin(joinParameters.joinBuilder, joinParameters.clause),
       };
       joinCallMapper[command](queryBuilder);
+
       // Assert
-      expect(queryBuilder.operations.join[0]).toEqual(expected);
+      expect(JSON.stringify(queryBuilder.operations.join[0])).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 });

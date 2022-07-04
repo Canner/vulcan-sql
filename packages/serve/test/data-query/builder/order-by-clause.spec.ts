@@ -1,11 +1,18 @@
+import * as sinon from 'ts-sinon';
+import faker from '@faker-js/faker';
 import {
   DataQueryBuilder,
   Direction,
   OrderByClauseOperation,
 } from '@vulcan/serve/data-query';
-import faker from '@faker-js/faker';
+import { IDataSource } from '@vulcan/serve/data-source';
 
 describe('Test data query builder > order by clause', () => {
+  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+
+  beforeEach(() => {
+    stubDataSource = sinon.stubInterface<IDataSource>();
+  });
   it.each([
     {
       column: faker.database.column(),
@@ -29,11 +36,14 @@ describe('Test data query builder > order by clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       builder.orderBy(column, direction);
 
       // Assert
-      expect(builder.operations.orderBy).toEqual(expected);
+      expect(JSON.stringify(builder.operations.orderBy)).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 
@@ -67,13 +77,16 @@ describe('Test data query builder > order by clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       builder
         .orderBy(first.column, first.direction)
         .orderBy(second.column, second.direction);
 
       // Assert
-      expect(builder.operations.orderBy).toEqual(expected);
+      expect(JSON.stringify(builder.operations.orderBy)).toEqual(
+        JSON.stringify(expected)
+      );
     }
   );
 });

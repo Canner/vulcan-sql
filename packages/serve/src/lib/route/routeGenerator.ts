@@ -1,3 +1,4 @@
+import { IPaginationTransformer } from '@vulcan/serve/route';
 import { APISchema, TemplateEngine } from '@vulcan/core';
 
 import {
@@ -21,6 +22,7 @@ type APIRouteBuilderOption = {
 export class RouteGenerator {
   private reqValidator: IRequestValidator;
   private reqTransformer: IRequestTransformer;
+  private paginationTransformer: IPaginationTransformer;
   private templateEngine: TemplateEngine;
   private apiOptions: APIRouteBuilderOption = {
     [APIProviderType.RESTFUL]: RestfulRoute,
@@ -30,14 +32,17 @@ export class RouteGenerator {
   constructor({
     reqValidator,
     reqTransformer,
+    paginationTransformer,
     templateEngine,
   }: {
     reqValidator: IRequestValidator;
     reqTransformer: IRequestTransformer;
+    paginationTransformer: IPaginationTransformer;
     templateEngine: TemplateEngine;
   }) {
     this.reqValidator = reqValidator;
     this.reqTransformer = reqTransformer;
+    this.paginationTransformer = paginationTransformer;
     this.templateEngine = templateEngine;
   }
 
@@ -49,6 +54,7 @@ export class RouteGenerator {
       apiSchema,
       reqTransformer: this.reqTransformer,
       reqValidator: this.reqValidator,
+      paginationTransformer: this.paginationTransformer,
       templateEngine: this.templateEngine,
     });
   }

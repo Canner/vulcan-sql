@@ -1,3 +1,4 @@
+import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
 import {
   DataQueryBuilder,
@@ -10,6 +11,7 @@ import {
   HavingClauseOperation,
   HavingPredicateInput,
 } from '@vulcan/serve/data-query';
+import { IDataSource } from '@vulcan/serve/data-source';
 
 const normalized = (column: string | SelectedColumn) => {
   if (typeof column === 'string') return { name: column };
@@ -17,6 +19,12 @@ const normalized = (column: string | SelectedColumn) => {
 };
 
 describe('Test data query builder > having clause', () => {
+  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+
+  beforeEach(() => {
+    stubDataSource = sinon.stubInterface<IDataSource>();
+  });
+
   it.each([
     {
       having: {
@@ -27,7 +35,10 @@ describe('Test data query builder > having clause', () => {
       and: {
         column: faker.database.column(),
         operator: '=',
-        value: new DataQueryBuilder({ statement: 'select * from products' }),
+        value: new DataQueryBuilder({
+          statement: 'select * from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
+        }),
       },
     },
     {
@@ -38,7 +49,10 @@ describe('Test data query builder > having clause', () => {
           aggregateType: AggregateFuncType.AVG,
         } as SelectedColumn,
         operator: '=',
-        value: new DataQueryBuilder({ statement: 'select avg(*) from users' }),
+        value: new DataQueryBuilder({
+          statement: 'select avg(*) from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
+        }),
       },
       and: {
         column: faker.database.column(),
@@ -88,13 +102,14 @@ describe('Test data query builder > having clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (having) builder.having(having.column, having.operator, having.value);
       if (and) builder.andHaving(and.column, and.operator, and.value);
 
       // Asset
-      expect(builder.operations.having).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.having)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -109,7 +124,10 @@ describe('Test data query builder > having clause', () => {
       or: {
         column: faker.database.column(),
         operator: '=',
-        value: new DataQueryBuilder({ statement: 'select * from products' }),
+        value: new DataQueryBuilder({
+          statement: 'select * from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
+        }),
       },
     },
     {
@@ -120,7 +138,10 @@ describe('Test data query builder > having clause', () => {
           aggregateType: AggregateFuncType.AVG,
         } as SelectedColumn,
         operator: '=',
-        value: new DataQueryBuilder({ statement: 'select avg(*) from users' }),
+        value: new DataQueryBuilder({
+          statement: 'select avg(*) from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
+        }),
       },
       or: {
         column: faker.database.column(),
@@ -170,13 +191,14 @@ describe('Test data query builder > having clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (having) builder.having(having.column, having.operator, having.value);
       if (or) builder.orHaving(or.column, or.operator, or.value);
 
       // Asset
-      expect(builder.operations.having).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.having)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -281,13 +303,14 @@ describe('Test data query builder > having clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (havingIn) builder.havingIn(havingIn.column, havingIn.values);
       if (and) builder.andHavingIn(and.column, and.values);
       if (andNot) builder.andHavingNotIn(andNot.column, andNot.values);
       // Asset
-      expect(builder.operations.having).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.having)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -393,13 +416,14 @@ describe('Test data query builder > having clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (notIn) builder.havingNotIn(notIn.column, notIn.values);
       if (or) builder.orHavingIn(or.column, or.values);
       if (orNot) builder.orHavingNotIn(orNot.column, orNot.values);
       // Asset
-      expect(builder.operations.having).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.having)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -487,6 +511,7 @@ describe('Test data query builder > having clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (between)
         builder.havingBetween(between.column, between.min, between.max);
@@ -494,8 +519,8 @@ describe('Test data query builder > having clause', () => {
       if (andNot)
         builder.andHavingNotBetween(andNot.column, andNot.min, andNot.max);
       // Asset
-      expect(builder.operations.having).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.having)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -584,6 +609,7 @@ describe('Test data query builder > having clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (notBetween)
         builder.havingNotBetween(
@@ -594,8 +620,8 @@ describe('Test data query builder > having clause', () => {
       if (or) builder.orHavingBetween(or.column, or.min, or.max);
       if (orNot) builder.orHavingNotBetween(orNot.column, orNot.min, orNot.max);
       // Asset
-      expect(builder.operations.having).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.having)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -653,13 +679,14 @@ describe('Test data query builder > having clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (isNull) builder.havingNull(isNull.column);
       if (and) builder.andHavingNull(and.column);
       if (andNot) builder.andHavingNotNull(andNot.column);
       // Asset
-      expect(builder.operations.having).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.having)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -718,13 +745,14 @@ describe('Test data query builder > having clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (notNull) builder.havingNotNull(notNull.column);
       if (or) builder.orHavingNull(or.column);
       if (orNot) builder.orHavingNotNull(orNot.column);
       // Asset
-      expect(builder.operations.having).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.having)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -734,18 +762,21 @@ describe('Test data query builder > having clause', () => {
       exists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       and: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       andNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -754,18 +785,21 @@ describe('Test data query builder > having clause', () => {
       exists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       and: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       andNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -785,13 +819,14 @@ describe('Test data query builder > having clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (exists) builder.havingExists(exists);
       if (and) builder.andHavingExists(and);
       if (andNot) builder.andHavingNotExists(andNot);
       // Asset
-      expect(builder.operations.having).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.having)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );
@@ -801,18 +836,21 @@ describe('Test data query builder > having clause', () => {
       exists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       or: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       orNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -821,18 +859,21 @@ describe('Test data query builder > having clause', () => {
       exists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       or: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       orNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
+          dataSource: sinon.stubInterface<IDataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -853,13 +894,14 @@ describe('Test data query builder > having clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
+        dataSource: stubDataSource,
       });
       if (exists) builder.havingNotExists(exists);
       if (or) builder.orHavingExists(or);
       if (orNot) builder.orHavingNotExists(orNot);
       // Asset
-      expect(builder.operations.having).toEqual(
-        expect.arrayContaining(expected)
+      expect(JSON.stringify(builder.operations.having)).toEqual(
+        JSON.stringify(expected)
       );
     }
   );

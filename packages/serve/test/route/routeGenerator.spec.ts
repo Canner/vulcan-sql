@@ -8,11 +8,13 @@ import {
   IRequestValidator,
   RestfulRoute,
   RouteGenerator,
+  IPaginationTransformer,
 } from '@vulcan/serve/route';
 
 describe('Test route generator ', () => {
   let stubReqTransformer: sinon.StubbedInstance<IRequestTransformer>;
   let stubReqValidator: sinon.StubbedInstance<IRequestValidator>;
+  let stubPaginationTransformer: sinon.StubbedInstance<IPaginationTransformer>;
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
   const fakeSchemas: Array<APISchema> = Array(
     faker.datatype.number({ min: 2, max: 4 })
@@ -21,6 +23,7 @@ describe('Test route generator ', () => {
   beforeEach(() => {
     stubReqTransformer = sinon.stubInterface<IRequestTransformer>();
     stubReqValidator = sinon.stubInterface<IRequestValidator>();
+    stubPaginationTransformer = sinon.stubInterface<IPaginationTransformer>();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
   });
 
@@ -32,11 +35,13 @@ describe('Test route generator ', () => {
         apiSchema,
         reqTransformer: stubReqTransformer,
         reqValidator: stubReqValidator,
+        paginationTransformer: stubPaginationTransformer,
         templateEngine: stubTemplateEngine,
       });
       const routeGenerator = new RouteGenerator({
         reqTransformer: stubReqTransformer,
         reqValidator: stubReqValidator,
+        paginationTransformer: stubPaginationTransformer,
         templateEngine: stubTemplateEngine,
       });
 
@@ -62,11 +67,13 @@ describe('Test route generator ', () => {
         apiSchema,
         reqTransformer: stubReqTransformer,
         reqValidator: stubReqValidator,
+        paginationTransformer: stubPaginationTransformer,
         templateEngine: stubTemplateEngine,
       });
       const routeGenerator = new RouteGenerator({
         reqTransformer: stubReqTransformer,
         reqValidator: stubReqValidator,
+        paginationTransformer: stubPaginationTransformer,
         templateEngine: stubTemplateEngine,
       });
 
