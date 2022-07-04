@@ -28,7 +28,7 @@ request:
   stubValidatorLoader.getLoader.returns({
     name: 'validator1',
     validateSchema: () => true,
-    validateData: () => true,
+    validateData: () => null,
   });
   const schemaParser = new SchemaParser({
     schemaReader: stubSchemaReader,

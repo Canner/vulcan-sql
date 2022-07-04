@@ -10,12 +10,14 @@
     "noFallthroughCasesInSwitch": true,
     "typeRoots": ["../../node_modules/@types"],
     "paths": {
-      "@artifact-builder/*": ["packages/core/src/lib/artifact-builder/*"],
-      "@template-engine/*": ["packages/core/src/lib/template-engine/*"],
-      "@validators/*": ["packages/core/src/lib/validators/*"],
-      "@models/": ["packages/core/src/models"]
+      // specify vulcan/core package for link and make us could import by @vulcan/core
+      "@vulcan/core": ["packages/core/src/index.ts"],
+      "@route/*": ["packages/serve/src/lib/route/*"],
+      "@app": ["packages/serve/src/lib/app.ts"]
     }
   },
+  "files": [],
+  "include": [],
   "references": [
     {
       "path": "./tsconfig.lib.json"
@@ -23,5 +25,9 @@
     {
       "path": "./tsconfig.spec.json"
     }
-  ]
+  ],
+  // make above paths configuration could run ts-node
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
 }

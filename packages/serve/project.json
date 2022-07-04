@@ -1,0 +1,39 @@
+{
+  "root": "packages/serve",
+  "sourceRoot": "packages/serve/src",
+  "targets": {
+    "start": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "ts-node --project packages/serve/tsconfig.json packages/serve/src/index.ts"
+      }
+    },
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/serve",
+        "main": "packages/serve/src/index.ts",
+        "tsConfig": "packages/serve/tsconfig.lib.json",
+        "assets": ["packages/serve/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/serve/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/serve"],
+      "options": {
+        "jestConfig": "packages/serve/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
