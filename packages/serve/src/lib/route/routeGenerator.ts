@@ -1,4 +1,4 @@
-import { APISchema } from '@vulcan/core';
+import { APISchema, TemplateEngine } from '@vulcan/core';
 
 import {
   RestfulRoute,
@@ -21,6 +21,7 @@ type APIRouteBuilderOption = {
 export class RouteGenerator {
   private reqValidator: IRequestValidator;
   private reqTransformer: IRequestTransformer;
+  private templateEngine: TemplateEngine;
   private apiOptions: APIRouteBuilderOption = {
     [APIProviderType.RESTFUL]: RestfulRoute,
     [APIProviderType.GRAPHQL]: GraphQLRoute,
@@ -29,12 +30,15 @@ export class RouteGenerator {
   constructor({
     reqValidator,
     reqTransformer,
+    templateEngine,
   }: {
     reqValidator: IRequestValidator;
     reqTransformer: IRequestTransformer;
+    templateEngine: TemplateEngine;
   }) {
     this.reqValidator = reqValidator;
     this.reqTransformer = reqTransformer;
+    this.templateEngine = templateEngine;
   }
 
   public async generate(apiSchema: APISchema, optionType: APIProviderType) {
@@ -45,6 +49,7 @@ export class RouteGenerator {
       apiSchema,
       reqTransformer: this.reqTransformer,
       reqValidator: this.reqValidator,
+      templateEngine: this.templateEngine,
     });
   }
 
