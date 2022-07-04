@@ -6,7 +6,7 @@ import {
   MinLengthConstraint,
   MinValueConstraint,
   RequiredConstraint,
-} from '../../src/validators';
+} from '@vulcan/core/validators';
 
 it('Required constraint compose should always return required constraint', async () => {
   // Arrange

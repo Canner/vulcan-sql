@@ -19,8 +19,6 @@ export const checkValidator =
       const validator = loader.getLoader(validatorRequest.name);
 
       // TODO: indicate the detail of error
-      if (!validator.validateSchema(validatorRequest.args)) {
-        throw new Error(`Validator ${validatorRequest.name} schema invalid`);
-      }
+      validator.validateSchema(validatorRequest.args);
     }
   };

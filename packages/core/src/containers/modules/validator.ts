@@ -1,5 +1,5 @@
 import { ContainerModule } from 'inversify';
-import { ValidatorLoader } from '../../validators/validatorLoader';
+import { ValidatorLoader } from '@vulcan/core/validators';
 import { TYPES } from '../types';
 
 export const validatorModule = () =>

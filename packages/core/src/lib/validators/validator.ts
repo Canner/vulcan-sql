@@ -1,12 +1,12 @@
 import { Constraint } from './constraints';
 
-export interface IValidator<T = any> {
+export default interface IValidator<T = any> {
   // validator name
-  name: string;
+  readonly name: string;
   // validate Schema format
-  validateSchema(args: T): boolean;
-  // validate input data
-  validateData(data: string, args: T): boolean;
+  validateSchema(args: T): void;
+  // validate input value
+  validateData(value: string, args?: T): void;
   // TODO: Find a better way to get constraints.
   // Get the constraints of this validator
   getConstraints?(args: T): Constraint[];

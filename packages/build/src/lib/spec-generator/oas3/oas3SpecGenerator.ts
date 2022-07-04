@@ -11,7 +11,7 @@ import {
   MinLengthConstraint,
   MinValueConstraint,
   RegexConstraint,
-  RequestParameter,
+  RequestSchema as RequestParameter,
   RequiredConstraint,
   ResponseProperty,
 } from '@vulcan/core';
