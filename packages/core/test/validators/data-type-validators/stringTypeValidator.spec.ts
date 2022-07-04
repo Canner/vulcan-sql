@@ -1,5 +1,5 @@
 import faker from '@faker-js/faker';
-import { StringTypeValidator } from '@vulcan/core/validators/data-type-validators';
+import { StringTypeValidator } from '@vulcan/core/validators';
 
 describe('Test "string" type validator', () => {
   it.each([

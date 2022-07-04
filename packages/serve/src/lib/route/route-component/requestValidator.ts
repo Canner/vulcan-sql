@@ -1,9 +1,10 @@
 import {
   APISchema,
-  loadedValidators,
+  IValidatorLoader,
   RequestSchema,
   ValidatorDefinition,
 } from '@vulcan/core';
+
 import { RequestParameters } from './requestTransformer';
 
 export interface IRequestValidator {
@@ -11,6 +12,10 @@ export interface IRequestValidator {
 }
 
 export class RequestValidator implements IRequestValidator {
+  private validatorLoader: IValidatorLoader;
+  constructor(loader: IValidatorLoader) {
+    this.validatorLoader = loader;
+  }
   // validate each parameters of request and transform the request content of koa ctx to "RequestParameters" format
   public async validate(reqParams: RequestParameters, apiSchema: APISchema) {
     await Promise.all(
@@ -27,16 +32,9 @@ export class RequestValidator implements IRequestValidator {
     schemaValidators: Array<ValidatorDefinition>
   ) {
     await Promise.all(
-      schemaValidators.map((schemaValidator) => {
-        if (!(schemaValidator.name in loadedValidators)) {
-          throw new Error(
-            `The name "${schemaValidator.name}" of validator not defined, please defined it through IValidator.`
-          );
-        }
-        loadedValidators[schemaValidator.name].validateData(
-          fieldValue,
-          schemaValidator.args
-        );
+      schemaValidators.map(async (schemaValidator) => {
+        const validator = await this.validatorLoader.load(schemaValidator.name);
+        validator.validateData(fieldValue, schemaValidator.args);
       })
     );
   }

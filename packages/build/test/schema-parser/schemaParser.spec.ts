@@ -6,18 +6,18 @@ import {
   SchemaParser,
   SchemaReader,
 } from '@vulcan/build/schema-parser';
-import { ValidatorLoader, TYPES as CORE_TYPES } from '@vulcan/core';
+import { IValidatorLoader, TYPES as CORE_TYPES } from '@vulcan/core';
 import { Container } from 'inversify';
 import * as sinon from 'ts-sinon';
 
 let container: Container;
 let stubSchemaReader: sinon.StubbedInstance<SchemaReader>;
-let stubValidatorLoader: sinon.StubbedInstance<ValidatorLoader>;
+let stubValidatorLoader: sinon.StubbedInstance<IValidatorLoader>;
 
 beforeEach(() => {
   container = new Container();
   stubSchemaReader = sinon.stubInterface<SchemaReader>();
-  stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
+  stubValidatorLoader = sinon.stubInterface<IValidatorLoader>();
 
   container
     .bind(TYPES.Factory_SchemaReader)
@@ -33,7 +33,7 @@ beforeEach(() => {
     .to(SchemaParserOptions)
     .inSingletonScope();
   container
-    .bind(CORE_TYPES.ValidatorLoader)
+    .bind(CORE_TYPES.IValidatorLoader)
     .toConstantValue(stubValidatorLoader);
   container.bind(TYPES.SchemaParser).to(SchemaParser).inSingletonScope();
 });
@@ -59,9 +59,9 @@ request:
     };
   };
   stubSchemaReader.readSchema.returns(generator());
-  stubValidatorLoader.getLoader.returns({
+  stubValidatorLoader.load.resolves({
     name: 'validator1',
-    validateSchema: () => true,
+    validateSchema: () => null,
     validateData: () => null,
   });
   const schemaParser = container.get<SchemaParser>(TYPES.SchemaParser);

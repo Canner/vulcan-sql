@@ -1,20 +1,19 @@
-import * as uuid from 'uuid';
-import { UUIDTypeValidator } from '@vulcan/core/validators/data-type-validators';
+import { DateTypeValidator } from '@vulcan/core/validators';
 
-describe('Test "uuid" type validator ', () => {
+describe('Test "date" type validator', () => {
   it.each([
     ['{}'],
-    ['{"version": "uuid_v1"}'],
-    ['{"version": "uuid_v4"}'],
-    ['{"version": "uuid_v5"}'],
+    ['{"format": "123"}'],
+    ['{"format": "DD/MM/YYYY"}'],
+    ['{"format": "YYYY-MM-DD"}'],
   ])(
     'Should be valid when validate args schema %p',
     async (inputArgs: string) => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new UUIDTypeValidator();
-
+      const validator = new DateTypeValidator();
+      const result = validator.validateSchema(args);
       // Assert
       expect(() => validator.validateSchema(args)).not.toThrow();
     }
@@ -22,17 +21,16 @@ describe('Test "uuid" type validator ', () => {
 
   it.each([
     ['[]'],
-    ['{"non-key": 1}'],
-    ['{"key1": 1}'],
-    ['{"key2": 2}'],
-    ['{"key3": "value3"}'],
+    ['{"non-key": "non-value"}'],
+    ['{"key1": "value1"}'],
+    ['{"key2": "value2"}'],
   ])(
     'Should be invalid when validate args schema %p',
     async (inputArgs: string) => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new UUIDTypeValidator();
+      const validator = new DateTypeValidator();
 
       // Assert
       expect(() => validator.validateSchema(args)).toThrow();
@@ -40,39 +38,38 @@ describe('Test "uuid" type validator ', () => {
   );
 
   it.each([
-    [uuid.v1(), '{}'],
-    [uuid.v4(), '{}'],
-    [uuid.v1(), '{"version": "uuid_v1"}'],
-    [uuid.v4(), '{"version": "uuid_v4"}'],
-    [
-      uuid.v5('canner.com', 'da327b91-b802-4f1f-9d25-91d23eecca32'),
-      '{"version": "uuid_v5"}',
-    ],
+    ['2022', '{"format": "YYYY"}'],
+    ['202210', '{"format": "YYYYMM"}'],
+    ['10/10/2021', '{"format": "DD/MM/YYYY"}'],
+    ['2021-10-10', '{"format": "YYYY-MM-DD"}'],
+    ['2021 10 10', '{"format": "YYYY MM DD"}'],
+    ['24 12 2019 09:15:00', '{"format": "DD MM YYYY hh:mm:ss"}'],
   ])(
     'Should be valid when validate data %p with args is %p',
     async (data: string, inputArgs: string) => {
       // Arrange
       const args = JSON.parse(inputArgs);
+
       // Act
-      const validator = new UUIDTypeValidator();
+      const validator = new DateTypeValidator();
 
       // Assert
       expect(() => validator.validateData(data, args)).not.toThrow();
     }
   );
+
   it.each([
-    [uuid.v4(), '{"version": "uuid_v1"}'],
-    [
-      uuid.v5('canner.com', 'da327b91-b802-4f1f-9d25-91d23eecca32'),
-      '{"version": "uuid_v1"}',
-    ],
+    ['2021-10-10', '{"format": "DD/MM/YYYY"}'],
+    ['2021/10/10', '{"format": "YYYY-MM-DD"}'],
+    ['2021/10', '{"format": "YYYY-MM-DD"}'],
   ])(
     'Should be invalid when validate data %p with args is %p',
     async (data: string, inputArgs: string) => {
       // Arrange
       const args = JSON.parse(inputArgs);
+
       // Act
-      const validator = new UUIDTypeValidator();
+      const validator = new DateTypeValidator();
 
       // Assert
       expect(() => validator.validateData(data, args)).toThrow();

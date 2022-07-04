@@ -1,6 +1,6 @@
 import { RawAPISchema } from '@vulcan/build/schema-parser';
 import { checkValidator } from '@vulcan/build/schema-parser/middleware/checkValidator';
-import { ValidatorLoader } from '@vulcan/core';
+import { IValidatorLoader } from '@vulcan/core';
 import * as sinon from 'ts-sinon';
 
 it('Should pass if there is no error', async () => {
@@ -13,8 +13,8 @@ it('Should pass if there is no error', async () => {
       },
     ],
   };
-  const stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
-  stubValidatorLoader.getLoader.returns({
+  const stubValidatorLoader = sinon.stubInterface<IValidatorLoader>();
+  stubValidatorLoader.load.resolves({
     name: 'validator1',
     validateSchema: () => null,
     validateData: () => null,
@@ -36,8 +36,8 @@ it('Should throw if some validators have no name', async () => {
       },
     ],
   };
-  const stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
-  stubValidatorLoader.getLoader.returns({
+  const stubValidatorLoader = sinon.stubInterface<IValidatorLoader>();
+  stubValidatorLoader.load.resolves({
     name: 'validator1',
     validateSchema: () => null,
     validateData: () => null,
@@ -59,8 +59,8 @@ it('Should throw if the arguments of a validator is invalid', async () => {
       },
     ],
   };
-  const stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
-  stubValidatorLoader.getLoader.returns({
+  const stubValidatorLoader = sinon.stubInterface<IValidatorLoader>();
+  stubValidatorLoader.load.resolves({
     name: 'validator1',
     validateSchema: () => {
       throw new Error();

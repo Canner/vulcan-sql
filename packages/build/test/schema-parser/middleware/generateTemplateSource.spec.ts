@@ -1,4 +1,4 @@
-import { RawAPISchema } from '@vulcan/build/schema-parser/.';
+import { RawAPISchema } from '@vulcan/build/schema-parser';
 import { generateTemplateSource } from '@vulcan/build/schema-parser/middleware/generateTemplateSource';
 
 it('Should keep templateSource in schema', async () => {

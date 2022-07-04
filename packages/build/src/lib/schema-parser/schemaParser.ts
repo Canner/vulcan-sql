@@ -2,7 +2,7 @@ import {
   APISchema,
   TemplateMetadata,
   TYPES as CORE_TYPES,
-  ValidatorLoader,
+  IValidatorLoader,
 } from '@vulcan/core';
 import { SchemaData, SchemaFormat, SchemaReader } from './schema-reader';
 import * as yaml from 'js-yaml';
@@ -41,7 +41,7 @@ export class SchemaParser {
     @inject(TYPES.Factory_SchemaReader)
     schemaReaderFactory: interfaces.AutoNamedFactory<SchemaReader>,
     @inject(TYPES.SchemaParserOptions) schemaParserOptions: SchemaParserOptions,
-    @inject(CORE_TYPES.ValidatorLoader) validatorLoader: ValidatorLoader
+    @inject(CORE_TYPES.IValidatorLoader) validatorLoader: IValidatorLoader
   ) {
     this.schemaReader = schemaReaderFactory(schemaParserOptions.reader);
 

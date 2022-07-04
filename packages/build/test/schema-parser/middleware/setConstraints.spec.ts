@@ -4,17 +4,17 @@ import {
   Constraint,
   MinValueConstraint,
   RequiredConstraint,
-  ValidatorLoader,
+  IValidatorLoader,
 } from '@vulcan/core';
 import * as sinon from 'ts-sinon';
 
 it('Should set and compose constraints', async () => {
   // Arrange
-  const stubValidatorLoader = sinon.stubInterface<ValidatorLoader>();
-  stubValidatorLoader.getLoader.callsFake((name) => ({
+  const stubValidatorLoader = sinon.stubInterface<IValidatorLoader>();
+  stubValidatorLoader.load.callsFake(async (name) => ({
     name,
-    validateData: () => true,
-    validateSchema: () => true,
+    validateData: () => null,
+    validateSchema: () => null,
     getConstraints: (args) => {
       if (name === 'required') return [Constraint.Required()];
       return [Constraint.MinValue(args.value)];

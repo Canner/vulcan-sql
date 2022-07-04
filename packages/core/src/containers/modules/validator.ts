@@ -1,17 +1,10 @@
-import { ContainerModule } from 'inversify';
-import { ValidatorLoader } from '@vulcan/core/validators';
+import { AsyncContainerModule } from 'inversify';
+import { IValidatorLoader, ValidatorLoader } from '@vulcan/core/validators';
 import { TYPES } from '../types';
 
 export const validatorModule = () =>
-  new ContainerModule((bind) => {
-    bind<ValidatorLoader>(TYPES.ValidatorLoader).toConstantValue({
-      // TODO: Mock value
-      getLoader: (name: string) => {
-        return {
-          name,
-          validateSchema: () => true,
-          validateData: () => true,
-        };
-      },
-    });
+  new AsyncContainerModule(async (bind) => {
+    bind<IValidatorLoader>(TYPES.IValidatorLoader).toDynamicValue(
+      (context) => new ValidatorLoader()
+    );
   });

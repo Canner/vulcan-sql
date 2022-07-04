@@ -20,5 +20,5 @@ export const TYPES = {
   // Executor
   Executor: Symbol.for('Executor'),
   // Validator
-  ValidatorLoader: Symbol.for('ValidatorLoader'),
+  IValidatorLoader: Symbol.for('IValidatorLoader'),
 };

@@ -1,4 +1,4 @@
-import { RawAPISchema } from '@vulcan/build/schema-parser/.';
+import { RawAPISchema } from '@vulcan/build/schema-parser';
 import { generateUrl } from '@vulcan/build/schema-parser/middleware/generateUrl';
 
 it('Should keep url in schema', async () => {

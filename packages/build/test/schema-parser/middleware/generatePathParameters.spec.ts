@@ -1,4 +1,4 @@
-import { RawAPISchema } from '@vulcan/build/schema-parser/.';
+import { RawAPISchema } from '@vulcan/build/schema-parser';
 import { generatePathParameters } from '@vulcan/build/schema-parser/middleware';
 import { FieldDataType, FieldInType } from '@vulcan/core';
 

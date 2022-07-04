@@ -1,4 +1,5 @@
-import { RawAPISchema } from '@vulcan/build/schema-parser/.';
+import 'reflect-metadata';
+import { RawAPISchema } from '@vulcan/build/schema-parser';
 import { transformValidator } from '@vulcan/build/schema-parser/middleware/transformValidator';
 
 it('Should convert string validator to proper format', async () => {
