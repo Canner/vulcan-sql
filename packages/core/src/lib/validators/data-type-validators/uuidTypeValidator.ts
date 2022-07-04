@@ -10,7 +10,7 @@ export interface UUIDInputArgs {
   version?: UUIDVersion;
 }
 
-export class UUIDTypeValidator implements IValidator {
+export default class UUIDTypeValidator implements IValidator {
   public readonly name = 'uuid';
   // Validator for arguments schema in schema.yaml, should match UUIDInputArgs
   private argsValidator = Joi.object({

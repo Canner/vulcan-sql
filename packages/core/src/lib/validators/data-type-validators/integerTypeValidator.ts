@@ -13,7 +13,7 @@ export interface IntInputArgs {
   less?: number;
 }
 
-export class IntegerTypeValidator implements IValidator {
+export default class IntegerTypeValidator implements IValidator {
   public readonly name = 'integer';
   // Validator for arguments schema in schema.yaml, should match IntInputArgs
   private argsValidator = Joi.object({

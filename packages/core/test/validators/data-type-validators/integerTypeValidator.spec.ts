@@ -1,4 +1,4 @@
-import { IntegerTypeValidator } from '@validators/data-type-validators';
+import { IntegerTypeValidator } from '@validators/.';
 
 describe('Test "integer" type validator', () => {
   it.each([

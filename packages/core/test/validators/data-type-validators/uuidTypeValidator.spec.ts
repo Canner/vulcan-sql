@@ -1,5 +1,5 @@
 import * as uuid from 'uuid';
-import { UUIDTypeValidator } from '@validators/data-type-validators';
+import { UUIDTypeValidator } from '@validators/.';
 
 describe('Test "uuid" type validator ', () => {
   it.each([

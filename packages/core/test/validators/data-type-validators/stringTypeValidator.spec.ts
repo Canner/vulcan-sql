@@ -1,19 +1,25 @@
-import { DateTypeValidator } from '@validators/data-type-validators';
+import faker from '@faker-js/faker';
+import { StringTypeValidator } from '@validators/.';
 
-describe('Test "date" type validator', () => {
+describe('Test "string" type validator', () => {
   it.each([
     ['{}'],
-    ['{"format": "123"}'],
-    ['{"format": "DD/MM/YYYY"}'],
-    ['{"format": "YYYY-MM-DD"}'],
+    ['{"format": "[a-z]"}'],
+    ['{"length": 10}'],
+    ['{"length": "10"}'],
+    ['{"min": 2}'],
+    ['{"max": 10}'],
+    ['{"format": "[A-Z]", "length": 10}'],
+    ['{"format": "[A-Z]", "min": "2"}'],
+    ['{"format": "[A-Z]", "max": 10}'],
   ])(
     'Should be valid when validate args schema %p',
     async (inputArgs: string) => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new DateTypeValidator();
-      const result = validator.validateSchema(args);
+      const validator = new StringTypeValidator();
+
       // Assert
       expect(() => validator.validateSchema(args)).not.toThrow();
     }
@@ -21,16 +27,17 @@ describe('Test "date" type validator', () => {
 
   it.each([
     ['[]'],
-    ['{"non-key": "non-value"}'],
-    ['{"key1": "value1"}'],
-    ['{"key2": "value2"}'],
+    ['{"non-key": 1}'],
+    ['{"key1": 1}'],
+    ['{"key2": 2}'],
+    ['{"key3": "value3"}'],
   ])(
     'Should be invalid when validate args schema %p',
     async (inputArgs: string) => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new DateTypeValidator();
+      const validator = new StringTypeValidator();
 
       // Assert
       expect(() => validator.validateSchema(args)).toThrow();
@@ -38,38 +45,34 @@ describe('Test "date" type validator', () => {
   );
 
   it.each([
-    ['2022', '{"format": "YYYY"}'],
-    ['202210', '{"format": "YYYYMM"}'],
-    ['10/10/2021', '{"format": "DD/MM/YYYY"}'],
-    ['2021-10-10', '{"format": "YYYY-MM-DD"}'],
-    ['2021 10 10', '{"format": "YYYY MM DD"}'],
-    ['24 12 2019 09:15:00', '{"format": "DD MM YYYY hh:mm:ss"}'],
+    [faker.datatype.string(), '{}'],
+    ['abc', '{"format": "[a-z]"}'],
+    ['a123456789', '{"length": 10}'],
+    ['ABCDEFGHIJ', '{"format": "[A-Z]", "length": 10}'],
   ])(
     'Should be valid when validate data %p with args is %p',
     async (data: string, inputArgs: string) => {
       // Arrange
       const args = JSON.parse(inputArgs);
-
       // Act
-      const validator = new DateTypeValidator();
+      const validator = new StringTypeValidator();
 
       // Assert
       expect(() => validator.validateData(data, args)).not.toThrow();
     }
   );
-
   it.each([
-    ['2021-10-10', '{"format": "DD/MM/YYYY"}'],
-    ['2021/10/10', '{"format": "YYYY-MM-DD"}'],
-    ['2021/10', '{"format": "YYYY-MM-DD"}'],
+    ['ABC', '{"format": "[a-z]"}'],
+    ['ab123456789', '{"length": "10"}'],
+    ['ABCDEFGHIJK', '{"format": "[A-Z]", "length": 10}'],
+    ['abcdefghijk', '{"format": "[A-Z]", "length": 10}'],
   ])(
     'Should be invalid when validate data %p with args is %p',
     async (data: string, inputArgs: string) => {
       // Arrange
       const args = JSON.parse(inputArgs);
-
       // Act
-      const validator = new DateTypeValidator();
+      const validator = new StringTypeValidator();
 
       // Assert
       expect(() => validator.validateData(data, args)).toThrow();

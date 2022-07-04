@@ -11,6 +11,7 @@ import {
   RequestSchema,
   TemplateEngine,
   ValidatorDefinition,
+  ValidatorLoader,
 } from '@vulcan/core';
 
 import {
@@ -175,7 +176,7 @@ describe('Test vulcan server to call restful APIs', () => {
 
   beforeAll(async () => {
     const reqTransformer = new RequestTransformer();
-    const reqValidator = new RequestValidator();
+    const reqValidator = new RequestValidator(new ValidatorLoader());
     const paginationTransformer = new PaginationTransformer();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
 
