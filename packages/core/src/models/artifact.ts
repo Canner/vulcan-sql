@@ -18,6 +18,12 @@ error:
     message: 'You are not allowed to access this resource'
  */
 
+export enum PaginationMode {
+  CURSOR = 'CURSOR',
+  OFFSET = 'OFFSET',
+  KEYSET = 'KEYSET',
+}
+
 export enum FieldInType {
   QUERY = 'QUERY',
   HEADER = 'HEADER',
@@ -44,6 +50,12 @@ export interface RequestSchema {
   validators: Array<ValidatorDefinition>;
 }
 
+export interface PaginationSchema {
+  mode: PaginationMode;
+  // The key name used for do filtering by key for keyset pagination.
+  keyName?: string;
+}
+
 export interface ErrorInfo {
   code: string;
   message: string;
@@ -59,6 +71,9 @@ export interface APISchema {
   request: Array<RequestSchema>;
   errors: Array<ErrorInfo>;
   response: any;
+  // The pagination strategy that do paginate when querying
+  // If not set pagination, then API request not provide the field to do it
+  pagination?: PaginationSchema;
 }
 
 export interface BuiltArtifact {
