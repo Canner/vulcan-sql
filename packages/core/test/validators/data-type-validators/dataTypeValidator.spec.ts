@@ -13,7 +13,6 @@ describe('Test "date" type validator', () => {
       const args = JSON.parse(inputArgs);
       // Act
       const validator = new DateTypeValidator();
-      const result = validator.validateSchema(args);
       // Assert
       expect(() => validator.validateSchema(args)).not.toThrow();
     }

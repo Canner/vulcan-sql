@@ -26,7 +26,6 @@ export class RestfulRoute extends BaseRoute {
       paginationTransformer,
       templateEngine,
     });
-
     this.urlPath = apiSchema.urlPath;
   }
 

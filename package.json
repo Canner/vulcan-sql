@@ -8,6 +8,7 @@
   "private": true,
   "dependencies": {
     "class-validator": "^0.13.2",
+    "@koa/cors": "^3.3.0",
     "glob": "^8.0.1",
     "inversify": "^6.0.1",
     "dayjs": "^1.11.2",
@@ -17,11 +18,13 @@
     "koa-bodyparser": "^4.3.0",
     "koa-compose": "^4.1.0",
     "koa-router": "^10.1.1",
+    "koa2-ratelimit": "^1.1.1",
     "lodash": "^4.17.21",
     "nunjucks": "^3.2.3",
     "openapi3-ts": "^2.0.2",
     "reflect-metadata": "^0.1.13",
     "tslib": "^2.3.0",
+    "tslog": "^3.3.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
@@ -38,6 +41,8 @@
     "@types/koa": "^2.13.4",
     "@types/koa-compose": "^3.2.5",
     "@types/koa-router": "^7.4.4",
+    "@types/koa2-ratelimit": "^0.9.3",
+    "@types/koa__cors": "^3.3.0",
     "@types/lodash": "^4.14.182",
     "@types/node": "16.11.7",
     "@types/supertest": "^2.0.12",

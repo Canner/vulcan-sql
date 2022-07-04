@@ -64,7 +64,10 @@
       "@vulcan/serve/pagination/*": ["packages/serve/src/lib/pagination/*"],
       "@vulcan/serve/route": ["packages/serve/src/lib/route/index"],
       "@vulcan/serve/route/*": ["packages/serve/src/lib/route/*"],
-      "@vulcan/serve/app": ["packages/serve/src/lib/app.ts"]
+      "@vulcan/serve/app": ["packages/serve/src/lib/app.ts"],
+      "@vulcan/serve/middleware": ["packages/serve/src/lib/middleware/index"],
+      "@vulcan/serve/middleware/*": ["packages/serve/src/lib/middleware/*"],
+      "@vulcan/serve/config": ["packages/serve/src/lib/config"]
     }
   },
   "exclude": ["node_modules", "tmp"]

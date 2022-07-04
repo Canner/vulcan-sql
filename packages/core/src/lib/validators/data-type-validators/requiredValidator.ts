@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 import { isEmpty } from 'lodash';
-import IValidator from '../validator';
+import { IValidator } from '../validator';
 
 export interface RequiredInputArgs {
   /**
@@ -11,7 +11,7 @@ export interface RequiredInputArgs {
 }
 
 // required means disallow undefined as value
-export default class RequiredValidator implements IValidator {
+export class RequiredValidator implements IValidator {
   public readonly name = 'required';
   // Validator for arguments schema in schema.yaml, should match RequiredInputArgs
   private argsValidator = Joi.object({

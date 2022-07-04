@@ -8,22 +8,22 @@ export interface IPInputArgs {
   version?: IPVersion[];
 }
 
-export default class IPTypeValidator implements IValidator {
+/* istanbul ignore file */
+export class IPTypeValidator implements IValidator {
   public readonly name = 'ip';
   // Validator for arguments schema in schema.yaml, should match DateInputArgs
   private argsValidator = Joi.object({
     version: Joi.string().optional(),
   });
-  public validateSchema(args: IPInputArgs): boolean {
+  public validateSchema(args: IPInputArgs): void {
     try {
       // validate arguments schema
       Joi.assert(args, this.argsValidator);
-      return true;
     } catch {
       throw new Error('The arguments schema for date type is incorrect');
     }
   }
-  public validateData(value: string, args: IPInputArgs): boolean {
+  public validateData(value: string, args: IPInputArgs): void {
     let schema = Joi.string().ip();
     // if there are args passed
     if (!isUndefined(args)) {
@@ -36,7 +36,6 @@ export default class IPTypeValidator implements IValidator {
     try {
       // validate data value
       Joi.assert(value, schema);
-      return true;
     } catch {
       throw new Error('The input parameter is invalid, it should be ip type');
     }

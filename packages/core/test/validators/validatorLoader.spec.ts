@@ -14,7 +14,7 @@ describe('Test validator loader ', () => {
     'Should load successfully when loading validator name "$name".',
     async ({ name, expected }) => {
       // Arrange
-      const folderPath = path.resolve(__dirname, 'test-custom-validators');
+      const folderPath = path.join(__dirname, 'test-custom-validators');
       const validatorLoader = new ValidatorLoader(folderPath);
       // Act
       const result = await validatorLoader.load(name);
@@ -28,7 +28,7 @@ describe('Test validator loader ', () => {
     'Should load failed when loading validator name "$name".',
     async ({ name }) => {
       // Arrange
-      const folderPath = path.resolve(__dirname, 'test-custom-validators');
+      const folderPath = path.join(__dirname, 'test-custom-validators');
       const validatorLoader = new ValidatorLoader(folderPath);
       // Act
       const loadAction = validatorLoader.load(name);

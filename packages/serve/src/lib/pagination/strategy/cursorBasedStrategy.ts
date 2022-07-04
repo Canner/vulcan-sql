@@ -9,10 +9,10 @@ export interface CursorPagination {
 
 export class CursorBasedStrategy extends PaginationStrategy<CursorPagination> {
   public async transform(ctx: KoaRouterContext) {
-    const checkFelidInHeader = ['limit', 'cursor'].every((field) =>
+    const checkFelidInQueryString = ['limit', 'cursor'].every((field) =>
       Object.keys(ctx.request.query).includes(field)
     );
-    if (!checkFelidInHeader)
+    if (!checkFelidInQueryString)
       throw new Error(
         `The ${PaginationMode.CURSOR} must provide limit and cursor in query string.`
       );
@@ -20,7 +20,7 @@ export class CursorBasedStrategy extends PaginationStrategy<CursorPagination> {
     const cursorVal = ctx.request.query['cursor'] as string;
     return {
       limit: normalizeStringValue(limitVal, 'limit', Number.name),
-      cursor: normalizeStringValue(cursorVal, 'cursor', Number.name),
+      cursor: normalizeStringValue(cursorVal, 'cursor', String.name),
     } as CursorPagination;
   }
 }

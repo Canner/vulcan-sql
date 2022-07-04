@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 import { isUndefined } from 'lodash';
-import IValidator from '../validator';
+import { IValidator } from '../validator';
 
 export interface StringInputArgs {
   // The string regex format pattern
@@ -13,7 +13,7 @@ export interface StringInputArgs {
   max?: number;
 }
 
-export default class StringTypeValidator implements IValidator {
+export class StringTypeValidator implements IValidator {
   public readonly name = 'string';
   // Validator for arguments schema in schema.yaml, should match StringInputArgs
   private argsValidator = Joi.object({

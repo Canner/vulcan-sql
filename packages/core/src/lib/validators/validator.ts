@@ -1,6 +1,6 @@
 import { Constraint } from './constraints';
 
-export default interface IValidator<T = any> {
+export interface IValidator<T = any> {
   // validator name
   readonly name: string;
   // validate Schema format
