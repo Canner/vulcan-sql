@@ -1,6 +1,6 @@
 import faker from '@faker-js/faker';
 import * as sinon from 'ts-sinon';
-import { APISchema } from '@vulcan/core';
+import { APISchema, TemplateEngine } from '@vulcan/core';
 import {
   APIProviderType,
   GraphQLRoute,
@@ -13,6 +13,7 @@ import {
 describe('Test route generator ', () => {
   let stubReqTransformer: sinon.StubbedInstance<IRequestTransformer>;
   let stubReqValidator: sinon.StubbedInstance<IRequestValidator>;
+  let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
   const fakeSchemas: Array<APISchema> = Array(
     faker.datatype.number({ min: 2, max: 4 })
   ).fill(sinon.stubInterface<APISchema>());
@@ -20,6 +21,7 @@ describe('Test route generator ', () => {
   beforeEach(() => {
     stubReqTransformer = sinon.stubInterface<IRequestTransformer>();
     stubReqValidator = sinon.stubInterface<IRequestValidator>();
+    stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
   });
 
   it.each(fakeSchemas)(
@@ -30,10 +32,12 @@ describe('Test route generator ', () => {
         apiSchema,
         reqTransformer: stubReqTransformer,
         reqValidator: stubReqValidator,
+        templateEngine: stubTemplateEngine,
       });
       const routeGenerator = new RouteGenerator({
         reqTransformer: stubReqTransformer,
         reqValidator: stubReqValidator,
+        templateEngine: stubTemplateEngine,
       });
 
       // Act
@@ -58,10 +62,12 @@ describe('Test route generator ', () => {
         apiSchema,
         reqTransformer: stubReqTransformer,
         reqValidator: stubReqValidator,
+        templateEngine: stubTemplateEngine,
       });
       const routeGenerator = new RouteGenerator({
         reqTransformer: stubReqTransformer,
         reqValidator: stubReqValidator,
+        templateEngine: stubTemplateEngine,
       });
 
       // Act

@@ -9,6 +9,7 @@ import {
   FieldDataType,
   FieldInType,
   RequestSchema,
+  TemplateEngine,
   ValidatorDefinition,
 } from '@vulcan/core';
 
@@ -23,7 +24,7 @@ import {
 
 describe('Test vulcan server to call restful APIs', () => {
   let server: VulcanServer;
-
+  let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
   const fakeSchemas: Array<APISchema> = [
     {
       ...sinon.stubInterface<APISchema>(),
@@ -174,10 +175,12 @@ describe('Test vulcan server to call restful APIs', () => {
   beforeAll(async () => {
     const reqTransformer = new RequestTransformer();
     const reqValidator = new RequestValidator();
+    stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
 
     const generator = new RouteGenerator({
       reqTransformer,
       reqValidator,
+      templateEngine: stubTemplateEngine,
     });
     const routes = await generator.multiGenerate(
       fakeSchemas,

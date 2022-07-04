@@ -1,4 +1,4 @@
-import { APISchema } from '@vulcan/core';
+import { APISchema, TemplateEngine } from '@vulcan/core';
 import { IRequestTransformer, RequestParameters } from './requestTransformer';
 import { IRequestValidator } from './requestValidator';
 import { BaseRoute, KoaRouterContext } from './baseRoute';
@@ -10,12 +10,14 @@ export class RestfulRoute extends BaseRoute {
     apiSchema,
     reqTransformer,
     reqValidator,
+    templateEngine,
   }: {
     apiSchema: APISchema;
     reqTransformer: IRequestTransformer;
     reqValidator: IRequestValidator;
+    templateEngine: TemplateEngine;
   }) {
-    super({ apiSchema, reqTransformer, reqValidator });
+    super({ apiSchema, reqTransformer, reqValidator, templateEngine });
 
     this.urlPath = apiSchema.urlPath;
   }
