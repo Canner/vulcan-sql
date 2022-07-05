@@ -21,4 +21,6 @@ export const TYPES = {
   Executor: Symbol.for('Executor'),
   // Validator
   IValidatorLoader: Symbol.for('IValidatorLoader'),
+  // source of extensions
+  SourceOfExtensions: Symbol.for('SourceOfExtensions'),
 };

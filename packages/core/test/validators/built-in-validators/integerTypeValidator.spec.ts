@@ -54,7 +54,9 @@ describe('Test "integer" type validator', () => {
 
   it.each([
     ['1', '{"min": 1}'],
+    [1, '{"min": 1}'],
     ['100', '{"max": 100}'],
+    [100, '{"max": 100}'],
     ['3', '{"min": 1, "max":3}'],
     ['9', '{"less": 10}'],
     ['51', '{"greater": 50}'],
@@ -62,7 +64,7 @@ describe('Test "integer" type validator', () => {
     ['2', '{"greater": 1, "max":3}'],
   ])(
     'Should be valid when validate data %p with args is %p',
-    async (data: string, inputArgs: string) => {
+    async (data: string | number, inputArgs: string) => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
@@ -74,14 +76,16 @@ describe('Test "integer" type validator', () => {
   );
   it.each([
     ['0', '{"min": 1}'],
+    [0, '{"min": 1}'],
     ['101', '{"max": 100}'],
+    [101, '{"max": 100}'],
     ['10', '{"less": 10}'],
     ['50', '{"greater": 50}'],
     ['3', '{"min": 1, "less":3}'],
     ['1', '{"greater": 1, "max":3}'],
   ])(
     'Should be invalid when validate data %p with args is %p',
-    async (data: string, inputArgs: string) => {
+    async (data: string | number, inputArgs: string) => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act

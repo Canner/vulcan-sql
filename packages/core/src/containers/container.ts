@@ -4,7 +4,7 @@ import {
   artifactBuilderModule,
   executorModule,
   templateEngineModule,
-  validatorModule,
+  validatorLoaderModule,
 } from './modules';
 
 export class Container {
@@ -20,7 +20,7 @@ export class Container {
     await this.inversifyContainer.loadAsync(
       templateEngineModule(options.template)
     );
-    this.inversifyContainer.load(validatorModule());
+    this.inversifyContainer.load(validatorLoaderModule(options.extensions));
   }
 
   public getInversifyContainer() {

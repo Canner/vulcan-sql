@@ -28,7 +28,7 @@ export class RequestValidator implements IRequestValidator {
   }
   // validate one parameter by input validator
   private async validateFieldFormat(
-    fieldValue: string,
+    fieldValue: any,
     schemaValidators: Array<ValidatorDefinition>
   ) {
     await Promise.all(

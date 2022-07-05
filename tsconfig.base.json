@@ -33,11 +33,11 @@
       ],
       "@vulcan/core/validators": ["packages/core/src/lib/validators/index"],
       "@vulcan/core/validators/*": ["packages/core/src/lib/validators/*"],
-      "@vulcan/core/validators/data-type-validators": [
-        "packages/core/src/lib/validators/data-type-validators/index"
+      "@vulcan/core/validators/built-in-validators": [
+        "packages/core/src/lib/validators/built-in-validators/index"
       ],
-      "@vulcan/core/validators/data-type-validators/*": [
-        "packages/core/src/lib/validators/data-type-validators/*"
+      "@vulcan/core/validators/built-in-validators/*": [
+        "packages/core/src/lib/validators/built-in-validators/*"
       ],
       "@vulcan/core/containers": ["packages/core/src/containers/index"],
       "@vulcan/core/models": ["packages/core/src/models/index"],

@@ -34,7 +34,7 @@ export class IntegerTypeValidator implements IValidator {
     }
   }
 
-  public validateData(value: string, args?: IntInputArgs) {
+  public validateData(value: string | number, args?: IntInputArgs) {
     // parse arguments
 
     // schema is integer type

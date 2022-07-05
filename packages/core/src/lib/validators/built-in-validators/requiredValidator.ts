@@ -1,5 +1,4 @@
 import * as Joi from 'joi';
-import { isEmpty } from 'lodash';
 import { IValidator } from '../validator';
 
 export interface RequiredInputArgs {
@@ -15,10 +14,9 @@ export class RequiredValidator implements IValidator {
   public readonly name = 'required';
   // Validator for arguments schema in schema.yaml, should match RequiredInputArgs
   private argsValidator = Joi.object({
-    excluded: Joi.array().items(Joi.any()).optional(),
+    disallow: Joi.array().items(Joi.any()).optional(),
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public validateSchema(args: RequiredInputArgs) {
     try {
       // validate arguments schema
@@ -30,18 +28,18 @@ export class RequiredValidator implements IValidator {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public validateData(value: string, args?: RequiredInputArgs) {
-    const schema = Joi.any().required();
+  public validateData(
+    value?: string | boolean | number | null,
+    args?: RequiredInputArgs
+  ) {
+    let schema = Joi.any().required();
 
     try {
-      // check is undefined
-      Joi.assert(value, schema);
       // if args.exclude existed, check value is
-      if (args && !isEmpty(args.disallow)) {
-        schema.disallow(args.disallow);
+      if (args?.disallow) {
+        schema = schema.invalid(...args.disallow);
       }
-      Joi.assert(value, this.argsValidator);
+      Joi.assert(value, schema);
     } catch {
       throw new Error('The input parameter is invalid, it should be required');
     }

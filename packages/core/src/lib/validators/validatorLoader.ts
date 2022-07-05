@@ -1,9 +1,11 @@
 import { IValidator } from './validator';
 import * as path from 'path';
-import { injectable } from 'inversify';
-import { defaultImport, ClassType } from '../utils';
+import { inject, injectable } from 'inversify';
+import { defaultImport, ClassType, mergedModules } from '../utils';
+import { TYPES } from '../../containers/types';
+import { SourceOfExtensions } from '../../models/coreOptions';
+import { flatten } from 'lodash';
 
-// The extension module interface
 export interface ExtensionModule {
   validators?: ClassType<IValidator>[];
 }
@@ -15,28 +17,33 @@ export interface IValidatorLoader {
 @injectable()
 export class ValidatorLoader implements IValidatorLoader {
   // only found built-in validators in sub folders
-  private builtInFolder: string = path.join(__dirname, 'data-type-validators');
-  private extensionPath?: string;
+  private builtInFolder: string = path.join(__dirname, 'built-in-validators');
+  private extensions: Array<string>;
 
-  constructor(folderPath?: string) {
-    this.extensionPath = folderPath;
+  constructor(
+    @inject(TYPES.SourceOfExtensions) extensions: SourceOfExtensions
+  ) {
+    this.extensions = extensions || [];
   }
   public async load(validatorName: string) {
     // read built-in validators in index.ts, the content is an array middleware class
-    const builtInClass = await defaultImport<ClassType<IValidator>[]>(
-      this.builtInFolder
+    const builtInClasses = flatten(
+      await defaultImport<ClassType<IValidator>[]>(this.builtInFolder)
     );
 
     // if extension path setup, load extension middlewares classes
-    let extensionClass: ClassType<IValidator>[] = [];
-    if (this.extensionPath) {
+    let extensionClasses: ClassType<IValidator>[] = [];
+    if (this.extensions) {
       // import extension which user customized
-      const module = await defaultImport<ExtensionModule>(this.extensionPath);
-      extensionClass = module.validators || [];
+      const modules = await defaultImport<ExtensionModule>(...this.extensions);
+      const module = await mergedModules<ExtensionModule>(modules);
+      extensionClasses = module.validators || [];
     }
 
-    // create all middlewares by new it.
-    for (const validatorClass of [...builtInClass, ...extensionClass]) {
+    // reverse the array to make the extensions priority higher than built-in validators if has the duplicate name.
+    const validatorClasses = [...builtInClasses, ...extensionClasses].reverse();
+    for (const validatorClass of validatorClasses) {
+      // create all middlewares by new it
       const validator = new validatorClass() as IValidator;
       if (validator.name === validatorName) return validator;
     }
