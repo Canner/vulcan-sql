@@ -11,4 +11,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/packages/build',
+  setupFilesAfterEnv: ['../../jest.setup.ts'],
 };

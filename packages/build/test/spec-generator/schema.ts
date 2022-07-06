@@ -118,5 +118,6 @@ export const getConfig = (): IBuildOptions => {
     template: {} as any,
     artifact: {} as any,
     schemaParser: {} as any,
+    extensions: [] as any,
   };
 };
