@@ -1,16 +1,11 @@
 import { TYPES } from '@vulcan/core/containers';
+import { IDataQueryBuilder } from '@vulcan/core/data-query';
 import { inject } from 'inversify';
 import { TagRunnerOptions, TagRunner } from '../../extension-loader';
 import { FINIAL_BUILDER_NAME } from './constants';
 
-// TODO: temporary interface
-export interface QueryBuilder {
-  count(): QueryBuilder;
-  value(): Promise<any>;
-}
-
 export interface Executor {
-  createBuilder(query: string): Promise<QueryBuilder>;
+  createBuilder(query: string): Promise<IDataQueryBuilder>;
 }
 
 export class ReqTagRunner extends TagRunner {

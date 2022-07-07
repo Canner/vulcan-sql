@@ -19,6 +19,10 @@ export const TYPES = {
   TemplateEngineInputOptions: Symbol.for('TemplateEngineInputOptions'),
   // Executor
   Executor: Symbol.for('Executor'),
+  // Data Query Builder
+  IDataQueryBuilder: Symbol.for('IDataQueryBuilder'),
+  // Data Source
+  IDataSource: Symbol.for('IDataSource'),
   // Validator
   IValidatorLoader: Symbol.for('IValidatorLoader'),
   // source of extensions

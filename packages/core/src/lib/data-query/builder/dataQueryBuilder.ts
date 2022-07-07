@@ -183,214 +183,218 @@ export interface IDataQueryBuilder {
   readonly dataSource: IDataSource;
 
   // Select clause methods
-  select(...columns: Array<SelectedColumn | string>): DataQueryBuilder;
-  distinct(...columns: Array<SelectedColumn | string>): DataQueryBuilder;
-  column(...columns: Array<SelectedColumn | string>): DataQueryBuilder;
-  first(...columns: Array<SelectedColumn | string>): DataQueryBuilder;
-  count(column: AliasColumn | string): DataQueryBuilder;
-  min(column: AliasColumn | string): DataQueryBuilder;
-  max(column: AliasColumn | string): DataQueryBuilder;
-  sum(column: AliasColumn | string): DataQueryBuilder;
-  avg(column: AliasColumn | string): DataQueryBuilder;
+  select(...columns: Array<SelectedColumn | string>): IDataQueryBuilder;
+  distinct(...columns: Array<SelectedColumn | string>): IDataQueryBuilder;
+  column(...columns: Array<SelectedColumn | string>): IDataQueryBuilder;
+  first(...columns: Array<SelectedColumn | string>): IDataQueryBuilder;
+  count(column: AliasColumn | string): IDataQueryBuilder;
+  min(column: AliasColumn | string): IDataQueryBuilder;
+  max(column: AliasColumn | string): IDataQueryBuilder;
+  sum(column: AliasColumn | string): IDataQueryBuilder;
+  avg(column: AliasColumn | string): IDataQueryBuilder;
   // Join clause methods
   innerJoin(
     builder: AliasDataQueryBuilder,
     joinCallback: JoinClauseCallback
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   leftJoin(
     builder: AliasDataQueryBuilder,
     joinCallback: JoinClauseCallback
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   rightJoin(
     builder: AliasDataQueryBuilder,
     joinCallback: JoinClauseCallback
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   fullJoin(
     builder: AliasDataQueryBuilder,
     joinCallback: JoinClauseCallback
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   // Where clause methods
   where(
     column: string,
     operator: string,
     value: string | number | boolean | IDataQueryBuilder
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   whereNot(
     column: string,
     operator: string,
     value: string | number | boolean | IDataQueryBuilder
-  ): DataQueryBuilder;
-  whereWrapped(builderCallback: BuilderClauseCallback): DataQueryBuilder;
-  whereNotWrapped(builderCallback: BuilderClauseCallback): DataQueryBuilder;
-  whereBetween(column: string, min: number, max: number): DataQueryBuilder;
-  whereNotBetween(column: string, min: number, max: number): DataQueryBuilder;
+  ): IDataQueryBuilder;
+  whereWrapped(builderCallback: BuilderClauseCallback): IDataQueryBuilder;
+  whereNotWrapped(builderCallback: BuilderClauseCallback): IDataQueryBuilder;
+  whereBetween(column: string, min: number, max: number): IDataQueryBuilder;
+  whereNotBetween(column: string, min: number, max: number): IDataQueryBuilder;
   whereIn(
     column: string,
     values: string[] | number[] | IDataQueryBuilder
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   whereNotIn(
     column: string,
     values: string[] | number[] | IDataQueryBuilder
-  ): DataQueryBuilder;
-  whereNull(column: string): DataQueryBuilder;
-  whereNotNull(column: string): DataQueryBuilder;
-  whereLike(column: string, searchValue: string): DataQueryBuilder;
-  whereExists(subQueryBuilder: AliasDataQueryBuilder): DataQueryBuilder;
-  whereNotExists(subQueryBuilder: AliasDataQueryBuilder): DataQueryBuilder;
+  ): IDataQueryBuilder;
+  whereNull(column: string): IDataQueryBuilder;
+  whereNotNull(column: string): IDataQueryBuilder;
+  whereLike(column: string, searchValue: string): IDataQueryBuilder;
+  whereExists(subQueryBuilder: AliasDataQueryBuilder): IDataQueryBuilder;
+  whereNotExists(subQueryBuilder: AliasDataQueryBuilder): IDataQueryBuilder;
   // And Where clause methods
   andWhere(
     column: string,
     operator: string,
     value: string | number | boolean | IDataQueryBuilder
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   andWhereNot(
     column: string,
     operator: string,
     value: string | number | boolean | IDataQueryBuilder
-  ): DataQueryBuilder;
-  andWhereWrapped(builderCallback: BuilderClauseCallback): DataQueryBuilder;
-  andWhereNotWrapped(builderCallback: BuilderClauseCallback): DataQueryBuilder;
-  andWhereBetween(column: string, min: number, max: number): DataQueryBuilder;
+  ): IDataQueryBuilder;
+  andWhereWrapped(builderCallback: BuilderClauseCallback): IDataQueryBuilder;
+  andWhereNotWrapped(builderCallback: BuilderClauseCallback): IDataQueryBuilder;
+  andWhereBetween(column: string, min: number, max: number): IDataQueryBuilder;
   andWhereNotBetween(
     column: string,
     min: number,
     max: number
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   andWhereIn(
     column: string,
     values: string[] | number[] | IDataQueryBuilder
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   andWhereNotIn(
     column: string,
     values: string[] | number[] | IDataQueryBuilder
-  ): DataQueryBuilder;
-  andWhereNull(column: string): DataQueryBuilder;
-  andWhereNotNull(column: string): DataQueryBuilder;
-  andWhereLike(column: string, searchValue: string): DataQueryBuilder;
-  andWhereExists(subQueryBuilder: AliasDataQueryBuilder): DataQueryBuilder;
-  andWhereNotExists(subQueryBuilder: AliasDataQueryBuilder): DataQueryBuilder;
+  ): IDataQueryBuilder;
+  andWhereNull(column: string): IDataQueryBuilder;
+  andWhereNotNull(column: string): IDataQueryBuilder;
+  andWhereLike(column: string, searchValue: string): IDataQueryBuilder;
+  andWhereExists(subQueryBuilder: AliasDataQueryBuilder): IDataQueryBuilder;
+  andWhereNotExists(subQueryBuilder: AliasDataQueryBuilder): IDataQueryBuilder;
   // Or Where clause methods
   orWhere(
     column: string,
     operator: string,
     value: string | number | boolean | IDataQueryBuilder
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   orWhereNot(
     column: string,
     operator: string,
     value: string | number | boolean | IDataQueryBuilder
-  ): DataQueryBuilder;
-  orWhereWrapped(builderCallback: BuilderClauseCallback): DataQueryBuilder;
-  orWhereNotWrapped(builderCallback: BuilderClauseCallback): DataQueryBuilder;
-  orWhereBetween(column: string, min: number, max: number): DataQueryBuilder;
-  orWhereNotBetween(column: string, min: number, max: number): DataQueryBuilder;
+  ): IDataQueryBuilder;
+  orWhereWrapped(builderCallback: BuilderClauseCallback): IDataQueryBuilder;
+  orWhereNotWrapped(builderCallback: BuilderClauseCallback): IDataQueryBuilder;
+  orWhereBetween(column: string, min: number, max: number): IDataQueryBuilder;
+  orWhereNotBetween(
+    column: string,
+    min: number,
+    max: number
+  ): IDataQueryBuilder;
   orWhereIn(
     column: string,
     values: string[] | number[] | IDataQueryBuilder
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   orWhereNotIn(
     column: string,
     values: string[] | number[] | IDataQueryBuilder
-  ): DataQueryBuilder;
-  orWhereNull(column: string): DataQueryBuilder;
-  orWhereNotNull(column: string): DataQueryBuilder;
-  orWhereLike(column: string, searchValue: string): DataQueryBuilder;
-  orWhereExists(subQueryBuilder: AliasDataQueryBuilder): DataQueryBuilder;
-  orWhereNotExists(subQueryBuilder: AliasDataQueryBuilder): DataQueryBuilder;
+  ): IDataQueryBuilder;
+  orWhereNull(column: string): IDataQueryBuilder;
+  orWhereNotNull(column: string): IDataQueryBuilder;
+  orWhereLike(column: string, searchValue: string): IDataQueryBuilder;
+  orWhereExists(subQueryBuilder: AliasDataQueryBuilder): IDataQueryBuilder;
+  orWhereNotExists(subQueryBuilder: AliasDataQueryBuilder): IDataQueryBuilder;
 
   // Group by clause method
-  groupBy(...columns: string[]): DataQueryBuilder;
+  groupBy(...columns: string[]): IDataQueryBuilder;
 
   // Having clause methods
   having(
     column: SelectedColumn | string,
     operator: string,
     value: string | number | boolean | IDataQueryBuilder
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   havingIn(
     column: SelectedColumn | string,
     values: number[] | string[]
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   havingNotIn(
     column: SelectedColumn | string,
     values: number[] | string[]
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   havingBetween(
     column: SelectedColumn | string,
     min: number,
     max: number
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   havingNotBetween(
     column: SelectedColumn | string,
     min: number,
     max: number
-  ): DataQueryBuilder;
-  havingNull(column: string): DataQueryBuilder;
-  havingNotNull(column: string): DataQueryBuilder;
-  havingExists(subQueryBuilder: AliasDataQueryBuilder): DataQueryBuilder;
-  havingNotExists(subQueryBuilder: AliasDataQueryBuilder): DataQueryBuilder;
+  ): IDataQueryBuilder;
+  havingNull(column: string): IDataQueryBuilder;
+  havingNotNull(column: string): IDataQueryBuilder;
+  havingExists(subQueryBuilder: AliasDataQueryBuilder): IDataQueryBuilder;
+  havingNotExists(subQueryBuilder: AliasDataQueryBuilder): IDataQueryBuilder;
   // And Having clause methods
   andHaving(
     column: SelectedColumn | string,
     operator: string,
     value: string | number | boolean | IDataQueryBuilder
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   andHavingIn(
     column: SelectedColumn | string,
     values: number[] | string[]
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   andHavingNotIn(
     column: SelectedColumn | string,
     values: number[] | string[]
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   andHavingBetween(
     column: SelectedColumn | string,
     min: number,
     max: number
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   andHavingNotBetween(
     column: SelectedColumn | string,
     min: number,
     max: number
-  ): DataQueryBuilder;
-  andHavingNull(column: string): DataQueryBuilder;
-  andHavingNotNull(column: string): DataQueryBuilder;
-  andHavingExists(subQueryBuilder: AliasDataQueryBuilder): DataQueryBuilder;
-  andHavingNotExists(subQueryBuilder: AliasDataQueryBuilder): DataQueryBuilder;
+  ): IDataQueryBuilder;
+  andHavingNull(column: string): IDataQueryBuilder;
+  andHavingNotNull(column: string): IDataQueryBuilder;
+  andHavingExists(subQueryBuilder: AliasDataQueryBuilder): IDataQueryBuilder;
+  andHavingNotExists(subQueryBuilder: AliasDataQueryBuilder): IDataQueryBuilder;
   // Or Having clause methods
   orHaving(
     column: SelectedColumn | string,
     operator: string,
     value: string | number | boolean | IDataQueryBuilder
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   orHavingIn(
     column: SelectedColumn | string,
     values: number[] | string[]
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   orHavingNotIn(
     column: SelectedColumn | string,
     values: number[] | string[]
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   orHavingBetween(
     column: SelectedColumn | string,
     min: number,
     max: number
-  ): DataQueryBuilder;
+  ): IDataQueryBuilder;
   orHavingNotBetween(
     column: SelectedColumn | string,
     min: number,
     max: number
-  ): DataQueryBuilder;
-  orHavingNull(column: string): DataQueryBuilder;
-  orHavingNotNull(column: string): DataQueryBuilder;
-  orHavingExists(subQueryBuilder: AliasDataQueryBuilder): DataQueryBuilder;
-  orHavingNotExists(subQueryBuilder: AliasDataQueryBuilder): DataQueryBuilder;
+  ): IDataQueryBuilder;
+  orHavingNull(column: string): IDataQueryBuilder;
+  orHavingNotNull(column: string): IDataQueryBuilder;
+  orHavingExists(subQueryBuilder: AliasDataQueryBuilder): IDataQueryBuilder;
+  orHavingNotExists(subQueryBuilder: AliasDataQueryBuilder): IDataQueryBuilder;
   // Order by clause method
-  orderBy(column: string, direction: Direction): DataQueryBuilder;
+  orderBy(column: string, direction: Direction): IDataQueryBuilder;
   // Limit and Offset clause method
-  limit(size: number): DataQueryBuilder;
-  offset(move: number): DataQueryBuilder;
-  take(size: number, move: number): DataQueryBuilder;
+  limit(size: number): IDataQueryBuilder;
+  offset(move: number): IDataQueryBuilder;
+  take(size: number, move: number): IDataQueryBuilder;
   // paginate
   paginate(pagination: Pagination): void;
   value(): Promise<object>;

@@ -8,17 +8,15 @@ import { Container } from 'inversify';
 import * as sinon from 'ts-sinon';
 import * as nunjucks from 'nunjucks';
 // TODO: Should replace with a real implementation
-import {
-  QueryBuilder,
-  Executor,
-} from '@vulcan/core/template-engine/built-in-extensions/query-builder/reqTagRunner';
+import { Executor } from '@vulcan/core/template-engine/built-in-extensions/query-builder/reqTagRunner';
+import { IDataQueryBuilder } from '@vulcan/core/data-query';
 
 export const createTestCompiler = async () => {
   const container = new Container();
-  const stubBuilder = sinon.stubInterface<QueryBuilder>();
-  stubBuilder.count.returns(stubBuilder);
+  const stubQueryBuilder = sinon.stubInterface<IDataQueryBuilder>();
+  stubQueryBuilder.count.returns(stubQueryBuilder);
   const stubExecutor = sinon.stubInterface<Executor>();
-  stubExecutor.createBuilder.resolves(stubBuilder);
+  stubExecutor.createBuilder.resolves(stubQueryBuilder);
 
   container
     .bind(TYPES.CompilerLoader)
@@ -50,7 +48,7 @@ export const createTestCompiler = async () => {
     .whenTargetNamed('compileTime');
 
   return {
-    builder: stubBuilder,
+    builder: stubQueryBuilder,
     executor: stubExecutor,
     compiler: container.get<NunjucksCompiler>(TYPES.Compiler),
     loader: container.get<InMemoryCodeLoader>(TYPES.CompilerLoader),
