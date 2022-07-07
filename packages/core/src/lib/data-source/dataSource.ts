@@ -1,5 +1,5 @@
-import { SQLClauseOperation } from '@vulcan/serve/data-query';
-import { Pagination } from '@vulcan/serve/route';
+import { SQLClauseOperation } from '@vulcan/core/data-query';
+import { Pagination } from '@vulcan/core/models';
 
 export interface IDataSource {
   execute({

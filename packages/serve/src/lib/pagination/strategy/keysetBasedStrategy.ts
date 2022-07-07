@@ -2,14 +2,10 @@ import {
   normalizeStringValue,
   PaginationMode,
   PaginationSchema,
+  KeysetPagination,
 } from '@vulcan/core';
 import { KoaRouterContext } from '@vulcan/serve/route';
 import { PaginationStrategy } from './strategy';
-
-export interface KeysetPagination {
-  limit: number;
-  [keyName: string]: string | number;
-}
 
 export class KeysetBasedStrategy extends PaginationStrategy<KeysetPagination> {
   private pagination: PaginationSchema;

@@ -1,11 +1,10 @@
-import { normalizeStringValue, PaginationMode } from '@vulcan/core';
-import { KoaRouterContext } from '@vulcan/serve/route';
+import { RouterContext as KoaRouterContext } from 'koa-router';
+import {
+  normalizeStringValue,
+  PaginationMode,
+  OffsetPagination,
+} from '@vulcan/core';
 import { PaginationStrategy } from './strategy';
-
-export interface OffsetPagination {
-  limit: number;
-  offset: number;
-}
 
 export class OffsetBasedStrategy extends PaginationStrategy<OffsetPagination> {
   public async transform(ctx: KoaRouterContext) {

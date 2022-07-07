@@ -1,11 +1,10 @@
-import { KoaRouterContext } from '@vulcan/serve/route';
-import { normalizeStringValue, PaginationMode } from '@vulcan/core';
+import { RouterContext as KoaRouterContext } from 'koa-router';
+import {
+  normalizeStringValue,
+  PaginationMode,
+  CursorPagination,
+} from '@vulcan/core';
 import { PaginationStrategy } from './strategy';
-
-export interface CursorPagination {
-  limit: number;
-  cursor: string;
-}
 
 export class CursorBasedStrategy extends PaginationStrategy<CursorPagination> {
   public async transform(ctx: KoaRouterContext) {

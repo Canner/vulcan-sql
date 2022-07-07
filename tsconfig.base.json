@@ -16,9 +16,9 @@
     "baseUrl": ".",
     "types": ["reflect-metadata"],
     "paths": {
-      "@vulcan/build": ["packages/build/src/index.ts"],
-      "@vulcan/core": ["packages/core/src/index.ts"],
-      "@vulcan/serve": ["packages/serve/src/index.ts"],
+      "@vulcan/build": ["packages/build/src/index"],
+      "@vulcan/core": ["packages/core/src/index"],
+      "@vulcan/serve": ["packages/serve/src/index"],
       "@vulcan/core/artifact-builder": [
         "packages/core/src/lib/artifact-builder/index"
       ],
@@ -39,6 +39,10 @@
       "@vulcan/core/validators/built-in-validators/*": [
         "packages/core/src/lib/validators/built-in-validators/*"
       ],
+      "@vulcan/core/data-query": ["packages/core/src/lib/data-query/index"],
+      "@vulcan/core/data-query/*": ["packages/core/src/lib/data-query/*"],
+      "@vulcan/core/data-source": ["packages/core/src/lib/data-source/index"],
+      "@vulcan/core/data-source/*": ["packages/core/src/lib/data-source/*"],
       "@vulcan/core/containers": ["packages/core/src/containers/index"],
       "@vulcan/core/models": ["packages/core/src/models/index"],
       "@vulcan/build/schema-parser": [
@@ -56,15 +60,11 @@
       "@vulcan/build/models": ["packages/build/src/models/index"],
       "@vulcan/build/containers": ["packages/build/src/containers/index"],
       "@vulcan/build/options": ["packages/build/src/options/index"],
-      "@vulcan/serve/data-query": ["packages/serve/src/lib/data-query/index"],
-      "@vulcan/serve/data-query/*": ["packages/serve/src/lib/data-query/*"],
-      "@vulcan/serve/data-source": ["packages/serve/src/lib/data-source/index"],
-      "@vulcan/serve/data-source/*": ["packages/serve/src/lib/data-source/*"],
-      "@vulcan/serve/pagination": ["packages/serve/src/lib/pagination/index"],
-      "@vulcan/serve/pagination/*": ["packages/serve/src/lib/pagination/*"],
       "@vulcan/serve/route": ["packages/serve/src/lib/route/index"],
       "@vulcan/serve/route/*": ["packages/serve/src/lib/route/*"],
       "@vulcan/serve/app": ["packages/serve/src/lib/app.ts"],
+      "@vulcan/serve/pagination": ["packages/serve/src/lib/pagination/index"],
+      "@vulcan/serve/pagination/*": ["packages/serve/src/lib/pagination/*"],
       "@vulcan/serve/middleware": ["packages/serve/src/lib/middleware/index"],
       "@vulcan/serve/middleware/*": ["packages/serve/src/lib/middleware/*"],
       "@vulcan/serve/config": ["packages/serve/src/lib/config"]

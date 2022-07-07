@@ -12,8 +12,8 @@ import {
   JoinOnOperatorInput,
   LogicalOperator,
   NullPredicateInput,
-} from '@vulcan/serve/data-query';
-import { IDataSource } from '@vulcan/serve/data-source';
+} from '@vulcan/core/data-query';
+import { IDataSource } from '@vulcan/core';
 
 describe('Test data query builder > join clause', () => {
   let stubDataSource: sinon.StubbedInstance<IDataSource>;

@@ -1,7 +1,6 @@
 import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
-import { DataQueryBuilder } from '@vulcan/serve/data-query';
-import { IDataSource } from '@vulcan/serve/data-source';
+import { DataQueryBuilder, IDataSource } from '@vulcan/core';
 
 describe('Test data query builder > limit-offset by clause', () => {
   let stubDataSource: sinon.StubbedInstance<IDataSource>;

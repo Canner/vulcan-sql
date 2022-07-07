@@ -1,15 +1,10 @@
 import { KoaRouterContext } from '@vulcan/serve/route';
-import { APISchema, PaginationMode } from '@vulcan/core';
+import { APISchema, PaginationMode, Pagination } from '@vulcan/core';
 import {
-  CursorPagination,
-  OffsetPagination,
-  KeysetPagination,
   CursorBasedStrategy,
   OffsetBasedStrategy,
   KeysetBasedStrategy,
 } from '@vulcan/serve/pagination';
-
-export type Pagination = CursorPagination | OffsetPagination | KeysetPagination;
 
 export interface IPaginationTransformer {
   transform(

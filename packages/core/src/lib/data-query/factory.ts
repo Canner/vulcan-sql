@@ -1,4 +1,4 @@
-import { IDataSource } from '@vulcan/serve/data-source';
+import { IDataSource } from '@vulcan/core/data-source';
 import {
   DataQueryBuilder,
   IDataQueryBuilder,

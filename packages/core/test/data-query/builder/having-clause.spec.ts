@@ -10,8 +10,8 @@ import {
   AggregateFuncType,
   HavingClauseOperation,
   HavingPredicateInput,
-} from '@vulcan/serve/data-query';
-import { IDataSource } from '@vulcan/serve/data-source';
+} from '@vulcan/core/data-query';
+import { IDataSource } from '@vulcan/core/data-source';
 
 const normalized = (column: string | SelectedColumn) => {
   if (typeof column === 'string') return { name: column };

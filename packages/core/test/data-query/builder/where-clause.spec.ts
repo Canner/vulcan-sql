@@ -8,8 +8,8 @@ import {
   WherePredicate,
   AliasDataQueryBuilder,
   IDataQueryBuilder,
-} from '@vulcan/serve/data-query';
-import { IDataSource } from '@vulcan/serve/data-source';
+} from '@vulcan/core/data-query';
+import { IDataSource } from '@vulcan/core/data-source';
 
 describe('Test data query builder > where clause', () => {
   let stubDataSource: sinon.StubbedInstance<IDataSource>;

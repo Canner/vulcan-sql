@@ -7,9 +7,9 @@ import {
   SelectClauseOperation,
   SelectCommandType,
   SelectedColumn,
-} from '@vulcan/serve/data-query';
+} from '@vulcan/core/data-query';
 import { find, isEmpty } from 'lodash';
-import { IDataSource } from '@vulcan/serve/data-source';
+import { IDataSource } from '@vulcan/core/data-source';
 
 // Use to generate select record expected results
 const generateSelectRecords = (
