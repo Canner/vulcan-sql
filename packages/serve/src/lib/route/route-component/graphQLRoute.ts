@@ -1,7 +1,8 @@
+import { BaseRoute, KoaRouterContext } from './baseRoute';
+
 import { APISchema, TemplateEngine } from '@vulcan/core';
 import { IRequestTransformer } from './requestTransformer';
 import { IRequestValidator } from './requestValidator';
-import { BaseRoute, KoaRouterContext } from './baseRoute';
 import { IPaginationTransformer } from './paginationTransformer';
 
 export class GraphQLRoute extends BaseRoute {

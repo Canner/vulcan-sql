@@ -2,7 +2,7 @@ import * as uuid from 'uuid';
 import { FieldInType, asyncReqIdStorage } from '@vulcan/core';
 import { KoaRouterContext } from '@vulcan/serve/route';
 import { BuiltInMiddleware, RouteMiddlewareNext } from '../middleware';
-import { ServeConfig } from '@vulcan/serve/config';
+import { MiddlewareConfig } from '@vulcan/serve/models';
 
 export interface RequestIdOptions {
   name: string;
@@ -12,7 +12,7 @@ export interface RequestIdOptions {
 export class RequestIdMiddleware extends BuiltInMiddleware {
   private options: RequestIdOptions;
 
-  constructor(config: ServeConfig) {
+  constructor(config: MiddlewareConfig) {
     super('request-id', config);
     // read request-id options from config.
     this.options = (this.getOptions() as RequestIdOptions) || {

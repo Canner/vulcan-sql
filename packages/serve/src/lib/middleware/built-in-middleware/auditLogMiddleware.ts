@@ -1,11 +1,11 @@
 import { getLogger, ILogger, LoggerOptions } from '@vulcan/core';
 import { BuiltInMiddleware, RouteMiddlewareNext } from '../middleware';
 import { KoaRouterContext } from '@vulcan/serve/route';
-import { ServeConfig } from '@vulcan/serve/config';
+import { MiddlewareConfig } from '@vulcan/serve/models';
 
 export class AuditLoggingMiddleware extends BuiltInMiddleware {
   private logger: ILogger;
-  constructor(config: ServeConfig) {
+  constructor(config: MiddlewareConfig) {
     super('audit-log', config);
 
     // read logger options from config, if is undefined will set default value

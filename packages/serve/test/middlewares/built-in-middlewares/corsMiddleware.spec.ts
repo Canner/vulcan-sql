@@ -12,12 +12,10 @@ describe('Test cors middlewares', () => {
     const app = new Koa();
 
     const middleware = new CorsMiddleware({
-      middlewares: {
-        cors: {
-          options: {
-            origin: domain,
-          } as CorsOptions,
-        },
+      cors: {
+        options: {
+          origin: domain,
+        } as CorsOptions,
       },
     });
     // use middleware in koa app

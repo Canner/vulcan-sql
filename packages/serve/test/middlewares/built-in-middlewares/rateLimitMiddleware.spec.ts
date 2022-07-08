@@ -15,13 +15,11 @@ describe('Test rate limit middlewares', () => {
     const app = new Koa();
     const router = new KoaRouter();
     const middleware = new RateLimitMiddleware({
-      middlewares: {
-        'rate-limit': {
-          options: {
-            max: 2,
-            interval: 2000,
-          } as RateLimitOptions,
-        },
+      'rate-limit': {
+        options: {
+          max: 2,
+          interval: 2000,
+        } as RateLimitOptions,
       },
     });
     // use middleware in koa app

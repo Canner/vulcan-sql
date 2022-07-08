@@ -2,13 +2,13 @@ import * as Koa from 'koa';
 import { RateLimit, RateLimitOptions } from 'koa2-ratelimit';
 import { KoaRouterContext } from '@vulcan/serve/route';
 import { BuiltInMiddleware, RouteMiddlewareNext } from '../middleware';
-import { ServeConfig } from '@vulcan/serve/config';
+import { MiddlewareConfig } from '@vulcan/serve/models';
 
 export { RateLimitOptions };
 
 export class RateLimitMiddleware extends BuiltInMiddleware {
   private koaRateLimit: Koa.Middleware;
-  constructor(config: ServeConfig) {
+  constructor(config: MiddlewareConfig) {
     super('rate-limit', config);
 
     const options = this.getOptions() as RateLimitOptions;

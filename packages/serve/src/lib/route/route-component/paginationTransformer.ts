@@ -5,6 +5,7 @@ import {
   OffsetBasedStrategy,
   KeysetBasedStrategy,
 } from '@vulcan/serve/pagination';
+import { injectable } from 'inversify';
 
 export interface IPaginationTransformer {
   transform(
@@ -12,6 +13,8 @@ export interface IPaginationTransformer {
     apiSchema: APISchema
   ): Promise<Pagination | undefined>;
 }
+
+@injectable()
 export class PaginationTransformer {
   public async transform(ctx: KoaRouterContext, apiSchema: APISchema) {
     const { pagination } = apiSchema;

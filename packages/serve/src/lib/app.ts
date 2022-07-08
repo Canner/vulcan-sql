@@ -1,6 +1,4 @@
-import { ServeConfig } from './config';
 import { APISchema, ClassType } from '@vulcan/core';
-import { Server } from 'http';
 import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
 import { isEmpty, uniq } from 'lodash';
@@ -19,22 +17,15 @@ import {
   GraphQLRoute,
   RouteGenerator,
 } from './route';
-
-export type VulcanServer = Server;
+import { AppConfig } from '../models';
 
 export class VulcanApplication {
   private app: Koa;
-  private config: ServeConfig;
-  private generator: RouteGenerator;
+  private config: AppConfig;
   private restfulRouter: KoaRouter;
   private graphqlRouter: KoaRouter;
-  constructor({
-    config,
-    generator,
-  }: {
-    config: ServeConfig;
-    generator: RouteGenerator;
-  }) {
+  private generator: RouteGenerator;
+  constructor(config: AppConfig, generator: RouteGenerator) {
     this.config = config;
     this.generator = generator;
     this.app = new Koa();
@@ -42,18 +33,16 @@ export class VulcanApplication {
     this.graphqlRouter = new KoaRouter();
   }
 
-  public async run({
-    apiTypes,
-    schemas,
-    port,
-  }: {
-    apiTypes: Array<APIProviderType>;
-    schemas: Array<APISchema>;
-    port?: number;
-  }): Promise<VulcanServer> {
-    // setup middleware on app
-    await this.setMiddleware();
-
+  /**
+   * Get request handler callback function, used in createServer function in http / https.
+   */
+  public getHandler() {
+    return this.app.callback();
+  }
+  public async buildRoutes(
+    schemas: Array<APISchema>,
+    apiTypes: Array<APIProviderType>
+  ) {
     // setup API route according to api types and api schemas
     const routeMapper = {
       [APIProviderType.RESTFUL]: (routes: Array<BaseRoute>) =>
@@ -61,6 +50,7 @@ export class VulcanApplication {
       [APIProviderType.GRAPHQL]: (routes: Array<BaseRoute>) =>
         this.setGraphQL(routes as Array<GraphQLRoute>),
     };
+
     // check existed at least one type
     const types = uniq(apiTypes);
     if (isEmpty(types)) throw new Error(`The API type must provided.`);
@@ -69,9 +59,6 @@ export class VulcanApplication {
       const routes = await this.generator.multiGenerate(schemas, type);
       await routeMapper[type](routes);
     }
-
-    // open port
-    return this.app.listen(port);
   }
 
   // Setup restful routes to server
@@ -94,7 +81,7 @@ export class VulcanApplication {
     this.app.use(this.restfulRouter.allowedMethods());
   }
 
-  private async setMiddleware() {
+  public async buildMiddleware() {
     // load built-in middleware
     await this.use(CorsMiddleware);
     await this.use(RateLimitMiddleware);
@@ -102,13 +89,13 @@ export class VulcanApplication {
     await this.use(AuditLoggingMiddleware);
 
     // load extension middleware
-    const extensions = await loadExtensions(this.config.extension);
+    const extensions = await loadExtensions(this.config.extensions);
     await this.use(...extensions);
   }
   /** add middleware classes for app used */
   private async use(...classes: ClassType<BaseRouteMiddleware>[]) {
     for (const cls of classes) {
-      const middleware = new cls(this.config);
+      const middleware = new cls(this.config.middlewares);
       this.app.use(middleware.handle.bind(middleware));
     }
   }

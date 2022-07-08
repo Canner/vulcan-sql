@@ -1,12 +1,14 @@
 import { IPaginationTransformer } from '@vulcan/serve/route';
 import { APISchema, TemplateEngine } from '@vulcan/core';
-
 import {
   RestfulRoute,
   GraphQLRoute,
   IRequestValidator,
   IRequestTransformer,
 } from './route-component';
+import { inject, injectable } from 'inversify';
+import { TYPES as CORE_TYPES } from '@vulcan/core/containers';
+import { TYPES } from '../../containers/types';
 
 export enum APIProviderType {
   RESTFUL = 'RESTFUL',
@@ -19,6 +21,7 @@ type APIRouteBuilderOption = {
   [K in APIProviderType]: RouteComponentType;
 };
 
+@injectable()
 export class RouteGenerator {
   private reqValidator: IRequestValidator;
   private reqTransformer: IRequestTransformer;
@@ -29,17 +32,13 @@ export class RouteGenerator {
     [APIProviderType.GRAPHQL]: GraphQLRoute,
   };
 
-  constructor({
-    reqValidator,
-    reqTransformer,
-    paginationTransformer,
-    templateEngine,
-  }: {
-    reqValidator: IRequestValidator;
-    reqTransformer: IRequestTransformer;
-    paginationTransformer: IPaginationTransformer;
-    templateEngine: TemplateEngine;
-  }) {
+  constructor(
+    @inject(TYPES.IRequestTransformer) reqTransformer: IRequestTransformer,
+    @inject(TYPES.IRequestValidator) reqValidator: IRequestValidator,
+    @inject(TYPES.IPaginationTransformer)
+    paginationTransformer: IPaginationTransformer,
+    @inject(CORE_TYPES.TemplateEngine) templateEngine: TemplateEngine
+  ) {
     this.reqValidator = reqValidator;
     this.reqTransformer = reqTransformer;
     this.paginationTransformer = paginationTransformer;

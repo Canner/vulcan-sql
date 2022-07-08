@@ -1,6 +1,6 @@
 import { IValidator } from './validator';
 import * as path from 'path';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, optional } from 'inversify';
 import { defaultImport, ClassType, mergedModules } from '../utils';
 import { TYPES } from '../../containers/types';
 import { SourceOfExtensions } from '../../models/coreOptions';
@@ -21,7 +21,9 @@ export class ValidatorLoader implements IValidatorLoader {
   private extensions: Array<string>;
 
   constructor(
-    @inject(TYPES.SourceOfExtensions) extensions: SourceOfExtensions
+    @inject(TYPES.SourceOfExtensions)
+    @optional()
+    extensions?: SourceOfExtensions
   ) {
     this.extensions = extensions || [];
   }

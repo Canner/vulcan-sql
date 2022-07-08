@@ -104,12 +104,10 @@ describe('Test audit logging middlewares', () => {
     // setup request-id middleware run first.
     const stubReqIdMiddleware = new RequestIdMiddleware({});
     const middleware = new AuditLoggingMiddleware({
-      middlewares: {
-        'audit-log': {
-          options: {
-            displayRequestId: true,
-          } as LoggerOptions,
-        },
+      'audit-log': {
+        options: {
+          displayRequestId: true,
+        } as LoggerOptions,
       },
     });
     // Use spy to trace the logger from getLogger( scopeName: 'AUDIT' }) to know in logger.info(...)

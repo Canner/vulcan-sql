@@ -4,6 +4,7 @@ import * as path from 'path';
 import faker from '@faker-js/faker';
 import { Request } from 'koa';
 import * as KoaRouter from 'koa-router';
+import * as http from 'http';
 import { VulcanApplication } from '@vulcan/serve/app';
 import {
   APISchema,
@@ -14,7 +15,6 @@ import {
   ValidatorDefinition,
   ValidatorLoader,
 } from '@vulcan/core';
-
 import {
   RouteGenerator,
   APIProviderType,
@@ -24,24 +24,29 @@ import {
   RequestValidator,
   PaginationTransformer,
 } from '@vulcan/serve/route';
+import { Container } from 'inversify';
+import { TYPES as CORE_TYPES } from '@vulcan/core/containers';
+import { TYPES } from '../src/containers/types';
 
 describe('Test vulcan server for practicing middleware', () => {
-  let generator: RouteGenerator;
+  let container: Container;
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
-
   beforeEach(() => {
+    container = new Container();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
 
-    const reqTransformer = new RequestTransformer();
-    const reqValidator = new RequestValidator(new ValidatorLoader());
-    const paginationTransformer = new PaginationTransformer();
+    container.bind(CORE_TYPES.IValidatorLoader).to(ValidatorLoader);
+    container.bind(TYPES.IPaginationTransformer).to(PaginationTransformer);
+    container.bind(TYPES.IRequestTransformer).to(RequestTransformer);
+    container.bind(TYPES.IRequestValidator).to(RequestValidator);
+    container
+      .bind(CORE_TYPES.TemplateEngine)
+      .toConstantValue(stubTemplateEngine);
+    container.bind(TYPES.RouteGenerator).to(RouteGenerator);
+  });
 
-    generator = new RouteGenerator({
-      reqTransformer,
-      reqValidator,
-      paginationTransformer,
-      templateEngine: stubTemplateEngine,
-    });
+  afterEach(() => {
+    container.unbindAll();
   });
   it('Should show test middleware info when given middleware extension path', async () => {
     // Arrange
@@ -51,25 +56,25 @@ describe('Test vulcan server for practicing middleware', () => {
       request: [],
     } as APISchema;
 
-    const app = new VulcanApplication({
-      config: {
+    const app = new VulcanApplication(
+      {
         middlewares: {
           'test-mode': {
             mode: true,
           },
         },
-        extension: path.resolve(
-          __dirname,
-          './middlewares/test-custom-middlewares'
-        ),
+        extensions: [
+          path.resolve(__dirname, './middlewares/test-custom-middlewares'),
+        ],
       },
-      generator,
-    });
-    const server = await app.run({
-      apiTypes: [APIProviderType.RESTFUL],
-      schemas: [fakeSchema],
-      port: 3000,
-    });
+      container.get<RouteGenerator>(TYPES.RouteGenerator)
+    );
+    await app.buildMiddleware();
+    await app.buildRoutes([fakeSchema], [APIProviderType.RESTFUL]);
+
+    const server = http
+      .createServer(app.getHandler())
+      .listen(faker.internet.port());
 
     // arrange expected result
     const expected = {
@@ -89,7 +94,7 @@ describe('Test vulcan server for practicing middleware', () => {
 });
 
 describe('Test vulcan server for calling restful APIs', () => {
-  let generator: RouteGenerator;
+  let container: Container;
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
   const fakeSchemas: Array<APISchema> = [
     {
@@ -239,18 +244,21 @@ describe('Test vulcan server for calling restful APIs', () => {
   ];
 
   beforeEach(() => {
+    container = new Container();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
 
-    const reqTransformer = new RequestTransformer();
-    const reqValidator = new RequestValidator(new ValidatorLoader());
-    const paginationTransformer = new PaginationTransformer();
+    container.bind(CORE_TYPES.IValidatorLoader).to(ValidatorLoader);
+    container.bind(TYPES.IPaginationTransformer).to(PaginationTransformer);
+    container.bind(TYPES.IRequestTransformer).to(RequestTransformer);
+    container.bind(TYPES.IRequestValidator).to(RequestValidator);
+    container
+      .bind(CORE_TYPES.TemplateEngine)
+      .toConstantValue(stubTemplateEngine);
+    container.bind(TYPES.RouteGenerator).to(RouteGenerator);
+  });
 
-    generator = new RouteGenerator({
-      reqTransformer,
-      reqValidator,
-      paginationTransformer,
-      templateEngine: stubTemplateEngine,
-    });
+  afterEach(() => {
+    container.unbindAll();
   });
 
   it.each([
@@ -262,12 +270,16 @@ describe('Test vulcan server for calling restful APIs', () => {
     'Should be correct when given validated koa context request from %p',
     async (_: string, schema: APISchema, ctx: KoaRouterContext) => {
       // Arrange
-      const app = new VulcanApplication({ config: {}, generator });
-      const server = await app.run({
-        apiTypes: [APIProviderType.RESTFUL],
-        schemas: [schema],
-        port: 3000,
-      });
+      const app = new VulcanApplication(
+        {},
+        container.get<RouteGenerator>(TYPES.RouteGenerator)
+      );
+      await app.buildMiddleware();
+      await app.buildRoutes([schema], [APIProviderType.RESTFUL]);
+      const server = http
+        .createServer(app.getHandler())
+        .listen(faker.internet.port());
+
       // arrange input api url
       const apiUrl = KoaRouter.url(schema.urlPath, ctx.params);
 

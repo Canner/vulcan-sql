@@ -8,12 +8,17 @@ import {
   RequestSchema,
 } from '@vulcan/core';
 import {
+  IRequestTransformer,
   KoaRouterContext,
   RequestParameters,
   RequestTransformer,
 } from '@vulcan/serve/route';
+import { Container } from 'inversify';
+import { TYPES } from '@vulcan/serve/containers';
 
 describe('Test request transformer - transform successfully', () => {
+  let container: Container;
+
   const fakeSchemas: Array<APISchema> = [
     {
       ...sinon.stubInterface<APISchema>(),
@@ -124,7 +129,14 @@ describe('Test request transformer - transform successfully', () => {
       },
     },
   ];
+  beforeEach(() => {
+    container = new Container();
+    container.bind(TYPES.IRequestTransformer).to(RequestTransformer);
+  });
 
+  afterEach(() => {
+    container.unbindAll();
+  });
   it.each([
     ['path nested parameters', fakeSchemas[0], fakeKoaContexts[0]],
     ['path & header parameters', fakeSchemas[1], fakeKoaContexts[1]],
@@ -145,7 +157,10 @@ describe('Test request transformer - transform successfully', () => {
         ](fieldValue, param.fieldName);
       });
       // Act
-      const transformer = new RequestTransformer();
+
+      const transformer = container.get<IRequestTransformer>(
+        TYPES.IRequestTransformer
+      );
       const result = await transformer.transform(ctx, schema);
 
       // Assert

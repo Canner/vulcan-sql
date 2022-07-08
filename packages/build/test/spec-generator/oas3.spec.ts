@@ -1,7 +1,7 @@
 import { OAS3SpecGenerator } from '@vulcan/build/spec-generator';
 import { getSchemas, getConfig } from './schema';
 import * as jsYaml from 'js-yaml';
-import * as fs from 'fs/promises';
+import { promises as fs } from 'fs';
 import * as path from 'path';
 import { get } from 'lodash';
 

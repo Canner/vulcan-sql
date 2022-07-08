@@ -10,8 +10,12 @@ import {
   RouteGenerator,
   IPaginationTransformer,
 } from '@vulcan/serve/route';
+import { Container } from 'inversify';
+import { TYPES } from '@vulcan/serve/containers';
+import { TYPES as CORE_TYPES } from '@vulcan/core/containers';
 
 describe('Test route generator ', () => {
+  let container: Container;
   let stubReqTransformer: sinon.StubbedInstance<IRequestTransformer>;
   let stubReqValidator: sinon.StubbedInstance<IRequestValidator>;
   let stubPaginationTransformer: sinon.StubbedInstance<IPaginationTransformer>;
@@ -21,31 +25,52 @@ describe('Test route generator ', () => {
   ).fill(sinon.stubInterface<APISchema>());
 
   beforeEach(() => {
+    container = new Container();
     stubReqTransformer = sinon.stubInterface<IRequestTransformer>();
     stubReqValidator = sinon.stubInterface<IRequestValidator>();
     stubPaginationTransformer = sinon.stubInterface<IPaginationTransformer>();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
+
+    container
+      .bind(TYPES.IPaginationTransformer)
+      .toConstantValue(stubPaginationTransformer);
+    container
+      .bind(TYPES.IRequestTransformer)
+      .toConstantValue(stubReqTransformer);
+    container.bind(TYPES.IRequestValidator).toConstantValue(stubReqValidator);
+    container
+      .bind(CORE_TYPES.TemplateEngine)
+      .toConstantValue(stubTemplateEngine);
+    container.bind(TYPES.RouteGenerator).to(RouteGenerator);
+  });
+
+  afterEach(() => {
+    container.unbindAll();
   });
 
   it.each(fakeSchemas)(
     'Should generate restful routes when input schemas and provide restful type',
     async (apiSchema: APISchema) => {
       // Arrange
+
       const expectedRoute: RestfulRoute = new RestfulRoute({
         apiSchema,
-        reqTransformer: stubReqTransformer,
-        reqValidator: stubReqValidator,
-        paginationTransformer: stubPaginationTransformer,
-        templateEngine: stubTemplateEngine,
-      });
-      const routeGenerator = new RouteGenerator({
-        reqTransformer: stubReqTransformer,
-        reqValidator: stubReqValidator,
-        paginationTransformer: stubPaginationTransformer,
-        templateEngine: stubTemplateEngine,
+        reqTransformer: container.get<IRequestTransformer>(
+          TYPES.IRequestTransformer
+        ),
+        reqValidator: container.get<IRequestValidator>(TYPES.IRequestValidator),
+        paginationTransformer: container.get<IPaginationTransformer>(
+          TYPES.IPaginationTransformer
+        ),
+        templateEngine: container.get<TemplateEngine>(
+          CORE_TYPES.TemplateEngine
+        ),
       });
 
       // Act
+      const routeGenerator = container.get<RouteGenerator>(
+        TYPES.RouteGenerator
+      );
       const resultRoute = await routeGenerator.generate(
         apiSchema,
         APIProviderType.RESTFUL
@@ -65,19 +90,22 @@ describe('Test route generator ', () => {
       // Arrange
       const expectedRoute: GraphQLRoute = new GraphQLRoute({
         apiSchema,
-        reqTransformer: stubReqTransformer,
-        reqValidator: stubReqValidator,
-        paginationTransformer: stubPaginationTransformer,
-        templateEngine: stubTemplateEngine,
-      });
-      const routeGenerator = new RouteGenerator({
-        reqTransformer: stubReqTransformer,
-        reqValidator: stubReqValidator,
-        paginationTransformer: stubPaginationTransformer,
-        templateEngine: stubTemplateEngine,
+        reqTransformer: container.get<IRequestTransformer>(
+          TYPES.IRequestTransformer
+        ),
+        reqValidator: container.get<IRequestValidator>(TYPES.IRequestValidator),
+        paginationTransformer: container.get<IPaginationTransformer>(
+          TYPES.IPaginationTransformer
+        ),
+        templateEngine: container.get<TemplateEngine>(
+          CORE_TYPES.TemplateEngine
+        ),
       });
 
       // Act
+      const routeGenerator = container.get<RouteGenerator>(
+        TYPES.RouteGenerator
+      );
       const resultRoute = await routeGenerator.generate(
         apiSchema,
         APIProviderType.GRAPHQL

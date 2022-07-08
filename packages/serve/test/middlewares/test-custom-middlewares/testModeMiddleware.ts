@@ -1,4 +1,4 @@
-import { ServeConfig } from '@vulcan/serve/config';
+import { MiddlewareConfig } from '@vulcan/serve/models';
 import {
   BaseRouteMiddleware,
   RouteMiddlewareNext,
@@ -11,7 +11,7 @@ export interface TestModeOptions {
 /* istanbul ignore file */
 export class TestModeMiddleware extends BaseRouteMiddleware {
   private mode: boolean;
-  constructor(config: ServeConfig) {
+  constructor(config: MiddlewareConfig) {
     super('test-mode', config);
     this.mode = (this.getConfig()?.['mode'] as boolean) || false;
   }

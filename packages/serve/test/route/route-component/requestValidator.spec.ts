@@ -1,6 +1,10 @@
 import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
-import { RequestValidator, RequestParameters } from '@vulcan/serve/route';
+import {
+  RequestValidator,
+  RequestParameters,
+  IRequestValidator,
+} from '@vulcan/serve/route';
 import {
   APISchema,
   FieldDataType,
@@ -9,8 +13,13 @@ import {
   ValidatorDefinition,
   ValidatorLoader,
 } from '@vulcan/core';
+import { Container } from 'inversify';
+import { TYPES } from '@vulcan/serve/containers';
+import { TYPES as CORE_TYPES } from '@vulcan/core/containers';
 
 describe('Test request validator - validate successfully', () => {
+  let container: Container;
+
   const fakeSchemas: Array<APISchema> = [
     {
       ...sinon.stubInterface<APISchema>(),
@@ -133,6 +142,15 @@ describe('Test request validator - validate successfully', () => {
     },
   ];
 
+  beforeEach(() => {
+    container = new Container();
+    container.bind(CORE_TYPES.IValidatorLoader).to(ValidatorLoader);
+    container.bind(TYPES.IRequestValidator).to(RequestValidator);
+  });
+
+  afterEach(() => {
+    container.unbindAll();
+  });
   it.each([
     [fakeSchemas[0], fakeKoaContexts[0]],
     [fakeSchemas[1], fakeKoaContexts[1]],
@@ -142,7 +160,9 @@ describe('Test request validator - validate successfully', () => {
     'Should success when give matched request parameters and api schema',
     async (schema: APISchema, reqParams: RequestParameters) => {
       // Act
-      const validator = new RequestValidator(new ValidatorLoader());
+      const validator = container.get<IRequestValidator>(
+        TYPES.IRequestValidator
+      );
       const validateAction = validator.validate(reqParams, schema);
       const result = expect(validateAction).resolves;
       await result.not.toThrow();

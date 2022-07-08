@@ -4,14 +4,15 @@ import { APISchema, TemplateEngine, Pagination } from '@vulcan/core';
 import { IRequestValidator } from './requestValidator';
 import { IRequestTransformer, RequestParameters } from './requestTransformer';
 import { IPaginationTransformer } from './paginationTransformer';
+
 export { KoaRouterContext, KoaNext };
 
-interface TransformedRequest {
+export interface TransformedRequest {
   reqParams: RequestParameters;
   pagination?: Pagination;
 }
 
-interface IRoute {
+export interface IRoute {
   respond(ctx: KoaRouterContext): Promise<any>;
 }
 

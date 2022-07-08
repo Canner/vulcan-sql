@@ -4,16 +4,18 @@ import {
   RequestSchema,
   ValidatorDefinition,
 } from '@vulcan/core';
-
+import { inject, injectable } from 'inversify';
+import { TYPES as CORE_TYPES } from '@vulcan/core/containers';
 import { RequestParameters } from './requestTransformer';
 
 export interface IRequestValidator {
   validate(reqParams: RequestParameters, apiSchema: APISchema): Promise<void>;
 }
 
+@injectable()
 export class RequestValidator implements IRequestValidator {
   private validatorLoader: IValidatorLoader;
-  constructor(loader: IValidatorLoader) {
+  constructor(@inject(CORE_TYPES.IValidatorLoader) loader: IValidatorLoader) {
     this.validatorLoader = loader;
   }
   // validate each parameters of request and transform the request content of koa ctx to "RequestParameters" format

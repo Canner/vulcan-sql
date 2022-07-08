@@ -2,9 +2,17 @@ import * as sinon from 'ts-sinon';
 import { Request } from 'koa';
 import faker from '@faker-js/faker';
 import { APISchema, normalizeStringValue, PaginationMode } from '@vulcan/core';
-import { KoaRouterContext, PaginationTransformer } from '@vulcan/serve/route';
+import {
+  IPaginationTransformer,
+  KoaRouterContext,
+  PaginationTransformer,
+} from '@vulcan/serve/route';
+import { Container } from 'inversify';
+import { TYPES } from '@vulcan/serve/containers';
 
 describe('Test pagination transformer - transform successfully', () => {
+  let container: Container;
+
   const fakeSchemas: Array<APISchema> = [
     {
       ...sinon.stubInterface<APISchema>(),
@@ -68,6 +76,15 @@ describe('Test pagination transformer - transform successfully', () => {
     },
   ];
 
+  beforeEach(() => {
+    container = new Container();
+    container.bind(TYPES.IPaginationTransformer).to(PaginationTransformer);
+  });
+
+  afterEach(() => {
+    container.unbindAll();
+  });
+
   it.each([
     ['offset pagination', fakeSchemas[0], fakeKoaContexts[0]],
     ['cursor pagination', fakeSchemas[1], fakeKoaContexts[1]],
@@ -102,9 +119,10 @@ describe('Test pagination transformer - transform successfully', () => {
           };
         }
       }
-
       // Act
-      const transformer = new PaginationTransformer();
+      const transformer = container.get<IPaginationTransformer>(
+        TYPES.IPaginationTransformer
+      );
       const result = await transformer.transform(ctx, schema);
 
       // Assert

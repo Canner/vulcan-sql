@@ -5,6 +5,7 @@ import {
   normalizeStringValue,
   RequestSchema,
 } from '@vulcan/core';
+import { injectable } from 'inversify';
 import { assign } from 'lodash';
 import { KoaRouterContext } from './baseRoute';
 
@@ -19,6 +20,7 @@ export interface IRequestTransformer {
   ): Promise<RequestParameters>;
 }
 
+@injectable()
 export class RequestTransformer implements IRequestTransformer {
   public static readonly fieldInMapper: {
     [type in FieldInType]: (ctx: KoaRouterContext, fieldName: string) => string;

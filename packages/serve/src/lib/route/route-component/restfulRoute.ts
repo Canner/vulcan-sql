@@ -1,8 +1,11 @@
+import { BaseRoute, KoaRouterContext } from './baseRoute';
+import { inject, injectable } from 'inversify';
+import { TYPES } from '@vulcan/serve/containers';
 import { APISchema, TemplateEngine } from '@vulcan/core';
 import { IRequestTransformer } from './requestTransformer';
 import { IRequestValidator } from './requestValidator';
-import { BaseRoute, KoaRouterContext } from './baseRoute';
 import { IPaginationTransformer } from './paginationTransformer';
+
 export class RestfulRoute extends BaseRoute {
   public readonly urlPath: string;
 

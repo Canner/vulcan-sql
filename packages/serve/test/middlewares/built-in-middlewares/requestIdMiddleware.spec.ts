@@ -58,13 +58,11 @@ describe('Test request-id middlewares', () => {
     };
     // Act
     const middleware = new RequestIdMiddleware({
-      middlewares: {
-        'request-id': {
-          options: {
-            name: 'Test-Request-ID',
-            fieldIn: FieldInType.QUERY,
-          } as RequestIdOptions,
-        },
+      'request-id': {
+        options: {
+          name: 'Test-Request-ID',
+          fieldIn: FieldInType.QUERY,
+        } as RequestIdOptions,
       },
     });
 
@@ -90,12 +88,10 @@ describe('Test request-id middlewares', () => {
     };
     // Act
     const middleware = new RequestIdMiddleware({
-      middlewares: {
-        'request-id': {
-          options: {
-            fieldIn: FieldInType.QUERY,
-          } as RequestIdOptions,
-        },
+      'request-id': {
+        options: {
+          fieldIn: FieldInType.QUERY,
+        } as RequestIdOptions,
       },
     });
 
