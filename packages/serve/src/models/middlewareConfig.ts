@@ -15,11 +15,11 @@ export type BuiltInOptions =
 export type CustomOptions = string | number | boolean | object;
 
 /**
- * The keyName represent to load middleware if it is custom,
- * For the built-in middleware is will load automatically and use default options when not setup keyName and it's options
+ * The identifier name represent to load middleware if it is custom,
+ * For the built-in middleware is will load automatically and use default options when not setup name and it's options
  */
 export interface MiddlewareConfig {
-  [keyName: string]: {
+  [name: string]: {
     [param: string]: BuiltInOptions | CustomOptions;
   };
 }

@@ -2,12 +2,13 @@ import { BaseRouteMiddleware } from './middleware';
 import {
   defaultImport,
   ClassType,
+  ModuleProperties,
   mergedModules,
   SourceOfExtensions,
 } from '@vulcan/core';
 // The extension module interface
-export interface ExtensionModule {
-  middlewares?: ClassType<BaseRouteMiddleware>[];
+export interface ExtensionModule extends ModuleProperties {
+  ['middlewares']: ClassType<BaseRouteMiddleware>[];
 }
 
 export const loadExtensions = async (extensions?: SourceOfExtensions) => {
@@ -17,7 +18,7 @@ export const loadExtensions = async (extensions?: SourceOfExtensions) => {
     const modules = await defaultImport<ExtensionModule>(...extensions);
     const module = await mergedModules<ExtensionModule>(modules);
     // return middleware classes in folder
-    return module.middlewares || [];
+    return module['middlewares'] || [];
   }
   return [];
 };

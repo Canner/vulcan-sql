@@ -78,7 +78,7 @@ describe('Test pagination transformer - transform successfully', () => {
 
   beforeEach(() => {
     container = new Container();
-    container.bind(TYPES.IPaginationTransformer).to(PaginationTransformer);
+    container.bind(TYPES.PaginationTransformer).to(PaginationTransformer);
   });
 
   afterEach(() => {
@@ -121,7 +121,7 @@ describe('Test pagination transformer - transform successfully', () => {
       }
       // Act
       const transformer = container.get<IPaginationTransformer>(
-        TYPES.IPaginationTransformer
+        TYPES.PaginationTransformer
       );
       const result = await transformer.transform(ctx, schema);
 

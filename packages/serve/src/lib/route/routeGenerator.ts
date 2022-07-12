@@ -33,9 +33,9 @@ export class RouteGenerator {
   };
 
   constructor(
-    @inject(TYPES.IRequestTransformer) reqTransformer: IRequestTransformer,
-    @inject(TYPES.IRequestValidator) reqValidator: IRequestValidator,
-    @inject(TYPES.IPaginationTransformer)
+    @inject(TYPES.RequestTransformer) reqTransformer: IRequestTransformer,
+    @inject(TYPES.RequestValidator) reqValidator: IRequestValidator,
+    @inject(TYPES.PaginationTransformer)
     paginationTransformer: IPaginationTransformer,
     @inject(CORE_TYPES.TemplateEngine) templateEngine: TemplateEngine
   ) {

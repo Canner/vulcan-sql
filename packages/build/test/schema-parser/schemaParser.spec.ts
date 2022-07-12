@@ -33,7 +33,7 @@ beforeEach(() => {
     .to(SchemaParserOptions)
     .inSingletonScope();
   container
-    .bind(CORE_TYPES.IValidatorLoader)
+    .bind(CORE_TYPES.ValidatorLoader)
     .toConstantValue(stubValidatorLoader);
   container.bind(TYPES.SchemaParser).to(SchemaParser).inSingletonScope();
 });

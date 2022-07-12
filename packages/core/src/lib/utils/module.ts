@@ -21,23 +21,29 @@ export const defaultImport = async <T = any>(
   return modules;
 };
 
+export interface ModuleProperties {
+  [property: string]: any[];
+}
 /**
  * merged multiple properties of each modules to the one module object
  * @param modules: multiple module objects which include properties e.g: [{ module1Property1: [] }, { module2Property1: [] }]
  * @returns the merged properties in one module object
  */
-export const mergedModules = async <T = any>(modules: Array<T>) => {
-  const module = modules.reduce((merged, current, _) => {
-    // if current extension property has been existed in merged module
-    Object.keys(current).map((extension) => {
-      if (extension in merged) {
-        throw new Error(
-          `The extension ${extension} has defined in previous module.`
-        );
+export const mergedModules = async <T extends ModuleProperties>(
+  modules: Array<T>
+) => {
+  const module = modules.reduce(
+    (merged: ModuleProperties, current: ModuleProperties, _) => {
+      for (const extension of Object.keys(current)) {
+        // if current extension property has been existed in merged module, concat it.
+        if (extension in merged)
+          merged[extension] = [...merged[extension], ...current[extension]];
+        // if extension not in merged module, add new extension property
+        else merged[extension] = current[extension];
       }
-    });
-    // merging the merged module and current module
-    return { ...merged, ...current };
-  }, {} as T);
+      return merged;
+    },
+    {} as T
+  );
   return module;
 };

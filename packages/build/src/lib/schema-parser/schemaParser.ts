@@ -41,7 +41,7 @@ export class SchemaParser {
     @inject(TYPES.Factory_SchemaReader)
     schemaReaderFactory: interfaces.AutoNamedFactory<SchemaReader>,
     @inject(TYPES.SchemaParserOptions) schemaParserOptions: SchemaParserOptions,
-    @inject(CORE_TYPES.IValidatorLoader) validatorLoader: IValidatorLoader
+    @inject(CORE_TYPES.ValidatorLoader) validatorLoader: IValidatorLoader
   ) {
     this.schemaReader = schemaReaderFactory(schemaParserOptions.reader);
 

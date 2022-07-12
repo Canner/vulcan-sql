@@ -3,7 +3,7 @@ import * as sinon from 'ts-sinon';
 import { BaseRouteMiddleware, loadExtensions } from '@vulcan/serve/middleware';
 import middlewares from '@vulcan/serve/middleware/built-in-middleware';
 import { TestModeMiddleware } from './test-custom-middlewares';
-import { ClassType, defaultImport, mergedModules } from '@vulcan/core';
+import { ClassType, defaultImport } from '@vulcan/core';
 import { AppConfig } from '@vulcan/serve/models';
 import { flatten } from 'lodash';
 

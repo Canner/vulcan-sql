@@ -45,6 +45,7 @@
       "@vulcan/core/data-source/*": ["packages/core/src/lib/data-source/*"],
       "@vulcan/core/containers": ["packages/core/src/containers/index"],
       "@vulcan/core/models": ["packages/core/src/models/index"],
+      "@vulcan/core/utils": ["packages/core/src/lib/utils/index"],
       "@vulcan/build/schema-parser": [
         "packages/build/src/lib/schema-parser/index"
       ],

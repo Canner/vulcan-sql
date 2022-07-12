@@ -144,8 +144,8 @@ describe('Test request validator - validate successfully', () => {
 
   beforeEach(() => {
     container = new Container();
-    container.bind(CORE_TYPES.IValidatorLoader).to(ValidatorLoader);
-    container.bind(TYPES.IRequestValidator).to(RequestValidator);
+    container.bind(CORE_TYPES.ValidatorLoader).to(ValidatorLoader);
+    container.bind(TYPES.RequestValidator).to(RequestValidator);
   });
 
   afterEach(() => {
@@ -161,7 +161,7 @@ describe('Test request validator - validate successfully', () => {
     async (schema: APISchema, reqParams: RequestParameters) => {
       // Act
       const validator = container.get<IRequestValidator>(
-        TYPES.IRequestValidator
+        TYPES.RequestValidator
       );
       const validateAction = validator.validate(reqParams, schema);
       const result = expect(validateAction).resolves;

@@ -9,22 +9,21 @@ import {
   RouteGenerator,
 } from '@vulcan/serve';
 import { TYPES } from '../types';
-import { TemplateEngine, TYPES as CORE_TYPES } from '@vulcan/core';
 
 export const routeGeneratorModule = () =>
   new ContainerModule((bind) => {
     // Request Transformer
-    bind<IRequestTransformer>(TYPES.IRequestTransformer)
+    bind<IRequestTransformer>(TYPES.RequestTransformer)
       .to(RequestTransformer)
       .inSingletonScope();
 
     // Request Transformer
-    bind<IRequestValidator>(TYPES.IRequestValidator)
+    bind<IRequestValidator>(TYPES.RequestValidator)
       .to(RequestValidator)
       .inSingletonScope();
 
     // Pagination Transformer
-    bind<IPaginationTransformer>(TYPES.IPaginationTransformer)
+    bind<IPaginationTransformer>(TYPES.PaginationTransformer)
       .to(PaginationTransformer)
       .inSingletonScope();
 

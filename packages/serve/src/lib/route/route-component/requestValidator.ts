@@ -15,7 +15,7 @@ export interface IRequestValidator {
 @injectable()
 export class RequestValidator implements IRequestValidator {
   private validatorLoader: IValidatorLoader;
-  constructor(@inject(CORE_TYPES.IValidatorLoader) loader: IValidatorLoader) {
+  constructor(@inject(CORE_TYPES.ValidatorLoader) loader: IValidatorLoader) {
     this.validatorLoader = loader;
   }
   // validate each parameters of request and transform the request content of koa ctx to "RequestParameters" format

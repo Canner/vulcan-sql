@@ -20,11 +20,11 @@ export const TYPES = {
   // Executor
   Executor: Symbol.for('Executor'),
   // Data Query Builder
-  IDataQueryBuilder: Symbol.for('IDataQueryBuilder'),
+  DataQueryBuilder: Symbol.for('DataQueryBuilder'),
   // Data Source
-  IDataSource: Symbol.for('IDataSource'),
+  DataSource: Symbol.for('DataSource'),
   // Validator
-  IValidatorLoader: Symbol.for('IValidatorLoader'),
+  ValidatorLoader: Symbol.for('ValidatorLoader'),
   // source of extensions
   SourceOfExtensions: Symbol.for('SourceOfExtensions'),
 };

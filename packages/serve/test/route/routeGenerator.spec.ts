@@ -32,12 +32,12 @@ describe('Test route generator ', () => {
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
 
     container
-      .bind(TYPES.IPaginationTransformer)
+      .bind(TYPES.PaginationTransformer)
       .toConstantValue(stubPaginationTransformer);
     container
-      .bind(TYPES.IRequestTransformer)
+      .bind(TYPES.RequestTransformer)
       .toConstantValue(stubReqTransformer);
-    container.bind(TYPES.IRequestValidator).toConstantValue(stubReqValidator);
+    container.bind(TYPES.RequestValidator).toConstantValue(stubReqValidator);
     container
       .bind(CORE_TYPES.TemplateEngine)
       .toConstantValue(stubTemplateEngine);
@@ -56,11 +56,11 @@ describe('Test route generator ', () => {
       const expectedRoute: RestfulRoute = new RestfulRoute({
         apiSchema,
         reqTransformer: container.get<IRequestTransformer>(
-          TYPES.IRequestTransformer
+          TYPES.RequestTransformer
         ),
-        reqValidator: container.get<IRequestValidator>(TYPES.IRequestValidator),
+        reqValidator: container.get<IRequestValidator>(TYPES.RequestValidator),
         paginationTransformer: container.get<IPaginationTransformer>(
-          TYPES.IPaginationTransformer
+          TYPES.PaginationTransformer
         ),
         templateEngine: container.get<TemplateEngine>(
           CORE_TYPES.TemplateEngine
@@ -91,11 +91,11 @@ describe('Test route generator ', () => {
       const expectedRoute: GraphQLRoute = new GraphQLRoute({
         apiSchema,
         reqTransformer: container.get<IRequestTransformer>(
-          TYPES.IRequestTransformer
+          TYPES.RequestTransformer
         ),
-        reqValidator: container.get<IRequestValidator>(TYPES.IRequestValidator),
+        reqValidator: container.get<IRequestValidator>(TYPES.RequestValidator),
         paginationTransformer: container.get<IPaginationTransformer>(
-          TYPES.IPaginationTransformer
+          TYPES.PaginationTransformer
         ),
         templateEngine: container.get<TemplateEngine>(
           CORE_TYPES.TemplateEngine

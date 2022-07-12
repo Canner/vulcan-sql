@@ -1,18 +1,14 @@
 import { TYPES } from '@vulcan/core/containers';
-import { IDataQueryBuilder } from '@vulcan/core/data-query';
+import { IExecutor } from '@vulcan/core/data-query';
 import { inject } from 'inversify';
 import { TagRunnerOptions, TagRunner } from '../../extension-loader';
 import { FINIAL_BUILDER_NAME } from './constants';
 
-export interface Executor {
-  createBuilder(query: string): Promise<IDataQueryBuilder>;
-}
-
 export class ReqTagRunner extends TagRunner {
   public tags = ['req'];
-  private executor: Executor;
+  private executor: IExecutor;
 
-  constructor(@inject(TYPES.Executor) executor: Executor) {
+  constructor(@inject(TYPES.Executor) executor: IExecutor) {
     super();
     this.executor = executor;
   }

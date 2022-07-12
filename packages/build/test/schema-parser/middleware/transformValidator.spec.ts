@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { RawAPISchema } from '@vulcan/build/schema-parser';
 import { transformValidator } from '@vulcan/build/schema-parser/middleware/transformValidator';
 

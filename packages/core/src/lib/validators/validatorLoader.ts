@@ -1,13 +1,18 @@
 import { IValidator } from './validator';
 import * as path from 'path';
 import { inject, injectable, optional } from 'inversify';
-import { defaultImport, ClassType, mergedModules } from '../utils';
+import {
+  defaultImport,
+  ClassType,
+  mergedModules,
+  ModuleProperties,
+} from '../utils';
 import { TYPES } from '../../containers/types';
 import { SourceOfExtensions } from '../../models/coreOptions';
 import { flatten } from 'lodash';
 
-export interface ExtensionModule {
-  validators?: ClassType<IValidator>[];
+export interface ExtensionModule extends ModuleProperties {
+  ['validators']: ClassType<IValidator>[];
 }
 
 export interface IValidatorLoader {
@@ -39,7 +44,9 @@ export class ValidatorLoader implements IValidatorLoader {
       // import extension which user customized
       const modules = await defaultImport<ExtensionModule>(...this.extensions);
       const module = await mergedModules<ExtensionModule>(modules);
-      extensionClasses = module.validators || [];
+      extensionClasses = module['validators'] || [];
+      // check same name validator does exist or not, if exist, throw error.
+      this.checkSameNameValidator(extensionClasses);
     }
 
     // reverse the array to make the extensions priority higher than built-in validators if has the duplicate name.
@@ -52,7 +59,20 @@ export class ValidatorLoader implements IValidatorLoader {
 
     // throw error if not found
     throw new Error(
-      `The name "${validatorName}" of validator not defined in built-in validators and passed folder path, or the defined validator not export as default.`
+      `The identifier name "${validatorName}" of validator not defined in built-in validators and passed folder path, or the defined validator not export as default.`
     );
+  }
+
+  private checkSameNameValidator(classes: ClassType<IValidator>[]) {
+    const map: { [name: string]: IValidator } = {};
+    for (const cls of classes) {
+      const validator = new cls() as IValidator;
+      if (validator.name in map) {
+        throw new Error(
+          `The identifier name "${validator.name}" of validator class ${cls.name} has been defined in other extensions`
+        );
+      }
+      map[validator.name] = validator;
+    }
   }
 }

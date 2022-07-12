@@ -94,8 +94,18 @@ export class VulcanApplication {
   }
   /** add middleware classes for app used */
   private async use(...classes: ClassType<BaseRouteMiddleware>[]) {
+    const map: { [name: string]: BaseRouteMiddleware } = {};
     for (const cls of classes) {
       const middleware = new cls(this.config.middlewares);
+      if (middleware.name in map) {
+        throw new Error(
+          `The identifier name "${middleware.name}" of middleware class ${cls.name} has been defined in other extensions`
+        );
+      }
+      map[middleware.name] = middleware;
+    }
+    for (const name of Object.keys(map)) {
+      const middleware = map[name];
       this.app.use(middleware.handle.bind(middleware));
     }
   }

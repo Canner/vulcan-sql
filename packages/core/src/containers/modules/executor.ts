@@ -1,15 +1,18 @@
-import { SQLClauseOperation } from '@vulcan/core/data-query';
+import {
+  IExecutor,
+  QueryExecutor,
+  SQLClauseOperation,
+} from '@vulcan/core/data-query';
 import { Pagination } from '../../models/pagination';
-import { DataQueryBuilder } from '@vulcan/core/data-query';
 import { IDataSource } from '@vulcan/core/data-source';
-import { ContainerModule } from 'inversify';
-import { Executor } from '../../lib/template-engine/built-in-extensions/query-builder/reqTagRunner';
+import { AsyncContainerModule } from 'inversify';
 import { TYPES } from '../types';
 
 /**
  * TODO: Mock data source to make data query builder could create by IoC
  * need to update after real data source implemented.
  *  */
+
 class MockDataSource implements IDataSource {
   public async execute({
     statement,
@@ -29,19 +32,13 @@ class MockDataSource implements IDataSource {
 }
 
 export const executorModule = () =>
-  new ContainerModule((bind) => {
+  new AsyncContainerModule(async (bind) => {
     /**
      * TODO: bind mock data source, need to update after real data source implemented.
      */
-    bind<IDataSource>(TYPES.IDataSource).toConstantValue(new MockDataSource());
-
-    bind<Executor>(TYPES.Executor).toDynamicValue((context) => {
-      const dataSource = context.container.get<MockDataSource>(
-        TYPES.IDataSource
-      );
-      return {
-        createBuilder: async (query: string) =>
-          new DataQueryBuilder({ statement: query, dataSource }),
-      };
+    bind<IDataSource>(TYPES.DataSource).toConstantValue(new MockDataSource());
+    bind<IExecutor>(TYPES.Executor).toDynamicValue((context) => {
+      const dataSource = context.container.get<IDataSource>(TYPES.DataSource);
+      return new QueryExecutor(dataSource);
     });
   });

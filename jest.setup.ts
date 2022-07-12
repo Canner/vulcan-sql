@@ -1,4 +1,4 @@
 /**
- * Add reflect0metadata to collect inversify IoC decorator information when run jest test.
+ * Add reflect-metadata to collect Inversify IoC decorator information when running jest test.
  */
 import 'reflect-metadata';

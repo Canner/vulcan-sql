@@ -131,7 +131,7 @@ describe('Test request transformer - transform successfully', () => {
   ];
   beforeEach(() => {
     container = new Container();
-    container.bind(TYPES.IRequestTransformer).to(RequestTransformer);
+    container.bind(TYPES.RequestTransformer).to(RequestTransformer);
   });
 
   afterEach(() => {
@@ -159,7 +159,7 @@ describe('Test request transformer - transform successfully', () => {
       // Act
 
       const transformer = container.get<IRequestTransformer>(
-        TYPES.IRequestTransformer
+        TYPES.RequestTransformer
       );
       const result = await transformer.transform(ctx, schema);
 

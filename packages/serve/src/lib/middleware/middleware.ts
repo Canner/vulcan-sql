@@ -12,10 +12,10 @@ export abstract class BaseRouteMiddleware {
   protected config: MiddlewareConfig;
   // middleware is enabled or not, default is enabled beside you give "enabled: false" in config.
   protected enabled: boolean;
-  // Is an identifier to check the options set or not in the middlewares section of serve config
-  public readonly keyName: string;
-  constructor(keyName: string, config: MiddlewareConfig) {
-    this.keyName = keyName;
+  // An identifier to check the options set or not in the middlewares section of serve config
+  public readonly name: string;
+  constructor(name: string, config: MiddlewareConfig) {
+    this.name = name;
     this.config = config;
     this.enabled = (this.getConfig()?.['enabled'] as boolean) || true;
   }
@@ -25,8 +25,7 @@ export abstract class BaseRouteMiddleware {
   ): Promise<void>;
 
   protected getConfig() {
-    if (this.config && this.config[this.keyName])
-      return this.config[this.keyName];
+    if (this.config && this.config[this.name]) return this.config[this.name];
     return undefined;
   }
 }

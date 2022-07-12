@@ -35,10 +35,10 @@ describe('Test vulcan server for practicing middleware', () => {
     container = new Container();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
 
-    container.bind(CORE_TYPES.IValidatorLoader).to(ValidatorLoader);
-    container.bind(TYPES.IPaginationTransformer).to(PaginationTransformer);
-    container.bind(TYPES.IRequestTransformer).to(RequestTransformer);
-    container.bind(TYPES.IRequestValidator).to(RequestValidator);
+    container.bind(CORE_TYPES.ValidatorLoader).to(ValidatorLoader);
+    container.bind(TYPES.PaginationTransformer).to(PaginationTransformer);
+    container.bind(TYPES.RequestTransformer).to(RequestTransformer);
+    container.bind(TYPES.RequestValidator).to(RequestValidator);
     container
       .bind(CORE_TYPES.TemplateEngine)
       .toConstantValue(stubTemplateEngine);
@@ -247,10 +247,10 @@ describe('Test vulcan server for calling restful APIs', () => {
     container = new Container();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
 
-    container.bind(CORE_TYPES.IValidatorLoader).to(ValidatorLoader);
-    container.bind(TYPES.IPaginationTransformer).to(PaginationTransformer);
-    container.bind(TYPES.IRequestTransformer).to(RequestTransformer);
-    container.bind(TYPES.IRequestValidator).to(RequestValidator);
+    container.bind(CORE_TYPES.ValidatorLoader).to(ValidatorLoader);
+    container.bind(TYPES.PaginationTransformer).to(PaginationTransformer);
+    container.bind(TYPES.RequestTransformer).to(RequestTransformer);
+    container.bind(TYPES.RequestValidator).to(RequestValidator);
     container
       .bind(CORE_TYPES.TemplateEngine)
       .toConstantValue(stubTemplateEngine);
