@@ -3,6 +3,7 @@
   "projects": {
     "build": "packages/build",
     "core": "packages/core",
+    "extension-dbt": "packages/extension-dbt",
     "serve": "packages/serve"
   }
 }

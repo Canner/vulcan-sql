@@ -19,6 +19,7 @@
       "@vulcan-sql/build": ["packages/build/src/index"],
       "@vulcan-sql/core": ["packages/core/src/index"],
       "@vulcan-sql/serve": ["packages/serve/src/index"],
+      "@vulcan-sql/extension-dbt": ["packages/extension-dbt/src/index"],
       "@vulcan-sql/core/artifact-builder": [
         "packages/core/src/lib/artifact-builder/index"
       ],
