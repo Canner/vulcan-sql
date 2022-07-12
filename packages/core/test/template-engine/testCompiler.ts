@@ -20,7 +20,7 @@ export const createTestCompiler = async () => {
     .bind(TYPES.CompilerLoader)
     .to(InMemoryCodeLoader)
     .inSingletonScope();
-  await bindExtensions(container.bind.bind(container));
+  await bindExtensions(container.bind.bind(container), []);
   container.bind<IExecutor>(TYPES.Executor).toConstantValue(stubExecutor);
 
   container.bind(TYPES.Compiler).to(NunjucksCompiler).inSingletonScope();

@@ -18,7 +18,7 @@ export class Container {
     this.inversifyContainer.load(artifactBuilderModule(options.artifact));
     await this.inversifyContainer.loadAsync(executorModule());
     await this.inversifyContainer.loadAsync(
-      templateEngineModule(options.template)
+      templateEngineModule(options.template, options.extensions || [])
     );
     await this.inversifyContainer.loadAsync(
       validatorLoaderModule(options.extensions)
