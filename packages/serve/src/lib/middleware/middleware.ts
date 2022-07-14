@@ -2,8 +2,8 @@ import {
   BuiltInOptions,
   AppConfig,
   MiddlewareConfig,
-} from '@vulcan/serve/models';
-import { KoaRouterContext } from '@vulcan/serve/route';
+} from '@vulcan-sql/serve/models';
+import { KoaRouterContext } from '@vulcan-sql/serve/route';
 import { Next } from 'koa';
 
 export type RouteMiddlewareNext = Next;

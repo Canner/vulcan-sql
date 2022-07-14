@@ -1,6 +1,6 @@
-import { RawAPISchema } from '@vulcan/build/schema-parser';
-import { generatePathParameters } from '@vulcan/build/schema-parser/middleware';
-import { FieldDataType, FieldInType } from '@vulcan/core';
+import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
+import { generatePathParameters } from '@vulcan-sql/build/schema-parser/middleware';
+import { FieldDataType, FieldInType } from '@vulcan-sql/core';
 
 it('Should generate path parameters when they were not defined', async () => {
   // Arrange

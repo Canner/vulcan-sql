@@ -1,7 +1,7 @@
 import { BaseRoute, KoaRouterContext } from './baseRoute';
 import { inject, injectable } from 'inversify';
-import { TYPES } from '@vulcan/serve/containers';
-import { APISchema, TemplateEngine } from '@vulcan/core';
+import { TYPES } from '@vulcan-sql/serve/containers';
+import { APISchema, TemplateEngine } from '@vulcan-sql/core';
 import { IRequestTransformer } from './requestTransformer';
 import { IRequestValidator } from './requestValidator';
 import { IPaginationTransformer } from './paginationTransformer';

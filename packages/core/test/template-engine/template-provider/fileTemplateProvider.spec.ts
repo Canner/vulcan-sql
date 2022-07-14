@@ -1,9 +1,12 @@
-import { TYPES } from '@vulcan/core/containers';
+import { TYPES } from '@vulcan-sql/core/containers';
 import {
   ITemplateEngineOptions,
   TemplateProviderType,
-} from '@vulcan/core/models';
-import { FileTemplateProvider, Template } from '@vulcan/core/template-engine';
+} from '@vulcan-sql/core/models';
+import {
+  FileTemplateProvider,
+  Template,
+} from '@vulcan-sql/core/template-engine';
 import { Container } from 'inversify';
 import * as path from 'path';
 

@@ -1,4 +1,4 @@
-import { OAS3SpecGenerator } from '@vulcan/build/spec-generator';
+import { OAS3SpecGenerator } from '@vulcan-sql/build/spec-generator';
 
 it('Should throw error with invalid fieldIn', async () => {
   // Arrange

@@ -1,4 +1,4 @@
-import { IDataQueryBuilder } from '@vulcan/core/data-query';
+import { IDataQueryBuilder } from '@vulcan-sql/core/data-query';
 import { FilterRunner } from '../../extension-loader';
 import { EXECUTE_FILTER_NAME } from './constants';
 

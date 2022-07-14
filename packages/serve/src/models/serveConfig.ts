@@ -1,5 +1,5 @@
-import { ICoreOptions } from '@vulcan/core';
-import { APIProviderType } from '@vulcan/serve/route';
+import { ICoreOptions } from '@vulcan-sql/core';
+import { APIProviderType } from '@vulcan-sql/serve/route';
 import { MiddlewareConfig } from './middlewareConfig';
 
 // The serve package config

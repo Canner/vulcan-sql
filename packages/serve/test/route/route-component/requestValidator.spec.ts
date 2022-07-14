@@ -4,7 +4,7 @@ import {
   RequestValidator,
   RequestParameters,
   IRequestValidator,
-} from '@vulcan/serve/route';
+} from '@vulcan-sql/serve/route';
 import {
   APISchema,
   FieldDataType,
@@ -12,10 +12,10 @@ import {
   RequestSchema,
   ValidatorDefinition,
   ValidatorLoader,
-} from '@vulcan/core';
+} from '@vulcan-sql/core';
 import { Container } from 'inversify';
-import { TYPES } from '@vulcan/serve/containers';
-import { TYPES as CORE_TYPES } from '@vulcan/core/containers';
+import { TYPES } from '@vulcan-sql/serve/containers';
+import { TYPES as CORE_TYPES } from '@vulcan-sql/core/containers';
 
 describe('Test request validator - validate successfully', () => {
   let container: Container;

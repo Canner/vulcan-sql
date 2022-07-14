@@ -1,4 +1,4 @@
-import { IntegerTypeValidator } from '@vulcan/core/validators';
+import { IntegerTypeValidator } from '@vulcan-sql/core/validators';
 
 describe('Test "integer" type validator', () => {
   it.each([

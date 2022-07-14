@@ -2,8 +2,8 @@ import * as path from 'path';
 import {
   LocalFilePersistentStore,
   PersistentStore,
-} from '@vulcan/core/artifact-builder';
-import { TYPES } from '@vulcan/core/containers';
+} from '@vulcan-sql/core/artifact-builder';
+import { TYPES } from '@vulcan-sql/core/containers';
 import { Container } from 'inversify';
 
 let container: Container;

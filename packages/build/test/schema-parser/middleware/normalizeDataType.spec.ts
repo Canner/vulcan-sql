@@ -1,6 +1,6 @@
-import { RawAPISchema } from '@vulcan/build/schema-parser';
-import { normalizeDataType } from '@vulcan/build/schema-parser/middleware';
-import { FieldDataType } from '@vulcan/core';
+import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
+import { normalizeDataType } from '@vulcan-sql/build/schema-parser/middleware';
+import { FieldDataType } from '@vulcan-sql/core';
 
 it('Should normalize data type for requests', async () => {
   // Arrange

@@ -1,6 +1,9 @@
 import { injectable, inject, optional } from 'inversify';
-import { TYPES } from '@vulcan/build/containers';
-import { ISchemaParserOptions, SchemaReaderType } from '@vulcan/build/models';
+import { TYPES } from '@vulcan-sql/build/containers';
+import {
+  ISchemaParserOptions,
+  SchemaReaderType,
+} from '@vulcan-sql/build/models';
 import { IsOptional, IsString, validateSync } from 'class-validator';
 
 @injectable()

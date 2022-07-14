@@ -1,4 +1,4 @@
-import { DateTypeValidator } from '@vulcan/core/validators';
+import { DateTypeValidator } from '@vulcan-sql/core/validators';
 
 describe('Test "date" type validator', () => {
   it.each([

@@ -1,7 +1,7 @@
 import faker from '@faker-js/faker';
 import * as Koa from 'koa';
 import * as supertest from 'supertest';
-import { CorsOptions, CorsMiddleware } from '@vulcan/serve/middleware';
+import { CorsOptions, CorsMiddleware } from '@vulcan-sql/serve/middleware';
 import { Server } from 'http';
 
 describe('Test cors middlewares', () => {

@@ -1,5 +1,5 @@
-import { TYPES } from '@vulcan/core/containers';
-import { IExecutor } from '@vulcan/core/data-query';
+import { TYPES } from '@vulcan-sql/core/containers';
+import { IExecutor } from '@vulcan-sql/core/data-query';
 import { inject } from 'inversify';
 import { TagRunnerOptions, TagRunner } from '../../extension-loader';
 import { FINIAL_BUILDER_NAME } from './constants';

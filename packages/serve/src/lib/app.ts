@@ -1,4 +1,4 @@
-import { APISchema, ClassType } from '@vulcan/core';
+import { APISchema, ClassType } from '@vulcan-sql/core';
 import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
 import { isEmpty, uniq } from 'lodash';

@@ -5,7 +5,7 @@ import {
   ModuleProperties,
   mergedModules,
   SourceOfExtensions,
-} from '@vulcan/core';
+} from '@vulcan-sql/core';
 // The extension module interface
 export interface ExtensionModule extends ModuleProperties {
   ['middlewares']: ClassType<BaseRouteMiddleware>[];

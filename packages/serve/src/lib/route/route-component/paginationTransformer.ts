@@ -1,10 +1,10 @@
-import { KoaRouterContext } from '@vulcan/serve/route';
-import { APISchema, PaginationMode, Pagination } from '@vulcan/core';
+import { KoaRouterContext } from '@vulcan-sql/serve/route';
+import { APISchema, PaginationMode, Pagination } from '@vulcan-sql/core';
 import {
   CursorBasedStrategy,
   OffsetBasedStrategy,
   KeysetBasedStrategy,
-} from '@vulcan/serve/pagination';
+} from '@vulcan-sql/serve/pagination';
 import { injectable } from 'inversify';
 
 export interface IPaginationTransformer {

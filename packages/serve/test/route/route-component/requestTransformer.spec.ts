@@ -6,15 +6,15 @@ import {
   FieldDataType,
   FieldInType,
   RequestSchema,
-} from '@vulcan/core';
+} from '@vulcan-sql/core';
 import {
   IRequestTransformer,
   KoaRouterContext,
   RequestParameters,
   RequestTransformer,
-} from '@vulcan/serve/route';
+} from '@vulcan-sql/serve/route';
 import { Container } from 'inversify';
-import { TYPES } from '@vulcan/serve/containers';
+import { TYPES } from '@vulcan-sql/serve/containers';
 
 describe('Test request transformer - transform successfully', () => {
   let container: Container;

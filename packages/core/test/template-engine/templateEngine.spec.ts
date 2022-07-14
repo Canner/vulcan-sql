@@ -2,9 +2,9 @@ import {
   TemplateEngine,
   Compiler,
   TemplateProvider,
-} from '@vulcan/core/template-engine';
+} from '@vulcan-sql/core/template-engine';
 import * as sinon from 'ts-sinon';
-import { TYPES } from '@vulcan/core/containers';
+import { TYPES } from '@vulcan-sql/core/containers';
 import { Container } from 'inversify';
 
 let container: Container;

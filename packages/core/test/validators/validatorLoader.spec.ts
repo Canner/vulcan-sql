@@ -1,5 +1,5 @@
-import { SourceOfExtensions, TYPES } from '@vulcan/core';
-import { IValidatorLoader, ValidatorLoader } from '@vulcan/core/validators';
+import { SourceOfExtensions, TYPES } from '@vulcan-sql/core';
+import { IValidatorLoader, ValidatorLoader } from '@vulcan-sql/core/validators';
 import { Container } from 'inversify';
 import * as path from 'path';
 import faker from '@faker-js/faker';

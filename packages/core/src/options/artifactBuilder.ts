@@ -1,10 +1,10 @@
 import { injectable, inject, optional } from 'inversify';
-import { TYPES } from '@vulcan/core/containers';
+import { TYPES } from '@vulcan-sql/core/containers';
 import {
   IArtifactBuilderOptions,
   PersistentStoreType,
   SerializerType,
-} from '@vulcan/core/models';
+} from '@vulcan-sql/core/models';
 import { IsString, validateSync, IsOptional } from 'class-validator';
 
 @injectable()

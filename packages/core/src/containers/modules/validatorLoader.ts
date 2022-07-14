@@ -1,5 +1,5 @@
 import { AsyncContainerModule } from 'inversify';
-import { IValidatorLoader, ValidatorLoader } from '@vulcan/core/validators';
+import { IValidatorLoader, ValidatorLoader } from '@vulcan-sql/core/validators';
 import { TYPES } from '../types';
 import { SourceOfExtensions } from '../../models/coreOptions';
 

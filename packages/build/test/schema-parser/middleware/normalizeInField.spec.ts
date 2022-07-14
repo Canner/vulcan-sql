@@ -1,6 +1,6 @@
-import { RawAPISchema } from '@vulcan/build/schema-parser';
-import { normalizeFieldIn } from '@vulcan/build/schema-parser/middleware';
-import { FieldInType } from '@vulcan/core';
+import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
+import { normalizeFieldIn } from '@vulcan-sql/build/schema-parser/middleware';
+import { FieldInType } from '@vulcan-sql/core';
 
 it('Should normalize in field', async () => {
   // Arrange

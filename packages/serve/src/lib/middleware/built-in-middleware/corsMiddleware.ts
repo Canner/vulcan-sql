@@ -1,8 +1,8 @@
 import * as Koa from 'koa';
 import * as cors from '@koa/cors';
-import { KoaRouterContext } from '@vulcan/serve/route';
+import { KoaRouterContext } from '@vulcan-sql/serve/route';
 import { BuiltInMiddleware, RouteMiddlewareNext } from '../middleware';
-import { MiddlewareConfig } from '@vulcan/serve/models';
+import { MiddlewareConfig } from '@vulcan-sql/serve/models';
 
 export type CorsOptions = cors.Options;
 

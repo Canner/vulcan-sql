@@ -3,8 +3,8 @@ import * as glob from 'glob';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { inject, injectable } from 'inversify';
-import { TYPES } from '@vulcan/build/containers';
-import { SchemaParserOptions } from '@vulcan/build/options';
+import { TYPES } from '@vulcan-sql/build/containers';
+import { SchemaParserOptions } from '@vulcan-sql/build/options';
 
 export interface FileSchemaReaderOptions {
   folderPath: string;

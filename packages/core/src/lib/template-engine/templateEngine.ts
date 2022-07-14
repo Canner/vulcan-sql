@@ -1,7 +1,7 @@
 import { Compiler, TemplateMetadata } from './compiler';
 import { TemplateProvider } from './template-providers';
 import { injectable, inject, interfaces } from 'inversify';
-import { TYPES } from '@vulcan/core/containers';
+import { TYPES } from '@vulcan-sql/core/containers';
 import { TemplateEngineOptions } from '../../options';
 
 export type AllTemplateMetadata = Record<string, TemplateMetadata>;

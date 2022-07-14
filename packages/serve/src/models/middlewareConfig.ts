@@ -1,4 +1,4 @@
-import { LoggerOptions } from '@vulcan/core';
+import { LoggerOptions } from '@vulcan-sql/core';
 import {
   CorsOptions,
   RateLimitOptions,

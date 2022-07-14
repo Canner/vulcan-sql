@@ -1,9 +1,9 @@
-import { MiddlewareConfig } from '@vulcan/serve/models';
+import { MiddlewareConfig } from '@vulcan-sql/serve/models';
 import {
   BaseRouteMiddleware,
   RouteMiddlewareNext,
-} from '@vulcan/serve/middleware';
-import { KoaRouterContext } from '@vulcan/serve/route';
+} from '@vulcan-sql/serve/middleware';
+import { KoaRouterContext } from '@vulcan-sql/serve/route';
 
 export interface TestModeOptions {
   mode: boolean;

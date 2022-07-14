@@ -1,9 +1,9 @@
 import { injectable, inject, optional } from 'inversify';
-import { TYPES } from '@vulcan/core/containers';
+import { TYPES } from '@vulcan-sql/core/containers';
 import {
   ITemplateEngineOptions,
   TemplateProviderType,
-} from '@vulcan/core/models';
+} from '@vulcan-sql/core/models';
 import { IsOptional, IsString, validateSync } from 'class-validator';
 
 @injectable()

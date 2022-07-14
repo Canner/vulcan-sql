@@ -5,7 +5,7 @@ import {
   JoinOnOperatorInput,
   LogicalOperator,
   ComparisonPredicate,
-} from '@vulcan/core/data-query';
+} from '@vulcan-sql/core/data-query';
 
 describe('Test join on clause > on operations', () => {
   it.each([

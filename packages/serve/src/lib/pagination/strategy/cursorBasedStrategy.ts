@@ -3,7 +3,7 @@ import {
   normalizeStringValue,
   PaginationMode,
   CursorPagination,
-} from '@vulcan/core';
+} from '@vulcan-sql/core';
 import { PaginationStrategy } from './strategy';
 
 export class CursorBasedStrategy extends PaginationStrategy<CursorPagination> {

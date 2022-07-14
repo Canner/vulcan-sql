@@ -5,7 +5,7 @@ import faker from '@faker-js/faker';
 import { Request } from 'koa';
 import * as KoaRouter from 'koa-router';
 import * as http from 'http';
-import { VulcanApplication } from '@vulcan/serve/app';
+import { VulcanApplication } from '@vulcan-sql/serve/app';
 import {
   APISchema,
   FieldDataType,
@@ -14,7 +14,7 @@ import {
   TemplateEngine,
   ValidatorDefinition,
   ValidatorLoader,
-} from '@vulcan/core';
+} from '@vulcan-sql/core';
 import {
   RouteGenerator,
   APIProviderType,
@@ -23,9 +23,9 @@ import {
   RequestTransformer,
   RequestValidator,
   PaginationTransformer,
-} from '@vulcan/serve/route';
+} from '@vulcan-sql/serve/route';
 import { Container } from 'inversify';
-import { TYPES as CORE_TYPES } from '@vulcan/core/containers';
+import { TYPES as CORE_TYPES } from '@vulcan-sql/core/containers';
 import { TYPES } from '../src/containers/types';
 
 describe('Test vulcan server for practicing middleware', () => {

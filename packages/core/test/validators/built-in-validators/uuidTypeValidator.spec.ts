@@ -1,5 +1,5 @@
 import * as uuid from 'uuid';
-import { UUIDTypeValidator } from '@vulcan/core/validators';
+import { UUIDTypeValidator } from '@vulcan-sql/core/validators';
 
 describe('Test "uuid" type validator ', () => {
   it.each([

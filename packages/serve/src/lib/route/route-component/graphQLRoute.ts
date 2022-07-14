@@ -1,6 +1,6 @@
 import { BaseRoute, KoaRouterContext } from './baseRoute';
 
-import { APISchema, TemplateEngine } from '@vulcan/core';
+import { APISchema, TemplateEngine } from '@vulcan-sql/core';
 import { IRequestTransformer } from './requestTransformer';
 import { IRequestValidator } from './requestValidator';
 import { IPaginationTransformer } from './paginationTransformer';

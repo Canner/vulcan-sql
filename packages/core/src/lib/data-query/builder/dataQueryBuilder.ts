@@ -1,5 +1,5 @@
-import { IDataSource } from '@vulcan/core/data-source';
-import { Pagination } from '@vulcan/core/models';
+import { IDataSource } from '@vulcan-sql/core/data-source';
+import { Pagination } from '@vulcan-sql/core/models';
 
 import { find, isEmpty } from 'lodash';
 import {

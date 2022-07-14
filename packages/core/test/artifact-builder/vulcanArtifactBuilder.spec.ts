@@ -3,9 +3,9 @@ import {
   JSONSerializer,
   LocalFilePersistentStore,
   VulcanArtifactBuilder,
-} from '@vulcan/core/artifact-builder';
+} from '@vulcan-sql/core/artifact-builder';
 import { Container } from 'inversify';
-import { TYPES } from '@vulcan/core/containers';
+import { TYPES } from '@vulcan-sql/core/containers';
 import * as sinon from 'ts-sinon';
 
 let container: Container;

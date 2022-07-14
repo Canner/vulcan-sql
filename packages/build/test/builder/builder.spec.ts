@@ -1,11 +1,11 @@
 import { VulcanBuilder } from '../../src';
 import * as path from 'path';
-import { IBuildOptions, SchemaReaderType } from '@vulcan/build/models';
+import { IBuildOptions, SchemaReaderType } from '@vulcan-sql/build/models';
 import {
   PersistentStoreType,
   SerializerType,
   TemplateProviderType,
-} from '@vulcan/core';
+} from '@vulcan-sql/core';
 
 it('Builder.build should work', async () => {
   // Arrange

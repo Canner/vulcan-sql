@@ -3,9 +3,9 @@ import {
   IValidatorLoader,
   RequestSchema,
   ValidatorDefinition,
-} from '@vulcan/core';
+} from '@vulcan-sql/core';
 import { inject, injectable } from 'inversify';
-import { TYPES as CORE_TYPES } from '@vulcan/core/containers';
+import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { RequestParameters } from './requestTransformer';
 
 export interface IRequestValidator {

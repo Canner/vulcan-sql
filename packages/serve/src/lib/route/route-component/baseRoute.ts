@@ -1,6 +1,6 @@
 import { Next as KoaNext } from 'koa';
 import { RouterContext as KoaRouterContext } from 'koa-router';
-import { APISchema, TemplateEngine, Pagination } from '@vulcan/core';
+import { APISchema, TemplateEngine, Pagination } from '@vulcan-sql/core';
 import { IRequestValidator } from './requestValidator';
 import { IRequestTransformer, RequestParameters } from './requestTransformer';
 import { IPaginationTransformer } from './paginationTransformer';

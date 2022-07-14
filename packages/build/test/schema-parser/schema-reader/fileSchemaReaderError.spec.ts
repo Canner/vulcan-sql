@@ -1,8 +1,11 @@
-import { FileSchemaReader } from '@vulcan/build/schema-parser';
+import { FileSchemaReader } from '@vulcan-sql/build/schema-parser';
 import * as path from 'path';
-import { SchemaParserOptions } from '@vulcan/build/options';
-import { TYPES } from '@vulcan/build/containers';
-import { ISchemaParserOptions, SchemaReaderType } from '@vulcan/build/models';
+import { SchemaParserOptions } from '@vulcan-sql/build/options';
+import { TYPES } from '@vulcan-sql/build/containers';
+import {
+  ISchemaParserOptions,
+  SchemaReaderType,
+} from '@vulcan-sql/build/models';
 import { Container } from 'inversify';
 
 let container: Container;

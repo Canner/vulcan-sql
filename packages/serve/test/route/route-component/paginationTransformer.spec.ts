@@ -1,14 +1,18 @@
 import * as sinon from 'ts-sinon';
 import { Request } from 'koa';
 import faker from '@faker-js/faker';
-import { APISchema, normalizeStringValue, PaginationMode } from '@vulcan/core';
+import {
+  APISchema,
+  normalizeStringValue,
+  PaginationMode,
+} from '@vulcan-sql/core';
 import {
   IPaginationTransformer,
   KoaRouterContext,
   PaginationTransformer,
-} from '@vulcan/serve/route';
+} from '@vulcan-sql/serve/route';
 import { Container } from 'inversify';
-import { TYPES } from '@vulcan/serve/containers';
+import { TYPES } from '@vulcan-sql/serve/containers';
 
 describe('Test pagination transformer - transform successfully', () => {
   let container: Container;

@@ -1,12 +1,15 @@
-import { TYPES } from '@vulcan/build/containers';
-import { ISchemaParserOptions, SchemaReaderType } from '@vulcan/build/models';
-import { SchemaParserOptions } from '@vulcan/build/options';
+import { TYPES } from '@vulcan-sql/build/containers';
+import {
+  ISchemaParserOptions,
+  SchemaReaderType,
+} from '@vulcan-sql/build/models';
+import { SchemaParserOptions } from '@vulcan-sql/build/options';
 import {
   SchemaFormat,
   SchemaParser,
   SchemaReader,
-} from '@vulcan/build/schema-parser';
-import { IValidatorLoader, TYPES as CORE_TYPES } from '@vulcan/core';
+} from '@vulcan-sql/build/schema-parser';
+import { IValidatorLoader, TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { Container } from 'inversify';
 import * as sinon from 'ts-sinon';
 
