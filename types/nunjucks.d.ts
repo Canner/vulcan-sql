@@ -368,6 +368,8 @@ declare module 'nunjucks' {
     }
 
     class TemplateData extends Literal {}
+
+    class Output extends NodeList {}
   }
 
   namespace lexer {

@@ -207,6 +207,79 @@
       "extra_ctes_injected": true,
       "extra_ctes": [],
       "relation_name": "\"postgres\".\"public\".\"2_view\""
+    },
+    "model.test.4_incremental": {
+      "raw_sql": "{{ config(materialized='incremental') }}\n\nselect *\nfrom {{ ref('3_ephemeral') }}",
+      "compiled": true,
+      "resource_type": "model",
+      "depends_on": {
+        "macros": [
+          "macro.dbt.load_relation",
+          "macro.dbt.make_temp_relation",
+          "macro.dbt.should_full_refresh",
+          "macro.dbt.incremental_validate_on_schema_change",
+          "macro.dbt.drop_relation_if_exists",
+          "macro.dbt.run_hooks",
+          "macro.dbt.create_table_as",
+          "macro.dbt.statement",
+          "macro.dbt.persist_docs",
+          "macro.dbt.create_indexes"
+        ],
+        "nodes": ["model.test.3_ephemeral"]
+      },
+      "config": {
+        "enabled": true,
+        "alias": null,
+        "schema": null,
+        "database": null,
+        "tags": [],
+        "meta": {},
+        "materialized": "incremental",
+        "persist_docs": {},
+        "quoting": {},
+        "column_types": {},
+        "full_refresh": null,
+        "unique_key": null,
+        "on_schema_change": "ignore",
+        "post-hook": [],
+        "pre-hook": []
+      },
+      "database": "postgres",
+      "schema": "public",
+      "fqn": ["test", "example", "4_incremental"],
+      "unique_id": "model.test.4_incremental",
+      "package_name": "test",
+      "root_path": "/home/goofy/projects/dbt/test",
+      "path": "example/4_incremental.sql",
+      "original_file_path": "models/example/4_incremental.sql",
+      "name": "4_incremental",
+      "alias": "4_incremental",
+      "checksum": {
+        "name": "sha256",
+        "checksum": "441bca81082845b6fb96e883dcce42b57520e414135d5c1baa3caad4cf0efaf5"
+      },
+      "tags": [],
+      "refs": [["3_ephemeral"]],
+      "sources": [],
+      "description": "",
+      "columns": {},
+      "meta": {},
+      "docs": { "show": true },
+      "patch_path": null,
+      "compiled_path": "target/compiled/test/models/example/4_incremental.sql",
+      "build_path": "target/run/test/models/example/4_incremental.sql",
+      "deferred": false,
+      "unrendered_config": { "materialized": "incremental" },
+      "created_at": 1657853530.6237366,
+      "compiled_sql": "\n\nwith __dbt__cte__3_ephemeral as (\n\n\nselect *\nfrom \"postgres\".\"public\".\"1_table\"\nwhere age <= 18\n)select *\nfrom __dbt__cte__3_ephemeral",
+      "extra_ctes_injected": true,
+      "extra_ctes": [
+        {
+          "id": "model.test.3_ephemeral",
+          "sql": " __dbt__cte__3_ephemeral as (\n\n\nselect *\nfrom \"postgres\".\"public\".\"1_table\"\nwhere age <= 18\n)"
+        }
+      ],
+      "relation_name": "\"postgres\".\"public\".\"4_incremental\""
     }
   },
   "sources": {}

@@ -6,3 +6,4 @@ export * from './lib/data-query';
 export * from './lib/data-source';
 export * from './models';
 export * from './containers';
+export * from './options';

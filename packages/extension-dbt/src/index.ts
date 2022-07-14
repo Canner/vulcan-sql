@@ -1,3 +1,4 @@
 import { DBTTagBuilder } from './lib/dbtTagBuilder';
+import { DBTTagRunner } from './lib/dbtTagRunner';
 
-export default [DBTTagBuilder];
+export default [DBTTagBuilder, DBTTagRunner];

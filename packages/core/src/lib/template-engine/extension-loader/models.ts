@@ -64,7 +64,9 @@ export abstract class TagBuilder extends CompileTimeExtension {
 
 export abstract class TagRunner extends RuntimeExtension {
   abstract tags: string[];
-  abstract run(options: TagRunnerOptions): Promise<string | void>;
+  abstract run(
+    options: TagRunnerOptions
+  ): Promise<string | nunjucks.runtime.SafeString | void>;
 
   public __run(...originalArgs: any[]) {
     const context = originalArgs[0];

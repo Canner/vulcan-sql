@@ -4,6 +4,7 @@
     "build": "packages/build",
     "core": "packages/core",
     "extension-dbt": "packages/extension-dbt",
-    "serve": "packages/serve"
+    "serve": "packages/serve",
+    "test-utility": "packages/test-utility"
   }
 }
