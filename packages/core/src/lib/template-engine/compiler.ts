@@ -25,6 +25,6 @@ export interface Compiler {
    * Turn the template to compiled data. In most cases, we compile the template to some JavaScript code in order to "execute" them later.
    * @param template The path or identifier of a template source
    */
-  compile(template: string): CompileResult;
+  compile(template: string): Promise<CompileResult>;
   execute<T extends object>(template: string, data: T): Promise<any>;
 }

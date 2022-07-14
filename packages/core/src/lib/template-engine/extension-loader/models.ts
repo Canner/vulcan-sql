@@ -129,6 +129,9 @@ export const implementedOnAstVisit = (source: any): source is OnAstVisit => {
   return !!source.onVisit;
 };
 
+/**
+ * Visit every nodes after compiling, you can extract metadata from them, or even modify some nodes.
+ */
 export interface OnAstVisit {
   onVisit(node: nunjucks.nodes.Node): void;
   finish?: () => void;
@@ -140,7 +143,22 @@ export const implementedProvideMetadata = (
   return !!source.metadataName && !!source.getMetadata;
 };
 
+/**
+ * Providing metadata after compiling
+ */
 export interface ProvideMetadata {
   metadataName: string;
   getMetadata(): any;
+}
+
+export const implementedOnInit = (source: any): source is OnInit => {
+  return !!source.onInit;
+};
+
+/**
+ * Init function will be called before compiling or executing, you can do asynchronous jobs like loading config, read files ...etc. in this function.
+ * This function will be called only once even if there are multiple templates exist.
+ */
+export interface OnInit {
+  onInit(): Promise<void>;
 }

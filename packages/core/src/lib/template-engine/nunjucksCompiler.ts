@@ -10,6 +10,7 @@ import {
   FilterRunner,
   generateMetadata,
   implementedOnAstVisit,
+  implementedOnInit,
   implementedProvideMetadata,
   OnAstVisit,
   ProvideMetadata,
@@ -28,6 +29,7 @@ export class NunjucksCompiler implements Compiler {
   private extensions: Extension[];
   private astVisitors: OnAstVisit[] = [];
   private metadataProviders: ProvideMetadata[] = [];
+  private extensionsInitialized = false;
 
   constructor(
     @multiInject(TYPES.CompilerExtension)
@@ -46,7 +48,8 @@ export class NunjucksCompiler implements Compiler {
     this.loadAllExtensions();
   }
 
-  public compile(template: string): CompileResult {
+  public async compile(template: string): Promise<CompileResult> {
+    await this.initializeExtensions();
     const compiler = new nunjucks.compiler.Compiler(
       'main',
       this.compileTimeEnv.opts.throwOnUndefined || false
@@ -73,6 +76,7 @@ export class NunjucksCompiler implements Compiler {
     templateName: string,
     data: T
   ): Promise<any> {
+    await this.initializeExtensions();
     const builder = await this.renderAndGetMainBuilder(templateName, data);
     return builder.value();
   }
@@ -152,5 +156,15 @@ export class NunjucksCompiler implements Compiler {
         }
       );
     });
+  }
+
+  private async initializeExtensions() {
+    if (this.extensionsInitialized) return;
+    for (const extension of this.extensions) {
+      if (implementedOnInit(extension)) {
+        await extension.onInit();
+      }
+    }
+    this.extensionsInitialized = true;
   }
 }

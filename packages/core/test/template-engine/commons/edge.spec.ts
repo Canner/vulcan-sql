@@ -10,5 +10,7 @@ it('Compiler should throw an error if max depth of function call lookup is excee
   queryString += '.value() }}';
 
   // Action, Assert
-  expect(() => compiler.compile(queryString)).toThrow('Max depth reached');
+  await expect(compiler.compile(queryString)).rejects.toThrow(
+    'Max depth reached'
+  );
 });
