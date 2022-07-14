@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "build": "packages/build",
-    "core": "packages/core"
+    "core": "packages/core",
+    "serve": "packages/serve"
   }
 }

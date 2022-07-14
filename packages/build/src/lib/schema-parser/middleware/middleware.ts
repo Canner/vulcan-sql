@@ -1,7 +1,7 @@
 import {
   APISchema,
   FieldDataType,
-  RequestParameter,
+  RequestSchema as RequestParameter,
   ResponseProperty,
   ValidatorDefinition,
 } from '@vulcan/core';

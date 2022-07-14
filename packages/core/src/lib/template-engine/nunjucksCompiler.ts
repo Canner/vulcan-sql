@@ -18,8 +18,7 @@ import {
   TagRunner,
   walkAst,
 } from './extension-loader';
-// TODO: Should replace with a real implementation
-import { QueryBuilder } from './built-in-extensions/query-builder/reqTagRunner';
+import { IDataQueryBuilder } from '../data-query';
 
 @injectable()
 export class NunjucksCompiler implements Compiler {
@@ -144,8 +143,8 @@ export class NunjucksCompiler implements Compiler {
 
   private renderAndGetMainBuilder(templateName: string, data: any) {
     const template = this.runtimeEnv.getTemplate(templateName, true);
-    return new Promise<QueryBuilder>((resolve, reject) => {
-      template.getExported<{ FINAL_BUILDER: QueryBuilder }>(
+    return new Promise<IDataQueryBuilder>((resolve, reject) => {
+      template.getExported<{ FINAL_BUILDER: IDataQueryBuilder }>(
         data,
         (err, res) => {
           if (err) return reject(err);

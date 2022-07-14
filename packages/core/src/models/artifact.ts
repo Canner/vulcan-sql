@@ -5,10 +5,11 @@ url: /user/:id
 request:
   parameters:
     id:
-      in: query # path / query / header
+      in: query # three source: path / query / header
       description: user id
+      type: integer # three types: boolean / number / string
       validators:
-        - name: Date
+        - name: date
           args:
             format: 'yyyy-MM-dd'
         - name: required
@@ -17,7 +18,13 @@ error:
     message: 'You are not allowed to access this resource'
  */
 
-import { Constraint } from '../validators';
+import { Constraint } from '../lib/validators/constraints';
+
+export enum PaginationMode {
+  CURSOR = 'CURSOR',
+  OFFSET = 'OFFSET',
+  KEYSET = 'KEYSET',
+}
 
 export enum FieldInType {
   QUERY = 'QUERY',
@@ -36,7 +43,7 @@ export interface ValidatorDefinition<T = any> {
   args: T;
 }
 
-export interface RequestParameter {
+export interface RequestSchema {
   fieldName: string;
   // the field put in query parameter or headers
   fieldIn: FieldInType;
@@ -53,6 +60,12 @@ export interface ResponseProperty {
   required?: boolean;
 }
 
+export interface PaginationSchema {
+  mode: PaginationMode;
+  // The key name used for do filtering by key for keyset pagination.
+  keyName?: string;
+}
+
 export interface ErrorInfo {
   code: string;
   message: string;
@@ -65,10 +78,13 @@ export interface APISchema {
   urlPath: string;
   // template, could be name or path
   templateSource: string;
-  request: Array<RequestParameter>;
+  request: Array<RequestSchema>;
   errors: Array<ErrorInfo>;
   response: Array<ResponseProperty>;
   description?: string;
+  // The pagination strategy that do paginate when querying
+  // If not set pagination, then API request not provide the field to do it
+  pagination?: PaginationSchema;
 }
 
 export interface BuiltArtifact {

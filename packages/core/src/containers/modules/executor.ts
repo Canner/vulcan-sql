@@ -1,25 +1,44 @@
-import { ContainerModule } from 'inversify';
-// TODO: Should replace with a real implementation
 import {
-  QueryBuilder,
-  Executor,
-} from '../../lib/template-engine/built-in-extensions/query-builder/reqTagRunner';
+  IExecutor,
+  QueryExecutor,
+  SQLClauseOperation,
+} from '@vulcan/core/data-query';
+import { Pagination } from '../../models/pagination';
+import { IDataSource } from '@vulcan/core/data-source';
+import { AsyncContainerModule } from 'inversify';
 import { TYPES } from '../types';
 
-class MockBuilder implements QueryBuilder {
-  public count() {
-    return this;
-  }
+/**
+ * TODO: Mock data source to make data query builder could create by IoC
+ * need to update after real data source implemented.
+ *  */
 
-  public async value() {
-    return [];
+class MockDataSource implements IDataSource {
+  public async execute({
+    statement,
+    operations,
+    pagination,
+  }: {
+    statement: string;
+    operations: SQLClauseOperation;
+    pagination?: Pagination | undefined;
+  }) {
+    return {
+      statement,
+      operations,
+      pagination,
+    };
   }
 }
 
 export const executorModule = () =>
-  new ContainerModule((bind) => {
-    bind<Executor>(TYPES.Executor).toConstantValue({
-      // TODO: Mock value
-      createBuilder: async () => new MockBuilder(),
+  new AsyncContainerModule(async (bind) => {
+    /**
+     * TODO: bind mock data source, need to update after real data source implemented.
+     */
+    bind<IDataSource>(TYPES.DataSource).toConstantValue(new MockDataSource());
+    bind<IExecutor>(TYPES.Executor).toDynamicValue((context) => {
+      const dataSource = context.container.get<IDataSource>(TYPES.DataSource);
+      return new QueryExecutor(dataSource);
     });
   });

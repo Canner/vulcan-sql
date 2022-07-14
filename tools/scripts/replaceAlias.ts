@@ -1,6 +1,6 @@
 import * as glob from 'glob';
 import * as path from 'path';
-import * as fs from 'fs/promises';
+import { promises as fs } from 'fs';
 
 const requireRegex = (packageName: string) =>
   new RegExp(`require\\(['"](@vulcan\/${packageName}[^'"]*)['"]\\)`, 'g');
