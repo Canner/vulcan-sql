@@ -3,12 +3,12 @@ import * as sinon from 'ts-sinon';
 import { Request } from 'koa';
 import { IncomingHttpHeaders } from 'http';
 import { ParsedUrlQuery } from 'querystring';
-import { asyncReqIdStorage, FieldInType } from '@vulcan/core';
-import { KoaRouterContext } from '@vulcan/serve/route';
+import { asyncReqIdStorage, FieldInType } from '@vulcan-sql/core';
+import { KoaRouterContext } from '@vulcan-sql/serve/route';
 import {
   RequestIdMiddleware,
   RequestIdOptions,
-} from '@vulcan/serve/middleware';
+} from '@vulcan-sql/serve/middleware';
 import * as uuid from 'uuid';
 
 describe('Test request-id middlewares', () => {

@@ -1,9 +1,12 @@
-import { ISchemaParserOptions, SchemaReaderType } from '@vulcan/build/models';
+import {
+  ISchemaParserOptions,
+  SchemaReaderType,
+} from '@vulcan-sql/build/models';
 import {
   FileSchemaReader,
   SchemaParser,
   SchemaReader,
-} from '@vulcan/build/schema-parser';
+} from '@vulcan-sql/build/schema-parser';
 import { ContainerModule, interfaces } from 'inversify';
 import { SchemaParserOptions } from '../../options/schemaParser';
 import { TYPES } from '../types';

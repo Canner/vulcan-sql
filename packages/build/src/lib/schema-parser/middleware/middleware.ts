@@ -4,7 +4,7 @@ import {
   RequestSchema as RequestParameter,
   ResponseProperty,
   ValidatorDefinition,
-} from '@vulcan/core';
+} from '@vulcan-sql/core';
 import { DeepPartial } from 'ts-essentials';
 
 export interface RawRequestParameter

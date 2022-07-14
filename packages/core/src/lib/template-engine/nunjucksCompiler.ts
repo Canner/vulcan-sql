@@ -2,7 +2,7 @@ import { Compiler, CompileResult } from './compiler';
 import * as nunjucks from 'nunjucks';
 import * as transformer from 'nunjucks/src/transformer';
 import { inject, injectable, multiInject, named, optional } from 'inversify';
-import { TYPES } from '@vulcan/core/containers';
+import { TYPES } from '@vulcan-sql/core/containers';
 import {
   CompileTimeExtension,
   Extension,

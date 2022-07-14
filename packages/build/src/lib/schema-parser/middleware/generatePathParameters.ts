@@ -1,4 +1,4 @@
-import { FieldDataType, FieldInType } from '@vulcan/core';
+import { FieldDataType, FieldInType } from '@vulcan-sql/core';
 import { SchemaParserMiddleware } from './middleware';
 
 // /user/{id} => {request: [{fieldName: 'id', fieldIn: 'path' ....}]}

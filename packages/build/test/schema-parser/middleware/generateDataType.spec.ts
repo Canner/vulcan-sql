@@ -1,6 +1,6 @@
-import { RawAPISchema } from '@vulcan/build/schema-parser';
-import { generateDataType } from '@vulcan/build/schema-parser/middleware';
-import { FieldDataType } from '@vulcan/core';
+import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
+import { generateDataType } from '@vulcan-sql/build/schema-parser/middleware';
+import { FieldDataType } from '@vulcan-sql/core';
 
 it('Should generate data type (string) for requests when it was not defined', async () => {
   // Arrange

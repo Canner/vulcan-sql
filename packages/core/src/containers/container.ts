@@ -1,4 +1,4 @@
-import { ICoreOptions } from '@vulcan/core/models';
+import { ICoreOptions } from '@vulcan-sql/core/models';
 import { Container as InversifyContainer } from 'inversify';
 import {
   artifactBuilderModule,

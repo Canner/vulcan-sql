@@ -7,7 +7,7 @@ import {
   RequestTransformer,
   RequestValidator,
   RouteGenerator,
-} from '@vulcan/serve';
+} from '@vulcan-sql/serve';
 import { TYPES } from '../types';
 
 export const routeGeneratorModule = () =>

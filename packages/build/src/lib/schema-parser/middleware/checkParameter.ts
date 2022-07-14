@@ -1,4 +1,4 @@
-import { AllTemplateMetadata, APISchema } from '@vulcan/core';
+import { AllTemplateMetadata, APISchema } from '@vulcan-sql/core';
 import { SchemaParserMiddleware } from './middleware';
 
 interface Parameter {

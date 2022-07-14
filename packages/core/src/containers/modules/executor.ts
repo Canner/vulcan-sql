@@ -2,9 +2,9 @@ import {
   IExecutor,
   QueryExecutor,
   SQLClauseOperation,
-} from '@vulcan/core/data-query';
+} from '@vulcan-sql/core/data-query';
 import { Pagination } from '../../models/pagination';
-import { IDataSource } from '@vulcan/core/data-source';
+import { IDataSource } from '@vulcan-sql/core/data-source';
 import { AsyncContainerModule } from 'inversify';
 import { TYPES } from '../types';
 

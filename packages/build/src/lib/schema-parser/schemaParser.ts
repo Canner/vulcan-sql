@@ -3,7 +3,7 @@ import {
   TemplateMetadata,
   TYPES as CORE_TYPES,
   IValidatorLoader,
-} from '@vulcan/core';
+} from '@vulcan-sql/core';
 import { SchemaData, SchemaFormat, SchemaReader } from './schema-reader';
 import * as yaml from 'js-yaml';
 import {
@@ -25,8 +25,8 @@ import {
 } from './middleware';
 import * as compose from 'koa-compose';
 import { inject, injectable, interfaces } from 'inversify';
-import { TYPES } from '@vulcan/build/containers';
-import { SchemaParserOptions } from '@vulcan/build/options';
+import { TYPES } from '@vulcan-sql/build/containers';
+import { SchemaParserOptions } from '@vulcan-sql/build/options';
 
 export interface SchemaParseResult {
   schemas: APISchema[];

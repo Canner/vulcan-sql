@@ -4,7 +4,7 @@ import { Container, TYPES } from '../containers';
 import { ServeConfig } from '../models';
 import { VulcanApplication } from './app';
 import { RouteGenerator } from './route';
-import { APISchema } from '@vulcan/core';
+import { APISchema } from '@vulcan-sql/core';
 
 export class VulcanServer {
   private config: ServeConfig;

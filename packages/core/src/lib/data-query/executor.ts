@@ -1,4 +1,4 @@
-import { TYPES } from '@vulcan/core';
+import { TYPES } from '@vulcan-sql/core';
 import { inject, injectable } from 'inversify';
 import { DataQueryBuilder, IDataQueryBuilder } from './builder';
 import { IDataSource } from '../data-source';

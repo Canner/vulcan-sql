@@ -1,4 +1,4 @@
-import { FieldInType } from '@vulcan/core';
+import { FieldInType } from '@vulcan-sql/core';
 import { SchemaParserMiddleware } from './middleware';
 
 // FieldIn: query => FieldIn FieldInType.QUERY

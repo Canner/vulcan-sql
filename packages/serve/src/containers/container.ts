@@ -1,5 +1,5 @@
 import { Container as InversifyContainer } from 'inversify';
-import { Container as CoreContainer } from '@vulcan/core';
+import { Container as CoreContainer } from '@vulcan-sql/core';
 import { routeGeneratorModule } from './modules';
 import { ServeConfig } from '../models';
 

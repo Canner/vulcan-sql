@@ -1,13 +1,13 @@
-import { TYPES } from '@vulcan/core/containers';
+import { TYPES } from '@vulcan-sql/core/containers';
 import {
   InMemoryCodeLoader,
   NunjucksCompiler,
-} from '@vulcan/core/template-engine';
-import { bindExtensions } from '@vulcan/core/template-engine/extension-loader';
+} from '@vulcan-sql/core/template-engine';
+import { bindExtensions } from '@vulcan-sql/core/template-engine/extension-loader';
 import { Container } from 'inversify';
 import * as sinon from 'ts-sinon';
 import * as nunjucks from 'nunjucks';
-import { IDataQueryBuilder, IExecutor } from '@vulcan/core/data-query';
+import { IDataQueryBuilder, IExecutor } from '@vulcan-sql/core/data-query';
 
 export const createTestCompiler = async () => {
   const container = new Container();

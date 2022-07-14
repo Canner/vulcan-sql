@@ -1,8 +1,8 @@
-import { TYPES } from '@vulcan/core/containers';
+import { TYPES } from '@vulcan-sql/core/containers';
 import {
   ITemplateEngineOptions,
   TemplateProviderType,
-} from '@vulcan/core/models';
+} from '@vulcan-sql/core/models';
 import {
   FileTemplateProvider,
   TemplateProvider,
@@ -10,12 +10,12 @@ import {
   NunjucksCompiler,
   Compiler,
   TemplateEngine,
-} from '@vulcan/core/template-engine';
+} from '@vulcan-sql/core/template-engine';
 import { AsyncContainerModule, interfaces } from 'inversify';
 import { TemplateEngineOptions } from '../../options';
 import * as nunjucks from 'nunjucks';
 // TODO: fix the path
-import { bindExtensions } from '@vulcan/core/template-engine/extension-loader';
+import { bindExtensions } from '@vulcan-sql/core/template-engine/extension-loader';
 
 export const templateEngineModule = (options: ITemplateEngineOptions) =>
   new AsyncContainerModule(async (bind) => {

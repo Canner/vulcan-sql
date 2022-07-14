@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { IValidator } from '@vulcan/core';
+import { IValidator } from '@vulcan-sql/core';
 
 // Imitate extension for testing
 export default {

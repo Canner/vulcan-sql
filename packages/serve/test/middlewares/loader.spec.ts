@@ -1,10 +1,13 @@
 import * as path from 'path';
 import * as sinon from 'ts-sinon';
-import { BaseRouteMiddleware, loadExtensions } from '@vulcan/serve/middleware';
-import middlewares from '@vulcan/serve/middleware/built-in-middleware';
+import {
+  BaseRouteMiddleware,
+  loadExtensions,
+} from '@vulcan-sql/serve/middleware';
+import middlewares from '@vulcan-sql/serve/middleware/built-in-middleware';
 import { TestModeMiddleware } from './test-custom-middlewares';
-import { ClassType, defaultImport } from '@vulcan/core';
-import { AppConfig } from '@vulcan/serve/models';
+import { ClassType, defaultImport } from '@vulcan-sql/core';
+import { AppConfig } from '@vulcan-sql/serve/models';
 import { flatten } from 'lodash';
 
 // the load Built-in used for tests

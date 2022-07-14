@@ -1,4 +1,4 @@
-import { APISchema, IValidatorLoader } from '@vulcan/core';
+import { APISchema, IValidatorLoader } from '@vulcan-sql/core';
 import { chain } from 'lodash';
 import { SchemaParserMiddleware } from './middleware';
 

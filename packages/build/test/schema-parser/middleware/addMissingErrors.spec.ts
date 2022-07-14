@@ -1,6 +1,6 @@
 import { RawAPISchema } from '../../../src';
 import { addMissingErrors } from '../../../src/lib/schema-parser/middleware/addMissingErrors';
-import { AllTemplateMetadata } from '@vulcan/core';
+import { AllTemplateMetadata } from '@vulcan-sql/core';
 
 it('Should add missing error codes', async () => {
   // Arrange

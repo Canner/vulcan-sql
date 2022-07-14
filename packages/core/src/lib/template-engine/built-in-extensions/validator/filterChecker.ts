@@ -1,4 +1,4 @@
-import { TYPES } from '@vulcan/core/containers';
+import { TYPES } from '@vulcan-sql/core/containers';
 import { inject, named } from 'inversify';
 import {
   CompileTimeExtension,

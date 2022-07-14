@@ -3,9 +3,12 @@ import * as path from 'path';
 import { promises as fs } from 'fs';
 
 const requireRegex = (packageName: string) =>
-  new RegExp(`require\\(['"](@vulcan\/${packageName}[^'"]*)['"]\\)`, 'g');
+  new RegExp(`require\\(['"](@vulcan-sql\/${packageName}[^'"]*)['"]\\)`, 'g');
 const importRegex = (packageName: string) =>
-  new RegExp(`(import|from) ['"](@vulcan\\/${packageName}\\/[^'"]*)['"]`, 'g');
+  new RegExp(
+    `(import|from) ['"](@vulcan-sql\\/${packageName}\\/[^'"]*)['"]`,
+    'g'
+  );
 
 async function getFiles(packageName: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
@@ -99,13 +102,13 @@ async function replacePackage(packageName: string) {
   );
   const alias = tsConfig.compilerOptions.paths;
   const aliasMappings = Object.keys(alias)
-    .filter((aliasKey) => aliasKey.startsWith(`@vulcan/${packageName}`))
+    .filter((aliasKey) => aliasKey.startsWith(`@vulcan-sql/${packageName}`))
     .map((aliasKey) => {
-      // There are two kinds of key @vulcan/package/path and @vulcan/package/path/*
+      // There are two kinds of key @vulcan-sql/package/path and @vulcan-sql/package/path/*
       const regex = aliasKey.endsWith('/*')
         ? new RegExp(`${aliasKey.substring(0, aliasKey.length - 2)}`)
         : new RegExp(`${aliasKey}$`);
-      // There are two kinds of path @vulcan/package/path and @vulcan/package/path/*
+      // There are two kinds of path @vulcan-sql/package/path and @vulcan-sql/package/path/*
       const absPath = path.resolve(
         ...alias[aliasKey].map((path) =>
           path.endsWith('/*') ? path.substring(0, path.length - 2) : path

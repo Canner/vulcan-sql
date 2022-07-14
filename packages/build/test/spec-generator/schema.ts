@@ -3,10 +3,10 @@
 import * as glob from 'glob';
 import * as path from 'path';
 import { promises as fs } from 'fs';
-import { APISchema, Constraint, IValidatorLoader } from '@vulcan/core';
+import { APISchema, Constraint, IValidatorLoader } from '@vulcan-sql/core';
 import * as jsYaml from 'js-yaml';
 import { sortBy } from 'lodash';
-import { IBuildOptions } from '@vulcan/build';
+import { IBuildOptions } from '@vulcan-sql/build';
 import compose = require('koa-compose');
 import {
   generateDataType,
@@ -16,7 +16,7 @@ import {
   RawAPISchema,
   SchemaParserMiddleware,
   transformValidator,
-} from '@vulcan/build/schema-parser/middleware';
+} from '@vulcan-sql/build/schema-parser/middleware';
 import * as sinon from 'ts-sinon';
 
 const getSchemaPaths = () =>

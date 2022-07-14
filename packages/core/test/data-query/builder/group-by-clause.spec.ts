@@ -3,8 +3,8 @@ import faker from '@faker-js/faker';
 import {
   GroupByClauseOperations,
   DataQueryBuilder,
-} from '@vulcan/core/data-query';
-import { IDataSource } from '@vulcan/core/data-source';
+} from '@vulcan-sql/core/data-query';
+import { IDataSource } from '@vulcan-sql/core/data-source';
 
 describe('Test data query builder > group by clause', () => {
   let stubDataSource: sinon.StubbedInstance<IDataSource>;

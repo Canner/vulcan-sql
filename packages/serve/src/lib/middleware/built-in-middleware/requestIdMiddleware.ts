@@ -1,8 +1,8 @@
 import * as uuid from 'uuid';
-import { FieldInType, asyncReqIdStorage } from '@vulcan/core';
-import { KoaRouterContext } from '@vulcan/serve/route';
+import { FieldInType, asyncReqIdStorage } from '@vulcan-sql/core';
+import { KoaRouterContext } from '@vulcan-sql/serve/route';
 import { BuiltInMiddleware, RouteMiddlewareNext } from '../middleware';
-import { MiddlewareConfig } from '@vulcan/serve/models';
+import { MiddlewareConfig } from '@vulcan-sql/serve/models';
 
 export interface RequestIdOptions {
   name: string;

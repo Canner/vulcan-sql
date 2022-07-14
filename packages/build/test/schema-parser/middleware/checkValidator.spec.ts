@@ -1,6 +1,6 @@
-import { RawAPISchema } from '@vulcan/build/schema-parser';
-import { checkValidator } from '@vulcan/build/schema-parser/middleware/checkValidator';
-import { IValidatorLoader } from '@vulcan/core';
+import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
+import { checkValidator } from '@vulcan-sql/build/schema-parser/middleware/checkValidator';
+import { IValidatorLoader } from '@vulcan-sql/core';
 import * as sinon from 'ts-sinon';
 
 it('Should pass if there is no error', async () => {

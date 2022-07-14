@@ -1,4 +1,4 @@
-import { RequiredValidator } from '@vulcan/core/validators';
+import { RequiredValidator } from '@vulcan-sql/core/validators';
 
 describe('Test "required" type validator', () => {
   it.each([

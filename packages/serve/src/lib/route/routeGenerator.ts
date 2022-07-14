@@ -1,5 +1,5 @@
-import { IPaginationTransformer } from '@vulcan/serve/route';
-import { APISchema, TemplateEngine } from '@vulcan/core';
+import { IPaginationTransformer } from '@vulcan-sql/serve/route';
+import { APISchema, TemplateEngine } from '@vulcan-sql/core';
 import {
   RestfulRoute,
   GraphQLRoute,
@@ -7,7 +7,7 @@ import {
   IRequestTransformer,
 } from './route-component';
 import { inject, injectable } from 'inversify';
-import { TYPES as CORE_TYPES } from '@vulcan/core/containers';
+import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { TYPES } from '../../containers/types';
 
 export enum APIProviderType {

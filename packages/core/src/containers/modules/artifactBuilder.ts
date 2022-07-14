@@ -6,13 +6,13 @@ import {
   JSONSerializer,
   ArtifactBuilder,
   VulcanArtifactBuilder,
-} from '@vulcan/core/artifact-builder';
+} from '@vulcan-sql/core/artifact-builder';
 import { TYPES } from '../types';
 import {
   SerializerType,
   PersistentStoreType,
   IArtifactBuilderOptions,
-} from '@vulcan/core/models';
+} from '@vulcan-sql/core/models';
 import { ArtifactBuilderOptions } from '../../options';
 
 export const artifactBuilderModule = (options: IArtifactBuilderOptions) =>

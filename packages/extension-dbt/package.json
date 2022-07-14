@@ -1,5 +1,5 @@
 {
-  "name": "@vulcan-sql/build",
+  "name": "@vulcan-sql/extension-dbt",
   "version": "0.0.1",
   "type": "commonjs"
 }

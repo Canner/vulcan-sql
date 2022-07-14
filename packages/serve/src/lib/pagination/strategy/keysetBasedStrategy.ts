@@ -3,8 +3,8 @@ import {
   PaginationMode,
   PaginationSchema,
   KeysetPagination,
-} from '@vulcan/core';
-import { KoaRouterContext } from '@vulcan/serve/route';
+} from '@vulcan-sql/core';
+import { KoaRouterContext } from '@vulcan-sql/serve/route';
 import { PaginationStrategy } from './strategy';
 
 export class KeysetBasedStrategy extends PaginationStrategy<KeysetPagination> {

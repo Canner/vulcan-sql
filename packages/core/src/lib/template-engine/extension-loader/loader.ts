@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { flatten } from 'lodash';
 import { interfaces } from 'inversify';
-import { TYPES } from '@vulcan/core/containers';
+import { TYPES } from '@vulcan-sql/core/containers';
 
 export const importExtensions = async (folder: string) => {
   const extensions = await import(folder);

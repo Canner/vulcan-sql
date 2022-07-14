@@ -4,8 +4,8 @@ import {
   DataQueryBuilder,
   Direction,
   OrderByClauseOperation,
-} from '@vulcan/core/data-query';
-import { IDataSource } from '@vulcan/core';
+} from '@vulcan-sql/core/data-query';
+import { IDataSource } from '@vulcan-sql/core';
 describe('Test data query builder > order by clause', () => {
   let stubDataSource: sinon.StubbedInstance<IDataSource>;
 

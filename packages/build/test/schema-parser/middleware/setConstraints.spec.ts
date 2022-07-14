@@ -1,11 +1,11 @@
-import { RawAPISchema } from '@vulcan/build/schema-parser';
-import { setConstraints } from '@vulcan/build/schema-parser/middleware';
+import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
+import { setConstraints } from '@vulcan-sql/build/schema-parser/middleware';
 import {
   Constraint,
   MinValueConstraint,
   RequiredConstraint,
   IValidatorLoader,
-} from '@vulcan/core';
+} from '@vulcan-sql/core';
 import * as sinon from 'ts-sinon';
 
 it('Should set and compose constraints', async () => {

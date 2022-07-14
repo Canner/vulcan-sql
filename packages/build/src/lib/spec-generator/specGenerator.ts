@@ -1,4 +1,4 @@
-import { APISchema } from '@vulcan/core';
+import { APISchema } from '@vulcan-sql/core';
 import { IBuildOptions } from '../../models/buildOptions';
 
 export abstract class SpecGenerator<T> {

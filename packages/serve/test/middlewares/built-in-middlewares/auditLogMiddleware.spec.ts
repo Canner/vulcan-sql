@@ -3,14 +3,14 @@ import * as sinon from 'ts-sinon';
 import { Request, Response } from 'koa';
 import { IncomingHttpHeaders } from 'http';
 import { ParsedUrlQuery } from 'querystring';
-import { KoaRouterContext } from '@vulcan/serve/route';
+import { KoaRouterContext } from '@vulcan-sql/serve/route';
 import {
   AuditLoggingMiddleware,
   RequestIdMiddleware,
-} from '@vulcan/serve/middleware';
-import * as core from '@vulcan/core';
+} from '@vulcan-sql/serve/middleware';
+import * as core from '@vulcan-sql/core';
 import * as uuid from 'uuid';
-import { LoggerOptions } from '@vulcan/core';
+import { LoggerOptions } from '@vulcan-sql/core';
 
 describe('Test audit logging middlewares', () => {
   afterEach(() => {

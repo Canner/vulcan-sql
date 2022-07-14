@@ -1,6 +1,6 @@
 import { RawAPISchema } from '../../../src';
 import { checkParameter } from '../../../src/lib/schema-parser/middleware/checkParameter';
-import { AllTemplateMetadata } from '@vulcan/core';
+import { AllTemplateMetadata } from '@vulcan-sql/core';
 
 it('Should pass when every parameter has been defined', async () => {
   // Arrange

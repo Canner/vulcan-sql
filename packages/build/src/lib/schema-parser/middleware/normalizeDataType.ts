@@ -1,4 +1,4 @@
-import { FieldDataType } from '@vulcan/core';
+import { FieldDataType } from '@vulcan-sql/core';
 import { DeepPartial } from 'ts-essentials';
 import { RawResponseProperty, SchemaParserMiddleware } from './middleware';
 

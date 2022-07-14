@@ -1,6 +1,6 @@
 import { Container as InversifyContainer } from 'inversify';
-import { Container as CoreContainer } from '@vulcan/core';
-import { IBuildOptions } from '@vulcan/build/models';
+import { Container as CoreContainer } from '@vulcan-sql/core';
+import { IBuildOptions } from '@vulcan-sql/build/models';
 import { schemaParserModule } from './modules';
 
 export class Container {

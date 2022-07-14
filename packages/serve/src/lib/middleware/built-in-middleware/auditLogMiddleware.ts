@@ -1,7 +1,7 @@
-import { getLogger, ILogger, LoggerOptions } from '@vulcan/core';
+import { getLogger, ILogger, LoggerOptions } from '@vulcan-sql/core';
 import { BuiltInMiddleware, RouteMiddlewareNext } from '../middleware';
-import { KoaRouterContext } from '@vulcan/serve/route';
-import { MiddlewareConfig } from '@vulcan/serve/models';
+import { KoaRouterContext } from '@vulcan-sql/serve/route';
+import { MiddlewareConfig } from '@vulcan-sql/serve/models';
 
 export class AuditLoggingMiddleware extends BuiltInMiddleware {
   private logger: ILogger;

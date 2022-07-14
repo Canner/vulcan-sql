@@ -14,7 +14,7 @@ import {
   RequestSchema as RequestParameter,
   RequiredConstraint,
   ResponseProperty,
-} from '@vulcan/core';
+} from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
 
 export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {

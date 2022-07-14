@@ -1,11 +1,11 @@
-import { IBuildOptions } from '@vulcan/build/models';
-import { Container, TYPES } from '@vulcan/build/containers';
-import { SchemaParser } from '@vulcan/build/schema-parser';
+import { IBuildOptions } from '@vulcan-sql/build/models';
+import { Container, TYPES } from '@vulcan-sql/build/containers';
+import { SchemaParser } from '@vulcan-sql/build/schema-parser';
 import {
   TemplateEngine,
   TYPES as CORE_TYPES,
   VulcanArtifactBuilder,
-} from '@vulcan/core';
+} from '@vulcan-sql/core';
 
 export class VulcanBuilder {
   public async build(options: IBuildOptions) {

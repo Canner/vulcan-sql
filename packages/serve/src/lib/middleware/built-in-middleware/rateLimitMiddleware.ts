@@ -1,8 +1,8 @@
 import * as Koa from 'koa';
 import { RateLimit, RateLimitOptions } from 'koa2-ratelimit';
-import { KoaRouterContext } from '@vulcan/serve/route';
+import { KoaRouterContext } from '@vulcan-sql/serve/route';
 import { BuiltInMiddleware, RouteMiddlewareNext } from '../middleware';
-import { MiddlewareConfig } from '@vulcan/serve/models';
+import { MiddlewareConfig } from '@vulcan-sql/serve/models';
 
 export { RateLimitOptions };
 
