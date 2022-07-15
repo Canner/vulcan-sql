@@ -9,6 +9,8 @@ import {
   RequestIdMiddleware,
   loadExtensions,
   RateLimitMiddleware,
+  JsonResponseMiddleware,
+  CsvResponseMiddleware,
 } from './middleware';
 import {
   RestfulRoute,
@@ -87,6 +89,8 @@ export class VulcanApplication {
     await this.use(RateLimitMiddleware);
     await this.use(RequestIdMiddleware);
     await this.use(AuditLoggingMiddleware);
+    await this.use(JsonResponseMiddleware);
+    await this.use(CsvResponseMiddleware);
 
     // load extension middleware
     const extensions = await loadExtensions(this.config.extensions);

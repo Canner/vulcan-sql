@@ -4,9 +4,10 @@ import {
   SQLClauseOperation,
 } from '@vulcan-sql/core/data-query';
 import { Pagination } from '../../models/pagination';
-import { IDataSource } from '@vulcan-sql/core/data-source';
+import { DataResult, IDataSource } from '@vulcan-sql/core/data-source';
 import { AsyncContainerModule } from 'inversify';
 import { TYPES } from '../types';
+import { Stream } from 'stream';
 
 /**
  * TODO: Mock data source to make data query builder could create by IoC
@@ -24,10 +25,13 @@ class MockDataSource implements IDataSource {
     pagination?: Pagination | undefined;
   }) {
     return {
-      statement,
-      operations,
-      pagination,
-    };
+      getColumns: () => {
+        return [];
+      },
+      getData: () => {
+        return new Stream.Readable();
+      },
+    } as DataResult;
   }
 }
 

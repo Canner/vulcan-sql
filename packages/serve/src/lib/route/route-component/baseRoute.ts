@@ -52,10 +52,7 @@ export abstract class BaseRoute implements IRoute {
     const { reqParams } = transformed;
     // could template name or template path, use for template engine
     const { templateSource } = this.apiSchema;
-    const statement = await this.templateEngine.execute(
-      templateSource,
-      reqParams
-    );
-    return statement;
+    const result = await this.templateEngine.execute(templateSource, reqParams);
+    return result;
   }
 }

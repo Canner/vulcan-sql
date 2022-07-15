@@ -79,6 +79,8 @@
       "@vulcan-sql/serve/pagination/*": ["packages/serve/src/lib/pagination/*"],
       "@vulcan-sql/serve/route": ["packages/serve/src/lib/route/index"],
       "@vulcan-sql/serve/route/*": ["packages/serve/src/lib/route/*"],
+      "@vulcan-sql/serve/utils": ["packages/serve/src/lib/utils/index"],
+      "@vulcan-sql/serve/utils/*": ["packages/serve/src/lib/utils/*"],
       "@vulcan-sql/test-utility": ["packages/test-utility/src/index.ts"]
     }
   },
