@@ -1,5 +1,5 @@
 import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
-import { addRequiredValidatorForPath } from '@vulcan-sql/build/schema-parser/middleware';
+import { AddRequiredValidatorForPath } from '@vulcan-sql/build/schema-parser/middleware/addRequiredValidatorForPath';
 import { APISchema, FieldInType } from '@vulcan-sql/core';
 
 it('Should add required validator for parameter in path', async () => {
@@ -20,8 +20,11 @@ it('Should add required validator for parameter in path', async () => {
       },
     ],
   };
+  const addRequiredValidatorForPath = new AddRequiredValidatorForPath();
   // Act
-  await addRequiredValidatorForPath()(schema, async () => Promise.resolve());
+  await addRequiredValidatorForPath.handle(schema, async () =>
+    Promise.resolve()
+  );
   // Assert
   expect((schema as APISchema).request?.[0].validators?.[0].name).toEqual(
     'required'
@@ -52,8 +55,11 @@ it('Should not change the validator if it had already defined', async () => {
       },
     ],
   };
+  const addRequiredValidatorForPath = new AddRequiredValidatorForPath();
   // Act
-  await addRequiredValidatorForPath()(schema, async () => Promise.resolve());
+  await addRequiredValidatorForPath.handle(schema, async () =>
+    Promise.resolve()
+  );
   // Assert
   expect((schema as APISchema).request?.[0].validators?.[0].args.foo).toEqual(
     'bar'

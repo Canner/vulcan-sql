@@ -1,8 +1,9 @@
-import { SchemaParserMiddleware } from './middleware';
+import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 
-export const fallbackErrors =
-  (): SchemaParserMiddleware => async (schemas, next) => {
+export class FallbackErrors extends SchemaParserMiddleware {
+  public async handle(schemas: RawAPISchema, next: () => Promise<void>) {
     if (schemas.errors) return next();
     schemas.errors = [];
     return next();
-  };
+  }
+}

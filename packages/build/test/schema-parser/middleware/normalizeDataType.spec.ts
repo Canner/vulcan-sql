@@ -1,5 +1,5 @@
 import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
-import { normalizeDataType } from '@vulcan-sql/build/schema-parser/middleware';
+import { NormalizeDataType } from '@vulcan-sql/build/schema-parser/middleware/normalizeDataType';
 import { FieldDataType } from '@vulcan-sql/core';
 
 it('Should normalize data type for requests', async () => {
@@ -13,8 +13,9 @@ it('Should normalize data type for requests', async () => {
       },
     ],
   };
+  const normalizeDataType = new NormalizeDataType();
   // Act
-  await normalizeDataType()(schema, async () => Promise.resolve());
+  await normalizeDataType.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.request?.[0].type).toEqual(FieldDataType.NUMBER);
 });
@@ -37,8 +38,9 @@ it('Should normalize data type for responses', async () => {
       },
     ],
   };
+  const normalizeDataType = new NormalizeDataType();
   // Act
-  await normalizeDataType()(schema, async () => Promise.resolve());
+  await normalizeDataType.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.response?.[0].type).toEqual(FieldDataType.NUMBER);
   expect((schema.response?.[1] as any).type[0].type).toEqual(

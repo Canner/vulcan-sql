@@ -1,5 +1,5 @@
 import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
-import { setConstraints } from '@vulcan-sql/build/schema-parser/middleware';
+import { SetConstraints } from '@vulcan-sql/build/schema-parser/middleware/setConstraints';
 import {
   Constraint,
   MinValueConstraint,
@@ -34,10 +34,9 @@ it('Should set and compose constraints', async () => {
       },
     ],
   };
+  const setConstraints = new SetConstraints(stubValidatorLoader);
   // Act
-  await setConstraints(stubValidatorLoader)(schema, async () =>
-    Promise.resolve()
-  );
+  await setConstraints.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.request?.[0].constraints?.length).toEqual(2);
   expect(

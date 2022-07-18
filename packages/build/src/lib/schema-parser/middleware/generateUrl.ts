@@ -1,7 +1,7 @@
-import { SchemaParserMiddleware } from './middleware';
+import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 
-export const generateUrl =
-  (): SchemaParserMiddleware => async (schemas, next) => {
+export class GenerateUrl extends SchemaParserMiddleware {
+  public async handle(schemas: RawAPISchema, next: () => Promise<void>) {
     if (schemas.urlPath) return next();
 
     let urlPath = schemas.sourceName.toLocaleLowerCase();
@@ -19,4 +19,5 @@ export const generateUrl =
     schemas.urlPath = urlPath;
 
     return next();
-  };
+  }
+}

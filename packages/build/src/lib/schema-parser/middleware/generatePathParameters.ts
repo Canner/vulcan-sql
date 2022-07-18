@@ -1,9 +1,9 @@
 import { FieldDataType, FieldInType } from '@vulcan-sql/core';
-import { SchemaParserMiddleware } from './middleware';
+import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 
 // /user/{id} => {request: [{fieldName: 'id', fieldIn: 'path' ....}]}
-export const generatePathParameters =
-  (): SchemaParserMiddleware => async (schema, next) => {
+export class GeneratePathParameters extends SchemaParserMiddleware {
+  public async handle(schema: RawAPISchema, next: () => Promise<void>) {
     await next();
     const pattern = /:([^/]+)/g;
     const pathParameters: string[] = [];
@@ -31,4 +31,5 @@ export const generatePathParameters =
         })
       );
     schema.request = request;
-  };
+  }
+}

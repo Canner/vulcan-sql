@@ -1,6 +1,5 @@
 import { RawAPISchema } from '../../../src';
-import { addMissingErrors } from '../../../src/lib/schema-parser/middleware/addMissingErrors';
-import { AllTemplateMetadata } from '@vulcan-sql/core';
+import { AddMissingErrors } from '../../../src/lib/schema-parser/middleware/addMissingErrors';
 
 it('Should add missing error codes', async () => {
   // Arrange
@@ -9,9 +8,7 @@ it('Should add missing error codes', async () => {
     templateSource: 'some-name',
     request: [],
     errors: [],
-  };
-  const metadata: AllTemplateMetadata = {
-    'some-name': {
+    metadata: {
       'error.vulcan.com': {
         errorCodes: [
           {
@@ -27,8 +24,9 @@ it('Should add missing error codes', async () => {
       },
     },
   };
+  const addMissingErrors = new AddMissingErrors();
   // Act
-  await addMissingErrors(metadata)(schema, async () => Promise.resolve());
+  await addMissingErrors.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.errors?.length).toBe(1);
 });
@@ -45,9 +43,7 @@ it('Existed error codes should be kept', async () => {
         message: 'ERROR 1 with additional description',
       },
     ],
-  };
-  const metadata: AllTemplateMetadata = {
-    'some-name': {
+    metadata: {
       parameters: [],
       'error.vulcan.com': {
         errorCodes: [
@@ -64,8 +60,9 @@ it('Existed error codes should be kept', async () => {
       },
     },
   };
+  const addMissingErrors = new AddMissingErrors();
   // Act
-  await addMissingErrors(metadata)(schema, async () => Promise.resolve());
+  await addMissingErrors.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.errors?.length).toBe(1);
   expect(schema.errors).toContainEqual({
@@ -81,17 +78,14 @@ it('Should tolerate empty error data', async () => {
     templateSource: 'some-name',
     request: [],
     errors: [],
-  };
-  const metadata: object = {
-    'some-name': {
+    metadata: {
       parameters: [],
       'error.vulcan.com': null,
     },
   };
+  const addMissingErrors = new AddMissingErrors();
   // Act
-  await addMissingErrors(metadata as AllTemplateMetadata)(schema, async () =>
-    Promise.resolve()
-  );
+  await addMissingErrors.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.errors?.length).toBe(0);
 });
@@ -104,11 +98,9 @@ it('Should tolerate empty metadata', async () => {
     request: [],
     errors: [],
   };
-  const metadata: object = {};
+  const addMissingErrors = new AddMissingErrors();
   // Act
-  await addMissingErrors(metadata as AllTemplateMetadata)(schema, async () =>
-    Promise.resolve()
-  );
+  await addMissingErrors.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.errors?.length).toBe(0);
 });

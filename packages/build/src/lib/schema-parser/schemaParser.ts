@@ -1,30 +1,15 @@
-import {
-  APISchema,
-  TemplateMetadata,
-  TYPES as CORE_TYPES,
-  IValidatorLoader,
-} from '@vulcan-sql/core';
+import { APISchema, AllTemplateMetadata } from '@vulcan-sql/core';
 import { SchemaData, SchemaFormat, SchemaReader } from './schema-reader';
 import * as yaml from 'js-yaml';
-import {
-  RawAPISchema,
-  SchemaParserMiddleware,
-  generateUrl,
-  checkValidator,
-  transformValidator,
-  generateTemplateSource,
-  checkParameter,
-  fallbackErrors,
-  addMissingErrors,
-  normalizeFieldIn,
-  generateDataType,
-  normalizeDataType,
-  generatePathParameters,
-  addRequiredValidatorForPath,
-  setConstraints,
-} from './middleware';
+import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 import * as compose from 'koa-compose';
-import { inject, injectable, interfaces } from 'inversify';
+import {
+  inject,
+  injectable,
+  interfaces,
+  multiInject,
+  optional,
+} from 'inversify';
 import { TYPES } from '@vulcan-sql/build/containers';
 import { SchemaParserOptions } from '@vulcan-sql/build/options';
 
@@ -35,44 +20,32 @@ export interface SchemaParseResult {
 @injectable()
 export class SchemaParser {
   private schemaReader: SchemaReader;
-  private middleware: SchemaParserMiddleware[] = [];
+  private middleware: SchemaParserMiddleware['handle'][] = [];
 
   constructor(
     @inject(TYPES.Factory_SchemaReader)
     schemaReaderFactory: interfaces.AutoNamedFactory<SchemaReader>,
     @inject(TYPES.SchemaParserOptions) schemaParserOptions: SchemaParserOptions,
-    @inject(CORE_TYPES.ValidatorLoader) validatorLoader: IValidatorLoader
+    @multiInject(TYPES.SchemaParserMiddleware)
+    @optional()
+    middlewares: SchemaParserMiddleware[] = []
   ) {
     this.schemaReader = schemaReaderFactory(schemaParserOptions.reader);
 
-    // Global middleware
-    this.use(generateUrl());
-    this.use(generateTemplateSource());
-    this.use(transformValidator());
-    this.use(checkValidator(validatorLoader));
-    this.use(fallbackErrors());
-    this.use(normalizeFieldIn());
-    this.use(generateDataType());
-    this.use(normalizeDataType());
-    this.use(generatePathParameters());
-    this.use(addRequiredValidatorForPath());
-    this.use(setConstraints(validatorLoader));
+    // Load middleware
+    middlewares.forEach(this.use.bind(this));
   }
 
   public async parse({
     metadata,
   }: {
-    metadata?: Record<string, TemplateMetadata>;
+    metadata?: AllTemplateMetadata;
   } = {}): Promise<SchemaParseResult> {
-    const middleware = [...this.middleware];
-    if (metadata) {
-      middleware.push(checkParameter(metadata));
-      middleware.push(addMissingErrors(metadata));
-    }
-    const execute = compose(middleware);
+    const execute = compose(this.middleware);
     const schemas: APISchema[] = [];
     for await (const schemaData of this.schemaReader.readSchema()) {
       const schema = await this.parseContent(schemaData);
+      schema.metadata = metadata?.[schema.templateSource || schema.sourceName];
       // execute middleware
       await execute(schema);
       schemas.push(schema as APISchema);
@@ -81,7 +54,7 @@ export class SchemaParser {
   }
 
   public use(middleware: SchemaParserMiddleware): this {
-    this.middleware.push(middleware);
+    this.middleware.push(middleware.handle.bind(middleware));
     return this;
   }
 

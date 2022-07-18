@@ -1,10 +1,23 @@
-import { APISchema, IValidatorLoader } from '@vulcan-sql/core';
+import {
+  APISchema,
+  IValidatorLoader,
+  TYPES as CORE_TYPES,
+} from '@vulcan-sql/core';
+import { inject } from 'inversify';
 import { chain } from 'lodash';
-import { SchemaParserMiddleware } from './middleware';
+import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 
-export const setConstraints =
-  (loader: IValidatorLoader): SchemaParserMiddleware =>
-  async (rawSchema, next) => {
+export class SetConstraints extends SchemaParserMiddleware {
+  private validatorLoader: IValidatorLoader;
+
+  constructor(
+    @inject(CORE_TYPES.ValidatorLoader) validatorLoader: IValidatorLoader
+  ) {
+    super();
+    this.validatorLoader = validatorLoader;
+  }
+
+  public async handle(rawSchema: RawAPISchema, next: () => Promise<void>) {
     await next();
     const schema = rawSchema as APISchema;
 
@@ -12,7 +25,7 @@ export const setConstraints =
       // load validator and keep args
       const validatorsWithArgs = await Promise.all(
         (request.validators || []).map(async (validator) => ({
-          validator: await loader.load(validator.name),
+          validator: await this.validatorLoader.load(validator.name),
           args: validator.args,
         }))
       );
@@ -37,4 +50,5 @@ export const setConstraints =
         })
         .value();
     }
-  };
+  }
+}

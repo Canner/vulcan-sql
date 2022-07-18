@@ -5,6 +5,7 @@ import {
   ResponseProperty,
   ValidatorDefinition,
 } from '@vulcan-sql/core';
+import { injectable } from 'inversify';
 import { DeepPartial } from 'ts-essentials';
 
 export interface RawRequestParameter
@@ -22,8 +23,13 @@ export interface RawAPISchema
   sourceName: string;
   request?: DeepPartial<RawRequestParameter[]>;
   response?: DeepPartial<RawResponseProperty[]>;
+  metadata?: Record<string, any>;
 }
 
-export interface SchemaParserMiddleware {
-  (schema: RawAPISchema, next: () => Promise<void>): Promise<void>;
+@injectable()
+export abstract class SchemaParserMiddleware {
+  abstract handle(
+    schema: RawAPISchema,
+    next: () => Promise<void>
+  ): Promise<void>;
 }

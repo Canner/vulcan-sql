@@ -1,8 +1,8 @@
-import { SchemaParserMiddleware } from './middleware';
+import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 
 // Transform validator requests
-export const transformValidator =
-  (): SchemaParserMiddleware => async (schemas, next) => {
+export class TransformValidator extends SchemaParserMiddleware {
+  public async handle(schemas: RawAPISchema, next: () => Promise<void>) {
     if (!schemas.request) schemas.request = [];
     for (
       let requestIndex = 0;
@@ -27,4 +27,5 @@ export const transformValidator =
     }
 
     return next();
-  };
+  }
+}

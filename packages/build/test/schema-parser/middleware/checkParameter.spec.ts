@@ -1,6 +1,5 @@
 import { RawAPISchema } from '../../../src';
-import { checkParameter } from '../../../src/lib/schema-parser/middleware/checkParameter';
-import { AllTemplateMetadata } from '@vulcan-sql/core';
+import { CheckParameter } from '../../../src/lib/schema-parser/middleware/checkParameter';
 
 it('Should pass when every parameter has been defined', async () => {
   // Arrange
@@ -15,9 +14,7 @@ it('Should pass when every parameter has been defined', async () => {
         fieldName: 'param2',
       },
     ],
-  };
-  const metadata: AllTemplateMetadata = {
-    'some-name': {
+    metadata: {
       parameters: [
         {
           name: 'param1',
@@ -31,9 +28,10 @@ it('Should pass when every parameter has been defined', async () => {
       errors: [],
     },
   };
+  const checkParameter = new CheckParameter();
   // Act Assert
   await expect(
-    checkParameter(metadata)(schema, async () => Promise.resolve())
+    checkParameter.handle(schema, async () => Promise.resolve())
   ).resolves.not.toThrow();
 });
 
@@ -47,9 +45,7 @@ it(`Should throw when any parameter hasn't be defined`, async () => {
         fieldName: 'param1',
       },
     ],
-  };
-  const metadata: AllTemplateMetadata = {
-    'some-name': {
+    metadata: {
       'parameter.vulcan.com': [
         {
           name: 'param1',
@@ -63,9 +59,10 @@ it(`Should throw when any parameter hasn't be defined`, async () => {
       errors: [],
     },
   };
-  // Act Assert
+  const checkParameter = new CheckParameter();
+  // Act, Assert
   await expect(
-    checkParameter(metadata)(schema, async () => Promise.resolve())
+    checkParameter.handle(schema, async () => Promise.resolve())
   ).rejects.toThrow(
     `Parameter param2.a.sub.property is not found in the schema.`
   );
@@ -78,18 +75,15 @@ it('Should tolerate empty parameter data', async () => {
     templateSource: 'some-name',
     request: [],
     errors: [],
-  };
-  const metadata: object = {
-    'some-name': {
+    metadata: {
       'parameter.vulcan.com': null,
       errors: [],
     },
   };
+  const checkParameter = new CheckParameter();
   // Act, Assert
   await expect(
-    checkParameter(metadata as AllTemplateMetadata)(schema, async () =>
-      Promise.resolve()
-    )
+    checkParameter.handle(schema, async () => Promise.resolve())
   ).resolves.not.toThrow();
 });
 
@@ -101,11 +95,9 @@ it('Should tolerate empty metadata', async () => {
     request: [],
     errors: [],
   };
-  const metadata: object = {};
+  const checkParameter = new CheckParameter();
   // Act, Assert
   await expect(
-    checkParameter(metadata as AllTemplateMetadata)(schema, async () =>
-      Promise.resolve()
-    )
+    checkParameter.handle(schema, async () => Promise.resolve())
   ).resolves.not.toThrow();
 });

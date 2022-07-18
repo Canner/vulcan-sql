@@ -1,5 +1,5 @@
 import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
-import { transformValidator } from '@vulcan-sql/build/schema-parser/middleware/transformValidator';
+import { TransformValidator } from '@vulcan-sql/build/schema-parser/middleware/transformValidator';
 
 it('Should convert string validator to proper format', async () => {
   // Arrange
@@ -11,8 +11,9 @@ it('Should convert string validator to proper format', async () => {
       },
     ],
   };
+  const transformValidator = new TransformValidator();
   // Act
-  await transformValidator()(schema, async () => Promise.resolve());
+  await transformValidator.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.request?.[0].validators?.[0]).toEqual({
     name: 'validator1',
@@ -30,8 +31,9 @@ it('Should add fallback value when a validator has no argument', async () => {
       },
     ],
   };
+  const transformValidator = new TransformValidator();
   // Act
-  await transformValidator()(schema, async () => Promise.resolve());
+  await transformValidator.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.request?.[0].validators?.[0]).toEqual({
     name: 'validator1',
@@ -44,8 +46,9 @@ it('Should add fallback value when there is no request', async () => {
   const schema: RawAPISchema = {
     sourceName: 'some-name',
   };
+  const transformValidator = new TransformValidator();
   // Act
-  await transformValidator()(schema, async () => Promise.resolve());
+  await transformValidator.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.request).toEqual([]);
 });
@@ -56,8 +59,9 @@ it('Should add fallback value when a request has no validator', async () => {
     sourceName: 'some-name',
     request: [{ fieldName: 'field1' }],
   };
+  const transformValidator = new TransformValidator();
   // Act
-  await transformValidator()(schema, async () => Promise.resolve());
+  await transformValidator.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.request?.[0].validators).toEqual([]);
 });
