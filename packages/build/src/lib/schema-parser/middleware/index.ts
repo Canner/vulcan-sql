@@ -13,6 +13,7 @@ import { GeneratePathParameters } from './generatePathParameters';
 import { AddRequiredValidatorForPath } from './addRequiredValidatorForPath';
 import { SetConstraints } from './setConstraints';
 import { SchemaParserMiddleware } from './middleware';
+import { ResponseSampler } from './responseSampler';
 
 export * from './middleware';
 
@@ -31,4 +32,5 @@ export const SchemaParserMiddlewares: ClassType<SchemaParserMiddleware>[] = [
   GeneratePathParameters,
   AddRequiredValidatorForPath,
   SetConstraints,
+  ResponseSampler,
 ];

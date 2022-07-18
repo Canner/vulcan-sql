@@ -7,6 +7,7 @@ import {
   APISchema,
   Constraint,
   IValidatorLoader,
+  TemplateEngine,
   TYPES as CORE_TYPES,
 } from '@vulcan-sql/core';
 import * as jsYaml from 'js-yaml';
@@ -97,13 +98,13 @@ export const getSchemas = async () => {
     schemas.push(jsYaml.load(content) as RawAPISchema);
   }
   const loader = getStubLoader();
+  const templateEngine = sinon.stubInterface<TemplateEngine>();
   const container = new Container();
   container.bind(CORE_TYPES.ValidatorLoader).toConstantValue(loader);
+  container.bind(CORE_TYPES.TemplateEngine).toConstantValue(templateEngine);
   SchemaParserMiddlewares.forEach((middleware) => {
     container.bind(TYPES.SchemaParserMiddleware).to(middleware);
   });
-
-  // Load middlewares
 
   const execute = compose(
     container
