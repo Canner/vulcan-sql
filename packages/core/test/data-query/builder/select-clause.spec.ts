@@ -9,7 +9,7 @@ import {
   SelectedColumn,
 } from '@vulcan-sql/core/data-query';
 import { find, isEmpty } from 'lodash';
-import { DataSource } from '@vulcan-sql/core/models';
+import { DataSource, BindParameters } from '@vulcan-sql/core/models';
 
 // Use to generate select record expected results
 const generateSelectRecords = (
@@ -83,6 +83,7 @@ describe('Test data query builder > select clause', () => {
       let builder = new DataQueryBuilder({
         statement,
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       columns.map((column) => {
         builder = column ? builder.select(column) : builder.select();
@@ -150,6 +151,7 @@ describe('Test data query builder > select clause', () => {
       let builder = new DataQueryBuilder({
         statement,
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
 
       builder = !isEmpty(selectParam)
@@ -222,6 +224,7 @@ describe('Test data query builder > select clause', () => {
       let builder = new DataQueryBuilder({
         statement,
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
 
       builder = !isEmpty(selectParam)
@@ -298,6 +301,7 @@ describe('Test data query builder > select clause', () => {
       let builder = new DataQueryBuilder({
         statement,
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
 
       builder = !isEmpty(selectParam)
@@ -371,6 +375,7 @@ describe('Test data query builder > select clause', () => {
       let builder = new DataQueryBuilder({
         statement,
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
 
       builder = !isEmpty(selectParam)
@@ -443,6 +448,7 @@ describe('Test data query builder > select clause', () => {
       let builder = new DataQueryBuilder({
         statement,
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
 
       builder = !isEmpty(selectParam)
@@ -515,6 +521,7 @@ describe('Test data query builder > select clause', () => {
       let builder = new DataQueryBuilder({
         statement,
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
 
       builder = !isEmpty(selectParam)
@@ -587,6 +594,7 @@ describe('Test data query builder > select clause', () => {
       let builder = new DataQueryBuilder({
         statement,
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
 
       builder = !isEmpty(selectParam)

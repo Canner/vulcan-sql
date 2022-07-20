@@ -5,7 +5,7 @@ import faker from '@faker-js/faker';
 
 let server: VulcanServer;
 
-beforeEach(async () => {
+afterEach(async () => {
   await server?.close();
 });
 

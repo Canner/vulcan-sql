@@ -11,7 +11,7 @@ import {
   HavingClauseOperation,
   HavingPredicateInput,
 } from '@vulcan-sql/core/data-query';
-import { DataSource } from '@vulcan-sql/core/models';
+import { DataSource, BindParameters } from '@vulcan-sql/core/models';
 
 const normalized = (column: string | SelectedColumn) => {
   if (typeof column === 'string') return { name: column };
@@ -38,6 +38,7 @@ describe('Test data query builder > having clause', () => {
         value: new DataQueryBuilder({
           statement: 'select * from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
       },
     },
@@ -52,6 +53,7 @@ describe('Test data query builder > having clause', () => {
         value: new DataQueryBuilder({
           statement: 'select avg(*) from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
       },
       and: {
@@ -103,6 +105,7 @@ describe('Test data query builder > having clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (having) builder.having(having.column, having.operator, having.value);
       if (and) builder.andHaving(and.column, and.operator, and.value);
@@ -127,6 +130,7 @@ describe('Test data query builder > having clause', () => {
         value: new DataQueryBuilder({
           statement: 'select * from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
       },
     },
@@ -141,6 +145,7 @@ describe('Test data query builder > having clause', () => {
         value: new DataQueryBuilder({
           statement: 'select avg(*) from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
       },
       or: {
@@ -192,6 +197,7 @@ describe('Test data query builder > having clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (having) builder.having(having.column, having.operator, having.value);
       if (or) builder.orHaving(or.column, or.operator, or.value);
@@ -304,6 +310,7 @@ describe('Test data query builder > having clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (havingIn) builder.havingIn(havingIn.column, havingIn.values);
       if (and) builder.andHavingIn(and.column, and.values);
@@ -417,6 +424,7 @@ describe('Test data query builder > having clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (notIn) builder.havingNotIn(notIn.column, notIn.values);
       if (or) builder.orHavingIn(or.column, or.values);
@@ -512,6 +520,7 @@ describe('Test data query builder > having clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (between)
         builder.havingBetween(between.column, between.min, between.max);
@@ -610,6 +619,7 @@ describe('Test data query builder > having clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (notBetween)
         builder.havingNotBetween(
@@ -680,6 +690,7 @@ describe('Test data query builder > having clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (isNull) builder.havingNull(isNull.column);
       if (and) builder.andHavingNull(and.column);
@@ -746,6 +757,7 @@ describe('Test data query builder > having clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (notNull) builder.havingNotNull(notNull.column);
       if (or) builder.orHavingNull(or.column);
@@ -763,6 +775,7 @@ describe('Test data query builder > having clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -770,6 +783,7 @@ describe('Test data query builder > having clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -777,6 +791,7 @@ describe('Test data query builder > having clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -786,6 +801,7 @@ describe('Test data query builder > having clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -793,6 +809,7 @@ describe('Test data query builder > having clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -800,6 +817,7 @@ describe('Test data query builder > having clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -820,6 +838,7 @@ describe('Test data query builder > having clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (exists) builder.havingExists(exists);
       if (and) builder.andHavingExists(and);
@@ -837,6 +856,7 @@ describe('Test data query builder > having clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -844,6 +864,7 @@ describe('Test data query builder > having clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -851,6 +872,7 @@ describe('Test data query builder > having clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -860,6 +882,7 @@ describe('Test data query builder > having clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -867,6 +890,7 @@ describe('Test data query builder > having clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -874,6 +898,7 @@ describe('Test data query builder > having clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -895,6 +920,7 @@ describe('Test data query builder > having clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (exists) builder.havingNotExists(exists);
       if (or) builder.orHavingExists(or);

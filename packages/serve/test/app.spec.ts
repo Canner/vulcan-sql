@@ -16,6 +16,7 @@ import {
   ValidatorLoader,
   extensionModule as coreExtensionModule,
   TYPES as CORE_TYPES,
+  DataSource,
 } from '@vulcan-sql/core';
 import {
   RouteGenerator,
@@ -33,9 +34,11 @@ import { TYPES } from '@vulcan-sql/serve';
 describe('Test vulcan server for practicing middleware', () => {
   let container: Container;
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
+  let stubDataSource: sinon.StubbedInstance<DataSource>;
   beforeEach(async () => {
     container = new Container();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
+    stubDataSource = sinon.stubInterface<DataSource>();
 
     await container.loadAsync(
       coreExtensionModule({
@@ -58,6 +61,7 @@ describe('Test vulcan server for practicing middleware', () => {
     container.bind(TYPES.PaginationTransformer).to(PaginationTransformer);
     container.bind(TYPES.RequestTransformer).to(RequestTransformer);
     container.bind(TYPES.RequestValidator).to(RequestValidator);
+    container.bind(CORE_TYPES.DataSource).toConstantValue(stubDataSource);
     container
       .bind(CORE_TYPES.TemplateEngine)
       .toConstantValue(stubTemplateEngine);
@@ -102,6 +106,7 @@ describe('Test vulcan server for practicing middleware', () => {
 describe('Test vulcan server for calling restful APIs', () => {
   let container: Container;
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
+  let stubDataSource: sinon.StubbedInstance<DataSource>;
   let server: http.Server;
   const fakeSchemas: Array<APISchema> = [
     {
@@ -253,6 +258,7 @@ describe('Test vulcan server for calling restful APIs', () => {
   beforeEach(async () => {
     container = new Container();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
+    stubDataSource = sinon.stubInterface<DataSource>();
 
     stubTemplateEngine.execute.callsFake(async (_: string, data: any) => {
       return {
@@ -279,6 +285,7 @@ describe('Test vulcan server for calling restful APIs', () => {
     container.bind(TYPES.PaginationTransformer).to(PaginationTransformer);
     container.bind(TYPES.RequestTransformer).to(RequestTransformer);
     container.bind(TYPES.RequestValidator).to(RequestValidator);
+    container.bind(CORE_TYPES.DataSource).toConstantValue(stubDataSource);
     container
       .bind(CORE_TYPES.TemplateEngine)
       .toConstantValue(stubTemplateEngine);
@@ -323,6 +330,10 @@ describe('Test vulcan server for calling restful APIs', () => {
         ](fieldValue, param.fieldName);
       });
 
+      stubTemplateEngine.execute.resolves({
+        getData: () => expected,
+        getColumns: () => [],
+      });
       // Act
       let reqOperation = supertest(server).get(apiUrl);
 

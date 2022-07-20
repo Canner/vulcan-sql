@@ -5,7 +5,7 @@ import {
   Direction,
   OrderByClauseOperation,
 } from '@vulcan-sql/core/data-query';
-import { DataSource } from '@vulcan-sql/core';
+import { DataSource, BindParameters } from '@vulcan-sql/core';
 describe('Test data query builder > order by clause', () => {
   let stubDataSource: sinon.StubbedInstance<DataSource>;
 
@@ -36,6 +36,7 @@ describe('Test data query builder > order by clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       builder.orderBy(column, direction);
 
@@ -77,6 +78,7 @@ describe('Test data query builder > order by clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       builder
         .orderBy(first.column, first.direction)

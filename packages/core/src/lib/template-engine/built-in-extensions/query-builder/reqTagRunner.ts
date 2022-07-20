@@ -32,7 +32,9 @@ export class ReqTagRunner extends TagRunner {
       .split(/\r?\n/)
       .filter((line) => line.trim().length > 0)
       .join('\n');
-    const builder = await this.executor.createBuilder(query);
+    // Get bind real parameters and pass to data query builder for data source used.
+    const binds = (context.ctx?.context || {})['_paramBinds'] || {};
+    const builder = await this.executor.createBuilder(query, binds);
     context.setVariable(name, builder);
 
     if (args[1] === 'true') {

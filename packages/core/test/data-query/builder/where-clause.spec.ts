@@ -9,8 +9,9 @@ import {
   AliasDataQueryBuilder,
   IDataQueryBuilder,
 } from '@vulcan-sql/core/data-query';
-import { DataSource } from '@vulcan-sql/core/models';
+import { DataSource, BindParameters } from '@vulcan-sql/core/models';
 
+jest.mock('uuid');
 describe('Test data query builder > where clause', () => {
   let stubDataSource: sinon.StubbedInstance<DataSource>;
 
@@ -31,6 +32,7 @@ describe('Test data query builder > where clause', () => {
         value: new DataQueryBuilder({
           statement: 'select * from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
       },
       andNot: {
@@ -46,6 +48,7 @@ describe('Test data query builder > where clause', () => {
         value: new DataQueryBuilder({
           statement: 'select avg(*) from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
       },
       and: {
@@ -75,6 +78,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (where) builder.where(where.column, where.operator, where.value);
       if (and) builder.andWhere(and.column, and.operator, and.value);
@@ -100,6 +104,7 @@ describe('Test data query builder > where clause', () => {
         value: new DataQueryBuilder({
           statement: 'select * from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
       },
       orNot: {
@@ -115,6 +120,7 @@ describe('Test data query builder > where clause', () => {
         value: new DataQueryBuilder({
           statement: 'select avg(*) from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
       },
       or: {
@@ -145,6 +151,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (whereNot)
         builder.whereNot(whereNot.column, whereNot.operator, whereNot.value);
@@ -190,6 +197,7 @@ describe('Test data query builder > where clause', () => {
         values: new DataQueryBuilder({
           statement: 'select type from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
       },
       and: {
@@ -205,6 +213,7 @@ describe('Test data query builder > where clause', () => {
         values: new DataQueryBuilder({
           statement: 'select age from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
       },
     },
@@ -224,6 +233,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (whereIn) builder.whereIn(whereIn.column, whereIn.values);
       if (and) builder.andWhereIn(and.column, and.values);
@@ -268,6 +278,7 @@ describe('Test data query builder > where clause', () => {
         values: new DataQueryBuilder({
           statement: 'select type from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
       },
       or: {
@@ -283,6 +294,7 @@ describe('Test data query builder > where clause', () => {
         values: new DataQueryBuilder({
           statement: 'select age from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
       },
     },
@@ -303,6 +315,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (notIn) builder.whereNotIn(notIn.column, notIn.values);
       if (or) builder.orWhereIn(or.column, or.values);
@@ -365,6 +378,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (between)
         builder.whereBetween(between.column, between.min, between.max);
@@ -430,6 +444,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (notBetween)
         builder.whereNotBetween(
@@ -485,6 +500,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (isNull) builder.whereNull(isNull.column);
       if (and) builder.andWhereNull(and.column);
@@ -536,6 +552,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (notNull) builder.whereNotNull(notNull.column);
       if (or) builder.orWhereNull(or.column);
@@ -581,6 +598,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (like) builder.whereLike(like.column, like.searchValue);
       if (and) builder.andWhereLike(and.column, and.searchValue);
@@ -626,6 +644,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (like) builder.whereLike(like.column, like.searchValue);
       if (or) builder.orWhereLike(or.column, or.searchValue);
@@ -643,6 +662,7 @@ describe('Test data query builder > where clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -650,6 +670,7 @@ describe('Test data query builder > where clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -657,6 +678,7 @@ describe('Test data query builder > where clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -666,6 +688,7 @@ describe('Test data query builder > where clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -674,6 +697,7 @@ describe('Test data query builder > where clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -682,6 +706,7 @@ describe('Test data query builder > where clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -702,6 +727,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (exists) builder.whereExists(exists);
       if (and) builder.andWhereExists(and);
@@ -719,6 +745,7 @@ describe('Test data query builder > where clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -726,6 +753,7 @@ describe('Test data query builder > where clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -733,6 +761,7 @@ describe('Test data query builder > where clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -742,6 +771,7 @@ describe('Test data query builder > where clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -749,6 +779,7 @@ describe('Test data query builder > where clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -756,6 +787,7 @@ describe('Test data query builder > where clause', () => {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
           dataSource: sinon.stubInterface<DataSource>(),
+          bindParams: sinon.stubInterface<BindParameters>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -777,6 +809,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (notExists) builder.whereNotExists(notExists);
       if (or) builder.orWhereExists(or);
@@ -813,6 +846,7 @@ describe('Test data query builder > where clause', () => {
             new DataQueryBuilder({
               statement: 'select count(*) from tags',
               dataSource: sinon.stubInterface<DataSource>(),
+              bindParams: sinon.stubInterface<BindParameters>(),
             })
           )
           .orWhereNotBetween('price', 1, 1000);
@@ -835,16 +869,19 @@ describe('Test data query builder > where clause', () => {
       const wrappedBuilder = new DataQueryBuilder({
         statement: '',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       wrapped(wrappedBuilder);
       const andBuilder = new DataQueryBuilder({
         statement: '',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       and(andBuilder);
       const andNotBuilder = new DataQueryBuilder({
         statement: '',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       andNot(andNotBuilder);
 
@@ -866,6 +903,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (wrapped) builder.whereWrapped(wrapped);
       if (and) builder.andWhereWrapped(and);
@@ -902,6 +940,7 @@ describe('Test data query builder > where clause', () => {
             new DataQueryBuilder({
               statement: 'select count(*) from tags',
               dataSource: sinon.stubInterface<DataSource>(),
+              bindParams: sinon.stubInterface<BindParameters>(),
             })
           )
           .orWhereNotBetween('price', 1, 1000);
@@ -924,16 +963,19 @@ describe('Test data query builder > where clause', () => {
       const notWrappedBuilder = new DataQueryBuilder({
         statement: '',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       notWrapped(notWrappedBuilder);
       const orBuilder = new DataQueryBuilder({
         statement: '',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       or(orBuilder);
       const orNotBuilder = new DataQueryBuilder({
         statement: '',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       orNot(orNotBuilder);
 
@@ -956,6 +998,7 @@ describe('Test data query builder > where clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: sinon.stubInterface<BindParameters>(),
       });
       if (notWrapped) builder.whereNotWrapped(notWrapped);
       if (or) builder.orWhereWrapped(or);

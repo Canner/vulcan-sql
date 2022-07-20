@@ -75,12 +75,19 @@ it('Template engine render function should forward correct data to compiler', as
   const context = {
     name: 'name',
   };
+  const expected = {
+    context: {
+      ...context,
+      params: {},
+      _paramBinds: {},
+    },
+  };
 
   // Act
   const result = await templateEngine.execute('template-name', context);
 
   // Assert
-  expect(stubCompiler.execute.calledWith('template-name', context)).toBe(true);
+  expect(stubCompiler.execute.getCalls()[0].args[1]).toEqual(expected);
   expect(result).toBe('sql-result');
 });
 

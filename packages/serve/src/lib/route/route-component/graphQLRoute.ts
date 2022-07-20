@@ -1,34 +1,11 @@
-import { BaseRoute, KoaRouterContext } from './baseRoute';
-
-import { APISchema, TemplateEngine } from '@vulcan-sql/core';
-import { IRequestTransformer } from './requestTransformer';
-import { IRequestValidator } from './requestValidator';
-import { IPaginationTransformer } from './paginationTransformer';
+import { BaseRoute, KoaRouterContext, RouteOptions } from './baseRoute';
 
 export class GraphQLRoute extends BaseRoute {
   public readonly operationName: string;
 
-  constructor({
-    apiSchema,
-    reqTransformer,
-    reqValidator,
-    paginationTransformer,
-    templateEngine,
-  }: {
-    apiSchema: APISchema;
-    reqTransformer: IRequestTransformer;
-    reqValidator: IRequestValidator;
-    paginationTransformer: IPaginationTransformer;
-    templateEngine: TemplateEngine;
-  }) {
-    super({
-      apiSchema,
-      reqTransformer,
-      reqValidator,
-      paginationTransformer,
-      templateEngine,
-    });
-
+  constructor(options: RouteOptions) {
+    super(options);
+    const { apiSchema } = options;
     this.operationName = apiSchema.operationName;
   }
 

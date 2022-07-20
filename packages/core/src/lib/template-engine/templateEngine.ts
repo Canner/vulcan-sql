@@ -1,12 +1,13 @@
 import { Compiler, TemplateMetadata } from './compiler';
 import { injectable, inject, optional } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
-import { TemplateEngineOptions } from '../../options';
 import {
   CodeLoader,
   Pagination,
+  PreparedQueryParams,
   TemplateProvider,
 } from '@vulcan-sql/core/models';
+import { get, omit } from 'lodash';
 
 export type AllTemplateMetadata = Record<string, TemplateMetadata>;
 
@@ -65,6 +66,19 @@ export class TemplateEngine {
     data: T,
     pagination?: Pagination
   ): Promise<any> {
-    return this.compiler.execute(templateName, data, pagination);
+    const others = omit(data, '_prepared');
+    const prepared: PreparedQueryParams | undefined = get(data, '_prepared');
+    // wrap to context object
+    return this.compiler.execute(
+      templateName,
+      {
+        context: {
+          ...others,
+          ['params']: prepared?.identifiers || {},
+          ['_paramBinds']: prepared?.binds || {},
+        },
+      },
+      pagination
+    );
   }
 }
