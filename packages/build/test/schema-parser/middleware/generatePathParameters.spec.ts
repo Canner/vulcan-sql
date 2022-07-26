@@ -1,5 +1,5 @@
 import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
-import { generatePathParameters } from '@vulcan-sql/build/schema-parser/middleware';
+import { GeneratePathParameters } from '@vulcan-sql/build/schema-parser/middleware/generatePathParameters';
 import { FieldDataType, FieldInType } from '@vulcan-sql/core';
 
 it('Should generate path parameters when they were not defined', async () => {
@@ -9,8 +9,9 @@ it('Should generate path parameters when they were not defined', async () => {
     urlPath: 'existed/path/:id/order/:oid',
     request: [],
   };
+  const generatePathParameters = new GeneratePathParameters();
   // Act
-  await generatePathParameters()(schema, async () => Promise.resolve());
+  await generatePathParameters.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.request?.[0].fieldName).toEqual('id');
   expect(schema.request?.[0].type).toEqual(FieldDataType.STRING);
@@ -34,8 +35,9 @@ it('Should keep original parameters when they had been defined', async () => {
       },
     ],
   };
+  const generatePathParameters = new GeneratePathParameters();
   // Act
-  await generatePathParameters()(schema, async () => Promise.resolve());
+  await generatePathParameters.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.request?.[0].fieldName).toEqual('id');
   expect(schema.request?.[0].type).toEqual(FieldDataType.NUMBER);

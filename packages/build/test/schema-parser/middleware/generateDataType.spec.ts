@@ -1,5 +1,5 @@
 import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
-import { generateDataType } from '@vulcan-sql/build/schema-parser/middleware';
+import { GenerateDataType } from '@vulcan-sql/build/schema-parser/middleware/generateDataType';
 import { FieldDataType } from '@vulcan-sql/core';
 
 it('Should generate data type (string) for requests when it was not defined', async () => {
@@ -9,8 +9,9 @@ it('Should generate data type (string) for requests when it was not defined', as
     sourceName: 'some-name',
     request: [{}],
   };
+  const generateDataType = new GenerateDataType();
   // Act
-  await generateDataType()(schema, async () => Promise.resolve());
+  await generateDataType.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.request?.[0].type).toEqual(FieldDataType.STRING);
 });
@@ -23,8 +24,9 @@ it('Should generate data type (string) for responses when it was not defined', a
     request: [],
     response: [{}, { type: [{}] as any }],
   };
+  const generateDataType = new GenerateDataType();
   // Act
-  await generateDataType()(schema, async () => Promise.resolve());
+  await generateDataType.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.response?.[0].type).toEqual(FieldDataType.STRING);
   expect((schema.response?.[1].type?.[0] as any).type).toEqual(

@@ -20,6 +20,7 @@ import {
   walkAst,
 } from './extension-loader';
 import { IDataQueryBuilder } from '../data-query';
+import { Pagination } from '@vulcan-sql/core/models';
 
 @injectable()
 export class NunjucksCompiler implements Compiler {
@@ -74,10 +75,12 @@ export class NunjucksCompiler implements Compiler {
 
   public async execute<T extends object>(
     templateName: string,
-    data: T
+    data: T,
+    pagination?: Pagination
   ): Promise<any> {
     await this.initializeExtensions();
     const builder = await this.renderAndGetMainBuilder(templateName, data);
+    if (pagination) builder.paginate(pagination);
     return builder.value();
   }
 

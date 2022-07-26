@@ -16,6 +16,7 @@ import { TemplateEngineOptions } from '../../options';
 import * as nunjucks from 'nunjucks';
 // TODO: fix the path
 import { bindExtensions } from '@vulcan-sql/core/template-engine/extension-loader';
+import { ICodeLoader } from '@vulcan-sql/core/template-engine/code-loader';
 
 export const templateEngineModule = (
   options: ITemplateEngineOptions,
@@ -59,7 +60,7 @@ export const templateEngineModule = (
       .whenTargetNamed('compileTime');
 
     // Loader
-    bind<nunjucks.ILoader>(TYPES.CompilerLoader)
+    bind<ICodeLoader>(TYPES.CompilerLoader)
       .to(InMemoryCodeLoader)
       .inSingletonScope();
 

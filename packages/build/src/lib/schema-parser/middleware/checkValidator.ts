@@ -1,10 +1,23 @@
-import { SchemaParserMiddleware } from './middleware';
+import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 import { chain } from 'lodash';
-import { APISchema, IValidatorLoader } from '@vulcan-sql/core';
+import {
+  APISchema,
+  IValidatorLoader,
+  TYPES as CORE_TYPES,
+} from '@vulcan-sql/core';
+import { inject } from 'inversify';
 
-export const checkValidator =
-  (loader: IValidatorLoader): SchemaParserMiddleware =>
-  async (schemas, next) => {
+export class CheckValidator extends SchemaParserMiddleware {
+  private validatorLoader: IValidatorLoader;
+
+  constructor(
+    @inject(CORE_TYPES.ValidatorLoader) validatorLoader: IValidatorLoader
+  ) {
+    super();
+    this.validatorLoader = validatorLoader;
+  }
+
+  public async handle(schemas: RawAPISchema, next: () => Promise<void>) {
     await next();
     const transformedSchemas = schemas as APISchema;
     const validators = chain(transformedSchemas.request)
@@ -16,9 +29,10 @@ export const checkValidator =
         throw new Error('Validator name is required');
       }
 
-      const validator = await loader.load(validatorRequest.name);
+      const validator = await this.validatorLoader.load(validatorRequest.name);
 
       // TODO: indicate the detail of error
       validator.validateSchema(validatorRequest.args);
     }
-  };
+  }
+}

@@ -1,5 +1,5 @@
-import { AllTemplateMetadata, APISchema } from '@vulcan-sql/core';
-import { SchemaParserMiddleware } from './middleware';
+import { APISchema } from '@vulcan-sql/core';
+import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 
 interface Parameter {
   name: string;
@@ -7,13 +7,11 @@ interface Parameter {
   columnNo: number;
 }
 
-export const checkParameter =
-  (allMetadata: AllTemplateMetadata): SchemaParserMiddleware =>
-  async (schemas, next) => {
+export class CheckParameter extends SchemaParserMiddleware {
+  public async handle(schemas: RawAPISchema, next: () => Promise<void>) {
     await next();
     const transformedSchemas = schemas as APISchema;
-    const templateName = transformedSchemas.templateSource;
-    const metadata = allMetadata[templateName];
+    const metadata = schemas.metadata;
     // Skip validation if no metadata found
     if (!metadata?.['parameter.vulcan.com']) return;
 
@@ -31,4 +29,5 @@ export const checkParameter =
         );
       }
     });
-  };
+  }
+}

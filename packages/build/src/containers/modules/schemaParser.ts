@@ -10,6 +10,7 @@ import {
 import { ContainerModule, interfaces } from 'inversify';
 import { SchemaParserOptions } from '../../options/schemaParser';
 import { TYPES } from '../types';
+import { SchemaParserMiddlewares } from '@vulcan-sql/build/schema-parser/middleware';
 
 export const schemaParserModule = (options: ISchemaParserOptions) =>
   new ContainerModule((bind) => {
@@ -33,4 +34,9 @@ export const schemaParserModule = (options: ISchemaParserOptions) =>
 
     // Schema parser
     bind<SchemaParser>(TYPES.SchemaParser).to(SchemaParser).inSingletonScope();
+
+    // Middleware
+    for (const middleware of SchemaParserMiddlewares) {
+      bind(TYPES.SchemaParserMiddleware).to(middleware);
+    }
   });

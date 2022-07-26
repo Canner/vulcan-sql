@@ -1,6 +1,10 @@
 import { FieldDataType } from '@vulcan-sql/core';
 import { DeepPartial } from 'ts-essentials';
-import { RawResponseProperty, SchemaParserMiddleware } from './middleware';
+import {
+  RawAPISchema,
+  RawResponseProperty,
+  SchemaParserMiddleware,
+} from './middleware';
 
 const generateResponsePropertyType = (
   property: DeepPartial<RawResponseProperty>
@@ -16,8 +20,8 @@ const generateResponsePropertyType = (
 
 // Fallback to string when type is not defined.
 // TODO: Guess the type by validators.
-export const generateDataType =
-  (): SchemaParserMiddleware => async (schemas, next) => {
+export class GenerateDataType extends SchemaParserMiddleware {
+  public async handle(schemas: RawAPISchema, next: () => Promise<void>) {
     await next();
     (schemas.request || []).forEach((request) => {
       if (!request.type) {
@@ -27,4 +31,5 @@ export const generateDataType =
     (schemas.response || []).forEach((property) =>
       generateResponsePropertyType(property)
     );
-  };
+  }
+}

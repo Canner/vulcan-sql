@@ -1,3 +1,5 @@
+import { Pagination } from '../../models/pagination';
+
 export interface TemplateLocation {
   lineNo: number;
   columnNo: number;
@@ -26,5 +28,9 @@ export interface Compiler {
    * @param template The path or identifier of a template source
    */
   compile(template: string): Promise<CompileResult>;
-  execute<T extends object>(template: string, data: T): Promise<any>;
+  execute<T extends object>(
+    templateName: string,
+    data: T,
+    pagination?: Pagination
+  ): Promise<any>;
 }

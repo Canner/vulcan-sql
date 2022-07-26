@@ -1,9 +1,9 @@
 import { FieldInType } from '@vulcan-sql/core';
-import { SchemaParserMiddleware } from './middleware';
+import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 
 // Add the "required" validator when the parameters are in path
-export const addRequiredValidatorForPath =
-  (): SchemaParserMiddleware => async (schemas, next) => {
+export class AddRequiredValidatorForPath extends SchemaParserMiddleware {
+  public async handle(schemas: RawAPISchema, next: () => Promise<void>) {
     await next();
     const requests = schemas.request || [];
     for (const request of requests) {
@@ -20,4 +20,5 @@ export const addRequiredValidatorForPath =
         });
       }
     }
-  };
+  }
+}

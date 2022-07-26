@@ -3,21 +3,24 @@
 import * as glob from 'glob';
 import * as path from 'path';
 import { promises as fs } from 'fs';
-import { APISchema, Constraint, IValidatorLoader } from '@vulcan-sql/core';
+import {
+  APISchema,
+  Constraint,
+  IValidatorLoader,
+  TemplateEngine,
+  TYPES as CORE_TYPES,
+} from '@vulcan-sql/core';
 import * as jsYaml from 'js-yaml';
 import { sortBy } from 'lodash';
-import { IBuildOptions } from '@vulcan-sql/build';
+import { IBuildOptions, TYPES } from '@vulcan-sql/build';
 import compose = require('koa-compose');
 import {
-  generateDataType,
-  normalizeDataType,
-  normalizeFieldIn,
-  setConstraints,
   RawAPISchema,
   SchemaParserMiddleware,
-  transformValidator,
+  SchemaParserMiddlewares,
 } from '@vulcan-sql/build/schema-parser/middleware';
 import * as sinon from 'ts-sinon';
+import { Container } from 'inversify';
 
 const getSchemaPaths = () =>
   new Promise<string[]>((resolve, reject) => {
@@ -95,14 +98,19 @@ export const getSchemas = async () => {
     schemas.push(jsYaml.load(content) as RawAPISchema);
   }
   const loader = getStubLoader();
-  // Load some required middleware
-  const execute = compose([
-    normalizeFieldIn(),
-    transformValidator(),
-    generateDataType(),
-    normalizeDataType(),
-    setConstraints(loader),
-  ] as SchemaParserMiddleware[]);
+  const templateEngine = sinon.stubInterface<TemplateEngine>();
+  const container = new Container();
+  container.bind(CORE_TYPES.ValidatorLoader).toConstantValue(loader);
+  container.bind(CORE_TYPES.TemplateEngine).toConstantValue(templateEngine);
+  SchemaParserMiddlewares.forEach((middleware) => {
+    container.bind(TYPES.SchemaParserMiddleware).to(middleware);
+  });
+
+  const execute = compose(
+    container
+      .getAll<SchemaParserMiddleware>(TYPES.SchemaParserMiddleware)
+      .map((middleware) => middleware.handle.bind(middleware))
+  );
   for (const schema of schemas) {
     await execute(schema);
   }

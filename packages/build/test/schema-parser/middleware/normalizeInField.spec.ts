@@ -1,5 +1,5 @@
 import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
-import { normalizeFieldIn } from '@vulcan-sql/build/schema-parser/middleware';
+import { NormalizeFieldIn } from '@vulcan-sql/build/schema-parser/middleware/normalizeFieldIn';
 import { FieldInType } from '@vulcan-sql/core';
 
 it('Should normalize in field', async () => {
@@ -13,8 +13,9 @@ it('Should normalize in field', async () => {
       },
     ],
   };
+  const normalizeFieldIn = new NormalizeFieldIn();
   // Act
-  await normalizeFieldIn()(schema, async () => Promise.resolve());
+  await normalizeFieldIn.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.request?.[0].fieldIn).toEqual(FieldInType.QUERY);
 });

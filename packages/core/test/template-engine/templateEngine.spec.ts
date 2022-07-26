@@ -2,6 +2,7 @@ import {
   TemplateEngine,
   Compiler,
   TemplateProvider,
+  ICodeLoader,
 } from '@vulcan-sql/core/template-engine';
 import * as sinon from 'ts-sinon';
 import { TYPES } from '@vulcan-sql/core/containers';
@@ -10,11 +11,13 @@ import { Container } from 'inversify';
 let container: Container;
 let stubCompiler: sinon.StubbedInstance<Compiler>;
 let stubTemplateProvider: sinon.StubbedInstance<TemplateProvider>;
+let stubCodeLoader: sinon.StubbedInstance<ICodeLoader>;
 
 beforeEach(() => {
   container = new Container();
   stubCompiler = sinon.stubInterface<Compiler>();
   stubTemplateProvider = sinon.stubInterface<TemplateProvider>();
+  stubCodeLoader = sinon.stubInterface<ICodeLoader>();
 
   container.bind(TYPES.Compiler).toConstantValue(stubCompiler);
   container
@@ -22,6 +25,7 @@ beforeEach(() => {
     .toConstantValue(() => stubTemplateProvider);
   container.bind(TYPES.TemplateEngine).to(TemplateEngine).inSingletonScope();
   container.bind(TYPES.TemplateEngineOptions).toConstantValue({});
+  container.bind(TYPES.CompilerLoader).toConstantValue(stubCodeLoader);
 
   stubCompiler.name = 'stub-compiler';
   stubCompiler.compile.resolves({
@@ -81,4 +85,15 @@ it('Template engine render function should forward correct data to compiler', as
   // Assert
   expect(stubCompiler.execute.calledWith('template-name', context)).toBe(true);
   expect(result).toBe('sql-result');
+});
+
+it('Template engine should load the compiled code after compiling', async () => {
+  // Assert
+  const templateEngine = container.get<TemplateEngine>(TYPES.TemplateEngine);
+
+  // Act
+  await templateEngine.compile();
+
+  // Assert
+  expect(stubCodeLoader.setSource.calledOnce).toBe(true);
 });

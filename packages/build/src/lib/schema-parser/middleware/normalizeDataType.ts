@@ -1,6 +1,10 @@
 import { FieldDataType } from '@vulcan-sql/core';
 import { DeepPartial } from 'ts-essentials';
-import { RawResponseProperty, SchemaParserMiddleware } from './middleware';
+import {
+  RawAPISchema,
+  RawResponseProperty,
+  SchemaParserMiddleware,
+} from './middleware';
 
 const normalizedResponsePropertyType = (
   property: DeepPartial<RawResponseProperty>
@@ -15,8 +19,8 @@ const normalizedResponsePropertyType = (
 };
 
 // type: string => FieldIn FieldDataType.STRING
-export const normalizeDataType =
-  (): SchemaParserMiddleware => async (schemas, next) => {
+export class NormalizeDataType extends SchemaParserMiddleware {
+  public async handle(schemas: RawAPISchema, next: () => Promise<void>) {
     // Request
     (schemas.request || []).forEach((request) => {
       if (request.type) {
@@ -29,4 +33,5 @@ export const normalizeDataType =
     );
 
     return next();
-  };
+  }
+}
