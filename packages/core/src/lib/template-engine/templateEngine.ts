@@ -33,7 +33,7 @@ export class TemplateEngine {
     const metadataResult: Record<string, TemplateMetadata> = {};
 
     for await (const template of this.templateProvider.getTemplates()) {
-      const { compiledData, metadata } = this.compiler.compile(
+      const { compiledData, metadata } = await this.compiler.compile(
         template.statement
       );
       templateResult[template.name] = compiledData;

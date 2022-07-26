@@ -9,12 +9,15 @@ export const importExtensions = async (folder: string) => {
   return extensions.default || [];
 };
 
-export const bindExtensions = async (bind: interfaces.Bind) => {
+export const bindExtensions = async (
+  bind: interfaces.Bind,
+  externalExtensionNames: string[]
+) => {
   const builtInExtensionNames = (
     await fs.readdir(path.join(__dirname, '..', 'built-in-extensions'))
   ).filter((name) => name !== 'index.ts');
 
-  const extensions = flatten(
+  const builtInExtensions = flatten(
     await Promise.all(
       builtInExtensionNames.map((name) =>
         importExtensions(
@@ -23,7 +26,14 @@ export const bindExtensions = async (bind: interfaces.Bind) => {
       )
     )
   );
-  extensions.forEach((extension) => {
+
+  const externalExtensions = flatten(
+    await Promise.all(
+      externalExtensionNames.map((name) => importExtensions(name))
+    )
+  );
+
+  [...builtInExtensions, ...externalExtensions].forEach((extension) => {
     bind(TYPES.CompilerExtension).to(extension).inSingletonScope();
   });
 };

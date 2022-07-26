@@ -3,7 +3,7 @@ import { createTestCompiler } from '../../testCompiler';
 it('Extension should call the .value() function of builder', async () => {
   // Arrange
   const { compiler, loader, executor, builder } = await createTestCompiler();
-  const { compiledData } = compiler.compile(
+  const { compiledData } = await compiler.compile(
     `
 {% req user %}
 select * from users;
@@ -25,7 +25,7 @@ select * from group where userId = '{{ user.count(3).value()[0].id }}';
 it('Extension should throw an error if the main builder failed to execute', async () => {
   // Arrange
   const { compiler, loader, builder } = await createTestCompiler();
-  const { compiledData } = compiler.compile(
+  const { compiledData } = await compiler.compile(
     `
 {% req user main %}
 select * from users;
@@ -43,7 +43,7 @@ select * from users;
 it('Extension should throw an error if one of sub builders failed to execute', async () => {
   // Arrange
   const { compiler, loader, builder } = await createTestCompiler();
-  const { compiledData } = compiler.compile(
+  const { compiledData } = await compiler.compile(
     `
 {% req user %}
 select * from users;

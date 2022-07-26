@@ -1,0 +1,88 @@
+{
+  "metadata": {
+    "dbt_schema_version": "https://schemas.getdbt.com/dbt/manifest/v5.json",
+    "dbt_version": "1.1.1",
+    "generated_at": "2022-07-12T07:47:33.417841Z",
+    "invocation_id": "af4268fd-5f60-476d-8f46-84f854a69a5e",
+    "env": {},
+    "project_id": "098f6bcd4621d373cade4e832627b4f6",
+    "user_id": "be60f8f6-faff-4532-894f-8850b8c6f137",
+    "send_anonymous_usage_stats": true,
+    "adapter_type": "postgres"
+  },
+  "nodes": {
+    "model.test.5_model_from_artifact_2": {
+      "raw_sql": "{{ config(materialized='table') }}\n\nwith source_data as (\n    select 1 as id, 'Ivan' as name, 18 as age\n\tUNION\n    select 2 as id, 'William' as name, 80 as age\n    UNION\n    select 3 as id, 'Eason' as name, 18 as age\n)\n\nselect * from source_data",
+      "compiled": true,
+      "resource_type": "model",
+      "depends_on": {
+        "macros": [
+          "macro.dbt.drop_relation_if_exists",
+          "macro.dbt.run_hooks",
+          "macro.dbt.statement",
+          "macro.dbt.create_indexes",
+          "macro.dbt.persist_docs"
+        ],
+        "nodes": []
+      },
+      "config": {
+        "enabled": true,
+        "alias": null,
+        "schema": null,
+        "database": null,
+        "tags": [],
+        "meta": {},
+        "materialized": "table",
+        "persist_docs": {},
+        "quoting": {},
+        "column_types": {},
+        "full_refresh": null,
+        "unique_key": null,
+        "on_schema_change": "ignore",
+        "post-hook": [],
+        "pre-hook": []
+      },
+      "database": "postgres",
+      "schema": "public",
+      "fqn": ["test", "example", "1_table"],
+      "unique_id": "model.test.1_table",
+      "package_name": "test",
+      "root_path": "/home/goofy/projects/dbt/test",
+      "path": "example/1_table.sql",
+      "original_file_path": "models/example/1_table.sql",
+      "name": "1_table",
+      "alias": "1_table",
+      "checksum": {
+        "name": "sha256",
+        "checksum": "ba09077b9c90a2ca14dff277b3eb59400f51289121490ed51658ade7d66061ba"
+      },
+      "tags": [],
+      "refs": [],
+      "sources": [],
+      "description": "A starter dbt model",
+      "columns": {
+        "id": {
+          "name": "id",
+          "description": "The primary key for this table",
+          "meta": {},
+          "data_type": null,
+          "quote": null,
+          "tags": []
+        }
+      },
+      "meta": {},
+      "docs": { "show": true },
+      "patch_path": "test://models/example/schema.yml",
+      "compiled_path": "target/compiled/test/models/example/1_table.sql",
+      "build_path": "target/run/test/models/example/1_table.sql",
+      "deferred": false,
+      "unrendered_config": { "materialized": "table" },
+      "created_at": 1657612053.469682,
+      "compiled_sql": "\n\nwith source_data as (\n    select 1 as id, 'Ivan' as name, 18 as age\n\tUNION\n    select 2 as id, 'William' as name, 80 as age\n    UNION\n    select 3 as id, 'Eason' as name, 18 as age\n)\n\nselect * from source_data",
+      "extra_ctes_injected": true,
+      "extra_ctes": [],
+      "relation_name": "\"postgres\".\"public\".\"1_table\""
+    }
+  },
+  "sources": {}
+}

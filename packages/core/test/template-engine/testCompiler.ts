@@ -9,7 +9,11 @@ import * as sinon from 'ts-sinon';
 import * as nunjucks from 'nunjucks';
 import { IDataQueryBuilder, IExecutor } from '@vulcan-sql/core/data-query';
 
-export const createTestCompiler = async () => {
+export const createTestCompiler = async ({
+  extensionNames = [],
+}: {
+  extensionNames?: string[];
+} = {}) => {
   const container = new Container();
   const stubQueryBuilder = sinon.stubInterface<IDataQueryBuilder>();
   stubQueryBuilder.count.returns(stubQueryBuilder);
@@ -20,7 +24,7 @@ export const createTestCompiler = async () => {
     .bind(TYPES.CompilerLoader)
     .to(InMemoryCodeLoader)
     .inSingletonScope();
-  await bindExtensions(container.bind.bind(container));
+  await bindExtensions(container.bind.bind(container), extensionNames);
   container.bind<IExecutor>(TYPES.Executor).toConstantValue(stubExecutor);
 
   container.bind(TYPES.Compiler).to(NunjucksCompiler).inSingletonScope();

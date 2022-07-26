@@ -1,0 +1,32 @@
+{
+  "root": "packages/extension-dbt",
+  "sourceRoot": "packages/extension-dbt/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/extension-dbt",
+        "main": "packages/extension-dbt/src/index.ts",
+        "tsConfig": "packages/extension-dbt/tsconfig.lib.json",
+        "assets": ["packages/extension-dbt/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/extension-dbt/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/extension-dbt"],
+      "options": {
+        "jestConfig": "packages/extension-dbt/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

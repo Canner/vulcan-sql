@@ -3,7 +3,7 @@ import { createTestCompiler } from '../../testCompiler';
 it('Extension should return correct values without unique by argument', async () => {
   // Arrange
   const { compiler, loader, executor } = await createTestCompiler();
-  const { compiledData } = compiler.compile(
+  const { compiledData } = await compiler.compile(
     `
 {% set array = [1,2,3,4,4] %}
 {% for item in array | unique %}
@@ -21,7 +21,7 @@ it('Extension should return correct values without unique by argument', async ()
 it('Extension should return correct values with unique by keyword argument', async () => {
   // Arrange
   const { compiler, loader, executor } = await createTestCompiler();
-  const { compiledData } = compiler.compile(
+  const { compiledData } = await compiler.compile(
     `
 {% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
 {% for item in array | unique(by="name") %}
@@ -39,7 +39,7 @@ it('Extension should return correct values with unique by keyword argument', asy
 it('Extension should return correct values with unique by argument', async () => {
   // Arrange
   const { compiler, loader, executor } = await createTestCompiler();
-  const { compiledData } = compiler.compile(
+  const { compiledData } = await compiler.compile(
     `
 {% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
 {% for item in array | unique("name") %}

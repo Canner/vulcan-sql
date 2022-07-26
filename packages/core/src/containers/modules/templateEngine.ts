@@ -17,7 +17,10 @@ import * as nunjucks from 'nunjucks';
 // TODO: fix the path
 import { bindExtensions } from '@vulcan-sql/core/template-engine/extension-loader';
 
-export const templateEngineModule = (options: ITemplateEngineOptions) =>
+export const templateEngineModule = (
+  options: ITemplateEngineOptions,
+  extensions: string[]
+) =>
   new AsyncContainerModule(async (bind) => {
     // Options
     bind<ITemplateEngineOptions>(
@@ -69,5 +72,5 @@ export const templateEngineModule = (options: ITemplateEngineOptions) =>
       .inSingletonScope();
 
     // Load Extensions
-    await bindExtensions(bind);
+    await bindExtensions(bind, extensions);
   });

@@ -4,7 +4,7 @@ it('Extension should return correct parameter list', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
   // Act
-  const { metadata } = compiler.compile(`
+  const { metadata } = await compiler.compile(`
 {{ params.a }}{{ params.a.b }}{{ other.params.a }}
 {% if params.c and params.d.e %}
   {{ params.f.g | capitalize }}

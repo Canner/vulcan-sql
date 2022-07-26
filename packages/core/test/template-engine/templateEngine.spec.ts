@@ -24,7 +24,7 @@ beforeEach(() => {
   container.bind(TYPES.TemplateEngineOptions).toConstantValue({});
 
   stubCompiler.name = 'stub-compiler';
-  stubCompiler.compile.returns({
+  stubCompiler.compile.resolves({
     compiledData: 'compiled-template',
     metadata: {
       parameters: [],

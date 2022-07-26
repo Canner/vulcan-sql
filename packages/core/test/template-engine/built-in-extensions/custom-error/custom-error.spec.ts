@@ -3,7 +3,7 @@ import { createTestCompiler } from '../../testCompiler';
 it('Extension should throw custom error with error code and the position while executing', async () => {
   // Arrange
   const { compiler, loader } = await createTestCompiler();
-  const { compiledData } = compiler.compile(`
+  const { compiledData } = await compiler.compile(`
 {% error "This is an error" %}
   `);
   // Action, Assert
@@ -17,7 +17,7 @@ it('Extension should provide a correct error list', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
   // Act
-  const { metadata } = compiler.compile(`
+  const { metadata } = await compiler.compile(`
 {% error "ERROR_CODE" %}
 {% error "ERROR_CODE_2" %}
 {% error "ERROR_CODE_2" %}
@@ -53,9 +53,9 @@ it('If the arguments of the extension are not the same as expected, the extensio
   // Arrange
   const { compiler } = await createTestCompiler();
   // Act, Assert
-  expect(() =>
+  await expect(
     compiler.compile(`
   {% error QAQ %}
     `)
-  ).toThrow(`Expected literal, got Symbol`);
+  ).rejects.toThrow(`Expected literal, got Symbol`);
 });
