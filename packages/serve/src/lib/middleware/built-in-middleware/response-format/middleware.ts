@@ -1,7 +1,12 @@
 import { AppConfig } from '@vulcan-sql/serve/models';
-import { KoaRouterContext } from '@vulcan-sql/serve/route';
-import { BuiltInMiddleware, RouteMiddlewareNext } from '../../middleware';
-import { checkUsableFormat, loadUsableFormatters } from './helpers';
+import { KoaRouterContext, KoaNext } from '@vulcan-sql/serve/route';
+import { BuiltInMiddleware } from '../../middleware';
+import { checkUsableFormat } from './helpers';
+import { importExtensions, loadComponents } from '@vulcan-sql/serve/loader';
+import {
+  BaseResponseFormatter,
+  BuiltInFormatters,
+} from '@vulcan-sql/serve/response-formatter';
 
 export type ResponseFormatOptions = {
   formats: string[];
@@ -21,11 +26,19 @@ export class ResponseFormatMiddleware extends BuiltInMiddleware {
     this.supportedFormats = formats.map((format) => format.toLowerCase());
     this.defaultFormat = !options.default ? 'json' : options.default;
   }
-  public async handle(context: KoaRouterContext, next: RouteMiddlewareNext) {
+  public async handle(context: KoaRouterContext, next: KoaNext) {
     // return to skip the middleware, if disabled
     if (!this.enabled) return next();
 
-    const formatters = await loadUsableFormatters(this.config.extensions);
+    const classesOfExtension = await importExtensions(
+      'response-formatter',
+      this.config.extensions
+    );
+    const formatters = await loadComponents<BaseResponseFormatter>([
+      ...BuiltInFormatters,
+      ...classesOfExtension,
+    ]);
+
     // get supported and request format to use.
     const format = checkUsableFormat({
       context,

@@ -1,4 +1,4 @@
-import { APISchema, ClassType } from '@vulcan-sql/core';
+import { APISchema } from '@vulcan-sql/core';
 import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
 import { isEmpty, uniq } from 'lodash';
@@ -11,7 +11,7 @@ import {
   RouteGenerator,
 } from './route';
 import { AppConfig } from '../models';
-import { loadExtensions } from './loader';
+import { importExtensions, loadComponents } from './loader';
 
 export class VulcanApplication {
   private app: Koa;
@@ -75,31 +75,17 @@ export class VulcanApplication {
     this.app.use(this.restfulRouter.allowedMethods());
   }
 
-  public async buildMiddleware() {
-    // load built-in middleware
-    for (const middleware of BuiltInRouteMiddlewares) {
-      await this.use(middleware);
-    }
-
-    // load extension middleware
-    const extensions = await loadExtensions(
+  /** load built-in and extensions middleware classes for app used */
+  public async useMiddleware() {
+    // import extension middleware classes
+    const classesOfExtension = await importExtensions(
       'middlewares',
       this.config.extensions
     );
-    await this.use(...extensions);
-  }
-  /** add middleware classes for app used */
-  private async use(...classes: ClassType<BaseRouteMiddleware>[]) {
-    const map: { [name: string]: BaseRouteMiddleware } = {};
-    for (const cls of classes) {
-      const middleware = new cls(this.config);
-      if (middleware.name in map) {
-        throw new Error(
-          `The identifier name "${middleware.name}" of middleware class ${cls.name} has been defined in other extensions`
-        );
-      }
-      map[middleware.name] = middleware;
-    }
+    const map = await loadComponents<BaseRouteMiddleware>(
+      [...BuiltInRouteMiddlewares, ...classesOfExtension],
+      this.config
+    );
     for (const name of Object.keys(map)) {
       const middleware = map[name];
       this.app.use(middleware.handle.bind(middleware));

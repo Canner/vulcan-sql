@@ -1,7 +1,6 @@
 import * as path from 'path';
 import * as sinon from 'ts-sinon';
-import { loadExtensions } from '@vulcan-sql/serve/loader';
-import { BuiltInRouteMiddlewares } from '@vulcan-sql/serve/middleware/built-in-middleware';
+import { importExtensions } from '@vulcan-sql/serve/loader';
 import { BaseRouteMiddleware } from '@vulcan-sql/serve/middleware';
 import { TestModeMiddleware } from './test-custom-middlewares';
 import { ClassType } from '@vulcan-sql/core';
@@ -17,7 +16,7 @@ describe('Test middleware loader', () => {
     } as AppConfig;
 
     // Act
-    const actual = await loadExtensions('middlewares', config.extensions);
+    const actual = await importExtensions('middlewares', config.extensions);
     // Assert
     expect(actual).toEqual(expect.arrayContaining(expected));
   });
@@ -33,7 +32,7 @@ describe('Test middleware loader', () => {
     } as AppConfig;
 
     // Act
-    const actual = await loadExtensions('middlewares', config.extensions);
+    const actual = await importExtensions('middlewares', config.extensions);
     // Assert
     expect(actual).not.toEqual(expect.arrayContaining(expected));
   });

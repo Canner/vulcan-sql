@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 import * as cors from '@koa/cors';
-import { KoaRouterContext } from '@vulcan-sql/serve/route';
-import { BuiltInMiddleware, RouteMiddlewareNext } from '../middleware';
+import { KoaRouterContext, KoaNext } from '@vulcan-sql/serve/route';
+import { BuiltInMiddleware } from '../middleware';
 import { AppConfig } from '@vulcan-sql/serve/models';
 
 export type CorsOptions = cors.Options;
@@ -14,7 +14,7 @@ export class CorsMiddleware extends BuiltInMiddleware {
     const options = this.getOptions() as CorsOptions;
     this.koaCors = cors(options);
   }
-  public async handle(context: KoaRouterContext, next: RouteMiddlewareNext) {
+  public async handle(context: KoaRouterContext, next: KoaNext) {
     if (!this.enabled) return next();
     return this.koaCors(context, next);
   }

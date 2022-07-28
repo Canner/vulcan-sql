@@ -1,10 +1,5 @@
-import { ClassType, SourceOfExtensions } from '@vulcan-sql/core';
-import { loadExtensions } from '@vulcan-sql/serve/loader';
 import { KoaRouterContext } from '@vulcan-sql/serve/route';
-import {
-  BaseResponseFormatter,
-  BuiltInFormatters,
-} from '@vulcan-sql/serve/response-formatter';
+import { BaseResponseFormatter } from '@vulcan-sql/serve/response-formatter';
 
 export type ResponseFormatterMap = {
   [name: string]: BaseResponseFormatter;
@@ -52,26 +47,4 @@ export const checkUsableFormat = ({
     throw new Error(`Not find implemented formatters named ${defaultFormat}`);
 
   return defaultFormat;
-};
-
-/**
- * load all usable formatter classes from built-in and extension to initialized
- * @param extensions
- * @returns formatter
- */
-export const loadUsableFormatters = async (
-  extensions?: SourceOfExtensions
-): Promise<ResponseFormatterMap> => {
-  const formatters: { [name: string]: BaseResponseFormatter } = {};
-  let classes: ClassType<BaseResponseFormatter>[] = [...BuiltInFormatters];
-  // the extensions response formatters
-  if (extensions) {
-    const extClasses = await loadExtensions('response-formatter', extensions);
-    classes = [...classes, ...extClasses];
-  }
-  for (const cls of classes) {
-    const formatter = new cls();
-    formatters[formatter.name.toLowerCase()] = formatter;
-  }
-  return formatters;
 };

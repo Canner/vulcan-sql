@@ -3,21 +3,27 @@ import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
 import {
   checkUsableFormat,
-  loadUsableFormatters,
   isReceivedFormatRequest,
   ResponseFormatterMap,
 } from '@vulcan-sql/serve/middleware';
 import * as responseHelpers from '@vulcan-sql/serve/middleware/built-in-middleware/response-format/helpers';
 import {
   BaseResponseFormatter,
+  BuiltInFormatters,
   CsvFormatter,
   JsonFormatter,
+  loadComponents,
 } from '@vulcan-sql/serve/response-formatter';
 import { KoaRouterContext } from '@vulcan-sql/serve';
+import { importExtensions } from '@vulcan-sql/serve/loader';
 
 it('Test to get built-in formatters when call load usable formatters with no extensions', async () => {
   // Act
-  const result = await loadUsableFormatters();
+  const classesOfExtension = await importExtensions('response-formatter');
+  const result = await loadComponents([
+    ...BuiltInFormatters,
+    ...classesOfExtension,
+  ]);
   // Assert
   expect(result).toEqual({
     csv: new CsvFormatter(),

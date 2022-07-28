@@ -26,7 +26,7 @@ export class VulcanServer {
 
     // Create application
     const app = new VulcanApplication(omit(this.config, 'template'), generator);
-    await app.buildMiddleware();
+    await app.useMiddleware();
     await app.buildRoutes(this.schemas, this.config.types);
     // Run server
     this.server = http.createServer(app.getHandler()).listen(port);

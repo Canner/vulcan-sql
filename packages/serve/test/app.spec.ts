@@ -69,7 +69,7 @@ describe('Test vulcan server for practicing middleware', () => {
       },
       container.get<RouteGenerator>(TYPES.RouteGenerator)
     );
-    await app.buildMiddleware();
+    await app.useMiddleware();
     await app.buildRoutes([fakeSchema], [APIProviderType.RESTFUL]);
     const server = http
       .createServer(app.getHandler())
@@ -278,7 +278,7 @@ describe('Test vulcan server for calling restful APIs', () => {
         },
         container.get<RouteGenerator>(TYPES.RouteGenerator)
       );
-      await app.buildMiddleware();
+      await app.useMiddleware();
       await app.buildRoutes([schema], [APIProviderType.RESTFUL]);
       const server = http
         .createServer(app.getHandler())

@@ -7,6 +7,7 @@ import {
   SourceOfExtensions,
 } from '@vulcan-sql/core';
 import { BaseRouteMiddleware } from './middleware';
+import { AppConfig } from '../models';
 // The extension module interface
 export interface ExtensionModule extends ModuleProperties {
   ['middlewares']: ClassType<BaseRouteMiddleware>[];
@@ -15,7 +16,7 @@ export interface ExtensionModule extends ModuleProperties {
 
 type ExtensionName = 'middlewares' | 'response-formatter';
 
-export const loadExtensions = async (
+export const importExtensions = async (
   name: ExtensionName,
   extensions?: SourceOfExtensions
 ) => {
@@ -28,4 +29,27 @@ export const loadExtensions = async (
     return module[name] || [];
   }
   return [];
+};
+
+/**
+ * load components which inherit supper vulcan component class, may contains built-in or extensions
+ * @param classesOfComponent the classes of component which inherit supper vulcan component class
+ * @returns the created instance
+ */
+export const loadComponents = async <T extends { name: string }>(
+  classesOfComponent: ClassType<T>[],
+  config?: AppConfig
+): Promise<{ [name: string]: T }> => {
+  const map: { [name: string]: T } = {};
+  // create each extension
+  for (const cls of classesOfComponent) {
+    const component = new cls(config) as T;
+    if (component.name in map) {
+      throw new Error(
+        `The identifier name "${component.name}" of component class ${cls.name} has been defined in other extensions`
+      );
+    }
+    map[component.name] = component;
+  }
+  return map;
 };

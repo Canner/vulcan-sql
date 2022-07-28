@@ -1,13 +1,6 @@
-import {
-  AppConfig,
-  BuiltInOptions,
-  MiddlewareConfig,
-} from '@vulcan-sql/serve/models';
-import { KoaRouterContext } from '@vulcan-sql/serve/route';
-import { Next } from 'koa';
-import { isEmpty, isUndefined } from 'lodash';
-
-export type RouteMiddlewareNext = Next;
+import { AppConfig, BuiltInOptions } from '@vulcan-sql/serve/models';
+import { KoaRouterContext, KoaNext } from '@vulcan-sql/serve/route';
+import { isUndefined } from 'lodash';
 
 export abstract class BaseRouteMiddleware {
   protected config: AppConfig;
@@ -19,7 +12,7 @@ export abstract class BaseRouteMiddleware {
   }
   public abstract handle(
     context: KoaRouterContext,
-    next: RouteMiddlewareNext
+    next: KoaNext
   ): Promise<void>;
 
   protected getConfig() {

@@ -1,6 +1,6 @@
 import * as sinon from 'ts-sinon';
 import { ResponseFormatMiddleware } from '@vulcan-sql/serve/middleware';
-import * as responseHelpers from '@vulcan-sql/serve/middleware/built-in-middleware/response-format/helpers';
+import * as loader from '@vulcan-sql/serve/loader';
 import { KoaRouterContext, MiddlewareConfig } from '@vulcan-sql/serve';
 
 describe('Test format response middleware', () => {
@@ -22,7 +22,7 @@ describe('Test format response middleware', () => {
       } as MiddlewareConfig,
     });
     // spy the async function to do test
-    const spy = jest.spyOn(responseHelpers, 'loadUsableFormatters');
+    const spy = jest.spyOn(loader, 'importExtensions');
 
     await middleware.handle(ctx, async () => Promise.resolve());
 
