@@ -7,6 +7,7 @@ import {
   RateLimitMiddleware,
   RateLimitOptions,
 } from '@vulcan-sql/serve/middleware';
+import { MiddlewareConfig } from '@vulcan-sql/serve';
 
 // Should use koa app and supertest for testing, because it will call koa context method in ratelimit middleware.
 describe('Test rate limit middlewares', () => {
@@ -15,12 +16,14 @@ describe('Test rate limit middlewares', () => {
     const app = new Koa();
     const router = new KoaRouter();
     const middleware = new RateLimitMiddleware({
-      'rate-limit': {
-        options: {
-          max: 2,
-          interval: 2000,
-        } as RateLimitOptions,
-      },
+      middlewares: {
+        'rate-limit': {
+          options: {
+            max: 2,
+            interval: 2000,
+          } as RateLimitOptions,
+        },
+      } as MiddlewareConfig,
     });
     // use middleware in koa app
     app.use(middleware.handle.bind(middleware));

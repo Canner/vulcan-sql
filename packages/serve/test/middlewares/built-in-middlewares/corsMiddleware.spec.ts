@@ -3,6 +3,7 @@ import * as Koa from 'koa';
 import * as supertest from 'supertest';
 import { CorsOptions, CorsMiddleware } from '@vulcan-sql/serve/middleware';
 import { Server } from 'http';
+import { MiddlewareConfig } from '@vulcan-sql/serve';
 
 describe('Test cors middlewares', () => {
   let server: Server;
@@ -12,10 +13,12 @@ describe('Test cors middlewares', () => {
     const app = new Koa();
 
     const middleware = new CorsMiddleware({
-      cors: {
-        options: {
-          origin: domain,
-        } as CorsOptions,
+      middlewares: {
+        cors: {
+          options: {
+            origin: domain,
+          } as CorsOptions,
+        } as MiddlewareConfig,
       },
     });
     // use middleware in koa app

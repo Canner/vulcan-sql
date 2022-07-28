@@ -10,6 +10,7 @@ import {
   RequestIdOptions,
 } from '@vulcan-sql/serve/middleware';
 import * as uuid from 'uuid';
+import { MiddlewareConfig } from '@vulcan-sql/serve';
 
 describe('Test request-id middlewares', () => {
   afterEach(() => {
@@ -58,12 +59,14 @@ describe('Test request-id middlewares', () => {
     };
     // Act
     const middleware = new RequestIdMiddleware({
-      'request-id': {
-        options: {
-          name: 'Test-Request-ID',
-          fieldIn: FieldInType.QUERY,
-        } as RequestIdOptions,
-      },
+      middlewares: {
+        'request-id': {
+          options: {
+            name: 'Test-Request-ID',
+            fieldIn: FieldInType.QUERY,
+          } as RequestIdOptions,
+        },
+      } as MiddlewareConfig,
     });
 
     // spy the asyncReqIdStorage behavior
@@ -88,11 +91,13 @@ describe('Test request-id middlewares', () => {
     };
     // Act
     const middleware = new RequestIdMiddleware({
-      'request-id': {
-        options: {
-          fieldIn: FieldInType.QUERY,
-        } as RequestIdOptions,
-      },
+      middlewares: {
+        'request-id': {
+          options: {
+            fieldIn: FieldInType.QUERY,
+          } as RequestIdOptions,
+        },
+      } as MiddlewareConfig,
     });
 
     // spy the asyncReqIdStorage behavior
