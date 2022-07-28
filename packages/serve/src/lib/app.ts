@@ -2,16 +2,7 @@ import { APISchema, ClassType } from '@vulcan-sql/core';
 import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
 import { isEmpty, uniq } from 'lodash';
-import {
-  AuditLoggingMiddleware,
-  BaseRouteMiddleware,
-  CorsMiddleware,
-  RequestIdMiddleware,
-  loadExtensions,
-  RateLimitMiddleware,
-  JsonResponseMiddleware,
-  CsvResponseMiddleware,
-} from './middleware';
+import { BaseRouteMiddleware, BuiltInRouteMiddlewares } from './middleware';
 import {
   RestfulRoute,
   BaseRoute,
@@ -20,6 +11,7 @@ import {
   RouteGenerator,
 } from './route';
 import { AppConfig } from '../models';
+import { loadExtensions } from './loader';
 
 export class VulcanApplication {
   private app: Koa;
@@ -85,22 +77,22 @@ export class VulcanApplication {
 
   public async buildMiddleware() {
     // load built-in middleware
-    await this.use(CorsMiddleware);
-    await this.use(RateLimitMiddleware);
-    await this.use(RequestIdMiddleware);
-    await this.use(AuditLoggingMiddleware);
-    await this.use(JsonResponseMiddleware);
-    await this.use(CsvResponseMiddleware);
+    for (const middleware of BuiltInRouteMiddlewares) {
+      await this.use(middleware);
+    }
 
     // load extension middleware
-    const extensions = await loadExtensions(this.config.extensions);
+    const extensions = await loadExtensions(
+      'middlewares',
+      this.config.extensions
+    );
     await this.use(...extensions);
   }
   /** add middleware classes for app used */
   private async use(...classes: ClassType<BaseRouteMiddleware>[]) {
     const map: { [name: string]: BaseRouteMiddleware } = {};
     for (const cls of classes) {
-      const middleware = new cls(this.config.middlewares);
+      const middleware = new cls(this.config);
       if (middleware.name in map) {
         throw new Error(
           `The identifier name "${middleware.name}" of middleware class ${cls.name} has been defined in other extensions`
