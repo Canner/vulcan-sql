@@ -5,7 +5,6 @@ import faker from '@faker-js/faker';
 import { Request } from 'koa';
 import * as KoaRouter from 'koa-router';
 import * as http from 'http';
-import { VulcanApplication } from '@vulcan-sql/serve/app';
 import {
   APISchema,
   FieldDataType,
@@ -21,12 +20,13 @@ import {
 import {
   RouteGenerator,
   APIProviderType,
-  KoaRouterContext,
   RequestParameters,
   RequestTransformer,
   RequestValidator,
   PaginationTransformer,
 } from '@vulcan-sql/serve/route';
+import { VulcanApplication } from '@vulcan-sql/serve/app';
+import { KoaContext } from '@vulcan-sql/serve/models';
 import { Container } from 'inversify';
 import { extensionModule } from '../src/containers/modules';
 import { TYPES } from '@vulcan-sql/serve';
@@ -212,16 +212,16 @@ describe('Test vulcan server for calling restful APIs', () => {
     },
   ];
 
-  const fakeKoaContexts: Array<KoaRouterContext> = [
+  const fakeKoaContexts: Array<KoaContext> = [
     {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       params: {
         id: faker.datatype.number().toString(),
         uuid: faker.datatype.uuid(),
       },
     },
     {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       params: {
         uuid: faker.datatype.uuid(),
       },
@@ -233,7 +233,7 @@ describe('Test vulcan server for calling restful APIs', () => {
       },
     },
     {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       request: {
         ...sinon.stubInterface<Request>(),
         header: {
@@ -245,7 +245,7 @@ describe('Test vulcan server for calling restful APIs', () => {
       },
     },
     {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       request: {
         ...sinon.stubInterface<Request>(),
         query: {
@@ -306,7 +306,7 @@ describe('Test vulcan server for calling restful APIs', () => {
     ['query parameters', fakeSchemas[3], fakeKoaContexts[3]],
   ])(
     'Should be correct when given validated koa context request from %p',
-    async (_: string, schema: APISchema, ctx: KoaRouterContext) => {
+    async (_: string, schema: APISchema, ctx: KoaContext) => {
       // Arrange, close response format middlewares to make expected work.
       const app = container.get<VulcanApplication>(TYPES.VulcanApplication);
       await app.useMiddleware();

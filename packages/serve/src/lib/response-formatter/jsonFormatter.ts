@@ -9,7 +9,7 @@ import {
   toBuffer,
 } from '../../models/extensions/responseFormatter';
 import { isUndefined } from 'lodash';
-import { KoaRouterContext } from '../route';
+import { KoaContext } from '@vulcan-sql/serve/models';
 
 const logger = getLogger({ scopeName: 'SERVE' });
 
@@ -76,7 +76,7 @@ export class JsonFormatter extends BaseResponseFormatter {
 
   public toResponse(
     stream: Stream.Readable | Stream.Transform,
-    ctx: KoaRouterContext
+    ctx: KoaContext
   ) {
     // set json stream to response in context ( data is json stream, no need to convert. )
     ctx.response.body = stream;

@@ -1,5 +1,5 @@
-import { KoaRouterContext } from '@vulcan-sql/serve/route';
+import { KoaContext } from '@vulcan-sql/serve/models';
 
 export abstract class PaginationStrategy<T> {
-  public abstract transform(ctx: KoaRouterContext): Promise<T>;
+  public abstract transform(ctx: KoaContext): Promise<T>;
 }

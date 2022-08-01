@@ -3,8 +3,7 @@ import {
   LoggerOptions,
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
-import { BuiltInMiddleware } from '@vulcan-sql/serve/models';
-import { KoaRouterContext, KoaNext } from '@vulcan-sql/serve/route';
+import { BuiltInMiddleware, KoaContext, Next } from '@vulcan-sql/serve/models';
 
 @VulcanInternalExtension('audit-log')
 export class AuditLoggingMiddleware extends BuiltInMiddleware<LoggerOptions> {
@@ -13,7 +12,7 @@ export class AuditLoggingMiddleware extends BuiltInMiddleware<LoggerOptions> {
     options: this.getOptions(),
   });
 
-  public async handle(context: KoaRouterContext, next: KoaNext) {
+  public async handle(context: KoaContext, next: Next) {
     if (!this.enabled) return next();
 
     const { path, request, params, response } = context;

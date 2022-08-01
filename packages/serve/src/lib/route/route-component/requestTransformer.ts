@@ -7,29 +7,26 @@ import {
 } from '@vulcan-sql/core';
 import { injectable } from 'inversify';
 import { assign } from 'lodash';
-import { KoaRouterContext } from './baseRoute';
+import { KoaContext } from '@vulcan-sql/serve/models';
 
 export interface RequestParameters {
   [name: string]: any;
 }
 
 export interface IRequestTransformer {
-  transform(
-    ctx: KoaRouterContext,
-    apiSchema: APISchema
-  ): Promise<RequestParameters>;
+  transform(ctx: KoaContext, apiSchema: APISchema): Promise<RequestParameters>;
 }
 
 @injectable()
 export class RequestTransformer implements IRequestTransformer {
   public static readonly fieldInMapper: {
-    [type in FieldInType]: (ctx: KoaRouterContext, fieldName: string) => string;
+    [type in FieldInType]: (ctx: KoaContext, fieldName: string) => string;
   } = {
-    [FieldInType.HEADER]: (ctx: KoaRouterContext, fieldName: string) =>
+    [FieldInType.HEADER]: (ctx: KoaContext, fieldName: string) =>
       ctx.request.header[fieldName] as string,
-    [FieldInType.QUERY]: (ctx: KoaRouterContext, fieldName: string) =>
+    [FieldInType.QUERY]: (ctx: KoaContext, fieldName: string) =>
       ctx.request.query[fieldName] as string,
-    [FieldInType.PATH]: (ctx: KoaRouterContext, fieldName: string) =>
+    [FieldInType.PATH]: (ctx: KoaContext, fieldName: string) =>
       ctx.params[fieldName] as string,
   };
 
@@ -45,7 +42,7 @@ export class RequestTransformer implements IRequestTransformer {
   };
 
   public async transform(
-    ctx: KoaRouterContext,
+    ctx: KoaContext,
     apiSchema: APISchema
   ): Promise<RequestParameters> {
     const paramList = await Promise.all(

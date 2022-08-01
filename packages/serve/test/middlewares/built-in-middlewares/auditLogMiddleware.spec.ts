@@ -3,7 +3,7 @@ import * as sinon from 'ts-sinon';
 import { Request, Response } from 'koa';
 import { IncomingHttpHeaders } from 'http';
 import { ParsedUrlQuery } from 'querystring';
-import { KoaRouterContext } from '@vulcan-sql/serve/route';
+import { KoaContext } from '@vulcan-sql/serve/models';
 import * as core from '@vulcan-sql/core';
 import * as uuid from 'uuid';
 import {
@@ -17,8 +17,8 @@ describe('Test audit logging middlewares', () => {
   });
   it('Should log correct info when when option is default and pass correct koa context', async () => {
     // Arrange
-    const ctx: KoaRouterContext = {
-      ...sinon.stubInterface<KoaRouterContext>(),
+    const ctx: KoaContext = {
+      ...sinon.stubInterface<KoaContext>(),
       path: faker.internet.url(),
       params: {
         uuid: faker.datatype.uuid(),
@@ -64,8 +64,8 @@ describe('Test audit logging middlewares', () => {
 
   it('Should log correct info when when option "displayRequestId: true" and pass correct koa context', async () => {
     // Arrange
-    const ctx: KoaRouterContext = {
-      ...sinon.stubInterface<KoaRouterContext>(),
+    const ctx: KoaContext = {
+      ...sinon.stubInterface<KoaContext>(),
       path: faker.internet.url(),
       params: {
         uuid: faker.datatype.uuid(),

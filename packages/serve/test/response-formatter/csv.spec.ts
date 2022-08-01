@@ -6,7 +6,7 @@ import {
   arrStringToCsvString,
   CsvFormatter,
 } from '@vulcan-sql/serve/response-formatter';
-import { KoaRouterContext } from '@vulcan-sql/serve';
+import { KoaContext } from '@vulcan-sql/serve';
 import { arrayToStream, streamToString } from '../test-utils';
 
 describe('Test array string to csv string', () => {
@@ -33,7 +33,7 @@ describe('Test to respond to csv', () => {
     const stubResponse = sinon.stubInterface<Response>();
     stubResponse.set.callsFake(() => null);
     const ctx = {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       url: faker.internet.url(),
       response: stubResponse,
     };
@@ -104,7 +104,7 @@ describe('Test to respond to csv', () => {
         columns: input.columns,
       };
       const ctx = {
-        ...sinon.stubInterface<KoaRouterContext>(),
+        ...sinon.stubInterface<KoaContext>(),
         url: faker.internet.url(),
         response: stubResponse,
       };

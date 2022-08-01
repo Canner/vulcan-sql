@@ -1,4 +1,4 @@
-import { RouterContext as KoaRouterContext } from 'koa-router';
+import { KoaContext } from '@vulcan-sql/serve/models';
 import {
   normalizeStringValue,
   PaginationMode,
@@ -7,7 +7,7 @@ import {
 import { PaginationStrategy } from './strategy';
 
 export class CursorBasedStrategy extends PaginationStrategy<CursorPagination> {
-  public async transform(ctx: KoaRouterContext) {
+  public async transform(ctx: KoaContext) {
     const checkFelidInQueryString = ['limit', 'cursor'].every((field) =>
       Object.keys(ctx.request.query).includes(field)
     );

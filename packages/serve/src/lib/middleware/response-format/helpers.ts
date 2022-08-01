@@ -1,4 +1,4 @@
-import { KoaRouterContext } from '@vulcan-sql/serve/route';
+import { KoaContext } from '@vulcan-sql/serve/models';
 import { BaseResponseFormatter } from '@vulcan-sql/serve/models';
 
 export type ResponseFormatterMap = {
@@ -12,7 +12,7 @@ export type ResponseFormatterMap = {
  * @returns boolean, is received
  */
 export const isReceivedFormatRequest = (
-  context: KoaRouterContext,
+  context: KoaContext,
   format: string
 ) => {
   if (context.request.path.endsWith(`.${format}`)) return true;
@@ -32,7 +32,7 @@ export const checkUsableFormat = ({
   supportedFormats,
   defaultFormat,
 }: {
-  context: KoaRouterContext;
+  context: KoaContext;
   formatters: ResponseFormatterMap;
   supportedFormats: string[];
   defaultFormat: string;

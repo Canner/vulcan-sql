@@ -2,7 +2,7 @@ import { DataColumn, ExtensionBase, VulcanExtension } from '@vulcan-sql/core';
 import { has } from 'lodash';
 import * as Stream from 'stream';
 import { TYPES } from '../../containers/types';
-import { KoaRouterContext } from '../../lib/route';
+import { KoaContext } from '@vulcan-sql/serve/models';
 
 export type BodyResponse = {
   data: Stream.Readable;
@@ -20,11 +20,8 @@ export interface IFormatter {
     columns?: DataColumn[]
   ): Stream.Readable | Stream.Transform;
 
-  toResponse(
-    stream: Stream.Readable | Stream.Transform,
-    ctx: KoaRouterContext
-  ): void;
-  formatToResponse(ctx: KoaRouterContext): void;
+  toResponse(stream: Stream.Readable | Stream.Transform, ctx: KoaContext): void;
+  formatToResponse(ctx: KoaContext): void;
 }
 
 @VulcanExtension(TYPES.Extension_Formatter)
@@ -32,7 +29,7 @@ export abstract class BaseResponseFormatter
   extends ExtensionBase
   implements IFormatter
 {
-  public formatToResponse(ctx: KoaRouterContext) {
+  public formatToResponse(ctx: KoaContext) {
     // return empty csv stream data or column is not exist
     if (!has(ctx.response.body, 'data') || !has(ctx.response.body, 'columns')) {
       const stream = new Stream.Readable();
@@ -65,6 +62,6 @@ export abstract class BaseResponseFormatter
    */
   public abstract toResponse(
     stream: Stream.Readable | Stream.Transform,
-    ctx: KoaRouterContext
+    ctx: KoaContext
   ): void;
 }

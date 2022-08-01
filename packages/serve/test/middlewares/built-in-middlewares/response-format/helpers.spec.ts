@@ -2,7 +2,7 @@ import { Request } from 'koa';
 import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
 import * as responseHelpers from '@vulcan-sql/serve/middleware/response-format/helpers';
-import { BaseResponseFormatter, KoaRouterContext } from '@vulcan-sql/serve';
+import { BaseResponseFormatter } from '@vulcan-sql/serve';
 import {
   checkUsableFormat,
   isReceivedFormatRequest,
@@ -12,6 +12,7 @@ import {
   CsvFormatter,
   JsonFormatter,
 } from '@vulcan-sql/serve/response-formatter';
+import { KoaContext } from '@vulcan-sql/serve/models';
 
 class HyperFormatter extends BaseResponseFormatter {
   public format(): any {
@@ -53,7 +54,7 @@ it.each([
   ({ request, format, expected }) => {
     // Arrange
     const context = {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       request: {
         ...sinon.stubInterface<Request>(),
         path: request.path,
@@ -99,7 +100,7 @@ describe('Test to call check usable format function', () => {
 
       // Act
       const result = checkUsableFormat({
-        context: sinon.stubInterface<KoaRouterContext>(),
+        context: sinon.stubInterface<KoaContext>(),
         formatters: input.formatters,
         supportedFormats: input.supportedFormats,
         defaultFormat,
@@ -128,7 +129,7 @@ describe('Test to call check usable format function', () => {
       // Act
       const checkUsableFormatAction = () =>
         checkUsableFormat({
-          context: sinon.stubInterface<KoaRouterContext>(),
+          context: sinon.stubInterface<KoaContext>(),
           formatters: {},
           supportedFormats: [],
           defaultFormat,
@@ -167,7 +168,7 @@ describe('Test to call check usable format function', () => {
 
       // Act
       const result = checkUsableFormat({
-        context: sinon.stubInterface<KoaRouterContext>(),
+        context: sinon.stubInterface<KoaContext>(),
         formatters,
         supportedFormats,
         defaultFormat,
@@ -208,7 +209,7 @@ describe('Test to call check usable format function', () => {
 
       // Act
       const result = checkUsableFormat({
-        context: sinon.stubInterface<KoaRouterContext>(),
+        context: sinon.stubInterface<KoaContext>(),
         formatters,
         supportedFormats,
         defaultFormat,
@@ -248,7 +249,7 @@ describe('Test to call check usable format function', () => {
 
       // Act
       const result = checkUsableFormat({
-        context: sinon.stubInterface<KoaRouterContext>(),
+        context: sinon.stubInterface<KoaContext>(),
         formatters,
         supportedFormats,
         defaultFormat,

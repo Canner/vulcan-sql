@@ -70,10 +70,8 @@
         "packages/integration-testing/src/index"
       ],
       "@vulcan-sql/serve": ["packages/serve/src/index"],
-      "@vulcan-sql/serve/app": ["packages/serve/src/lib/app"],
-      "@vulcan-sql/serve/config": ["packages/serve/src/lib/config"],
+      "@vulcan-sql/serve/app": ["packages/serve/src/lib/app.ts"],
       "@vulcan-sql/serve/containers": ["packages/serve/src/containers/index"],
-      "@vulcan-sql/serve/loader": ["packages/serve/src/lib/loader"],
       "@vulcan-sql/serve/middleware": [
         "packages/serve/src/lib/middleware/index"
       ],

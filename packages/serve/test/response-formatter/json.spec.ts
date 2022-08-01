@@ -2,7 +2,7 @@ import { Response } from 'koa';
 import * as sinon from 'ts-sinon';
 import * as Stream from 'stream';
 import { JsonFormatter } from '@vulcan-sql/serve/response-formatter';
-import { KoaRouterContext } from '@vulcan-sql/serve';
+import { KoaContext } from '@vulcan-sql/serve';
 import faker from '@faker-js/faker';
 import { arrayToStream, streamToString } from '../test-utils';
 
@@ -12,7 +12,7 @@ describe('Test to respond to json', () => {
     const stubResponse = sinon.stubInterface<Response>();
     stubResponse.set.callsFake(() => null);
     const ctx = {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       url: faker.internet.url(),
       response: stubResponse,
     };
@@ -71,7 +71,7 @@ describe('Test to respond to json', () => {
         columns: input.columns,
       };
       const ctx = {
-        ...sinon.stubInterface<KoaRouterContext>(),
+        ...sinon.stubInterface<KoaContext>(),
         url: faker.internet.url(),
         response: stubResponse,
       };

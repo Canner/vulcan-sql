@@ -4,7 +4,7 @@ import {
   PaginationSchema,
   KeysetPagination,
 } from '@vulcan-sql/core';
-import { KoaRouterContext } from '@vulcan-sql/serve/route';
+import { KoaContext } from '@vulcan-sql/serve/models';
 import { PaginationStrategy } from './strategy';
 
 export class KeysetBasedStrategy extends PaginationStrategy<KeysetPagination> {
@@ -13,7 +13,7 @@ export class KeysetBasedStrategy extends PaginationStrategy<KeysetPagination> {
     super();
     this.pagination = pagination;
   }
-  public async transform(ctx: KoaRouterContext) {
+  public async transform(ctx: KoaContext) {
     if (!this.pagination.keyName)
       throw new Error(
         `The keyset pagination need to set "keyName" in schema for indicate what key need to do filter.`
