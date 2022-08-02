@@ -9,6 +9,7 @@ import {
 } from '@vulcan-sql/serve/models';
 import { VulcanExtensionId, VulcanInternalExtension } from '@vulcan-sql/core';
 
+/** The http basic authenticator  */
 @VulcanInternalExtension()
 @VulcanExtensionId('basic')
 export class BasicAuthenticator extends BaseAuthenticator {

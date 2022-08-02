@@ -1,5 +1,4 @@
 import * as sinon from 'ts-sinon';
-import { Container } from 'inversify';
 import { AuthMiddleware } from '@vulcan-sql/serve/middleware';
 import {
   AuthResult,

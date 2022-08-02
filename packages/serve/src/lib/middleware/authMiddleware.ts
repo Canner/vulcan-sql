@@ -19,7 +19,7 @@ export type AuthenticatorMap = {
 };
 
 /** The middleware used to check request auth information.
- *  It seek the 'auth' config to match data through built-in and customized authenticator by BaseAuthenticator
+ *  It seek the 'auth' module name to match data through built-in and customized authenticator by BaseAuthenticator
  * */
 @VulcanInternalExtension('auth')
 export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {

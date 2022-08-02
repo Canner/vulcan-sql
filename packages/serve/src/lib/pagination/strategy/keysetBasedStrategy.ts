@@ -1,36 +1,38 @@
 import {
   normalizeStringValue,
   PaginationMode,
-  PaginationSchema,
   KeysetPagination,
 } from '@vulcan-sql/core';
 import { KoaContext } from '@vulcan-sql/serve/models';
 import { PaginationStrategy } from './strategy';
 
 export class KeysetBasedStrategy extends PaginationStrategy<KeysetPagination> {
-  private pagination: PaginationSchema;
-  constructor(pagination: PaginationSchema) {
+  private keyName?: string;
+  constructor(keyName?: string) {
     super();
-    this.pagination = pagination;
+    this.keyName = keyName;
   }
   public async transform(ctx: KoaContext) {
-    if (!this.pagination.keyName)
+    if (!this.keyName)
       throw new Error(
         `The keyset pagination need to set "keyName" in schema for indicate what key need to do filter.`
       );
-    const { keyName } = this.pagination;
-    const checkFelidInQueryString = ['limit', keyName].every((field) =>
+    const checkFelidInQueryString = ['limit', this.keyName].every((field) =>
       Object.keys(ctx.request.query).includes(field)
     );
     if (!checkFelidInQueryString)
       throw new Error(
-        `The ${PaginationMode.KEYSET} must provide limit and offset in query string.`
+        `The ${PaginationMode.KEYSET} must provide limit and key name in query string.`
       );
     const limitVal = ctx.request.query['limit'] as string;
-    const keyNameVal = ctx.request.query[keyName] as string;
+    const keyNameVal = ctx.request.query[this.keyName] as string;
     return {
       limit: normalizeStringValue(limitVal, 'limit', Number.name),
-      [keyName]: normalizeStringValue(keyNameVal, keyName, String.name),
+      [this.keyName]: normalizeStringValue(
+        keyNameVal,
+        this.keyName,
+        String.name
+      ),
     } as KeysetPagination;
   }
 }

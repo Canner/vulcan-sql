@@ -27,7 +27,7 @@ export class PaginationTransformer {
 
       const offset = new OffsetBasedStrategy();
       const cursor = new CursorBasedStrategy();
-      const keyset = new KeysetBasedStrategy(pagination);
+      const keyset = new KeysetBasedStrategy(pagination.keyName);
       const strategyMapper = {
         [PaginationMode.OFFSET]: offset.transform.bind(offset),
         [PaginationMode.CURSOR]: cursor.transform.bind(cursor),
