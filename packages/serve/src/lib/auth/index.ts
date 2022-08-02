@@ -1,5 +1,5 @@
-export * from './httpBasicAuthenticator';
+export * from './basicAuthenticator';
 
-import { HttpBasicAuthenticator } from './httpBasicAuthenticator';
+import { BasicAuthenticator } from './basicAuthenticator';
 
-export const BuiltInAuthenticators = [HttpBasicAuthenticator];
+export const BuiltInAuthenticators = [BasicAuthenticator];

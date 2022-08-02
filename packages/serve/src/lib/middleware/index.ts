@@ -17,8 +17,8 @@ import { ClassType, ExtensionBase } from '@vulcan-sql/core';
 export const BuiltInRouteMiddlewares: ClassType<ExtensionBase>[] = [
   CorsMiddleware,
   RateLimitMiddleware,
-  AuthMiddleware,
   RequestIdMiddleware,
   AuditLoggingMiddleware,
+  AuthMiddleware,
   ResponseFormatMiddleware,
 ];

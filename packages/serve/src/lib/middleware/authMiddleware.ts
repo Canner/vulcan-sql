@@ -42,7 +42,7 @@ export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
   }
 
   public async handle(context: KoaContext, next: Next) {
-    // return to skip the middleware, if disabled
+    // return to stop the middleware, if disabled
     if (!this.enabled) return next();
 
     const options = (this.getOptions() as AuthOptions) || {};

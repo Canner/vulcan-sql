@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as readline from 'readline';
 import { isEmpty } from 'lodash';
 import {
   BaseAuthenticator,
@@ -10,15 +11,16 @@ import { VulcanExtensionId, VulcanInternalExtension } from '@vulcan-sql/core';
 
 @VulcanInternalExtension()
 @VulcanExtensionId('basic')
-export class HttpBasicAuthenticator extends BaseAuthenticator {
+export class BasicAuthenticator extends BaseAuthenticator {
   public async authenticate(
     usersOptions: Array<UserAuthOptions>,
     context: KoaContext
   ) {
-    const auth = context.request.headers['authorization']?.toLowerCase();
     // if not exist basic method config, return failed.
     if (isEmpty(usersOptions)) return { authenticated: false };
-    if (!(auth && auth.startsWith(this.getExtensionId()!)))
+
+    const auth = context.request.headers['authorization'];
+    if (!(auth && auth.toLowerCase().startsWith(this.getExtensionId()!)))
       return { authenticated: false };
 
     // validate auth token
@@ -42,21 +44,24 @@ export class HttpBasicAuthenticator extends BaseAuthenticator {
     let ansToken = '';
     const pattern = /^{{([\w]+|[ \w ]+)}}$/;
     const matched = pattern.exec(userOptions.auth['token'] as string);
+    // if find env variable format, read env variable by matched[1], or read value of token directly.
+    ansToken = matched
+      ? (process.env[matched[1]] as string)
+      : (userOptions.auth['token'] as string);
+
     if (!matched) ansToken = ansToken || (userOptions.auth['token'] as string);
     // matched[1] is env variable
     if (matched) ansToken = ansToken || (process.env[matched[1]] as string);
-    if (srcToken === ansToken)
-      return {
-        authenticated: true,
-        user: {
-          name: userOptions.name,
-          method: this.getExtensionId()!, // method name
-          attr: userOptions.attr,
-        },
-      } as AuthResult;
+    if (srcToken !== ansToken) return { authenticated: false };
+
     return {
-      authenticated: false,
-    };
+      authenticated: true,
+      user: {
+        name: userOptions.name,
+        method: this.getExtensionId()!, // method name
+        attr: userOptions.attr,
+      },
+    } as AuthResult;
   }
 
   private async verifyTokenInFile(
@@ -64,17 +69,20 @@ export class HttpBasicAuthenticator extends BaseAuthenticator {
     userOptions: UserAuthOptions
   ) {
     let ansToken = '';
-    const filePath = userOptions.auth['filePath'] as string;
+    const filePath = userOptions.auth['file'] as string;
+
+    if (!fs.existsSync(filePath)) return { authenticated: false };
     if (!fs.statSync(filePath).isFile()) return { authenticated: false };
-    const stream = fs.createReadStream(filePath);
-    // read each line
-    stream.on('data', (chunk) => {
-      const content = chunk.toString();
-      if (content.startsWith(`${userOptions.name}:`)) {
-        ansToken = content.split(':')[1];
-        return;
-      }
+
+    const reader = readline.createInterface({
+      input: fs.createReadStream(filePath),
     });
+    for await (const line of reader) {
+      if (line.startsWith(`${userOptions.name}:`)) {
+        ansToken = line.split(':')[1].trim();
+        break;
+      }
+    }
 
     if (srcToken !== ansToken) return { authenticated: false };
     // if matched return user data
