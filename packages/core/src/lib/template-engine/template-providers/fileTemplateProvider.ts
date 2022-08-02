@@ -3,7 +3,7 @@ import * as glob from 'glob';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { inject, injectable } from 'inversify';
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import { ITemplateEngineOptions } from '@vulcan-sql/core/models';
 
 @injectable()

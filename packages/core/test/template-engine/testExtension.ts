@@ -1,14 +1,14 @@
-import { FilterBuilder, FilterRunner, OnInit } from '@vulcan-sql/core';
+import { FilterBuilder, FilterRunner } from '@vulcan-sql/core';
 
-class TestFilterBuilder extends FilterBuilder {
+export class TestFilterBuilder extends FilterBuilder {
   public filterName = 'test';
 }
 
-class TestFilterRunner extends FilterRunner implements OnInit {
+export class TestFilterRunner extends FilterRunner {
   public filterName = 'test';
   private initDone = false;
 
-  public async onInit(): Promise<void> {
+  public override async activate(): Promise<void> {
     this.initDone = true;
   }
 
@@ -16,5 +16,3 @@ class TestFilterRunner extends FilterRunner implements OnInit {
     return `${value}-${this.initDone}`;
   }
 }
-
-export default [TestFilterBuilder, TestFilterRunner];

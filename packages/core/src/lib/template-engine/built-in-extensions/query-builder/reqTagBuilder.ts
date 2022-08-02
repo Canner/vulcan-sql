@@ -1,10 +1,4 @@
-import {
-  OnAstVisit,
-  ProvideMetadata,
-  ReplaceChildFunc,
-  TagBuilder,
-  visitChildren,
-} from '../../extension-loader';
+import { ReplaceChildFunc, visitChildren } from '../../extension-utils';
 import * as nunjucks from 'nunjucks';
 import {
   EXECUTE_COMMAND_NAME,
@@ -13,18 +7,17 @@ import {
   METADATA_NAME,
   REFERENCE_SEARCH_MAX_DEPTH,
 } from './constants';
+import { TagBuilder, VulcanInternalExtension } from '@vulcan-sql/core/models';
 
 interface DeclarationLocation {
   lineNo: number;
   colNo: number;
 }
 
-export class ReqTagBuilder
-  extends TagBuilder
-  implements OnAstVisit, ProvideMetadata
-{
+@VulcanInternalExtension()
+export class ReqTagBuilder extends TagBuilder {
   public tags = ['req'];
-  public metadataName = METADATA_NAME;
+  public override metadataName = METADATA_NAME;
   private root?: nunjucks.nodes.Root;
   private hasMainBuilder = false;
   private variableList = new Map<string, DeclarationLocation>();
@@ -97,7 +90,7 @@ export class ReqTagBuilder
     return this.createAsyncExtensionNode(argsNodeToPass, [requestQuery]);
   }
 
-  public onVisit(node: nunjucks.nodes.Node) {
+  public override onVisit(node: nunjucks.nodes.Node) {
     // save the root
     if (node instanceof nunjucks.nodes.Root) {
       this.root = node;
@@ -112,13 +105,13 @@ export class ReqTagBuilder
     }
   }
 
-  public finish() {
+  public override finish() {
     if (!this.hasMainBuilder) {
       this.wrapOutputWithBuilder();
     }
   }
 
-  public getMetadata() {
+  public override getMetadata() {
     return {
       finalBuilderName: FINIAL_BUILDER_NAME,
     };

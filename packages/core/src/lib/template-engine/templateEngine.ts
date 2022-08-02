@@ -1,7 +1,7 @@
 import { Compiler, TemplateMetadata } from './compiler';
 import { TemplateProvider } from './template-providers';
 import { injectable, inject, interfaces } from 'inversify';
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import { TemplateEngineOptions } from '../../options';
 import { Pagination } from '@vulcan-sql/core/models';
 import { ICodeLoader } from './code-loader';

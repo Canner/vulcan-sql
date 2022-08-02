@@ -25,6 +25,8 @@ export const TYPES = {
   DataSource: Symbol.for('DataSource'),
   // Validator
   ValidatorLoader: Symbol.for('ValidatorLoader'),
-  // source of extensions
-  SourceOfExtensions: Symbol.for('SourceOfExtensions'),
+  // Extensions
+  ExtensionConfig: Symbol.for('ExtensionConfig'),
+  Extension_TemplateEngine: Symbol.for('Extension_TemplateEngine'),
+  Extension_InputValidator: Symbol.for('Extension_InputValidator'),
 };

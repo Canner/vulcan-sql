@@ -1,7 +1,10 @@
+import {
+  InputValidator,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
 import * as Joi from 'joi';
 import { GuidVersions } from 'joi';
 import { isUndefined } from 'lodash';
-import { IValidator } from '../validator';
 
 type UUIDVersion = 'uuid_v1' | 'uuid_v4' | 'uuid_v5';
 
@@ -10,7 +13,8 @@ export interface UUIDInputArgs {
   version?: UUIDVersion;
 }
 
-export class UUIDTypeValidator implements IValidator {
+@VulcanInternalExtension()
+export class UUIDTypeValidator extends InputValidator {
   public readonly name = 'uuid';
   // Validator for arguments schema in schema.yaml, should match UUIDInputArgs
   private argsValidator = Joi.object({

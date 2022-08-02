@@ -1,18 +1,20 @@
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import {
   InMemoryCodeLoader,
   NunjucksCompiler,
 } from '@vulcan-sql/core/template-engine';
-import { bindExtensions } from '@vulcan-sql/core/template-engine/extension-loader';
 import { Container } from 'inversify';
 import * as sinon from 'ts-sinon';
 import * as nunjucks from 'nunjucks';
 import { IDataQueryBuilder, IExecutor } from '@vulcan-sql/core/data-query';
+import { extensionModule } from '../../src/containers/modules';
+import { ICoreOptions } from '@vulcan-sql/core';
+import { DeepPartial } from 'ts-essentials';
 
 export const createTestCompiler = async ({
-  extensionNames = [],
+  options = {},
 }: {
-  extensionNames?: string[];
+  options?: DeepPartial<ICoreOptions>;
 } = {}) => {
   const container = new Container();
   const stubQueryBuilder = sinon.stubInterface<IDataQueryBuilder>();
@@ -24,10 +26,10 @@ export const createTestCompiler = async ({
     .bind(TYPES.CompilerLoader)
     .to(InMemoryCodeLoader)
     .inSingletonScope();
-  await bindExtensions(container.bind.bind(container), extensionNames);
   container.bind<IExecutor>(TYPES.Executor).toConstantValue(stubExecutor);
-
   container.bind(TYPES.Compiler).to(NunjucksCompiler).inSingletonScope();
+
+  await container.loadAsync(extensionModule(options as any));
 
   // Compiler environment
   container

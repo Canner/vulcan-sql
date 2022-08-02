@@ -1,4 +1,4 @@
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import {
   ITemplateEngineOptions,
   TemplateProviderType,
@@ -14,14 +14,9 @@ import {
 import { AsyncContainerModule, interfaces } from 'inversify';
 import { TemplateEngineOptions } from '../../options';
 import * as nunjucks from 'nunjucks';
-// TODO: fix the path
-import { bindExtensions } from '@vulcan-sql/core/template-engine/extension-loader';
 import { ICodeLoader } from '@vulcan-sql/core/template-engine/code-loader';
 
-export const templateEngineModule = (
-  options: ITemplateEngineOptions,
-  extensions: string[]
-) =>
+export const templateEngineModule = (options: ITemplateEngineOptions) =>
   new AsyncContainerModule(async (bind) => {
     // Options
     bind<ITemplateEngineOptions>(
@@ -71,7 +66,4 @@ export const templateEngineModule = (
     bind<TemplateEngine>(TYPES.TemplateEngine)
       .to(TemplateEngine)
       .inSingletonScope();
-
-    // Load Extensions
-    await bindExtensions(bind, extensions);
   });

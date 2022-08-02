@@ -1,15 +1,23 @@
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import { IExecutor } from '@vulcan-sql/core/data-query';
 import { inject } from 'inversify';
-import { TagRunnerOptions, TagRunner } from '../../extension-loader';
+import {
+  TagRunner,
+  TagRunnerOptions,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
 import { FINIAL_BUILDER_NAME } from './constants';
 
+@VulcanInternalExtension()
 export class ReqTagRunner extends TagRunner {
   public tags = ['req'];
   private executor: IExecutor;
 
-  constructor(@inject(TYPES.Executor) executor: IExecutor) {
-    super();
+  constructor(
+    @inject(TYPES.ExtensionConfig) config: any,
+    @inject(TYPES.Executor) executor: IExecutor
+  ) {
+    super(config);
     this.executor = executor;
   }
 

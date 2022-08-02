@@ -26,7 +26,7 @@ it('Container should load options and resolve all dependencies', async () => {
       provider: TemplateProviderType.LocalFile,
       folderPath: path.resolve(__dirname, 'test-template'),
     },
-    extensions: [],
+    extensions: {},
   });
   // Act
   const templateEngine = container.get<TemplateEngine>(TYPES.TemplateEngine);

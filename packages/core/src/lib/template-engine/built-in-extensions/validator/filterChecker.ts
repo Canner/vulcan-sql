@@ -1,31 +1,30 @@
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import { inject, named } from 'inversify';
-import {
-  CompileTimeExtension,
-  OnAstVisit,
-  ProvideMetadata,
-} from '../../extension-loader';
 import { FILTER_METADATA_NAME } from './constants';
 import * as nunjucks from 'nunjucks';
+import {
+  CompileTimeExtension,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
 
-export class FilterChecker
-  extends CompileTimeExtension
-  implements OnAstVisit, ProvideMetadata
-{
-  public metadataName = FILTER_METADATA_NAME;
+@VulcanInternalExtension()
+export class FilterChecker extends CompileTimeExtension {
+  public override metadataName = FILTER_METADATA_NAME;
   private env: nunjucks.Environment;
   private filters = new Set<string>();
 
   constructor(
+    @inject(TYPES.ExtensionConfig)
+    config: any,
     @inject(TYPES.CompilerEnvironment)
     @named('compileTime')
     compileTimeEnv: nunjucks.Environment
   ) {
-    super();
+    super(config);
     this.env = compileTimeEnv;
   }
 
-  public onVisit(node: nunjucks.nodes.Node) {
+  public override onVisit(node: nunjucks.nodes.Node) {
     if (node instanceof nunjucks.nodes.Filter) {
       if (
         node.name instanceof nunjucks.nodes.Symbol ||
@@ -39,7 +38,7 @@ export class FilterChecker
     }
   }
 
-  public getMetadata() {
+  public override getMetadata() {
     return Array.from(this.filters);
   }
 }

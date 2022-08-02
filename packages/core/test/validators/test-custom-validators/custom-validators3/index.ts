@@ -1,18 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { IValidator } from '@vulcan-sql/core';
+import { InputValidator } from '@vulcan-sql/core';
 
-export default {
-  validators: [
-    class Validator implements IValidator {
-      name = 'v3-1';
-      validateSchema() {}
-      validateData() {}
-    },
-    class Validator implements IValidator {
-      name = 'v1-1';
-      validateSchema() {}
-      validateData() {}
-    },
-  ],
-  others: [],
-};
+export class Validator31 extends InputValidator {
+  name = 'v3-1';
+  validateSchema() {}
+  validateData() {}
+}
+export class Validator32 extends InputValidator {
+  name = 'v1-1';
+  validateSchema() {}
+  validateData() {}
+}

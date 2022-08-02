@@ -1,7 +1,7 @@
 import { PersistentStore } from './persistentStore';
 import { promises as fs } from 'fs';
 import { injectable, inject } from 'inversify';
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import { IArtifactBuilderOptions } from '@vulcan-sql/core/models';
 
 @injectable()

@@ -1,6 +1,9 @@
+import {
+  InputValidator,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
 import * as Joi from 'joi';
 import { isUndefined } from 'lodash';
-import { IValidator } from '../validator';
 
 export interface IntInputArgs {
   // The integer minimum value
@@ -13,7 +16,8 @@ export interface IntInputArgs {
   less?: number;
 }
 
-export class IntegerTypeValidator implements IValidator {
+@VulcanInternalExtension()
+export class IntegerTypeValidator extends InputValidator {
   public readonly name = 'integer';
   // Validator for arguments schema in schema.yaml, should match IntInputArgs
   private argsValidator = Joi.object({

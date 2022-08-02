@@ -1,4 +1,4 @@
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import {
   ITemplateEngineOptions,
   TemplateProviderType,

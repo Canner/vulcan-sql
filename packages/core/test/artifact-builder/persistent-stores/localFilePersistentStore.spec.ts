@@ -3,7 +3,7 @@ import {
   LocalFilePersistentStore,
   PersistentStore,
 } from '@vulcan-sql/core/artifact-builder';
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import { Container } from 'inversify';
 
 let container: Container;

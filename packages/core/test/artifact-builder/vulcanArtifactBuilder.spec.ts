@@ -5,7 +5,7 @@ import {
   VulcanArtifactBuilder,
 } from '@vulcan-sql/core/artifact-builder';
 import { Container } from 'inversify';
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import * as sinon from 'ts-sinon';
 
 let container: Container;

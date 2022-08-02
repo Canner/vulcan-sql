@@ -5,7 +5,7 @@ import {
   ICodeLoader,
 } from '@vulcan-sql/core/template-engine';
 import * as sinon from 'ts-sinon';
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import { Container } from 'inversify';
 
 let container: Container;

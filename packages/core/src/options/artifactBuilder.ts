@@ -1,5 +1,5 @@
 import { injectable, inject, optional } from 'inversify';
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import {
   IArtifactBuilderOptions,
   PersistentStoreType,

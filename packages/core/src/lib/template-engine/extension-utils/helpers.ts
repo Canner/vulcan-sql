@@ -1,5 +1,5 @@
 import * as nunjucks from 'nunjucks';
-import { OnAstVisit, ProvideMetadata } from './models';
+import { OnAstVisit, ProvideMetadata } from './interfaces';
 
 export const generateMetadata = (providers: ProvideMetadata[]) => {
   const metadata = providers.reduce((currentMetadata, provider) => {
