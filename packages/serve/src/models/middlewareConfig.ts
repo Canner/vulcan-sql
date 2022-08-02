@@ -3,6 +3,7 @@ import {
   CorsOptions,
   RateLimitOptions,
   RequestIdOptions,
+  ResponseFormatOptions,
 } from '../lib/middleware';
 
 // built-in options for middleware
@@ -10,9 +11,10 @@ export type BuiltInOptions =
   | RequestIdOptions
   | LoggerOptions
   | RateLimitOptions
-  | CorsOptions;
+  | CorsOptions
+  | ResponseFormatOptions;
 
-export type CustomOptions = string | number | boolean | object;
+export type CustomOptions = any;
 
 /**
  * The identifier name represent to load middleware if it is custom,

@@ -1,8 +1,8 @@
 import * as uuid from 'uuid';
 import { FieldInType, asyncReqIdStorage } from '@vulcan-sql/core';
-import { KoaRouterContext } from '@vulcan-sql/serve/route';
-import { BuiltInMiddleware, RouteMiddlewareNext } from '../middleware';
-import { MiddlewareConfig } from '@vulcan-sql/serve/models';
+import { KoaRouterContext, KoaNext } from '@vulcan-sql/serve/route';
+import { BuiltInMiddleware } from '../middleware';
+import { AppConfig } from '@vulcan-sql/serve/models';
 
 export interface RequestIdOptions {
   name: string;
@@ -12,7 +12,7 @@ export interface RequestIdOptions {
 export class RequestIdMiddleware extends BuiltInMiddleware {
   private options: RequestIdOptions;
 
-  constructor(config: MiddlewareConfig) {
+  constructor(config: AppConfig) {
     super('request-id', config);
     // read request-id options from config.
     this.options = (this.getOptions() as RequestIdOptions) || {
@@ -23,7 +23,7 @@ export class RequestIdMiddleware extends BuiltInMiddleware {
     if (!this.options['name']) this.options['name'] = 'X-Request-ID';
     if (!this.options['fieldIn']) this.options['fieldIn'] = FieldInType.HEADER;
   }
-  public async handle(context: KoaRouterContext, next: RouteMiddlewareNext) {
+  public async handle(context: KoaRouterContext, next: KoaNext) {
     if (!this.enabled) return next();
 
     const { request } = context;

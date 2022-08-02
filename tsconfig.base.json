@@ -79,6 +79,16 @@
       "@vulcan-sql/serve/pagination/*": ["packages/serve/src/lib/pagination/*"],
       "@vulcan-sql/serve/route": ["packages/serve/src/lib/route/index"],
       "@vulcan-sql/serve/route/*": ["packages/serve/src/lib/route/*"],
+      "@vulcan-sql/serve/utils": ["packages/serve/src/lib/utils/index"],
+      "@vulcan-sql/serve/utils/*": ["packages/serve/src/lib/utils/*"],
+      "@vulcan-sql/serve/response-formatter": [
+        "packages/serve/src/lib/response-formatter/index"
+      ],
+      "@vulcan-sql/serve/response-formatter/*": [
+        "packages/serve/src/lib/response-formatter/*"
+      ],
+
+      "@vulcan-sql/serve/loader": ["packages/serve/src/lib/loader"],
       "@vulcan-sql/test-utility": ["packages/test-utility/src/index.ts"]
     }
   },

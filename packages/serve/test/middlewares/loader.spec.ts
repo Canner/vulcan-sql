@@ -1,41 +1,12 @@
 import * as path from 'path';
 import * as sinon from 'ts-sinon';
-import {
-  BaseRouteMiddleware,
-  loadExtensions,
-} from '@vulcan-sql/serve/middleware';
-import middlewares from '@vulcan-sql/serve/middleware/built-in-middleware';
+import { importExtensions } from '@vulcan-sql/serve/loader';
+import { BaseRouteMiddleware } from '@vulcan-sql/serve/middleware';
 import { TestModeMiddleware } from './test-custom-middlewares';
-import { ClassType, defaultImport } from '@vulcan-sql/core';
+import { ClassType } from '@vulcan-sql/core';
 import { AppConfig } from '@vulcan-sql/serve/models';
-import { flatten } from 'lodash';
-
-// the load Built-in used for tests
-const loadBuiltIn = async () => {
-  // built-in middleware folder
-  const builtInFolder = path.resolve(
-    __dirname,
-    '../../src/lib/middleware',
-    'built-in-middleware'
-  );
-  // read built-in middlewares in index.ts, the content is an array middleware class
-  const modules =
-    flatten(
-      await defaultImport<ClassType<BaseRouteMiddleware>[]>(builtInFolder)
-    ) || [];
-  return modules || [];
-};
 
 describe('Test middleware loader', () => {
-  it('Should load successfully when loading built-in middlewares', async () => {
-    // Arrange
-
-    const expected = [...middlewares] as ClassType<BaseRouteMiddleware>[];
-    // Act
-    const actual = await loadBuiltIn();
-    // Assert
-    expect(actual).toEqual(expect.arrayContaining(expected));
-  });
   it('Should load successfully when loading extension middlewares', async () => {
     // Arrange
     const expected = [TestModeMiddleware] as ClassType<BaseRouteMiddleware>[];
@@ -45,7 +16,7 @@ describe('Test middleware loader', () => {
     } as AppConfig;
 
     // Act
-    const actual = await loadExtensions(config.extensions);
+    const actual = await importExtensions('middlewares', config.extensions);
     // Assert
     expect(actual).toEqual(expect.arrayContaining(expected));
   });
@@ -61,7 +32,7 @@ describe('Test middleware loader', () => {
     } as AppConfig;
 
     // Act
-    const actual = await loadExtensions(config.extensions);
+    const actual = await importExtensions('middlewares', config.extensions);
     // Assert
     expect(actual).not.toEqual(expect.arrayContaining(expected));
   });

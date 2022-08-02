@@ -69,9 +69,8 @@ describe('Test vulcan server for practicing middleware', () => {
       },
       container.get<RouteGenerator>(TYPES.RouteGenerator)
     );
-    await app.buildMiddleware();
+    await app.useMiddleware();
     await app.buildRoutes([fakeSchema], [APIProviderType.RESTFUL]);
-
     const server = http
       .createServer(app.getHandler())
       .listen(faker.internet.port());
@@ -83,7 +82,6 @@ describe('Test vulcan server for practicing middleware', () => {
 
     // Act
     const reqOperation = supertest(server).get(fakeSchema.urlPath);
-
     const response = await reqOperation;
     // Assert
     expect(response.headers).toEqual(expect.objectContaining(expected));
@@ -269,12 +267,18 @@ describe('Test vulcan server for calling restful APIs', () => {
   ])(
     'Should be correct when given validated koa context request from %p',
     async (_: string, schema: APISchema, ctx: KoaRouterContext) => {
-      // Arrange
+      // Arrange, close response format middlewares to make expected work.
       const app = new VulcanApplication(
-        {},
+        {
+          middlewares: {
+            'response-format': {
+              enabled: false,
+            },
+          },
+        },
         container.get<RouteGenerator>(TYPES.RouteGenerator)
       );
-      await app.buildMiddleware();
+      await app.useMiddleware();
       await app.buildRoutes([schema], [APIProviderType.RESTFUL]);
       const server = http
         .createServer(app.getHandler())

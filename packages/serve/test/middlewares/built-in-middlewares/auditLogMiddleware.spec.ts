@@ -11,6 +11,7 @@ import {
 import * as core from '@vulcan-sql/core';
 import * as uuid from 'uuid';
 import { LoggerOptions } from '@vulcan-sql/core';
+import { MiddlewareConfig } from '@vulcan-sql/serve';
 
 describe('Test audit logging middlewares', () => {
   afterEach(() => {
@@ -104,11 +105,13 @@ describe('Test audit logging middlewares', () => {
     // setup request-id middleware run first.
     const stubReqIdMiddleware = new RequestIdMiddleware({});
     const middleware = new AuditLoggingMiddleware({
-      'audit-log': {
-        options: {
-          displayRequestId: true,
-        } as LoggerOptions,
-      },
+      middlewares: {
+        'audit-log': {
+          options: {
+            displayRequestId: true,
+          } as LoggerOptions,
+        },
+      } as MiddlewareConfig,
     });
     // Use spy to trace the logger from getLogger( scopeName: 'AUDIT' }) to know in logger.info(...)
     // it will get the setting of logger from above new audit logging middleware

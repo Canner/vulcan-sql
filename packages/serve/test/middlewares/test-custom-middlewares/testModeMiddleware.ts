@@ -1,9 +1,6 @@
 import { MiddlewareConfig } from '@vulcan-sql/serve/models';
-import {
-  BaseRouteMiddleware,
-  RouteMiddlewareNext,
-} from '@vulcan-sql/serve/middleware';
-import { KoaRouterContext } from '@vulcan-sql/serve/route';
+import { BaseRouteMiddleware } from '@vulcan-sql/serve/middleware';
+import { KoaRouterContext, KoaNext } from '@vulcan-sql/serve/route';
 
 export interface TestModeOptions {
   mode: boolean;
@@ -15,7 +12,7 @@ export class TestModeMiddleware extends BaseRouteMiddleware {
     super('test-mode', config);
     this.mode = (this.getConfig()?.['mode'] as boolean) || false;
   }
-  public async handle(context: KoaRouterContext, next: RouteMiddlewareNext) {
+  public async handle(context: KoaRouterContext, next: KoaNext) {
     context.response.set('test-mode', String(this.mode));
     await next();
   }
