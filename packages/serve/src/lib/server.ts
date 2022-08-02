@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
@@ -13,15 +14,21 @@ import { getEnforceHttpsOptions } from './middleware';
 export class VulcanServer {
   private config: ServeConfig;
   private container: Container;
-  private server?: http.Server;
-
+  private servers?: {
+    http: http.Server;
+    https?: https.Server;
+  };
   constructor(config: ServeConfig) {
     this.config = config;
     this.container = new Container();
   }
-
-  public async start(port = 3000) {
-    if (this.server)
+  /**
+   * Start the vulcan server
+   * @param port the http port for server start, default is 3000
+   * @param httpsPort the https port for https server start when you set "type" = LOCAL in "enforce-https" middleware and provide ssl file, default port is 3001
+   */
+  public async start(port = 3000, httpsPort = 3001) {
+    if (!isEmpty(this.servers))
       throw new Error('Server has created, please close it first.');
 
     // Load container
@@ -47,24 +54,40 @@ export class VulcanServer {
     await app.useMiddleware();
     await app.buildRoutes(schemas, this.config['types']);
     // Run server
-    this.server = this.runServer(app, port);
-    return this.server;
+    this.servers = this.runServer(app, port, httpsPort);
+    return this.servers;
+  }
+  public async close() {
+    if (this.servers) {
+      if (this.servers['http']) this.servers['http'].close();
+      if (this.servers['https']) this.servers['https'].close();
+      this.servers = undefined;
+    }
+    this.container.unload();
   }
 
-  public runServer(app: VulcanApplication, port: number) {
+  /**
+   * Run server for https when config has setup ssl and middleware 'enforce-https' enabled with LOCAL type, or keep http
+   */
+  private runServer(app: VulcanApplication, port: number, httpsPort: number) {
     const options = getEnforceHttpsOptions(this.config['enforce-https']);
     if (options && this.config.ssl) {
       const options = {
         key: fs.readFileSync(this.config.ssl.keyFile),
         cert: fs.readFileSync(this.config.ssl.certFile),
       };
-      return https.createServer(options, app.getHandler()).listen(port);
-    }
-    return http.createServer(app.getHandler()).listen(port);
-  }
 
-  public async close() {
-    if (this.server) this.server.close();
-    this.container.unload();
+      const httpServer = http.createServer(app.getHandler()).listen(port);
+      const httpsServer = https
+        .createServer(options, app.getHandler())
+        .listen(httpsPort);
+      return {
+        http: httpServer,
+        https: httpsServer,
+      };
+    }
+    return {
+      http: http.createServer(app.getHandler()).listen(port),
+    };
   }
 }
