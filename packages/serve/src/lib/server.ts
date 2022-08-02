@@ -1,12 +1,15 @@
+import * as fs from 'fs';
+import * as http from 'http';
+import * as https from 'https';
 import {
   VulcanArtifactBuilder,
   TYPES as CORE_TYPES,
   CodeLoader,
 } from '@vulcan-sql/core';
-import * as http from 'http';
 import { Container, TYPES } from '../containers';
 import { ServeConfig } from '../models';
 import { VulcanApplication } from './app';
+import { getEnforceHttpsOptions } from './middleware';
 export class VulcanServer {
   private config: ServeConfig;
   private container: Container;
@@ -42,11 +45,22 @@ export class VulcanServer {
     // Create application
     const app = this.container.get<VulcanApplication>(TYPES.VulcanApplication);
     await app.useMiddleware();
-    await app.buildRoutes(schemas, this.config.types);
+    await app.buildRoutes(schemas, this.config['types']);
     // Run server
-    const server = http.createServer(app.getHandler()).listen(port);
-    this.server = server;
-    return server;
+    this.server = this.runServer(app, port);
+    return this.server;
+  }
+
+  public runServer(app: VulcanApplication, port: number) {
+    const options = getEnforceHttpsOptions(this.config['enforce-https']);
+    if (options && this.config.ssl) {
+      const options = {
+        key: fs.readFileSync(this.config.ssl.keyFile),
+        cert: fs.readFileSync(this.config.ssl.certFile),
+      };
+      return https.createServer(options, app.getHandler()).listen(port);
+    }
+    return http.createServer(app.getHandler()).listen(port);
   }
 
   public async close() {

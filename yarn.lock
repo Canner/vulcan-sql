@@ -1202,6 +1202,13 @@
   dependencies:
     "@types/koa" "*"
 
+"@types/koa-sslify@^4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@types/koa-sslify/-/koa-sslify-4.0.3.tgz#c0fe5a3abe9ec3a8ca9225b7c467b54f505c083b"
+  integrity sha512-FfbgV4Dex2FtnonU6uAA0BhEh+pGTWY63UkP14+StrlC0e3RNOGx6GZc3HMN3wzBRNchLhcnkyO7/hHLnx3bPw==
+  dependencies:
+    "@types/koa" "*"
+
 "@types/koa2-ratelimit@^0.9.3":
   version "0.9.3"
   resolved "https://registry.yarnpkg.com/@types/koa2-ratelimit/-/koa2-ratelimit-0.9.3.tgz#a01b8bb1fc85ed2cb3273777baa53ee3ed04b912"
@@ -4437,6 +4444,11 @@ koa-router@^10.1.1:
     koa-compose "^4.1.0"
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
+
+koa-sslify@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/koa-sslify/-/koa-sslify-5.0.0.tgz#f3047de9afc92ad960208cea87fcac43795791a7"
+  integrity sha512-3Qc/DxPcH4BavYkt7xOVDFbaS7nR8oCozb/0dlIpLlyGVhFXcjHETWBwE3QrDLwjKOVJj6ykwRJoNzPT9QxCag==
 
 koa2-ratelimit@^1.1.1:
   version "1.1.1"

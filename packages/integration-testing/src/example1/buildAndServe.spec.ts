@@ -44,6 +44,9 @@ const projectConfig: ServeConfig & IBuildOptions = {
   'rate-limit': {
     options: { interval: { min: 1 }, max: 10000 },
   },
+  'enforce-https': {
+    enabled: false,
+  },
 };
 
 let server: VulcanServer;
