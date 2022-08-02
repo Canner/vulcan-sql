@@ -24,7 +24,7 @@ it('Builder.build should work', async () => {
       provider: TemplateProviderType.LocalFile,
       folderPath: path.resolve(__dirname, 'source'),
     },
-    extensions: [],
+    extensions: {},
   };
 
   // Act, Assert

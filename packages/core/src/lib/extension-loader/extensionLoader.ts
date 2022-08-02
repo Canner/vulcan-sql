@@ -79,7 +79,9 @@ export class ExtensionLoader {
       this.extensionRegistry.get(type)!.forEach(({ name, extension }) => {
         bind(type).to(extension);
         bind(TYPES.ExtensionConfig)
-          .toConstantValue(name.length > 0 ? this.config[name] : undefined)
+          // Note they we can't bind undefined to container or it throw error while unbinding.
+          // https://github.com/inversify/InversifyJS/issues/1462#issuecomment-1202099036
+          .toConstantValue(name.length > 0 ? this.config[name] : {})
           .whenInjectedInto(extension);
       });
     }

@@ -1,4 +1,4 @@
-import { ContainerModule, interfaces } from 'inversify';
+import { AsyncContainerModule, ContainerModule, interfaces } from 'inversify';
 import {
   PersistentStore,
   LocalFilePersistentStore,
@@ -16,7 +16,7 @@ import {
 import { ArtifactBuilderOptions } from '../../options';
 
 export const artifactBuilderModule = (options: IArtifactBuilderOptions) =>
-  new ContainerModule((bind) => {
+  new AsyncContainerModule(async (bind) => {
     // Options
     bind<IArtifactBuilderOptions>(
       TYPES.ArtifactBuilderInputOptions

@@ -16,13 +16,19 @@ export class Container {
   }
 
   public async load(options: ICoreOptions) {
-    this.inversifyContainer.load(artifactBuilderModule(options.artifact));
+    await this.inversifyContainer.loadAsync(
+      artifactBuilderModule(options.artifact)
+    );
     await this.inversifyContainer.loadAsync(executorModule());
     await this.inversifyContainer.loadAsync(
       templateEngineModule(options.template)
     );
     await this.inversifyContainer.loadAsync(validatorLoaderModule());
     await this.inversifyContainer.loadAsync(extensionModule(options));
+  }
+
+  public async unload() {
+    await this.inversifyContainer.unbindAllAsync();
   }
 
   public getInversifyContainer() {

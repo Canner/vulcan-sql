@@ -33,6 +33,7 @@ it('Container should load options and resolve all dependencies', async () => {
   const artifactBuilder = container.get<ArtifactBuilder>(TYPES.ArtifactBuilder);
   const { templates } = await templateEngine.compile();
   await artifactBuilder.build({ templates, schemas: [] });
+  await container.unload();
   // Assert
   expect(fs.existsSync(resultPath)).toBeTruthy();
 });

@@ -62,11 +62,11 @@ request:
     };
   };
   stubSchemaReader.readSchema.returns(generator());
-  stubValidatorLoader.load.resolves({
+  stubValidatorLoader.getValidator.returns({
     name: 'validator1',
     validateSchema: () => null,
     validateData: () => null,
-  });
+  } as any);
   const schemaParser = container.get<SchemaParser>(TYPES.SchemaParser);
 
   // Act

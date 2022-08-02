@@ -24,6 +24,6 @@ export class VulcanBuilder {
 
     await artifactBuilder.build({ schemas, templates });
 
-    container.unload();
+    await container.unload();
   }
 }

@@ -16,10 +16,8 @@ describe('Test validator loader for built-in validators', () => {
       .inSingletonScope();
   });
 
-  afterEach(() => {
-    container.unbind(TYPES.ValidatorLoader);
-    // TODO: Found some issues while unloading extension module
-    // https://github.com/inversify/InversifyJS/issues/1462
+  afterEach(async () => {
+    await container.unbindAllAsync();
   });
 
   it.each([

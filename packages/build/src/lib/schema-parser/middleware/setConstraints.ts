@@ -25,7 +25,7 @@ export class SetConstraints extends SchemaParserMiddleware {
       // load validator and keep args
       const validatorsWithArgs = await Promise.all(
         (request.validators || []).map(async (validator) => ({
-          validator: await this.validatorLoader.load(validator.name),
+          validator: this.validatorLoader.getValidator(validator.name),
           args: validator.args,
         }))
       );

@@ -6,6 +6,7 @@ import { promises as fs } from 'fs';
 import {
   APISchema,
   Constraint,
+  InputValidator,
   IValidatorLoader,
   TemplateEngine,
   TYPES as CORE_TYPES,
@@ -30,59 +31,59 @@ const getSchemaPaths = () =>
     });
   });
 
+class MockValidator extends InputValidator {
+  constructor(public name: string, private constraintsFn: any) {
+    super();
+  }
+
+  public validateData(): void {
+    return;
+  }
+
+  public validateSchema(): void {
+    return;
+  }
+
+  public override getConstraints(args: any) {
+    return this.constraintsFn(args);
+  }
+}
+
 const getStubLoader = () => {
   const validatorLoader = sinon.stubInterface<IValidatorLoader>();
-  validatorLoader.load.callsFake(async (name) => {
+
+  validatorLoader.getValidator.callsFake((name) => {
     switch (name) {
       case 'required':
-        return {
-          name: 'required',
-          validateSchema: () => null,
-          validateData: () => null,
-          getConstraints: () => [Constraint.Required()],
-        };
+        return new MockValidator('required', () => [Constraint.Required()]);
+
       case 'minValue':
-        return {
-          name: 'minValue',
-          validateSchema: () => null,
-          validateData: () => null,
-          getConstraints: (args) => [Constraint.MinValue(args.value)],
-        };
+        return new MockValidator('minValue', (args: any) => [
+          Constraint.MinValue(args.value),
+        ]);
+
       case 'maxValue':
-        return {
-          name: 'maxValue',
-          validateSchema: () => null,
-          validateData: () => null,
-          getConstraints: (args) => [Constraint.MaxValue(args.value)],
-        };
+        return new MockValidator('maxValue', (args: any) => [
+          Constraint.MaxValue(args.value),
+        ]);
+
       case 'minLength':
-        return {
-          name: 'minLength',
-          validateSchema: () => null,
-          validateData: () => null,
-          getConstraints: (args) => [Constraint.MinLength(args.value)],
-        };
+        return new MockValidator('minLength', (args: any) => [
+          Constraint.MinLength(args.value),
+        ]);
+
       case 'maxLength':
-        return {
-          name: 'maxLength',
-          validateSchema: () => null,
-          validateData: () => null,
-          getConstraints: (args) => [Constraint.MaxLength(args.value)],
-        };
+        return new MockValidator('maxLength', (args: any) => [
+          Constraint.MaxLength(args.value),
+        ]);
       case 'regex':
-        return {
-          name: 'regex',
-          validateSchema: () => null,
-          validateData: () => null,
-          getConstraints: (args) => [Constraint.Regex(args.value)],
-        };
+        return new MockValidator('regex', (args: any) => [
+          Constraint.Regex(args.value),
+        ]);
       case 'enum':
-        return {
-          name: 'enum',
-          validateSchema: () => null,
-          validateData: () => null,
-          getConstraints: (args) => [Constraint.Enum(args.value)],
-        };
+        return new MockValidator('enum', (args: any) => [
+          Constraint.Enum(args.value),
+        ]);
       default:
         throw new Error(`Validator ${name} is not implemented in test bed.`);
     }
