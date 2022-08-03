@@ -25,6 +25,7 @@ export class ExtensionLoader {
     this.config = config;
   }
 
+  /** Load external extensions (should be called by core package) */
   public async loadExternalExtensionModules() {
     if (this.bound)
       throw new Error(
@@ -81,7 +82,10 @@ export class ExtensionLoader {
         bind(TYPES.ExtensionConfig)
           // Note they we can't bind undefined to container or it throw error while unbinding.
           // https://github.com/inversify/InversifyJS/issues/1462#issuecomment-1202099036
-          .toConstantValue(name.length > 0 ? this.config[name] : {})
+          .toConstantValue(name.length > 0 ? this.config[name] || {} : {})
+          .whenInjectedInto(extension);
+        bind(TYPES.ExtensionName)
+          .toConstantValue(name || '')
           .whenInjectedInto(extension);
       });
     }

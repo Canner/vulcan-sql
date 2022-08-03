@@ -33,7 +33,7 @@ const getSchemaPaths = () =>
 
 class MockValidator extends InputValidator {
   constructor(public name: string, private constraintsFn: any) {
-    super();
+    super({}, name);
   }
 
   public validateData(): void {

@@ -26,7 +26,7 @@ describe('Test "integer" type validator', () => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new IntegerTypeValidator();
+      const validator = new IntegerTypeValidator({}, '');
 
       // Assert
       expect(() => validator.validateSchema(args)).not.toThrow();
@@ -45,7 +45,7 @@ describe('Test "integer" type validator', () => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new IntegerTypeValidator();
+      const validator = new IntegerTypeValidator({}, '');
 
       // Assert
       expect(() => validator.validateSchema(args)).toThrow();
@@ -68,7 +68,7 @@ describe('Test "integer" type validator', () => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new IntegerTypeValidator();
+      const validator = new IntegerTypeValidator({}, '');
 
       // Assert
       expect(() => validator.validateData(data, args)).not.toThrow();
@@ -89,7 +89,7 @@ describe('Test "integer" type validator', () => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new IntegerTypeValidator();
+      const validator = new IntegerTypeValidator({}, '');
 
       // Assert
       expect(() => validator.validateData(data, args)).toThrow();

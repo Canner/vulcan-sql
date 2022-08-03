@@ -79,8 +79,8 @@ describe('Test validator loader for extension validators with one module', () =>
       .inSingletonScope();
   });
 
-  afterEach(() => {
-    container.unbind(TYPES.ValidatorLoader);
+  afterEach(async () => {
+    await container.unbindAllAsync();
   });
   it.each([
     // custom validator

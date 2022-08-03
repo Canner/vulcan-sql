@@ -16,11 +16,13 @@ export class FilterChecker extends CompileTimeExtension {
   constructor(
     @inject(TYPES.ExtensionConfig)
     config: any,
+    @inject(TYPES.ExtensionName)
+    name: string,
     @inject(TYPES.CompilerEnvironment)
     @named('compileTime')
     compileTimeEnv: nunjucks.Environment
   ) {
-    super(config);
+    super(config, name);
     this.env = compileTimeEnv;
   }
 

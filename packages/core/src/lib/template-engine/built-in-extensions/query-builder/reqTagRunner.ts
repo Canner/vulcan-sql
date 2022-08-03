@@ -15,9 +15,10 @@ export class ReqTagRunner extends TagRunner {
 
   constructor(
     @inject(TYPES.ExtensionConfig) config: any,
+    @inject(TYPES.ExtensionName) name: string,
     @inject(TYPES.Executor) executor: IExecutor
   ) {
-    super(config);
+    super(config, name);
     this.executor = executor;
   }
 

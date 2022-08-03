@@ -27,6 +27,7 @@ export const TYPES = {
   ValidatorLoader: Symbol.for('ValidatorLoader'),
   // Extensions
   ExtensionConfig: Symbol.for('ExtensionConfig'),
+  ExtensionName: Symbol.for('ExtensionName'),
   Extension_TemplateEngine: Symbol.for('Extension_TemplateEngine'),
   Extension_InputValidator: Symbol.for('Extension_InputValidator'),
 };
