@@ -9,8 +9,8 @@ import { IsOptional, IsString, validateSync } from 'class-validator';
 @injectable()
 export class TemplateEngineOptions implements ITemplateEngineOptions {
   @IsString()
-  public readonly provider: TemplateProviderType =
-    TemplateProviderType.LocalFile;
+  @IsOptional()
+  public readonly provider!: TemplateProviderType;
 
   @IsString()
   @IsOptional()

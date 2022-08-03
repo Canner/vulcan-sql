@@ -7,6 +7,7 @@ import {
 import * as sinon from 'ts-sinon';
 import { TYPES } from '@vulcan-sql/core/types';
 import { Container } from 'inversify';
+import { TemplateProviderType } from '@vulcan-sql/core';
 
 let container: Container;
 let stubCompiler: sinon.StubbedInstance<Compiler>;
@@ -24,7 +25,10 @@ beforeEach(() => {
     .bind(TYPES.Factory_TemplateProvider)
     .toConstantValue(() => stubTemplateProvider);
   container.bind(TYPES.TemplateEngine).to(TemplateEngine).inSingletonScope();
-  container.bind(TYPES.TemplateEngineOptions).toConstantValue({});
+  container.bind(TYPES.TemplateEngineOptions).toConstantValue({
+    provider: TemplateProviderType.LocalFile,
+    folderPath: '',
+  });
   container.bind(TYPES.CompilerLoader).toConstantValue(stubCodeLoader);
 
   stubCompiler.name = 'stub-compiler';

@@ -12,15 +12,6 @@ beforeEach(() => {
     .inSingletonScope();
 });
 
-it('Should provide correct default option values', async () => {
-  // Action
-  const options = container.get<TemplateEngineOptions>(
-    TYPES.TemplateEngineOptions
-  );
-  // Assert
-  expect(options.provider).toBe(TemplateProviderType.LocalFile);
-});
-
 it('Can override some option properties', async () => {
   // Arrange
   container
@@ -32,11 +23,11 @@ it('Can override some option properties', async () => {
     TYPES.TemplateEngineOptions
   );
   // Assert
-  expect(options.provider).toBe(TemplateProviderType.LocalFile);
+  expect(options.provider).toBe(undefined);
   expect(options.folderPath).toBe('./test/schemas');
 });
 
-it('Schema validation should work', async () => {
+it('Template provide can be null', async () => {
   // Arrange
   container.bind(TYPES.TemplateEngineInputOptions).toConstantValue({
     provider: null,
@@ -44,5 +35,5 @@ it('Schema validation should work', async () => {
   // Act. Assert
   expect(() =>
     container.get<TemplateEngineOptions>(TYPES.TemplateEngineOptions)
-  ).toThrow();
+  ).not.toThrow();
 });

@@ -14,6 +14,8 @@ export class FileTemplateProvider implements TemplateProvider {
     @inject(TYPES.TemplateEngineOptions) options: ITemplateEngineOptions
   ) {
     this.options = options;
+    if (!this.options.folderPath)
+      throw new Error(`Config template.folderPath is required`);
   }
 
   public async *getTemplates(): AsyncGenerator<Template> {
@@ -22,7 +24,7 @@ export class FileTemplateProvider implements TemplateProvider {
     for (const file of files) {
       yield {
         name: path
-          .relative(this.options.folderPath, file)
+          .relative(this.options.folderPath!, file)
           .replace(/\.sql$/, ''),
         statement: await fs.readFile(file, 'utf8'),
       };
@@ -32,7 +34,7 @@ export class FileTemplateProvider implements TemplateProvider {
   private async getTemplateFilePaths(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       glob(
-        path.resolve(this.options.folderPath, '**', '*.sql'),
+        path.resolve(this.options.folderPath!, '**', '*.sql'),
         { nodir: true },
         (err, files) => {
           if (err) return reject(err);

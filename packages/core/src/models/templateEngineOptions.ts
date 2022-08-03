@@ -3,7 +3,7 @@ export enum TemplateProviderType {
 }
 
 export interface ITemplateEngineOptions {
-  provider: TemplateProviderType;
-  folderPath: string;
+  provider?: TemplateProviderType;
+  folderPath?: string;
   [key: string]: any;
 }

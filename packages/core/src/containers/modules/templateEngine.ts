@@ -16,7 +16,7 @@ import { TemplateEngineOptions } from '../../options';
 import * as nunjucks from 'nunjucks';
 import { ICodeLoader } from '@vulcan-sql/core/template-engine/code-loader';
 
-export const templateEngineModule = (options: ITemplateEngineOptions) =>
+export const templateEngineModule = (options: ITemplateEngineOptions = {}) =>
   new AsyncContainerModule(async (bind) => {
     // Options
     bind<ITemplateEngineOptions>(

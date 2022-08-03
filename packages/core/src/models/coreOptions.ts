@@ -5,7 +5,7 @@ export type ExtensionAliases = Record<string, string | string[]>;
 
 export interface ICoreOptions {
   artifact: IArtifactBuilderOptions;
-  template: ITemplateEngineOptions;
+  template?: ITemplateEngineOptions;
   /**
    * The extensions, could be module name or folder path (which need index.ts)
    * E.g: [ 'extensionModule1', '/usr/extensions2' ]

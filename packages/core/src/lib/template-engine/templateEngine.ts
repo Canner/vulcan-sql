@@ -18,22 +18,27 @@ export interface PreCompiledResult {
 @injectable()
 export class TemplateEngine {
   private compiler: Compiler;
-  private templateProvider: TemplateProvider;
+  private templateProvider?: TemplateProvider;
   private compilerLoader: ICodeLoader;
 
   constructor(
     @inject(TYPES.Compiler) compiler: Compiler,
     @inject(TYPES.Factory_TemplateProvider)
     templateProviderFactory: interfaces.AutoNamedFactory<TemplateProvider>,
-    @inject(TYPES.TemplateEngineOptions) options: TemplateEngineOptions,
+    @inject(TYPES.TemplateEngineOptions)
+    options: TemplateEngineOptions,
     @inject(TYPES.CompilerLoader) compilerLoader: ICodeLoader
   ) {
     this.compiler = compiler;
     this.compilerLoader = compilerLoader;
-    this.templateProvider = templateProviderFactory(options.provider);
+    if (options.provider)
+      this.templateProvider = templateProviderFactory(options.provider);
   }
 
   public async compile(): Promise<Required<PreCompiledResult>> {
+    if (!this.templateProvider)
+      throw new Error('Template provider has not been initialized.');
+
     const templateResult: Record<string, string> = {};
     const metadataResult: Record<string, TemplateMetadata> = {};
 
