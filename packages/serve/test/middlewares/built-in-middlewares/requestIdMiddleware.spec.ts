@@ -5,12 +5,8 @@ import { IncomingHttpHeaders } from 'http';
 import { ParsedUrlQuery } from 'querystring';
 import { asyncReqIdStorage, FieldInType } from '@vulcan-sql/core';
 import { KoaRouterContext } from '@vulcan-sql/serve/route';
-import {
-  RequestIdMiddleware,
-  RequestIdOptions,
-} from '@vulcan-sql/serve/middleware';
 import * as uuid from 'uuid';
-import { MiddlewareConfig } from '@vulcan-sql/serve';
+import { RequestIdMiddleware } from '@vulcan-sql/serve/middleware';
 
 describe('Test request-id middlewares', () => {
   afterEach(() => {
@@ -35,7 +31,7 @@ describe('Test request-id middlewares', () => {
     // spy the asyncReqIdStorage behavior
     const spy = sinon.default.spy(asyncReqIdStorage);
     // Act
-    const middleware = new RequestIdMiddleware({});
+    const middleware = new RequestIdMiddleware({}, '');
     await middleware.handle(ctx, async () => Promise.resolve());
 
     // Assert
@@ -58,16 +54,15 @@ describe('Test request-id middlewares', () => {
       },
     };
     // Act
-    const middleware = new RequestIdMiddleware({
-      middlewares: {
-        'request-id': {
-          options: {
-            name: 'Test-Request-ID',
-            fieldIn: FieldInType.QUERY,
-          } as RequestIdOptions,
+    const middleware = new RequestIdMiddleware(
+      {
+        options: {
+          name: 'Test-Request-ID',
+          fieldIn: FieldInType.QUERY,
         },
-      } as MiddlewareConfig,
-    });
+      },
+      ''
+    );
 
     // spy the asyncReqIdStorage behavior
     const spy = sinon.default.spy(asyncReqIdStorage);
@@ -90,15 +85,14 @@ describe('Test request-id middlewares', () => {
       },
     };
     // Act
-    const middleware = new RequestIdMiddleware({
-      middlewares: {
-        'request-id': {
-          options: {
-            fieldIn: FieldInType.QUERY,
-          } as RequestIdOptions,
+    const middleware = new RequestIdMiddleware(
+      {
+        options: {
+          fieldIn: FieldInType.QUERY,
         },
-      } as MiddlewareConfig,
-    });
+      },
+      ''
+    );
 
     // spy the asyncReqIdStorage behavior
     const spy = sinon.default.spy(asyncReqIdStorage);
@@ -124,7 +118,7 @@ describe('Test request-id middlewares', () => {
     // spy the asyncReqIdStorage behavior
     const spy = sinon.default.spy(asyncReqIdStorage);
     // Act
-    const middleware = new RequestIdMiddleware({});
+    const middleware = new RequestIdMiddleware({}, '');
     await middleware.handle(ctx, async () => Promise.resolve());
 
     // Assert,

@@ -19,7 +19,7 @@ describe('Test to respond to json', () => {
     const expected = new Stream.Readable();
     expected.push(null);
     // Act
-    const formatter = new JsonFormatter();
+    const formatter = new JsonFormatter({}, '');
     formatter.formatToResponse(ctx);
     // Assert
     expect(ctx.response.body).toEqual(expected);
@@ -77,7 +77,7 @@ describe('Test to respond to json', () => {
       };
 
       // Act
-      const formatter = new JsonFormatter();
+      const formatter = new JsonFormatter({}, '');
       formatter.formatToResponse(ctx);
       // Assert
 

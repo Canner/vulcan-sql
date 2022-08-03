@@ -1,19 +1,28 @@
 import * as uuid from 'uuid';
-import { FieldInType, asyncReqIdStorage } from '@vulcan-sql/core';
+import {
+  FieldInType,
+  asyncReqIdStorage,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core';
 import { KoaRouterContext, KoaNext } from '@vulcan-sql/serve/route';
-import { BuiltInMiddleware } from '../middleware';
-import { AppConfig } from '@vulcan-sql/serve/models';
+import { BuiltInMiddleware } from '@vulcan-sql/serve/models';
+import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
+import { inject } from 'inversify';
 
 export interface RequestIdOptions {
   name: string;
   fieldIn: FieldInType.HEADER | FieldInType.QUERY;
 }
 
-export class RequestIdMiddleware extends BuiltInMiddleware {
+@VulcanInternalExtension('request-id')
+export class RequestIdMiddleware extends BuiltInMiddleware<RequestIdOptions> {
   private options: RequestIdOptions;
 
-  constructor(config: AppConfig) {
-    super('request-id', config);
+  constructor(
+    @inject(CORE_TYPES.ExtensionConfig) config: any,
+    @inject(CORE_TYPES.ExtensionName) name: string
+  ) {
+    super(config, name);
     // read request-id options from config.
     this.options = (this.getOptions() as RequestIdOptions) || {
       name: 'X-Request-ID',

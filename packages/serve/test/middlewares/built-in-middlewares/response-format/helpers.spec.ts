@@ -1,35 +1,17 @@
 import { Request } from 'koa';
 import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
+import * as responseHelpers from '@vulcan-sql/serve/middleware/response-format/helpers';
+import { BaseResponseFormatter, KoaRouterContext } from '@vulcan-sql/serve';
 import {
   checkUsableFormat,
   isReceivedFormatRequest,
   ResponseFormatterMap,
 } from '@vulcan-sql/serve/middleware';
-import * as responseHelpers from '@vulcan-sql/serve/middleware/built-in-middleware/response-format/helpers';
 import {
-  BaseResponseFormatter,
-  BuiltInFormatters,
   CsvFormatter,
   JsonFormatter,
-  loadComponents,
 } from '@vulcan-sql/serve/response-formatter';
-import { KoaRouterContext } from '@vulcan-sql/serve';
-import { importExtensions } from '@vulcan-sql/serve/loader';
-
-it('Test to get built-in formatters when call load usable formatters with no extensions', async () => {
-  // Act
-  const classesOfExtension = await importExtensions('response-formatter');
-  const result = await loadComponents([
-    ...BuiltInFormatters,
-    ...classesOfExtension,
-  ]);
-  // Assert
-  expect(result).toEqual({
-    csv: new CsvFormatter(),
-    json: new JsonFormatter(),
-  });
-});
 
 it.each([
   {
@@ -98,8 +80,8 @@ describe('Test to call check usable format function', () => {
       // Arrange
       const input = {
         formatters: {
-          csv: new CsvFormatter(),
-          json: new JsonFormatter(),
+          csv: new CsvFormatter({}, 'csv'),
+          json: new JsonFormatter({}, 'json'),
           hyper: {
             name: 'hyper',
           } as BaseResponseFormatter,
@@ -162,7 +144,7 @@ describe('Test to call check usable format function', () => {
     },
     {
       formatters: {
-        json: new JsonFormatter(),
+        json: new JsonFormatter({}, 'json'),
       } as ResponseFormatterMap,
       supportedFormats: ['csv', 'hyper'],
       defaultFormat: 'json',
@@ -193,7 +175,7 @@ describe('Test to call check usable format function', () => {
   it.each([
     {
       formatters: {
-        json: new JsonFormatter(),
+        json: new JsonFormatter({}, 'json'),
         hyper: {
           name: 'hyper',
         } as BaseResponseFormatter,
@@ -204,7 +186,7 @@ describe('Test to call check usable format function', () => {
     },
     {
       formatters: {
-        json: new JsonFormatter(),
+        json: new JsonFormatter({}, 'json'),
         hyper: {
           name: 'hyper',
         } as BaseResponseFormatter,
@@ -238,7 +220,7 @@ describe('Test to call check usable format function', () => {
   it.each([
     {
       formatters: {
-        json: new JsonFormatter(),
+        json: new JsonFormatter({}, ''),
         hyper: {
           name: 'hyper',
         } as BaseResponseFormatter,
@@ -249,7 +231,7 @@ describe('Test to call check usable format function', () => {
     },
     {
       formatters: {
-        json: new JsonFormatter(),
+        json: new JsonFormatter({}, ''),
         hyper: {
           name: 'hyper',
         } as BaseResponseFormatter,

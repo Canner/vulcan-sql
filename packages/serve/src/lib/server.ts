@@ -1,9 +1,7 @@
-import { omit } from 'lodash';
 import * as http from 'http';
 import { Container, TYPES } from '../containers';
 import { ServeConfig } from '../models';
 import { VulcanApplication } from './app';
-import { RouteGenerator } from './route';
 import { APISchema } from '@vulcan-sql/core';
 
 export class VulcanServer {
@@ -20,12 +18,11 @@ export class VulcanServer {
     if (this.server)
       throw new Error('Server has created, please close it first.');
 
-    // Get generator
+    // Load container
     await this.container.load(this.config);
-    const generator = this.container.get<RouteGenerator>(TYPES.RouteGenerator);
 
     // Create application
-    const app = new VulcanApplication(omit(this.config, 'template'), generator);
+    const app = this.container.get<VulcanApplication>(TYPES.VulcanApplication);
     await app.useMiddleware();
     await app.buildRoutes(this.schemas, this.config.types);
     // Run server

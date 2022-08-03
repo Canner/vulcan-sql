@@ -1,7 +1,8 @@
-import { DataColumn } from '@vulcan-sql/core';
+import { DataColumn, ExtensionBase, VulcanExtension } from '@vulcan-sql/core';
 import { has } from 'lodash';
 import * as Stream from 'stream';
-import { KoaRouterContext } from '../route';
+import { TYPES } from '../../containers/types';
+import { KoaRouterContext } from '../../lib/route';
 
 export type BodyResponse = {
   data: Stream.Readable;
@@ -29,12 +30,12 @@ export interface IFormatter {
   formatToResponse(ctx: KoaRouterContext): void;
 }
 
-export abstract class BaseResponseFormatter implements IFormatter {
-  public readonly name: string;
-  constructor(name: string) {
-    this.name = name;
-  }
-
+@VulcanExtension(TYPES.Extension_Formatter)
+export abstract class BaseResponseFormatter
+  extends ExtensionBase
+  implements IFormatter
+{
+  public abstract readonly name: string;
   public formatToResponse(ctx: KoaRouterContext) {
     // return empty csv stream data or column is not exist
     if (!has(ctx.response.body, 'data') || !has(ctx.response.body, 'columns')) {

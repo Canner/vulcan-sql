@@ -1,25 +1,35 @@
 import { Container as InversifyContainer } from 'inversify';
 import { Container as CoreContainer } from '@vulcan-sql/core';
-import { routeGeneratorModule } from './modules';
+import {
+  applicationModule,
+  extensionModule,
+  routeGeneratorModule,
+} from './modules';
 import { ServeConfig } from '../models';
 
 export class Container {
-  private inversifyContainer = new InversifyContainer();
+  private inversifyContainer?: InversifyContainer;
+  private coreContainer?: CoreContainer;
 
   public get<T>(type: symbol) {
-    return this.inversifyContainer.get<T>(type);
+    const instance = this.inversifyContainer?.get<T>(type);
+    if (!instance)
+      throw new Error(`Cannot resolve ${type.toString()} in container`);
+    return instance;
   }
 
   public async load(config: ServeConfig) {
-    const coreContainer = new CoreContainer();
-    await coreContainer.load(config);
-    this.inversifyContainer.parent = coreContainer.getInversifyContainer();
+    this.coreContainer = new CoreContainer();
+    await this.coreContainer.load(config);
+    this.inversifyContainer = this.coreContainer.getInversifyContainer();
     this.inversifyContainer.load(routeGeneratorModule());
+    await this.inversifyContainer.loadAsync(extensionModule(config));
+    await this.inversifyContainer.loadAsync(applicationModule());
   }
 
-  public unload() {
-    this.inversifyContainer.parent?.unbindAll();
-    this.inversifyContainer.unbindAll();
+  public async unload() {
+    await this.coreContainer?.unload();
+    await this.inversifyContainer?.unbindAllAsync();
   }
 
   public getInversifyContainer() {

@@ -1,5 +1,5 @@
 import { KoaRouterContext } from '@vulcan-sql/serve/route';
-import { BaseResponseFormatter } from '@vulcan-sql/serve/response-formatter';
+import { BaseResponseFormatter } from '@vulcan-sql/serve/models';
 
 export type ResponseFormatterMap = {
   [name: string]: BaseResponseFormatter;

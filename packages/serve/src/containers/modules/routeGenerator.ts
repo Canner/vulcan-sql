@@ -17,7 +17,7 @@ export const routeGeneratorModule = () =>
       .to(RequestTransformer)
       .inSingletonScope();
 
-    // Request Transformer
+    // Request Validator
     bind<IRequestValidator>(TYPES.RequestValidator)
       .to(RequestValidator)
       .inSingletonScope();
@@ -27,7 +27,7 @@ export const routeGeneratorModule = () =>
       .to(PaginationTransformer)
       .inSingletonScope();
 
-    // Roue Generator
+    // Route Generator
     bind<RouteGenerator>(TYPES.RouteGenerator)
       .to(RouteGenerator)
       .inSingletonScope();
