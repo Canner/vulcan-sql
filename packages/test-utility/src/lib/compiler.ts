@@ -10,7 +10,6 @@ import {
   ITemplateEngineOptions,
   NunjucksCompiler,
   TemplateEngineOptions,
-  TemplateProviderType,
   TYPES,
 } from '@vulcan-sql/core';
 
@@ -59,7 +58,7 @@ export const getTestCompiler = async (config: Partial<ICoreOptions> = {}) => {
     .bind<ITemplateEngineOptions>(TYPES.TemplateEngineInputOptions)
     .toConstantValue({
       folderPath: '',
-      provider: TemplateProviderType.LocalFile,
+      provider: 'LocalFile',
     });
   container
     .bind<ITemplateEngineOptions>(TYPES.TemplateEngineOptions)
