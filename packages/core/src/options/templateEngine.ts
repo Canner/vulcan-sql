@@ -1,16 +1,13 @@
 import { injectable, inject, optional } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
-import {
-  ITemplateEngineOptions,
-  TemplateProviderType,
-} from '@vulcan-sql/core/models';
+import { ITemplateEngineOptions } from '@vulcan-sql/core/models';
 import { IsOptional, IsString, validateSync } from 'class-validator';
 
 @injectable()
 export class TemplateEngineOptions implements ITemplateEngineOptions {
   @IsString()
   @IsOptional()
-  public readonly provider!: TemplateProviderType;
+  public readonly provider!: string;
 
   @IsString()
   @IsOptional()

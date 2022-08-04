@@ -1,11 +1,9 @@
 import { TYPES } from '@vulcan-sql/core/types';
 import {
   ITemplateEngineOptions,
-  TemplateProviderType,
+  TemplateProvider,
 } from '@vulcan-sql/core/models';
 import {
-  FileTemplateProvider,
-  TemplateProvider,
   InMemoryCodeLoader,
   NunjucksCompiler,
   Compiler,
@@ -27,14 +25,9 @@ export const templateEngineModule = (options: ITemplateEngineOptions = {}) =>
       .inSingletonScope();
 
     // TemplateProvider
-    bind<TemplateProvider>(TYPES.TemplateProvider)
-      .to(FileTemplateProvider)
-      .inSingletonScope()
-      .whenTargetNamed(TemplateProviderType.LocalFile);
-
     bind<interfaces.AutoNamedFactory<TemplateProvider>>(
       TYPES.Factory_TemplateProvider
-    ).toAutoNamedFactory<TemplateProvider>(TYPES.TemplateProvider);
+    ).toAutoNamedFactory<TemplateProvider>(TYPES.Extension_TemplateProvider);
 
     // Compiler environment
     bind<nunjucks.Environment>(TYPES.CompilerEnvironment)

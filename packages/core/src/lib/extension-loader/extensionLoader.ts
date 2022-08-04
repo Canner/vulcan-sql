@@ -2,6 +2,8 @@ import { ExtensionBase, ICoreOptions } from '@vulcan-sql/core/models';
 import { interfaces } from 'inversify';
 import { ClassType, defaultImport } from '../utils';
 import {
+  EXTENSION_ENFORCED_ID_METADATA_KEY,
+  EXTENSION_IDENTIFIER_METADATA_KEY,
   EXTENSION_NAME_METADATA_KEY,
   EXTENSION_TYPE_METADATA_KEY,
 } from '../../models/extensions/decorators';
@@ -78,7 +80,9 @@ export class ExtensionLoader {
   public bindExtensions(bind: interfaces.Bind) {
     for (const type of this.extensionRegistry.keys()) {
       this.extensionRegistry.get(type)!.forEach(({ name, extension }) => {
-        bind(type).to(extension);
+        const extensionBinding = bind(type).to(extension);
+        const { extensionId } = this.getExtensionMetadata(extension);
+        if (extensionId) extensionBinding.whenTargetNamed(extensionId);
         bind(TYPES.ExtensionConfig)
           // Note they we can't bind undefined to container or it throw error while unbinding.
           // https://github.com/inversify/InversifyJS/issues/1462#issuecomment-1202099036
@@ -90,6 +94,25 @@ export class ExtensionLoader {
       });
     }
     this.bound = true;
+  }
+
+  private getExtensionMetadata(extension: ClassType<ExtensionBase>) {
+    const extensionId = Reflect.getMetadata(
+      EXTENSION_IDENTIFIER_METADATA_KEY,
+      extension
+    );
+    const enforcedId = Reflect.getMetadata(
+      EXTENSION_ENFORCED_ID_METADATA_KEY,
+      extension
+    );
+    if (enforcedId && !extensionId)
+      throw new Error(
+        `Extension ${extension.name} needed an extension id but was not found, please use the decorator @VulcanExtensionId to set the id.`
+      );
+
+    return {
+      extensionId,
+    };
   }
 
   private loadExtension(name: string, extension: Extension) {

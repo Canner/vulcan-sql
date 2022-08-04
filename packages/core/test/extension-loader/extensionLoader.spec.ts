@@ -1,7 +1,10 @@
 import {
+  ExtensionBase,
   ExtensionLoader,
   FilterBuilder,
   TYPES,
+  VulcanExtension,
+  VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
 import { Container } from 'inversify';
@@ -25,6 +28,20 @@ class Test2 extends FilterBuilder {
 
 class Test3 extends FilterBuilder {
   public filterName = 'test3';
+}
+
+@VulcanExtension(Symbol.for('mock'), { enforcedId: true })
+abstract class MockExtensionType extends ExtensionBase {}
+
+@VulcanInternalExtension('test4')
+class Test4 extends MockExtensionType {}
+
+@VulcanInternalExtension('test5')
+@VulcanExtensionId('test5-id')
+class Test5 extends MockExtensionType {
+  public getId() {
+    return this.getExtensionId();
+  }
 }
 
 it.each([
@@ -139,4 +156,30 @@ it('Extension loader should inject correct config to extensions', async () => {
   // Assert
   expect(config1).toEqual({ a: 1 });
   expect(config2).toEqual({ b: 2 });
+});
+
+it('Extension loader should bind extensions with name when they have id setting', async () => {
+  // Arrange
+  const loader = new ExtensionLoader({} as any);
+  const container = new Container();
+
+  // Act
+  loader.loadInternalExtensionModule([Test5]);
+  loader.bindExtensions(container.bind.bind(container));
+  const instance = container.getNamed<Test5>(Symbol.for('mock'), 'test5-id');
+
+  // Assert
+  expect(instance.getId()).toEqual('test5-id');
+});
+
+it('Extension loader should throw error while binding an "enforced-id" extension without name', async () => {
+  // Arrange
+  const loader = new ExtensionLoader({} as any);
+  const container = new Container();
+  loader.loadInternalExtensionModule([Test4]);
+
+  // Act, Assert
+  expect(() => loader.bindExtensions(container.bind.bind(container))).toThrow(
+    `Extension Test4 needed an extension id but was not found, please use the decorator @VulcanExtensionId to set the id.`
+  );
 });

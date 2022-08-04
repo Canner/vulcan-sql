@@ -1,11 +1,6 @@
 import { VulcanBuilder } from '../../src';
 import * as path from 'path';
 import { IBuildOptions, SchemaReaderType } from '@vulcan-sql/build/models';
-import {
-  PersistentStoreType,
-  SerializerType,
-  TemplateProviderType,
-} from '@vulcan-sql/core';
 
 it('Builder.build should work', async () => {
   // Arrange
@@ -16,12 +11,12 @@ it('Builder.build should work', async () => {
       folderPath: path.resolve(__dirname, 'source'),
     },
     artifact: {
-      provider: PersistentStoreType.LocalFile,
-      serializer: SerializerType.JSON,
+      provider: 'LocalFile',
+      serializer: 'JSON',
       filePath: path.resolve(__dirname, 'result.json'),
     },
     template: {
-      provider: TemplateProviderType.LocalFile,
+      provider: 'LocalFile',
       folderPath: path.resolve(__dirname, 'source'),
     },
     extensions: {},

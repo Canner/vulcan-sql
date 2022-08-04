@@ -25,7 +25,7 @@ beforeEach(() => {
     .toConstantValue(() => mockPersistentStore);
   container
     .bind(TYPES.Factory_Serializer)
-    .toConstantValue(() => new JSONSerializer());
+    .toConstantValue(() => new JSONSerializer({}, ''));
 
   container.bind(TYPES.ArtifactBuilderOptions).toConstantValue({});
   container.bind(TYPES.ArtifactBuilder).to(VulcanArtifactBuilder);

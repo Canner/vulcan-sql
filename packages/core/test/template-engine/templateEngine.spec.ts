@@ -1,13 +1,12 @@
 import {
   TemplateEngine,
   Compiler,
-  TemplateProvider,
   ICodeLoader,
 } from '@vulcan-sql/core/template-engine';
 import * as sinon from 'ts-sinon';
 import { TYPES } from '@vulcan-sql/core/types';
 import { Container } from 'inversify';
-import { TemplateProviderType } from '@vulcan-sql/core';
+import { TemplateProvider } from '@vulcan-sql/core';
 
 let container: Container;
 let stubCompiler: sinon.StubbedInstance<Compiler>;
@@ -26,7 +25,7 @@ beforeEach(() => {
     .toConstantValue(() => stubTemplateProvider);
   container.bind(TYPES.TemplateEngine).to(TemplateEngine).inSingletonScope();
   container.bind(TYPES.TemplateEngineOptions).toConstantValue({
-    provider: TemplateProviderType.LocalFile,
+    provider: 'LocalFile',
     folderPath: '',
   });
   container.bind(TYPES.CompilerLoader).toConstantValue(stubCodeLoader);

@@ -41,6 +41,7 @@
       ],
       "@vulcan-sql/core/containers": ["packages/core/src/containers/index"],
       "@vulcan-sql/core/types": ["packages/core/src/containers/types"],
+      "@vulcan-sql/core/options": ["packages/core/src/options/index"],
       "@vulcan-sql/core/data-query": ["packages/core/src/lib/data-query/index"],
       "@vulcan-sql/core/data-query/*": ["packages/core/src/lib/data-query/*"],
       "@vulcan-sql/core/data-source": [

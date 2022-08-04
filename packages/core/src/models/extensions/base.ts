@@ -1,21 +1,37 @@
 import { TYPES } from '../../containers/types';
 import { inject, injectable } from 'inversify';
+import 'reflect-metadata';
+import { EXTENSION_IDENTIFIER_METADATA_KEY } from './decorators';
 
 @injectable()
 export abstract class ExtensionBase<C = any> {
   public readonly moduleName: string;
-  public activate?(): Promise<void>;
+  public onActivate?(): Promise<void>;
   private config?: C;
+  private activated = false;
+
+  public async activate() {
+    if (this.activated) return;
+    await this.onActivate?.();
+    this.activated = true;
+  }
 
   constructor(
     @inject(TYPES.ExtensionConfig) config: C,
-    @inject(TYPES.ExtensionName) name: string
+    @inject(TYPES.ExtensionName) moduleName: string
   ) {
     this.config = config;
-    this.moduleName = name;
+    this.moduleName = moduleName;
   }
 
   protected getConfig(): C | undefined {
     return this.config;
+  }
+
+  protected getExtensionId(): string | undefined {
+    return Reflect.getMetadata(
+      EXTENSION_IDENTIFIER_METADATA_KEY,
+      this.constructor
+    );
   }
 }

@@ -1,14 +1,11 @@
 export const TYPES = {
   // Artifact builder
-  PersistentStore: Symbol.for('PersistentStore'),
   Factory_PersistentStore: Symbol.for('Factory_PersistentStore'),
-  Serializer: Symbol.for('Serializer'),
   Factory_Serializer: Symbol.for('Factory_Serializer'),
   ArtifactBuilderOptions: Symbol.for('ArtifactBuilderOptions'),
   ArtifactBuilderInputOptions: Symbol.for('ArtifactBuilderInputOptions'),
   ArtifactBuilder: Symbol.for('ArtifactBuilder'),
   // Template engine
-  TemplateProvider: Symbol.for('TemplateProvider'),
   Factory_TemplateProvider: Symbol.for('Factory_TemplateProvider'),
   CompilerExtension: Symbol.for('CompilerExtension'),
   CompilerLoader: Symbol.for('CompilerLoader'),
@@ -30,4 +27,7 @@ export const TYPES = {
   ExtensionName: Symbol.for('ExtensionName'),
   Extension_TemplateEngine: Symbol.for('Extension_TemplateEngine'),
   Extension_InputValidator: Symbol.for('Extension_InputValidator'),
+  Extension_TemplateProvider: Symbol.for('Extension_TemplateProvider'),
+  Extension_Serializer: Symbol.for('Extension_Serializer'),
+  Extension_PersistentStore: Symbol.for('Extension_PersistentStore'),
 };

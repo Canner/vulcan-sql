@@ -1,17 +1,13 @@
-import { AsyncContainerModule, ContainerModule, interfaces } from 'inversify';
+import { AsyncContainerModule, interfaces } from 'inversify';
 import {
-  PersistentStore,
-  LocalFilePersistentStore,
-  Serializer,
-  JSONSerializer,
   ArtifactBuilder,
   VulcanArtifactBuilder,
 } from '@vulcan-sql/core/artifact-builder';
 import { TYPES } from '../types';
 import {
-  SerializerType,
-  PersistentStoreType,
   IArtifactBuilderOptions,
+  PersistentStore,
+  Serializer,
 } from '@vulcan-sql/core/models';
 import { ArtifactBuilderOptions } from '../../options';
 
@@ -26,24 +22,14 @@ export const artifactBuilderModule = (options: IArtifactBuilderOptions) =>
       .inSingletonScope();
 
     // PersistentStore
-    bind<PersistentStore>(TYPES.PersistentStore)
-      .to(LocalFilePersistentStore)
-      .inSingletonScope()
-      .whenTargetNamed(PersistentStoreType.LocalFile);
-
     bind<interfaces.AutoNamedFactory<PersistentStore>>(
       TYPES.Factory_PersistentStore
-    ).toAutoNamedFactory<PersistentStore>(TYPES.PersistentStore);
+    ).toAutoNamedFactory<PersistentStore>(TYPES.Extension_PersistentStore);
 
     // Serializer
-    bind<Serializer<any>>(TYPES.Serializer)
-      .to(JSONSerializer)
-      .inSingletonScope()
-      .whenTargetNamed(SerializerType.JSON);
-
     bind<interfaces.AutoNamedFactory<Serializer<any>>>(
       TYPES.Factory_Serializer
-    ).toAutoNamedFactory<Serializer<any>>(TYPES.Serializer);
+    ).toAutoNamedFactory<Serializer<any>>(TYPES.Extension_Serializer);
 
     // ArtifactBuilder
     bind<ArtifactBuilder>(TYPES.ArtifactBuilder)

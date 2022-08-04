@@ -1,8 +1,12 @@
-import { Serializer } from './serializer';
-import { injectable } from 'inversify';
+import {
+  Serializer,
+  VulcanExtensionId,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
 
-@injectable()
-export class JSONSerializer<T> implements Serializer<T> {
+@VulcanInternalExtension()
+@VulcanExtensionId('JSON')
+export class JSONSerializer<T> extends Serializer<T> {
   public serialize(data: T): Buffer {
     return Buffer.from(JSON.stringify(data), 'utf-8');
   }

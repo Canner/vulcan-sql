@@ -8,7 +8,7 @@ export class TestFilterRunner extends FilterRunner {
   public filterName = 'test';
   private initDone = false;
 
-  public override async activate(): Promise<void> {
+  public override async onActivate(): Promise<void> {
     this.initDone = true;
   }
 

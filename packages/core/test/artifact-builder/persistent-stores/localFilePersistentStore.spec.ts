@@ -1,27 +1,16 @@
 import * as path from 'path';
-import {
-  LocalFilePersistentStore,
-  PersistentStore,
-} from '@vulcan-sql/core/artifact-builder';
-import { TYPES } from '@vulcan-sql/core/types';
-import { Container } from 'inversify';
-
-let container: Container;
-
-beforeEach(() => {
-  container = new Container();
-  container
-    .bind(TYPES.ArtifactBuilderOptions)
-    .toConstantValue({ filePath: path.resolve(__dirname, 'test.json') });
-  container
-    .bind(TYPES.PersistentStore)
-    .to(LocalFilePersistentStore)
-    .inSingletonScope();
-});
+import { LocalFilePersistentStore } from '@vulcan-sql/core/artifact-builder';
 
 it('Should persist data to file', async () => {
   // Arrange
-  const ps = container.get<PersistentStore>(TYPES.PersistentStore);
+  const ps = new LocalFilePersistentStore(
+    {
+      filePath: path.resolve(__dirname, 'test.json'),
+      provider: 'LocalFile',
+    } as any,
+    {},
+    ''
+  );
   const data = Buffer.from('Hello World');
   // Act, Assert
   await expect(ps.save(data)).resolves.not.toThrow();
@@ -29,7 +18,14 @@ it('Should persist data to file', async () => {
 
 it('Should load persisted data from file with correct data', async () => {
   // Arrange
-  const ps = container.get<PersistentStore>(TYPES.PersistentStore);
+  const ps = new LocalFilePersistentStore(
+    {
+      filePath: path.resolve(__dirname, 'test.json'),
+      provider: 'LocalFile',
+    } as any,
+    {},
+    ''
+  );
   const data = Buffer.from('Hello World');
   await ps.save(data);
   // Act

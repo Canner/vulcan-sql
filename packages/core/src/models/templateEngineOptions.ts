@@ -1,9 +1,5 @@
-export enum TemplateProviderType {
-  LocalFile = 'LocalFile',
-}
-
 export interface ITemplateEngineOptions {
-  provider?: TemplateProviderType;
+  provider?: string;
   folderPath?: string;
   [key: string]: any;
 }

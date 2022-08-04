@@ -1,4 +1,4 @@
-import { ITemplateEngineOptions, TemplateProviderType, TYPES } from '../../src';
+import { ITemplateEngineOptions, TYPES } from '../../src';
 import { Container } from 'inversify';
 import { TemplateEngineOptions } from '../../src/options';
 

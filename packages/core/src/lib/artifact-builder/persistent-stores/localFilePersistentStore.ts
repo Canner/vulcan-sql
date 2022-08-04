@@ -1,16 +1,25 @@
-import { PersistentStore } from './persistentStore';
 import { promises as fs } from 'fs';
-import { injectable, inject } from 'inversify';
+import {
+  IArtifactBuilderOptions,
+  PersistentStore,
+  VulcanExtensionId,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
+import { inject } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
-import { IArtifactBuilderOptions } from '@vulcan-sql/core/models';
+import { ArtifactBuilderOptions } from '@vulcan-sql/core/options';
 
-@injectable()
-export class LocalFilePersistentStore implements PersistentStore {
+@VulcanInternalExtension()
+@VulcanExtensionId('LocalFile')
+export class LocalFilePersistentStore extends PersistentStore {
   private filePath: string;
 
   constructor(
-    @inject(TYPES.ArtifactBuilderOptions) options: IArtifactBuilderOptions
+    @inject(TYPES.ArtifactBuilderOptions) options: ArtifactBuilderOptions,
+    @inject(TYPES.ExtensionConfig) config: any,
+    @inject(TYPES.ExtensionName) moduleName: string
   ) {
+    super(config, moduleName);
     this.filePath = options.filePath;
   }
 

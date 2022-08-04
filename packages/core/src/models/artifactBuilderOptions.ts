@@ -1,13 +1,5 @@
-export enum PersistentStoreType {
-  LocalFile = 'LocalFile',
-}
-
-export enum SerializerType {
-  JSON = 'JSON',
-}
-
 export interface IArtifactBuilderOptions {
-  provider: PersistentStoreType;
-  serializer: SerializerType;
+  provider: string;
+  serializer: string;
   filePath: string;
 }

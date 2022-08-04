@@ -8,7 +8,7 @@ export class DBTTagBuilder extends TagBuilder<DBTExtensionOptions> {
   public tags = ['dbt'];
   private models = new Map<string, string>();
 
-  public override async activate() {
+  public override async onActivate() {
     this.models.clear();
     const modelFiles = this.getConfig()?.modelFiles || [];
     for (const modelFile of modelFiles) {

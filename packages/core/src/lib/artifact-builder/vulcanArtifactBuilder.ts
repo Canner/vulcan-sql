@@ -1,6 +1,6 @@
 import { Artifact, ArtifactBuilder } from './artifactBuilder';
-import { PersistentStore } from './persistent-stores';
-import { Serializer } from './serializers';
+import { PersistentStore } from '@vulcan-sql/core/models';
+import { Serializer } from '@vulcan-sql/core/models';
 import { inject, injectable, interfaces } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import { IArtifactBuilderOptions } from '../../models/artifactBuilderOptions';

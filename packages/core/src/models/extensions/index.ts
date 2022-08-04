@@ -6,3 +6,6 @@ export * from './templateEngine';
 export * from './filterBuilder';
 export * from './filterRunner';
 export * from './inputValidator';
+export * from './templateProvider';
+export * from './serializer';
+export * from './persistentStore';
