@@ -6,10 +6,10 @@ import { IsString, validateSync, IsOptional } from 'class-validator';
 @injectable()
 export class ArtifactBuilderOptions implements IArtifactBuilderOptions {
   @IsString()
-  public readonly provider = 'LocalFile';
+  public readonly provider: string = 'LocalFile';
 
   @IsString()
-  public readonly serializer = 'JSON';
+  public readonly serializer: string = 'JSON';
 
   @IsString()
   @IsOptional()

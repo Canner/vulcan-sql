@@ -29,6 +29,17 @@ export const templateEngineModule = (options: ITemplateEngineOptions = {}) =>
       TYPES.Factory_TemplateProvider
     ).toAutoNamedFactory<TemplateProvider>(TYPES.Extension_TemplateProvider);
 
+    if (options.provider) {
+      bind<TemplateProvider>(TYPES.TemplateProvider)
+        .toDynamicValue((context) => {
+          const factory = context.container.get<
+            interfaces.AutoNamedFactory<TemplateProvider>
+          >(TYPES.Factory_TemplateProvider);
+          return factory(options.provider!);
+        })
+        .inSingletonScope();
+    }
+
     // Compiler environment
     bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
       .toDynamicValue((context) => {

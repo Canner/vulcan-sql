@@ -3,12 +3,15 @@ export const TYPES = {
   ProjectOptions: Symbol.for('ProjectOptions'),
   ProjectInputOptions: Symbol.for('ProjectInputOptions'),
   // Artifact builder
+  PersistentStore: Symbol.for('PersistentStore'),
   Factory_PersistentStore: Symbol.for('Factory_PersistentStore'),
+  Serializer: Symbol.for('Serializer'),
   Factory_Serializer: Symbol.for('Factory_Serializer'),
   ArtifactBuilderOptions: Symbol.for('ArtifactBuilderOptions'),
   ArtifactBuilderInputOptions: Symbol.for('ArtifactBuilderInputOptions'),
   ArtifactBuilder: Symbol.for('ArtifactBuilder'),
   // Template engine
+  TemplateProvider: Symbol.for('TemplateProvider'),
   Factory_TemplateProvider: Symbol.for('Factory_TemplateProvider'),
   CompilerExtension: Symbol.for('CompilerExtension'),
   CompilerLoader: Symbol.for('CompilerLoader'),

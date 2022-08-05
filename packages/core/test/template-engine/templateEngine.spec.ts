@@ -16,9 +16,7 @@ beforeEach(() => {
   stubCodeLoader = sinon.stubInterface<CodeLoader>();
 
   container.bind(TYPES.Compiler).toConstantValue(stubCompiler);
-  container
-    .bind(TYPES.Factory_TemplateProvider)
-    .toConstantValue(() => stubTemplateProvider);
+  container.bind(TYPES.TemplateProvider).toConstantValue(stubTemplateProvider);
   container.bind(TYPES.TemplateEngine).to(TemplateEngine).inSingletonScope();
   container.bind(TYPES.TemplateEngineOptions).toConstantValue({
     provider: 'LocalFile',

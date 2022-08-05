@@ -16,6 +16,17 @@ export const schemaParserModule = (options?: ISchemaParserOptions) =>
       .inSingletonScope();
 
     // Schema reader
+    bind<SchemaReader>(TYPES.SchemaReader)
+      .toDynamicValue((context) => {
+        const factory = context.container.get<
+          interfaces.AutoNamedFactory<SchemaReader>
+        >(TYPES.Factory_SchemaReader);
+        const options = context.container.get<SchemaParserOptions>(
+          TYPES.SchemaParserOptions
+        );
+        return factory(options.reader);
+      })
+      .inSingletonScope();
     bind<interfaces.AutoNamedFactory<SchemaReader>>(
       TYPES.Factory_SchemaReader
     ).toAutoNamedFactory<SchemaReader>(TYPES.Extension_SchemaReader);

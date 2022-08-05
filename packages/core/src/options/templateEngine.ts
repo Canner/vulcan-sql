@@ -7,7 +7,7 @@ import { IsOptional, IsString, validateSync } from 'class-validator';
 export class TemplateEngineOptions implements ITemplateEngineOptions {
   @IsString()
   @IsOptional()
-  public readonly provider!: string;
+  public readonly provider?: string;
 
   @IsString()
   @IsOptional()

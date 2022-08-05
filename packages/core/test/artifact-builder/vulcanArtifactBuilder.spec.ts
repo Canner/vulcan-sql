@@ -20,12 +20,8 @@ beforeEach(() => {
   container = new Container();
   mockPersistentStore = sinon.stubInterface();
 
-  container
-    .bind(TYPES.Factory_PersistentStore)
-    .toConstantValue(() => mockPersistentStore);
-  container
-    .bind(TYPES.Factory_Serializer)
-    .toConstantValue(() => new JSONSerializer({}, ''));
+  container.bind(TYPES.PersistentStore).toConstantValue(mockPersistentStore);
+  container.bind(TYPES.Serializer).toConstantValue(new JSONSerializer({}, ''));
 
   container.bind(TYPES.ArtifactBuilderOptions).toConstantValue({});
   container.bind(TYPES.ArtifactBuilder).to(VulcanArtifactBuilder);

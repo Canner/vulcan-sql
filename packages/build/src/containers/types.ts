@@ -2,6 +2,7 @@ export const TYPES = {
   // Schema
   SchemaParserInputOptions: Symbol.for('SchemaParserInputOptions'),
   SchemaParserOptions: Symbol.for('SchemaParserOptions'),
+  SchemaReader: Symbol.for('SchemaReader'),
   Factory_SchemaReader: Symbol.for('Factory_SchemaReader'),
   SchemaParser: Symbol.for('SchemaParser'),
   SchemaParserMiddleware: Symbol.for('SchemaParserMiddleware'),

@@ -1,5 +1,5 @@
 import { Compiler, TemplateMetadata } from './compiler';
-import { injectable, inject, interfaces } from 'inversify';
+import { injectable, inject, optional } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import { TemplateEngineOptions } from '../../options';
 import {
@@ -25,16 +25,14 @@ export class TemplateEngine {
 
   constructor(
     @inject(TYPES.Compiler) compiler: Compiler,
-    @inject(TYPES.Factory_TemplateProvider)
-    templateProviderFactory: interfaces.AutoNamedFactory<TemplateProvider>,
-    @inject(TYPES.TemplateEngineOptions)
-    options: TemplateEngineOptions,
+    @inject(TYPES.TemplateProvider)
+    @optional()
+    templateProvider: TemplateProvider | undefined,
     @inject(TYPES.CompilerLoader) compilerLoader: CodeLoader
   ) {
     this.compiler = compiler;
     this.compilerLoader = compilerLoader;
-    if (options.provider)
-      this.templateProvider = templateProviderFactory(options.provider);
+    if (templateProvider) this.templateProvider = templateProvider;
   }
 
   public async compile(): Promise<Required<PreCompiledResult>> {

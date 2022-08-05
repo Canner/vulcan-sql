@@ -25,11 +25,33 @@ export const artifactBuilderModule = (options: IArtifactBuilderOptions) =>
     bind<interfaces.AutoNamedFactory<PersistentStore>>(
       TYPES.Factory_PersistentStore
     ).toAutoNamedFactory<PersistentStore>(TYPES.Extension_PersistentStore);
+    bind<PersistentStore>(TYPES.PersistentStore)
+      .toDynamicValue((context) => {
+        const factory = context.container.get<
+          interfaces.AutoNamedFactory<PersistentStore>
+        >(TYPES.Factory_PersistentStore);
+        const options = context.container.get<ArtifactBuilderOptions>(
+          TYPES.ArtifactBuilderOptions
+        );
+        return factory(options.provider);
+      })
+      .inSingletonScope();
 
     // Serializer
     bind<interfaces.AutoNamedFactory<Serializer<any>>>(
       TYPES.Factory_Serializer
     ).toAutoNamedFactory<Serializer<any>>(TYPES.Extension_Serializer);
+    bind<Serializer<any>>(TYPES.Serializer)
+      .toDynamicValue((context) => {
+        const factory = context.container.get<
+          interfaces.AutoNamedFactory<Serializer<any>>
+        >(TYPES.Factory_Serializer);
+        const options = context.container.get<ArtifactBuilderOptions>(
+          TYPES.ArtifactBuilderOptions
+        );
+        return factory(options.serializer);
+      })
+      .inSingletonScope();
 
     // ArtifactBuilder
     bind<ArtifactBuilder>(TYPES.ArtifactBuilder)

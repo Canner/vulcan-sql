@@ -26,14 +26,13 @@ export class SchemaParser {
   private middleware: SchemaParserMiddleware['handle'][] = [];
 
   constructor(
-    @inject(TYPES.Factory_SchemaReader)
-    schemaReaderFactory: interfaces.AutoNamedFactory<SchemaReader>,
-    @inject(TYPES.SchemaParserOptions) schemaParserOptions: SchemaParserOptions,
+    @inject(TYPES.SchemaReader)
+    schemaReader: SchemaReader,
     @multiInject(TYPES.SchemaParserMiddleware)
     @optional()
     middlewares: SchemaParserMiddleware[] = []
   ) {
-    this.schemaReader = schemaReaderFactory(schemaParserOptions.reader);
+    this.schemaReader = schemaReader;
 
     // Load middleware
     middlewares.forEach(this.use.bind(this));

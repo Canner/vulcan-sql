@@ -27,9 +27,7 @@ beforeEach(async () => {
     } as any)
   );
 
-  container
-    .bind(TYPES.Factory_SchemaReader)
-    .toConstantValue(() => stubSchemaReader);
+  container.bind(TYPES.SchemaReader).toConstantValue(stubSchemaReader);
   container
     .bind<Partial<ISchemaParserOptions>>(TYPES.SchemaParserInputOptions)
     .toConstantValue({
