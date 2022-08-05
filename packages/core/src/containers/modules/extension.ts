@@ -11,6 +11,7 @@ import {
   builtInPersistentStore,
   builtInSerializer,
 } from '@vulcan-sql/core/artifact-builder';
+import { builtInDataSource } from '@vulcan-sql/core/data-source';
 
 export const extensionModule = (options: ICoreOptions) =>
   new AsyncContainerModule(async (bind) => {
@@ -31,6 +32,8 @@ export const extensionModule = (options: ICoreOptions) =>
     loader.loadInternalExtensionModule(builtInPersistentStore);
     // Code Loader (single module)
     loader.loadInternalExtensionModule(builtInCodeLoader);
+    // Data source (single module)
+    loader.loadInternalExtensionModule(builtInDataSource);
 
     // External extension modules
     await loader.loadExternalExtensionModules();

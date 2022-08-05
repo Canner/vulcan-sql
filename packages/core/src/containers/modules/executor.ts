@@ -1,48 +1,30 @@
-import {
-  IExecutor,
-  QueryExecutor,
-  SQLClauseOperation,
-} from '@vulcan-sql/core/data-query';
-import { Pagination } from '../../models/pagination';
-import { DataResult, IDataSource } from '@vulcan-sql/core/data-source';
-import { AsyncContainerModule } from 'inversify';
+import { IExecutor, QueryExecutor } from '@vulcan-sql/core/data-query';
+import { AsyncContainerModule, interfaces } from 'inversify';
 import { TYPES } from '../types';
-import { Stream } from 'stream';
+import { DataSource } from '../../models/extensions';
+import { IExecutorOptions } from '../../models';
+import { ExecutorOptions } from '../../options';
 
-/**
- * TODO: Mock data source to make data query builder could create by IoC
- * need to update after real data source implemented.
- *  */
-
-class MockDataSource implements IDataSource {
-  public async execute({
-    statement,
-    operations,
-    pagination,
-  }: {
-    statement: string;
-    operations: SQLClauseOperation;
-    pagination?: Pagination | undefined;
-  }) {
-    return {
-      getColumns: () => {
-        return [];
-      },
-      getData: () => {
-        return new Stream.Readable();
-      },
-    } as DataResult;
-  }
-}
-
-export const executorModule = () =>
+export const executorModule = (options: IExecutorOptions = {}) =>
   new AsyncContainerModule(async (bind) => {
-    /**
-     * TODO: bind mock data source, need to update after real data source implemented.
-     */
-    bind<IDataSource>(TYPES.DataSource).toConstantValue(new MockDataSource());
-    bind<IExecutor>(TYPES.Executor).toDynamicValue((context) => {
-      const dataSource = context.container.get<IDataSource>(TYPES.DataSource);
-      return new QueryExecutor(dataSource);
+    // Options
+    bind(TYPES.ExecutorInputOptions).toConstantValue(options);
+    bind(TYPES.ExecutorOptions).to(ExecutorOptions);
+
+    // Data source
+    bind(TYPES.Factory_DataSource).toAutoNamedFactory(
+      TYPES.Extension_DataSource
+    );
+    bind<DataSource>(TYPES.DataSource).toDynamicValue((context) => {
+      const factory = context.container.get<
+        interfaces.AutoNamedFactory<DataSource>
+      >(TYPES.Factory_DataSource);
+      const options = context.container.get<ExecutorOptions>(
+        TYPES.ExecutorOptions
+      );
+      return factory(options.type);
     });
+
+    // Executor
+    bind<IExecutor>(TYPES.Executor).to(QueryExecutor);
   });

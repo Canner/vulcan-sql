@@ -13,18 +13,18 @@ import {
   LogicalOperator,
   NullPredicateInput,
 } from '@vulcan-sql/core/data-query';
-import { IDataSource } from '@vulcan-sql/core';
+import { DataSource } from '@vulcan-sql/core';
 
 describe('Test data query builder > join clause', () => {
-  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+  let stubDataSource: sinon.StubbedInstance<DataSource>;
 
   beforeEach(() => {
-    stubDataSource = sinon.stubInterface<IDataSource>();
+    stubDataSource = sinon.stubInterface<DataSource>();
   });
 
   const joinBuilder = new DataQueryBuilder({
     statement: 'select * from products',
-    dataSource: sinon.stubInterface<IDataSource>(),
+    dataSource: sinon.stubInterface<DataSource>(),
   });
   const alias = 'products';
   const joinOnClauseOperations: Array<JoinOnClauseOperation> = [

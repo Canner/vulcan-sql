@@ -104,6 +104,7 @@ describe('Test vulcan server for practicing middleware', () => {
 describe('Test vulcan server for calling restful APIs', () => {
   let container: Container;
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
+  let server: http.Server;
   const fakeSchemas: Array<APISchema> = [
     {
       ...sinon.stubInterface<APISchema>(),
@@ -255,6 +256,13 @@ describe('Test vulcan server for calling restful APIs', () => {
     container = new Container();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
 
+    stubTemplateEngine.execute.callsFake(async (_: string, data: any) => {
+      return {
+        getData: () => data.context.params,
+        getColumns: () => [],
+      };
+    });
+
     await container.loadAsync(
       coreExtensionModule({
         artifact: {} as any,
@@ -282,6 +290,8 @@ describe('Test vulcan server for calling restful APIs', () => {
 
   afterEach(() => {
     container.unbindAll();
+    // close server
+    server.close();
   });
 
   it.each([
@@ -296,7 +306,7 @@ describe('Test vulcan server for calling restful APIs', () => {
       const app = container.get<VulcanApplication>(TYPES.VulcanApplication);
       await app.useMiddleware();
       await app.buildRoutes([schema], [APIProviderType.RESTFUL]);
-      const server = http
+      server = http
         .createServer(app.getHandler())
         .listen(faker.internet.port());
 
@@ -332,9 +342,7 @@ describe('Test vulcan server for calling restful APIs', () => {
       const response = await reqOperation;
 
       // Assert
-      expect(response.body.reqParams).toEqual(expected);
-      // close server
-      server.close();
+      expect(response.body.data).toEqual(expected);
     }
   );
 });

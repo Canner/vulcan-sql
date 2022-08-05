@@ -1,5 +1,4 @@
-import { IDataSource } from '@vulcan-sql/core/data-source';
-import { Pagination } from '@vulcan-sql/core/models';
+import { DataSource, Pagination } from '@vulcan-sql/core/models';
 
 import { find, isEmpty } from 'lodash';
 import {
@@ -180,7 +179,7 @@ export interface SQLClauseOperation {
 export interface IDataQueryBuilder {
   readonly statement: string;
   readonly operations: SQLClauseOperation;
-  readonly dataSource: IDataSource;
+  readonly dataSource: DataSource;
 
   // Select clause methods
   select(...columns: Array<SelectedColumn | string>): IDataQueryBuilder;
@@ -405,7 +404,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
   public readonly statement: string;
   // record all operations for different SQL clauses
   public readonly operations: SQLClauseOperation;
-  public readonly dataSource: IDataSource;
+  public readonly dataSource: DataSource;
   public pagination?: Pagination;
   constructor({
     statement,
@@ -414,7 +413,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
   }: {
     statement: string;
     operations?: SQLClauseOperation;
-    dataSource: IDataSource;
+    dataSource: DataSource;
   }) {
     this.statement = statement;
     this.dataSource = dataSource;

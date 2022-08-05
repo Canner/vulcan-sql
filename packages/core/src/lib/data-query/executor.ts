@@ -1,15 +1,16 @@
-import { TYPES } from '@vulcan-sql/core';
+import { DataSource } from '@vulcan-sql/core';
 import { inject, injectable } from 'inversify';
+import { TYPES } from '@vulcan-sql/core/types';
 import { DataQueryBuilder, IDataQueryBuilder } from './builder';
-import { IDataSource } from '../data-source';
 
 export interface IExecutor {
   createBuilder(query: string): Promise<IDataQueryBuilder>;
 }
 
+@injectable()
 export class QueryExecutor implements IExecutor {
-  private dataSource: IDataSource;
-  constructor(dataSource: IDataSource) {
+  private dataSource: DataSource;
+  constructor(@inject(TYPES.DataSource) dataSource: DataSource) {
     this.dataSource = dataSource;
   }
   /**

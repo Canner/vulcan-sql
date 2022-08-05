@@ -23,10 +23,11 @@ export const TYPES = {
   TemplateEngineInputOptions: Symbol.for('TemplateEngineInputOptions'),
   // Executor
   Executor: Symbol.for('Executor'),
-  // Data Query Builder
+  ExecutorOptions: Symbol.for('ExecutorOptions'),
+  ExecutorInputOptions: Symbol.for('ExecutorInputOptions'),
   DataQueryBuilder: Symbol.for('DataQueryBuilder'),
-  // Data Source
   DataSource: Symbol.for('DataSource'),
+  Factory_DataSource: Symbol.for('Factory_DataSource'),
   // Validator
   ValidatorLoader: Symbol.for('ValidatorLoader'),
   // Extensions
@@ -38,4 +39,5 @@ export const TYPES = {
   Extension_Serializer: Symbol.for('Extension_Serializer'),
   Extension_PersistentStore: Symbol.for('Extension_PersistentStore'),
   Extension_CompilerLoader: Symbol.for('Extension_CompilerLoader'),
+  Extension_DataSource: Symbol.for('Extension_DataSource'),
 };

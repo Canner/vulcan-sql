@@ -11,7 +11,7 @@ import {
   HavingClauseOperation,
   HavingPredicateInput,
 } from '@vulcan-sql/core/data-query';
-import { IDataSource } from '@vulcan-sql/core/data-source';
+import { DataSource } from '@vulcan-sql/core/models';
 
 const normalized = (column: string | SelectedColumn) => {
   if (typeof column === 'string') return { name: column };
@@ -19,10 +19,10 @@ const normalized = (column: string | SelectedColumn) => {
 };
 
 describe('Test data query builder > having clause', () => {
-  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+  let stubDataSource: sinon.StubbedInstance<DataSource>;
 
   beforeEach(() => {
-    stubDataSource = sinon.stubInterface<IDataSource>();
+    stubDataSource = sinon.stubInterface<DataSource>();
   });
 
   it.each([
@@ -37,7 +37,7 @@ describe('Test data query builder > having clause', () => {
         operator: '=',
         value: new DataQueryBuilder({
           statement: 'select * from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
       },
     },
@@ -51,7 +51,7 @@ describe('Test data query builder > having clause', () => {
         operator: '=',
         value: new DataQueryBuilder({
           statement: 'select avg(*) from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
       },
       and: {
@@ -126,7 +126,7 @@ describe('Test data query builder > having clause', () => {
         operator: '=',
         value: new DataQueryBuilder({
           statement: 'select * from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
       },
     },
@@ -140,7 +140,7 @@ describe('Test data query builder > having clause', () => {
         operator: '=',
         value: new DataQueryBuilder({
           statement: 'select avg(*) from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
       },
       or: {
@@ -762,21 +762,21 @@ describe('Test data query builder > having clause', () => {
       exists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       and: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       andNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -785,21 +785,21 @@ describe('Test data query builder > having clause', () => {
       exists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       and: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       andNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -836,21 +836,21 @@ describe('Test data query builder > having clause', () => {
       exists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       or: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       orNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -859,21 +859,21 @@ describe('Test data query builder > having clause', () => {
       exists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       or: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       orNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,

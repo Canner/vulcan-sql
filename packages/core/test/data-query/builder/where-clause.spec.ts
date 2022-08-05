@@ -9,13 +9,13 @@ import {
   AliasDataQueryBuilder,
   IDataQueryBuilder,
 } from '@vulcan-sql/core/data-query';
-import { IDataSource } from '@vulcan-sql/core/data-source';
+import { DataSource } from '@vulcan-sql/core/models';
 
 describe('Test data query builder > where clause', () => {
-  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+  let stubDataSource: sinon.StubbedInstance<DataSource>;
 
   beforeEach(() => {
-    stubDataSource = sinon.stubInterface<IDataSource>();
+    stubDataSource = sinon.stubInterface<DataSource>();
   });
 
   it.each([
@@ -30,7 +30,7 @@ describe('Test data query builder > where clause', () => {
         operator: '=',
         value: new DataQueryBuilder({
           statement: 'select * from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
       },
       andNot: {
@@ -45,7 +45,7 @@ describe('Test data query builder > where clause', () => {
         operator: '=',
         value: new DataQueryBuilder({
           statement: 'select avg(*) from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
       },
       and: {
@@ -99,7 +99,7 @@ describe('Test data query builder > where clause', () => {
         operator: '=',
         value: new DataQueryBuilder({
           statement: 'select * from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
       },
       orNot: {
@@ -114,7 +114,7 @@ describe('Test data query builder > where clause', () => {
         operator: '=',
         value: new DataQueryBuilder({
           statement: 'select avg(*) from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
       },
       or: {
@@ -189,7 +189,7 @@ describe('Test data query builder > where clause', () => {
         column: faker.database.column(),
         values: new DataQueryBuilder({
           statement: 'select type from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
       },
       and: {
@@ -204,7 +204,7 @@ describe('Test data query builder > where clause', () => {
         column: faker.database.column(),
         values: new DataQueryBuilder({
           statement: 'select age from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
       },
     },
@@ -267,7 +267,7 @@ describe('Test data query builder > where clause', () => {
         column: faker.database.column(),
         values: new DataQueryBuilder({
           statement: 'select type from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
       },
       or: {
@@ -282,7 +282,7 @@ describe('Test data query builder > where clause', () => {
         column: faker.database.column(),
         values: new DataQueryBuilder({
           statement: 'select age from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
       },
     },
@@ -642,21 +642,21 @@ describe('Test data query builder > where clause', () => {
       exists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       and: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       andNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -665,7 +665,7 @@ describe('Test data query builder > where clause', () => {
       exists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -673,7 +673,7 @@ describe('Test data query builder > where clause', () => {
       and: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -681,7 +681,7 @@ describe('Test data query builder > where clause', () => {
       andNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -718,21 +718,21 @@ describe('Test data query builder > where clause', () => {
       notExists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       or: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       orNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -741,21 +741,21 @@ describe('Test data query builder > where clause', () => {
       notExists: {
         builder: new DataQueryBuilder({
           statement: 'select * from products',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       or: {
         builder: new DataQueryBuilder({
           statement: 'select * from users',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       orNot: {
         builder: new DataQueryBuilder({
           statement: 'select * from orders',
-          dataSource: sinon.stubInterface<IDataSource>(),
+          dataSource: sinon.stubInterface<DataSource>(),
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -812,7 +812,7 @@ describe('Test data query builder > where clause', () => {
             '>',
             new DataQueryBuilder({
               statement: 'select count(*) from tags',
-              dataSource: sinon.stubInterface<IDataSource>(),
+              dataSource: sinon.stubInterface<DataSource>(),
             })
           )
           .orWhereNotBetween('price', 1, 1000);
@@ -901,7 +901,7 @@ describe('Test data query builder > where clause', () => {
             '>',
             new DataQueryBuilder({
               statement: 'select count(*) from tags',
-              dataSource: sinon.stubInterface<IDataSource>(),
+              dataSource: sinon.stubInterface<DataSource>(),
             })
           )
           .orWhereNotBetween('price', 1, 1000);
