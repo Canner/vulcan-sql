@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { InputValidator } from '@vulcan-sql/core';
+import { InputValidator, VulcanExtensionId } from '@vulcan-sql/core';
 
+@VulcanExtensionId('v3-1')
 export class Validator31 extends InputValidator {
-  name = 'v3-1';
   validateSchema() {}
   validateData() {}
 }
+@VulcanExtensionId('v1-1') // Test for id conflict
 export class Validator32 extends InputValidator {
-  name = 'v1-1';
   validateSchema() {}
   validateData() {}
 }

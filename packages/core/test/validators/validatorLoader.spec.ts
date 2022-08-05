@@ -37,7 +37,7 @@ describe('Test validator loader for built-in validators', () => {
       const result = validatorLoader.getValidator(name);
 
       // Assert
-      expect(result.name).toEqual(expected);
+      expect(result.getExtensionId()).toEqual(expected);
     }
   );
 
@@ -97,7 +97,7 @@ describe('Test validator loader for extension validators with one module', () =>
       const result = validatorLoader.getValidator(name);
 
       // Assert
-      expect(result.name).toEqual(expected);
+      expect(result.getExtensionId()).toEqual(expected);
     }
   );
 
@@ -157,8 +157,8 @@ describe('Test validator loader for extension validators in multiple module', ()
     const v1 = validatorLoader.getValidator('v1-1');
     const v2 = validatorLoader.getValidator('v2-1');
     // Assert
-    expect(v1.name).toBe('v1-1');
-    expect(v2.name).toBe('v2-1');
+    expect(v1.getExtensionId()).toBe('v1-1');
+    expect(v2.getExtensionId()).toBe('v2-1');
   });
 
   it('Should load failed when found duplicate identifier of validators in multiple modules.', async () => {

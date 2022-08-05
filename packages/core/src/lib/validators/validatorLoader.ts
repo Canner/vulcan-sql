@@ -30,12 +30,13 @@ export class ValidatorLoader implements IValidatorLoader {
 
   private loadValidators(validators: InputValidator[]) {
     for (const validator of validators) {
-      if (this.extensions.has(validator.name)) {
+      const validatorName = validator.getExtensionId()!;
+      if (this.extensions.has(validatorName)) {
         throw new Error(
-          `The identifier name "${validator.name}" of validator has been defined in other extensions`
+          `The identifier name "${validatorName}" of validator has been defined in other extensions`
         );
       }
-      this.extensions.set(validator.name, validator);
+      this.extensions.set(validatorName, validator);
     }
   }
 }

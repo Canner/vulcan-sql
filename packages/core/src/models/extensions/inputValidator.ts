@@ -3,10 +3,8 @@ import { Constraint } from '@vulcan-sql/core/validators';
 import { ExtensionBase } from './base';
 import { VulcanExtension } from './decorators';
 
-@VulcanExtension(TYPES.Extension_InputValidator)
+@VulcanExtension(TYPES.Extension_InputValidator, { enforcedId: true })
 export abstract class InputValidator<U = any, T = any> extends ExtensionBase {
-  // validator name
-  abstract readonly name: string;
   // validate Schema format
   abstract validateSchema(args: T): void;
   // validate input value

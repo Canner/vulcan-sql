@@ -1,5 +1,6 @@
 import {
   InputValidator,
+  VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
 import * as Joi from 'joi';
@@ -14,8 +15,8 @@ export interface RequiredInputArgs {
 
 // required means disallow undefined as value
 @VulcanInternalExtension()
+@VulcanExtensionId('required')
 export class RequiredValidator extends InputValidator {
-  public readonly name = 'required';
   // Validator for arguments schema in schema.yaml, should match RequiredInputArgs
   private argsValidator = Joi.object({
     disallow: Joi.array().items(Joi.any()).optional(),

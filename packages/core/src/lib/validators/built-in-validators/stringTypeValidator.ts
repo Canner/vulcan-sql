@@ -1,5 +1,6 @@
 import {
   InputValidator,
+  VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
 import * as Joi from 'joi';
@@ -16,8 +17,8 @@ export interface StringInputArgs {
 }
 
 @VulcanInternalExtension()
+@VulcanExtensionId('string')
 export class StringTypeValidator extends InputValidator {
-  public readonly name = 'string';
   // Validator for arguments schema in schema.yaml, should match StringInputArgs
   private argsValidator = Joi.object({
     format: Joi.string().optional(),

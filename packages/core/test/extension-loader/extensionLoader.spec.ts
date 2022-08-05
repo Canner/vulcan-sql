@@ -7,10 +7,11 @@ import {
   VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
-import { Container } from 'inversify';
+import { Container, inject, injectable, multiInject, named } from 'inversify';
 import * as path from 'path';
 
 @VulcanInternalExtension('test1')
+@VulcanExtensionId('test1')
 class Test1 extends FilterBuilder {
   public filterName = 'test1';
   public obtainConfig() {
@@ -19,6 +20,7 @@ class Test1 extends FilterBuilder {
 }
 
 @VulcanInternalExtension('test2')
+@VulcanExtensionId('test2')
 class Test2 extends FilterBuilder {
   public filterName = 'test2';
   public obtainConfig() {
@@ -42,6 +44,19 @@ class Test5 extends MockExtensionType {
   public getId() {
     return this.getExtensionId();
   }
+}
+
+@injectable()
+class Test6 {
+  constructor(
+    @multiInject(TYPES.Extension_TemplateEngine) public allExt: ExtensionBase[],
+    @inject(TYPES.Extension_TemplateEngine)
+    @named('test1')
+    public test1: ExtensionBase,
+    @inject(TYPES.Extension_TemplateEngine)
+    @named('test2')
+    public test2: ExtensionBase
+  ) {}
 }
 
 it.each([
@@ -182,4 +197,44 @@ it('Extension loader should throw error while binding an "enforced-id" extension
   expect(() => loader.bindExtensions(container.bind.bind(container))).toThrow(
     `Extension Test4 needed an extension id but was not found, please use the decorator @VulcanExtensionId to set the id.`
   );
+});
+
+it('We could get all extensions even if they have different id', async () => {
+  // Arrange
+  const loader = new ExtensionLoader({} as any);
+  const container = new Container();
+  loader.loadInternalExtensionModule([Test1, Test2]);
+  loader.bindExtensions(container.bind.bind(container));
+  // Act
+  const extensions = container.getAll(TYPES.Extension_TemplateEngine);
+  const test1 = container.getNamed<Test1>(
+    TYPES.Extension_TemplateEngine,
+    'test1'
+  );
+  const test2 = container.getNamed<Test2>(
+    TYPES.Extension_TemplateEngine,
+    'test2'
+  );
+
+  // Assert
+  expect(extensions.length).toBe(2);
+  expect(test1.constructor.name).toBe('Test1');
+  expect(test2.constructor.name).toBe('Test2');
+});
+
+it('We could inject all extensions even if they have different id', async () => {
+  // Arrange
+  const loader = new ExtensionLoader({} as any);
+  const container = new Container();
+  loader.loadInternalExtensionModule([Test1, Test2]);
+  loader.bindExtensions(container.bind.bind(container));
+  container.bind('test').to(Test6);
+
+  // Act
+  const test6 = container.get<Test6>('test');
+
+  // Assert
+  expect(test6.allExt.length).toBe(2);
+  expect(test6.test1.constructor.name).toBe('Test1');
+  expect(test6.test2.constructor.name).toBe('Test2');
 });

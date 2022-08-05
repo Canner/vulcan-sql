@@ -82,7 +82,14 @@ export class ExtensionLoader {
       this.extensionRegistry.get(type)!.forEach(({ name, extension }) => {
         const extensionBinding = bind(type).to(extension);
         const { extensionId } = this.getExtensionMetadata(extension);
-        if (extensionId) extensionBinding.whenTargetNamed(extensionId);
+        if (extensionId)
+          extensionBinding.when((request) => {
+            // If request contains named tag, i.e. @named or getNamed(), we check the extensionId, otherwise we fulfill the request.
+            // It makes both @named tag and @multiInject work at same time.
+            const namedTag = request.target.getNamedTag();
+            if (namedTag) return namedTag.value === extensionId;
+            return true;
+          });
         bind(TYPES.ExtensionConfig)
           // Note they we can't bind undefined to container or it throw error while unbinding.
           // https://github.com/inversify/InversifyJS/issues/1462#issuecomment-1202099036

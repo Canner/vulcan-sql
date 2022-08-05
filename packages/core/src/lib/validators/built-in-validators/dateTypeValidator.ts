@@ -4,6 +4,7 @@ import * as dayjs from 'dayjs';
 import customParseFormat = require('dayjs/plugin/customParseFormat');
 import {
   InputValidator,
+  VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
 
@@ -17,8 +18,8 @@ export interface DateInputArgs {
 }
 
 @VulcanInternalExtension()
+@VulcanExtensionId('date')
 export class DateTypeValidator extends InputValidator {
-  public readonly name = 'date';
   // Validator for arguments schema in schema.yaml, should match DateInputArgs
   private argsValidator = Joi.object({
     format: Joi.string().optional(),

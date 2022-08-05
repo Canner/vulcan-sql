@@ -1,5 +1,6 @@
 import {
   InputValidator,
+  VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
 import * as Joi from 'joi';
@@ -17,8 +18,8 @@ export interface IntInputArgs {
 }
 
 @VulcanInternalExtension()
+@VulcanExtensionId('integer')
 export class IntegerTypeValidator extends InputValidator {
-  public readonly name = 'integer';
   // Validator for arguments schema in schema.yaml, should match IntInputArgs
   private argsValidator = Joi.object({
     min: Joi.number().integer().optional(),
