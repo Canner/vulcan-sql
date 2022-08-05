@@ -31,7 +31,7 @@ export class ResponseFormatMiddleware extends BuiltInMiddleware<ResponseFormatOp
     const formats = options.formats || [];
     this.formatters = formatters.reduce<ResponseFormatterMap>(
       (prev, formatter) => {
-        prev[formatter.name] = formatter;
+        prev[formatter.getExtensionId()!] = formatter;
         return prev;
       },
       {}

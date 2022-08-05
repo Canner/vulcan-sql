@@ -15,9 +15,6 @@ export const toBuffer = (str: string) => {
 };
 
 export interface IFormatter {
-  // format name, e.g: json, csv
-  readonly name: string;
-
   format(
     data: Stream.Readable,
     columns?: DataColumn[]
@@ -35,7 +32,6 @@ export abstract class BaseResponseFormatter
   extends ExtensionBase
   implements IFormatter
 {
-  public abstract readonly name: string;
   public formatToResponse(ctx: KoaRouterContext) {
     // return empty csv stream data or column is not exist
     if (!has(ctx.response.body, 'data') || !has(ctx.response.body, 'columns')) {

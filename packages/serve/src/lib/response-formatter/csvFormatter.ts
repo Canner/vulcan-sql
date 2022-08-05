@@ -2,6 +2,7 @@ import * as Stream from 'stream';
 import {
   DataColumn,
   getLogger,
+  VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
 import { isArray, isObject, isUndefined } from 'lodash';
@@ -82,9 +83,8 @@ class CsvTransformer extends Stream.Transform {
 }
 
 @VulcanInternalExtension()
+@VulcanExtensionId('csv')
 export class CsvFormatter extends BaseResponseFormatter {
-  public readonly name = 'csv';
-
   public format(data: Stream.Readable, columns?: DataColumn[]) {
     if (!columns) throw new Error('must provide columns');
     // create csv transform stream and define transform to csv way.

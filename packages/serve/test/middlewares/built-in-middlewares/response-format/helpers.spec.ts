@@ -13,6 +13,12 @@ import {
   JsonFormatter,
 } from '@vulcan-sql/serve/response-formatter';
 
+class HyperFormatter extends BaseResponseFormatter {
+  public format(): any {}
+
+  public toResponse() {}
+}
+
 it.each([
   {
     request: {
@@ -82,9 +88,7 @@ describe('Test to call check usable format function', () => {
         formatters: {
           csv: new CsvFormatter({}, 'csv'),
           json: new JsonFormatter({}, 'json'),
-          hyper: {
-            name: 'hyper',
-          } as BaseResponseFormatter,
+          hyper: new HyperFormatter({}, ''),
         } as ResponseFormatterMap,
         supportedFormats: [],
       };
@@ -134,9 +138,7 @@ describe('Test to call check usable format function', () => {
   it.each([
     {
       formatters: {
-        hyper: {
-          name: 'hyper',
-        } as BaseResponseFormatter,
+        hyper: new HyperFormatter({}, ''),
       } as ResponseFormatterMap,
       supportedFormats: ['csv', 'json'],
       defaultFormat: 'hyper',
@@ -176,9 +178,7 @@ describe('Test to call check usable format function', () => {
     {
       formatters: {
         json: new JsonFormatter({}, 'json'),
-        hyper: {
-          name: 'hyper',
-        } as BaseResponseFormatter,
+        hyper: new HyperFormatter({}, ''),
       } as ResponseFormatterMap,
       supportedFormats: ['csv', 'hyper'],
       defaultFormat: 'json',
@@ -187,9 +187,7 @@ describe('Test to call check usable format function', () => {
     {
       formatters: {
         json: new JsonFormatter({}, 'json'),
-        hyper: {
-          name: 'hyper',
-        } as BaseResponseFormatter,
+        hyper: new HyperFormatter({}, ''),
       } as ResponseFormatterMap,
       supportedFormats: ['csv', 'json'],
       defaultFormat: 'hyper',
@@ -221,9 +219,7 @@ describe('Test to call check usable format function', () => {
     {
       formatters: {
         json: new JsonFormatter({}, ''),
-        hyper: {
-          name: 'hyper',
-        } as BaseResponseFormatter,
+        hyper: new HyperFormatter({}, ''),
       } as ResponseFormatterMap,
       supportedFormats: ['csv', 'json', 'hyper'],
       defaultFormat: 'hyper',
@@ -232,9 +228,7 @@ describe('Test to call check usable format function', () => {
     {
       formatters: {
         json: new JsonFormatter({}, ''),
-        hyper: {
-          name: 'hyper',
-        } as BaseResponseFormatter,
+        hyper: new HyperFormatter({}, ''),
       } as ResponseFormatterMap,
       supportedFormats: ['csv', 'hyper', 'json'],
       defaultFormat: 'json',
