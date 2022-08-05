@@ -1,7 +1,7 @@
 import {
   VulcanArtifactBuilder,
   TYPES as CORE_TYPES,
-  ICodeLoader,
+  CodeLoader,
 } from '@vulcan-sql/core';
 import * as http from 'http';
 import { Container, TYPES } from '../containers';
@@ -32,7 +32,7 @@ export class VulcanServer {
     const { schemas, templates } = await artifactBuilder.load();
 
     // Initialized template engine
-    const codeLoader = this.container.get<ICodeLoader>(
+    const codeLoader = this.container.get<CodeLoader>(
       CORE_TYPES.CompilerLoader
     );
     for (const templateName in templates) {

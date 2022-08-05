@@ -12,6 +12,7 @@ export const TYPES = {
   Factory_TemplateProvider: Symbol.for('Factory_TemplateProvider'),
   CompilerExtension: Symbol.for('CompilerExtension'),
   CompilerLoader: Symbol.for('CompilerLoader'),
+  Factory_CompilerLoader: Symbol.for('Factory_CompilerLoader'),
   CompilerEnvironment: Symbol.for('CompilerEnvironment'),
   Compiler: Symbol.for('Compiler'),
   TemplateEngine: Symbol.for('TemplateEngine'),
@@ -33,4 +34,5 @@ export const TYPES = {
   Extension_TemplateProvider: Symbol.for('Extension_TemplateProvider'),
   Extension_Serializer: Symbol.for('Extension_Serializer'),
   Extension_PersistentStore: Symbol.for('Extension_PersistentStore'),
+  Extension_CompilerLoader: Symbol.for('Extension_CompilerLoader'),
 };

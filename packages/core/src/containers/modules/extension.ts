@@ -3,7 +3,10 @@ import { ExtensionLoader } from '../../lib/extension-loader';
 import { ICoreOptions } from '../../models/coreOptions';
 import templateEngineModules from '../../lib/template-engine/built-in-extensions';
 import validatorModule from '../../lib/validators/built-in-validators';
-import { builtInTemplateProvider } from '@vulcan-sql/core/template-engine';
+import {
+  builtInCodeLoader,
+  builtInTemplateProvider,
+} from '@vulcan-sql/core/template-engine';
 import {
   builtInPersistentStore,
   builtInSerializer,
@@ -26,6 +29,8 @@ export const extensionModule = (options: ICoreOptions) =>
     loader.loadInternalExtensionModule(builtInSerializer);
     // Persistent store (single module)
     loader.loadInternalExtensionModule(builtInPersistentStore);
+    // Code Loader (single module)
+    loader.loadInternalExtensionModule(builtInCodeLoader);
 
     // External extension modules
     await loader.loadExternalExtensionModules();

@@ -8,6 +8,7 @@ it('File template provider should provide correct files and contents', async () 
     {
       provider: '',
       folderPath: path.resolve(__dirname, '../test-templates') as any,
+      codeLoader: '',
     },
     {},
     ''

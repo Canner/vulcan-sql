@@ -2,8 +2,11 @@ import { Compiler, TemplateMetadata } from './compiler';
 import { injectable, inject, interfaces } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import { TemplateEngineOptions } from '../../options';
-import { Pagination, TemplateProvider } from '@vulcan-sql/core/models';
-import { ICodeLoader } from './code-loader';
+import {
+  CodeLoader,
+  Pagination,
+  TemplateProvider,
+} from '@vulcan-sql/core/models';
 
 export type AllTemplateMetadata = Record<string, TemplateMetadata>;
 
@@ -18,7 +21,7 @@ export interface PreCompiledResult {
 export class TemplateEngine {
   private compiler: Compiler;
   private templateProvider?: TemplateProvider;
-  private compilerLoader: ICodeLoader;
+  private compilerLoader: CodeLoader;
 
   constructor(
     @inject(TYPES.Compiler) compiler: Compiler,
@@ -26,7 +29,7 @@ export class TemplateEngine {
     templateProviderFactory: interfaces.AutoNamedFactory<TemplateProvider>,
     @inject(TYPES.TemplateEngineOptions)
     options: TemplateEngineOptions,
-    @inject(TYPES.CompilerLoader) compilerLoader: ICodeLoader
+    @inject(TYPES.CompilerLoader) compilerLoader: CodeLoader
   ) {
     this.compiler = compiler;
     this.compilerLoader = compilerLoader;

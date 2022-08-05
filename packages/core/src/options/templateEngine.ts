@@ -13,6 +13,10 @@ export class TemplateEngineOptions implements ITemplateEngineOptions {
   @IsOptional()
   public readonly folderPath!: string;
 
+  @IsString()
+  @IsOptional()
+  public readonly codeLoader: string = 'inMemory';
+
   constructor(
     @inject(TYPES.TemplateEngineInputOptions)
     @optional()

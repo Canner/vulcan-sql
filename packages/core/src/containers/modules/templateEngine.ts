@@ -1,5 +1,6 @@
 import { TYPES } from '@vulcan-sql/core/types';
 import {
+  CodeLoader,
   ITemplateEngineOptions,
   TemplateProvider,
 } from '@vulcan-sql/core/models';
@@ -12,7 +13,6 @@ import {
 import { AsyncContainerModule, interfaces } from 'inversify';
 import { TemplateEngineOptions } from '../../options';
 import * as nunjucks from 'nunjucks';
-import { ICodeLoader } from '@vulcan-sql/core/template-engine/code-loader';
 
 export const templateEngineModule = (options: ITemplateEngineOptions = {}) =>
   new AsyncContainerModule(async (bind) => {
@@ -33,13 +33,15 @@ export const templateEngineModule = (options: ITemplateEngineOptions = {}) =>
     bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
       .toDynamicValue((context) => {
         // We only need loader in runtime
-        const loader = context.container.get<nunjucks.ILoader>(
+        const codeLoader = context.container.get<CodeLoader>(
           TYPES.CompilerLoader
         );
-        return new nunjucks.Environment(loader);
+
+        return new nunjucks.Environment(codeLoader);
       })
       .inSingletonScope()
       .whenTargetNamed('runtime');
+
     bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
       .toDynamicValue(() => {
         return new nunjucks.Environment();
@@ -48,8 +50,19 @@ export const templateEngineModule = (options: ITemplateEngineOptions = {}) =>
       .whenTargetNamed('compileTime');
 
     // Loader
-    bind<ICodeLoader>(TYPES.CompilerLoader)
-      .to(InMemoryCodeLoader)
+    bind(TYPES.Factory_CompilerLoader).toAutoNamedFactory(
+      TYPES.Extension_CompilerLoader
+    );
+    bind<CodeLoader>(TYPES.CompilerLoader)
+      .toDynamicValue((context) => {
+        const loaderFactory = context.container.get<
+          interfaces.AutoNamedFactory<CodeLoader>
+        >(TYPES.Factory_CompilerLoader);
+        const options = context.container.get<TemplateEngineOptions>(
+          TYPES.TemplateEngineOptions
+        );
+        return loaderFactory(options.codeLoader);
+      })
       .inSingletonScope();
 
     // Compiler

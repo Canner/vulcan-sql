@@ -13,7 +13,7 @@ jest.mock('glob', () => {
 it('File template provider should throw error with file search errors', async () => {
   // Arrange
   const provider = new FileTemplateProvider(
-    { folderPath: '.', provider: '' },
+    { folderPath: '.', provider: '', codeLoader: '' },
     {},
     ''
   );

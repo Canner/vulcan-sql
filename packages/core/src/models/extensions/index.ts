@@ -9,3 +9,4 @@ export * from './inputValidator';
 export * from './templateProvider';
 export * from './serializer';
 export * from './persistentStore';
+export * from './codeLoader';
