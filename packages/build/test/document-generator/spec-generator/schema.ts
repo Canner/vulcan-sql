@@ -126,7 +126,7 @@ export const getConfig = (): IBuildOptions => {
     // We don't care about the options of these components.
     template: {} as any,
     artifact: {} as any,
-    schemaParser: {} as any,
-    extensions: [] as any,
+    'schema-parser': {} as any,
+    extensions: {} as any,
   };
 };

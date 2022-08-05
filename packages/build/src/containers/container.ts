@@ -1,7 +1,11 @@
 import { Container as InversifyContainer } from 'inversify';
 import { Container as CoreContainer } from '@vulcan-sql/core';
 import { IBuildOptions } from '@vulcan-sql/build/models';
-import { schemaParserModule } from './modules';
+import {
+  documentGeneratorModule,
+  extensionModule,
+  schemaParserModule,
+} from './modules';
 
 export class Container {
   private inversifyContainer?: InversifyContainer;
@@ -18,7 +22,13 @@ export class Container {
     this.coreContainer = new CoreContainer();
     await this.coreContainer.load(options);
     this.inversifyContainer = this.coreContainer.getInversifyContainer();
-    this.inversifyContainer.load(schemaParserModule(options.schemaParser));
+    await this.inversifyContainer.loadAsync(
+      schemaParserModule(options['schema-parser'])
+    );
+    await this.inversifyContainer.loadAsync(extensionModule(options));
+    await this.inversifyContainer.loadAsync(
+      documentGeneratorModule(options['document-generator'])
+    );
   }
 
   public async unload() {

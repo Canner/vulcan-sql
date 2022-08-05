@@ -1,4 +1,4 @@
-import { ISchemaParserOptions, SchemaReaderType, TYPES } from '../../src';
+import { ISchemaParserOptions, TYPES } from '../../src';
 import { Container } from 'inversify';
 import { SchemaParserOptions } from '../../src/options';
 
@@ -16,7 +16,7 @@ it('Should provide correct default option values', async () => {
   // Action
   const options = container.get<SchemaParserOptions>(TYPES.SchemaParserOptions);
   // Assert
-  expect(options.reader).toBe(SchemaReaderType.LocalFile);
+  expect(options.reader).toBe('LocalFile');
 });
 
 it('Can override some option properties', async () => {
@@ -28,7 +28,7 @@ it('Can override some option properties', async () => {
     });
   const options = container.get<SchemaParserOptions>(TYPES.SchemaParserOptions);
   // Assert
-  expect(options.reader).toBe(SchemaReaderType.LocalFile);
+  expect(options.reader).toBe('LocalFile');
   expect(options.folderPath).toBe('./test/schemas');
 });
 

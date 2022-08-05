@@ -1,5 +1,6 @@
 import { ICoreOptions } from '@vulcan-sql/core/models';
 import { Container as InversifyContainer } from 'inversify';
+import { ProjectOptions } from '../options';
 import { extensionModule } from './modules';
 import {
   artifactBuilderModule,
@@ -7,6 +8,7 @@ import {
   templateEngineModule,
   validatorLoaderModule,
 } from './modules';
+import { TYPES } from './types';
 
 export class Container {
   private inversifyContainer = new InversifyContainer();
@@ -16,6 +18,12 @@ export class Container {
   }
 
   public async load(options: ICoreOptions) {
+    // Project options
+    this.inversifyContainer
+      .bind(TYPES.ProjectInputOptions)
+      .toConstantValue(options);
+    this.inversifyContainer.bind(TYPES.ProjectOptions).to(ProjectOptions);
+
     await this.inversifyContainer.loadAsync(
       artifactBuilderModule(options.artifact)
     );

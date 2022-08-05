@@ -4,6 +4,9 @@ import { ITemplateEngineOptions } from './templateEngineOptions';
 export type ExtensionAliases = Record<string, string | string[]>;
 
 export interface ICoreOptions {
+  name?: string;
+  description?: string;
+  version?: string;
   artifact: IArtifactBuilderOptions;
   template?: ITemplateEngineOptions;
   /**

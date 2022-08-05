@@ -1,4 +1,4 @@
-import { SpecGenerator } from '../specGenerator';
+import { SpecGenerator } from '../../../../models/extensions/specGenerator';
 import * as oas3 from 'openapi3-ts';
 import {
   APISchema,
@@ -14,19 +14,23 @@ import {
   RequestSchema as RequestParameter,
   RequiredConstraint,
   ResponseProperty,
+  VulcanExtensionId,
+  VulcanInternalExtension,
 } from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
 
+@VulcanInternalExtension()
+@VulcanExtensionId('oas3')
 export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
   // Follow the OpenAPI specification version 3.0.3
   // see https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md
   private oaiVersion = '3.0.3';
 
-  public getSpec() {
+  public getSpec(schemas: APISchema[]) {
     const spec: oas3.OpenAPIObject = {
       openapi: this.getOAIVersion(),
       info: this.getInfo(),
-      paths: this.getPaths(),
+      paths: this.getPaths(schemas),
     };
     return spec;
   }
@@ -43,9 +47,8 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
     };
   }
 
-  private getPaths(): oas3.PathsObject {
+  private getPaths(schemas: APISchema[]): oas3.PathsObject {
     const paths: oas3.PathsObject = {};
-    const schemas = this.getSchemas();
     for (const schema of schemas) {
       paths[this.convertToOASPath(schema.urlPath)] = this.getPath(schema);
     }

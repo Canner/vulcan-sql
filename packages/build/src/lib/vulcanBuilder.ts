@@ -6,6 +6,7 @@ import {
   TYPES as CORE_TYPES,
   VulcanArtifactBuilder,
 } from '@vulcan-sql/core';
+import { DocumentGenerator } from './document-generator';
 
 export class VulcanBuilder {
   public async build(options: IBuildOptions) {
@@ -18,11 +19,16 @@ export class VulcanBuilder {
     const artifactBuilder = container.get<VulcanArtifactBuilder>(
       CORE_TYPES.ArtifactBuilder
     );
+    const documentGenerator = container.get<DocumentGenerator>(
+      TYPES.DocumentGenerator
+    );
 
     const { metadata, templates } = await templateEngine.compile();
     const { schemas } = await schemaParser.parse({ metadata });
 
     await artifactBuilder.build({ schemas, templates });
+
+    await documentGenerator.generateDocuments(schemas);
 
     await container.unload();
   }

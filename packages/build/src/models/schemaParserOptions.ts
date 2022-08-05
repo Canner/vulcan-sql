@@ -1,8 +1,4 @@
 export interface ISchemaParserOptions {
-  reader: SchemaReaderType;
+  reader: string;
   folderPath: string;
-}
-
-export enum SchemaReaderType {
-  LocalFile = 'LocalFile',
 }

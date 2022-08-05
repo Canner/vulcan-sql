@@ -1,4 +1,4 @@
-import { OAS3SpecGenerator } from '@vulcan-sql/build/spec-generator';
+import { OAS3SpecGenerator } from '@vulcan-sql/build/doc-generator';
 import { getSchemas, getConfig } from './schema';
 import * as jsYaml from 'js-yaml';
 import { promises as fs } from 'fs';
@@ -6,17 +6,17 @@ import * as path from 'path';
 import { get } from 'lodash';
 
 const getGenerator = async () => {
-  const schema = await getSchemas();
   const config = getConfig();
-  return new OAS3SpecGenerator(schema, config);
+  return new OAS3SpecGenerator(config, '', {});
 };
 
 it('Should generate specification without error', async () => {
   // Arrange
   const generator = await getGenerator();
+  const schemas = await getSchemas();
   // Act, Arrange
   expect(async () => {
-    const spec = generator.getSpec();
+    const spec = generator.getSpec(schemas);
     await fs.writeFile(
       path.resolve(__dirname, 'oas3-spec.yaml'),
       jsYaml.dump(spec),
@@ -28,8 +28,9 @@ it('Should generate specification without error', async () => {
 it('Parameters in path should be converted to correct format', async () => {
   // Arrange
   const generator = await getGenerator();
+  const schemas = await getSchemas();
   // Act
-  const spec = generator.getSpec();
+  const spec = generator.getSpec(schemas);
   // Arrange
   expect(Object.keys(spec.paths)[0]).toBe('/user/{id}');
   expect(Object.keys(spec.paths)[1]).toBe('/user/{id}/order/{oid}');
@@ -39,8 +40,9 @@ it('Parameters in path should be converted to correct format', async () => {
 it('Should extract the correct parameters', async () => {
   // Arrange
   const generator = await getGenerator();
+  const schemas = await getSchemas();
   // Act
-  const spec = generator.getSpec();
+  const spec = generator.getSpec(schemas);
   // Arrange
   expect(spec.paths['/user/{id}']?.get.parameters[0]).toEqual(
     expect.objectContaining({
@@ -93,8 +95,9 @@ it('Should extract the correct parameters', async () => {
 it('Should extract the correct response', async () => {
   // Arrange
   const generator = await getGenerator();
+  const schemas = await getSchemas();
   // Act
-  const spec = generator.getSpec();
+  const spec = generator.getSpec(schemas);
   // Arrange
   expect(
     get(
@@ -198,8 +201,9 @@ it('Should extract the correct response', async () => {
 it('Should extract correct errors', async () => {
   // Arrange
   const generator = await getGenerator();
+  const schemas = await getSchemas();
   // Act
-  const spec = generator.getSpec();
+  const spec = generator.getSpec(schemas);
   // Arrange
   expect(
     get(
@@ -240,8 +244,9 @@ it('Should extract correct errors', async () => {
 it('Should extract correct API description', async () => {
   // Arrange
   const generator = await getGenerator();
+  const schemas = await getSchemas();
   // Act
-  const spec = generator.getSpec();
+  const spec = generator.getSpec(schemas);
   // Arrange
   expect(get(spec, 'paths./user/{id}.get.description')).toBe(
     'Get user information'

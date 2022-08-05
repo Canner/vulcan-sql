@@ -24,14 +24,14 @@ export abstract class ExtensionBase<C = any> {
     this.moduleName = moduleName;
   }
 
-  protected getConfig(): C | undefined {
-    return this.config;
-  }
-
-  protected getExtensionId(): string | undefined {
+  public getExtensionId(): string | undefined {
     return Reflect.getMetadata(
       EXTENSION_IDENTIFIER_METADATA_KEY,
       this.constructor
     );
+  }
+
+  protected getConfig(): C | undefined {
+    return this.config;
   }
 }

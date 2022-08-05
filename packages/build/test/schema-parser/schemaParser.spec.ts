@@ -1,14 +1,11 @@
-import { TYPES } from '@vulcan-sql/build/containers';
+import { extensionModule, TYPES } from '@vulcan-sql/build/containers';
 import {
   ISchemaParserOptions,
-  SchemaReaderType,
+  SchemaFormat,
+  SchemaReader,
 } from '@vulcan-sql/build/models';
 import { SchemaParserOptions } from '@vulcan-sql/build/options';
-import {
-  SchemaFormat,
-  SchemaParser,
-  SchemaReader,
-} from '@vulcan-sql/build/schema-parser';
+import { SchemaParser } from '@vulcan-sql/build/schema-parser';
 import { IValidatorLoader, TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { Container } from 'inversify';
 import * as sinon from 'ts-sinon';
@@ -17,10 +14,18 @@ let container: Container;
 let stubSchemaReader: sinon.StubbedInstance<SchemaReader>;
 let stubValidatorLoader: sinon.StubbedInstance<IValidatorLoader>;
 
-beforeEach(() => {
+beforeEach(async () => {
   container = new Container();
   stubSchemaReader = sinon.stubInterface<SchemaReader>();
   stubValidatorLoader = sinon.stubInterface<IValidatorLoader>();
+
+  await container.loadAsync(
+    extensionModule({
+      schemaParser: {
+        folderPath: '',
+      },
+    } as any)
+  );
 
   container
     .bind(TYPES.Factory_SchemaReader)
@@ -28,8 +33,7 @@ beforeEach(() => {
   container
     .bind<Partial<ISchemaParserOptions>>(TYPES.SchemaParserInputOptions)
     .toConstantValue({
-      folderPath: '',
-      reader: SchemaReaderType.LocalFile,
+      reader: 'LocalFile',
     });
   container
     .bind(TYPES.SchemaParserOptions)

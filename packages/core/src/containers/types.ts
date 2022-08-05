@@ -1,4 +1,7 @@
 export const TYPES = {
+  // Root options
+  ProjectOptions: Symbol.for('ProjectOptions'),
+  ProjectInputOptions: Symbol.for('ProjectInputOptions'),
   // Artifact builder
   Factory_PersistentStore: Symbol.for('Factory_PersistentStore'),
   Factory_Serializer: Symbol.for('Factory_Serializer'),

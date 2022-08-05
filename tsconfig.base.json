@@ -26,11 +26,11 @@
       "@vulcan-sql/build/schema-parser/*": [
         "packages/build/src/lib/schema-parser/*"
       ],
-      "@vulcan-sql/build/spec-generator": [
-        "packages/build/src/lib/spec-generator/index"
+      "@vulcan-sql/build/doc-generator": [
+        "packages/build/src/lib/document-generator/index"
       ],
-      "@vulcan-sql/build/spec-generator/*": [
-        "packages/build/src/lib/spec-generator/*"
+      "@vulcan-sql/build/doc-generator/*": [
+        "packages/build/src/lib/document-generator/*"
       ],
       "@vulcan-sql/core": ["packages/core/src/index"],
       "@vulcan-sql/core/artifact-builder": [

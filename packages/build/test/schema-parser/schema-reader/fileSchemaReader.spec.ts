@@ -1,37 +1,17 @@
-import { FileSchemaReader, SchemaData } from '@vulcan-sql/build/schema-parser';
+import { SchemaData } from '@vulcan-sql/build/models';
+import { FileSchemaReader } from '@vulcan-sql/build/schema-parser';
 import * as path from 'path';
-import { Container } from 'inversify';
-import { TYPES } from '@vulcan-sql/build/containers';
-import { SchemaParserOptions } from '@vulcan-sql/build/options';
-import {
-  ISchemaParserOptions,
-  SchemaReaderType,
-} from '@vulcan-sql/build/models';
-
-let container: Container;
-
-beforeEach(() => {
-  container = new Container();
-  container
-    .bind<Partial<ISchemaParserOptions>>(TYPES.SchemaParserInputOptions)
-    .toConstantValue({
-      folderPath: path.resolve(__dirname, '../test-schema'),
-      reader: SchemaReaderType.LocalFile,
-    });
-  container
-    .bind(TYPES.SchemaParserOptions)
-    .to(SchemaParserOptions)
-    .inSingletonScope();
-  container.bind(TYPES.SchemaReader).to(FileSchemaReader).inSingletonScope();
-});
-
-afterEach(() => {
-  container.unbindAll();
-});
 
 it('File schema reader should provide correct files and contents', async () => {
   // Arrange
-  const schemaReader = container.get<FileSchemaReader>(TYPES.SchemaReader);
+  const schemaReader = new FileSchemaReader(
+    {
+      folderPath: path.resolve(__dirname, '../test-schema'),
+      reader: 'LocalFile',
+    },
+    {},
+    ''
+  );
   const schemas: SchemaData[] = [];
 
   // Act
