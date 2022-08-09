@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.imgur.com/GJsuthW.png" width="500" >
+  <img src="https://i.imgur.com/GJsuthW.png" width="800" >
 </p>
 
 <p align="center">
@@ -23,13 +23,13 @@
 > ⚡️ Data analyst / analytical engineers’ time should focus on important matters like data transformation and communicating with data consumers on high level.
 
 <p align="center">
-  <img src="https://i.imgur.com/OTFP6Qh.jpg" width="500" >
+  <img src="https://i.imgur.com/OTFP6Qh.jpg" width="800" >
 </p>
 
 Data analysts and analytical engineers often take lots of time helping data consumers. Backend engineers who build internal dashboards will ask about data catalog, documentations and if there are any APIs they can directly use. Business users will ask what data they can use to achieve their goals, and how to get data to their spreadsheet or excel.
 
 <p align="center">
-  <img src="https://i.imgur.com/dn5kzXC.png" width="500" >
+  <img src="https://i.imgur.com/dn5kzXC.png" width="800" >
 </p>
 
 With Vulcan, we prepare what data consumers need for you. Imagine you can **unify the data access by building APIs instantly with just SQL. Authorization, validation, pagination …etc are all included automatically.**
@@ -47,7 +47,7 @@ Vulcan also builds documentations and a self-served catalog, so **data consumers
 
 ### Step 1: Instant API with just SQL.
 <p align="center">
-  <img src="https://i.imgur.com/2PMrlJC.png" width="300" >
+  <img src="https://i.imgur.com/2PMrlJC.png" width="800" >
 </p>
 
 Building API with just SQL. No complex web framework and business logic.
@@ -142,17 +142,17 @@ Vulcan will automatically build documentation and catalog.
 - **Catalog**: Vulcan will build a catalog page for data consumers. This page will consist of more clear information on data that is exposed as APIs. Description, Column information are all included.
 
 <p align="center">
-  <img src="https://i.imgur.com/qz6swW2.png" width="500" >
+  <img src="https://i.imgur.com/qz6swW2.png" width="800" >
 </p>
 
 <p align="center">
-  <img src="https://i.imgur.com/YZFczO3.png" width="500" >
+  <img src="https://i.imgur.com/YZFczO3.png" width="800" >
 </p>
 
 - **API Documentation**: Vulcan will build a swagger page for backend engineers.
 
 <p align="center">
-  <img src="https://i.imgur.com/oH9UEoD.png" width="500" >
+  <img src="https://i.imgur.com/oH9UEoD.png" width="800" >
 </p>
 
 ### Step 3: Connect from framework & applications
@@ -163,13 +163,13 @@ On catalog page, you can preview data here and connect from your own framework a
 - You can download the selected data as CSV or JSON.
 
 <p align="center">
-  <img src="https://i.imgur.com/YZFczO3.png" width="500" >
+  <img src="https://i.imgur.com/YZFczO3.png" width="800" >
 </p>
 
 - You can follow the steps to connect from Excel / Google Spreadsheet / Zapier / Retools.
 
 <p align="center">
-  <img src="https://i.imgur.com/zOEdRYT.png" width="500" >
+  <img src="https://i.imgur.com/zOEdRYT.png" width="800" >
 </p>
 
 ## Installation
@@ -207,25 +207,25 @@ On catalog page, you can preview data here and connect from your own framework a
 
 ## Demo Screenshot
 <p align="center">
-  <img src="https://i.imgur.com/j4jcYj1.png" width="500" >
+  <img src="https://i.imgur.com/j4jcYj1.png" width="800" >
 </p>
 
 > 🔑 **Login Page**: data consumers will be asked to authenticate themselves.
 
 <p align="center">
-  <img src="https://i.imgur.com/0VmXMpl.png" width="500" >
+  <img src="https://i.imgur.com/0VmXMpl.png" width="800" >
 </p>
 
 > 📖 **Catalog**: After logged-in, data consumers can see what endpoints are available to be used.
 
 <p align="center">
-  <img src="https://i.imgur.com/YZFczO3.png" width="500" >
+  <img src="https://i.imgur.com/YZFczO3.png" width="800" >
 </p>
 
 > ✅ **Endpoint**: data consumers can view the detail of one endpoint and preview the data.
 
 <p align="center">
-  <img src="https://i.imgur.com/zOEdRYT.png" width="500" >
+  <img src="https://i.imgur.com/zOEdRYT.png" width="800" >
 </p>
 
 > 🔌 **Connect**: data consumers will be able to follow the guide and connect from their applications.
