@@ -32,16 +32,16 @@ Data analysts and analytical engineers often take lots of time helping data cons
   <img src="https://i.imgur.com/dn5kzXC.png" width="800" >
 </p>
 
-With Vulcan, we prepare what data consumers need for you. Imagine you can **unify the data access by building APIs instantly with just SQL. Authorization, validation, pagination …etc are all included automatically.**
+With Vulcan, we prepare what data consumers need for you. Imagine you can **unify the data access by building APIs instantly with just SQL. Authorization, validation, pagination features work out of the box.**
 
-Vulcan also builds documentations and a self-served catalog, so **data consumers can understand the data and get data from the tools they’re using all by themselves without using any SQL**.
+Vulcan also builds documentations and a self-serve catalog, so **data consumers can understand the data and get data from the tools they’re using all by themselves without using any SQL**.
 
 ## Features
 - Build API instantly with just SQL.
 - Access control & authorization in SQL.
-- API best practices included (validation, caching, pagination, sorting …etc).
+- API best practices included (validation, caching, pagination, sorting, etc).
 - API documentation is automatically built.
-- Self-served catalog for data consumers. A step-by-step guide to get data from Excel / Google spreadsheet, Zapier, Retools …etc.
+- Self-serve API catalog for data consumers. A step-by-step guide to get data from Excel / Google spreadsheet, Zapier, Retool, etc.
 
 ## How Vulcan works?
 
@@ -136,7 +136,7 @@ Response
 </details>
 
 
-### Step 2: Build self-served documentation and catalog
+### Step 2: Build self-serve documentation and catalog
 
 Vulcan will automatically build documentation and catalog.
 
@@ -158,7 +158,7 @@ Vulcan will automatically build documentation and catalog.
 
 ### Step 3: Connect from framework & applications
 
-On catalog page, you can preview data here and connect from your own framework and applications.
+On API catalog page, you can preview data here and connect from your own framework and applications.
 
 - You can `Copy API URL` to use it at frontend / backend.
 - You can download the selected data as CSV or JSON.
@@ -223,7 +223,7 @@ On catalog page, you can preview data here and connect from your own framework a
   <img src="https://i.imgur.com/YZFczO3.png" width="800" >
 </p>
 
-> ✅ **Endpoint**: data consumers can view the detail of one endpoint and preview the data.
+> ✅ **Endpoint**: data consumers can view the details of one endpoint and preview the data.
 
 <p align="center">
   <img src="https://i.imgur.com/zOEdRYT.png" width="800" >
