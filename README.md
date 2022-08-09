@@ -62,13 +62,13 @@ You can build an API endpoint `users` with `userId` as input.
 
 API users will be able to get data like
 
-```bash
+```js
 GET /users?userId=1
 
 Response
 [{
   "name": "wwwy3y3",
-	"age": 30
+  "age": 30
 }]
 ```
 
