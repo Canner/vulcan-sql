@@ -1,90 +1,237 @@
-# Vulcan SQL
+<p align="center">
+  <img src="https://i.imgur.com/GJsuthW.png" width="600" >
+</p>
 
-This project was generated using [Nx](https://nx.dev).
+<p align="center">
+  <a aria-label="Canner" href="https://cannerdata.com/">
+    <img src="https://img.shields.io/badge/%F0%9F%A7%A1-Made%20by%20Canner-orange?style=for-the-badge">
+  </a>
+  <a aria-label="NPM version" href="https://www.npmjs.com/package/@vulcan-sql/core">
+    <img alt="" src="https://img.shields.io/npm/v/@vulcan-sql/core?color=orange&style=for-the-badge">
+  </a>
+  <a aria-label="License" href="https://github.com/Canner/vulcan/blob/develop/LICENSE">
+    <img alt="" src="https://img.shields.io/github/license/Canner/vulcan?color=orange&style=for-the-badge">
+  </a>
+  <a aria-label="Join the community on GitHub" href="https://join.slack.com/t/vulcan-bhi6765/shared_invite/zt-1dzixpy38-pKrcewZ6eM3wSqAs6~is8Q">
+    <img alt="" src="https://img.shields.io/badge/-JOIN%20THE%20COMMUNITY-orange?style=for-the-badge&logo=Slack&labelColor=black&logoWidth=20">
+  </a>
+</p>
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+> 🚀 Release in Sep 2022.
 
-🔎 **Smart, Fast and Extensible Build System**
+## Why Vulcan
+> ⚡️ Data analyst / analytical engineers’ time should focus on important matters like data transformation and communicating with data consumers on high level.
 
-## Adding capabilities to your workspace
+<p align="center">
+  <img src="https://i.imgur.com/OTFP6Qh.jpg" width="800" >
+</p>
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+Data analysts and analytical engineers often take lots of time helping data consumers. Backend engineers who build internal dashboards will ask about data catalog, documentations and if there are any APIs they can directly use. Business users will ask what data they can use to achieve their goals, and how to get data to their spreadsheet or excel.
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+<p align="center">
+  <img src="https://i.imgur.com/dn5kzXC.png" width="800" >
+</p>
 
-Below are our core plugins:
+With Vulcan, we prepare what data consumers need for you. Imagine you can **unify the data access by building APIs instantly with just SQL. Authorization, validation, pagination …etc are all included automatically.**
 
-- [React](https://reactjs.org)
-  - `npm install --save-dev @nrwl/react`
-- Web (no framework frontends)
-  - `npm install --save-dev @nrwl/web`
-- [Angular](https://angular.io)
-  - `npm install --save-dev @nrwl/angular`
-- [Nest](https://nestjs.com)
-  - `npm install --save-dev @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `npm install --save-dev @nrwl/express`
-- [Node](https://nodejs.org)
-  - `npm install --save-dev @nrwl/node`
+Vulcan also builds documentations and a self-served catalog, so **data consumers can understand the data and get data from the tools they’re using all by themselves without using any SQL**.
 
-There are also many [community plugins](https://nx.dev/community) you could add.
+## Features
+- Build API instantly with just SQL.
+- Access control & authorization in SQL.
+- API best practices included (validation, caching, pagination, sorting …etc).
+- API documentation is automatically built.
+- Self-served catalog for data consumers. A step-by-step guide to get data from Excel / Google spreadsheet, Zapier, Retools …etc.
 
-## Generate an application
+## How Vulcan works?
 
-Run `nx g @nrwl/react:app my-app` to generate an application.
+### Step 1: Instant API with just SQL.
+<p align="center">
+  <img src="https://i.imgur.com/2PMrlJC.png" width="600" >
+</p>
 
-> You can use any of the plugins above to generate applications as well.
+Building API with just SQL. No complex web framework and business logic.
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+**Example: passing parameters from url**
 
-## Generate a library
+```sql
+select * from public.users where id = '{{ params.userId }}'
+```
 
-Run `nx g @nrwl/react:lib my-lib` to generate a library.
+You can build an API endpoint `users` with `userId` as input.
 
-> You can also use any of the plugins above to generate libraries as well.
+API users will be able to get data like
 
-Libraries are shareable across libraries and applications. They can be imported from `@vulcan-sql/mylib`.
+```js
+GET /users?userId=1
 
-## Development server
+Response
+[{
+  "name": "wwwy3y3",
+  "age": 30
+}]
+```
 
-Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+#### **Other Examples:**
 
-## Code scaffolding
+<details>
+  <summary>1. Error Handling</summary>
 
-Run `nx g @nrwl/react:component my-component --project=my-app` to generate a new component.
+  If you want to throw errors based on data, for example, run a query first, if no data return, throw `404 not found`.
+  
+  ```sql
+  {% req user %}
+  select * from public.users where userName = '{{ parames.userName }}';
+  {% endreq %}
+  
+  {% if user.count().value() == 0 %}
+    {% error "user not found" %}
+  {% endif %}
+  
+  select * from public.groups where userId = '{{ user.value()[0].id }}';
+  ```
+</details>
 
-## Build
+<details>
+  <summary>2. Authorization</summary>
 
-Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+  You can pass in user attributes to SQL to control the access.
+    
+  ```sql
+  select
+    --- masking address if query user is not admin
+    {% if context.user == 'ADMIN' %}
+      {% "address" %}
+    {% elif %}
+      {% "masking(address)" %}
+    {% endif %},
+    
+    orderId,
+    amount
+  from orders
 
-## Running unit tests
+  --- limit the data to the store user belongs to.
+  where store = {{ context.user.store }}
+  ```
+</details>
 
-Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
+<details>
+  <summary>3. Validation</summary>
 
-Run `nx affected:test` to execute the unit tests affected by a change.
+  You can add a number validator on `userId` input on your API with schema.
 
-## Running end-to-end tests
+  - SQL
+      ```sql
+      select * from public.users where id = '{{ params.userId }}'
+      ```
+      
+  - Schema
+      ```yaml
+      parameters:
+        userId:
+          in: query
+          valudators:
+            - name: 'number'
+      ```
+</details>
 
-Run `nx e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
 
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
+### Step 2: Build self-served documentation and catalog
 
-## Understand your workspace
+Vulcan will automatically build documentation and catalog.
 
-Run `nx graph` to see a diagram of the dependencies of your projects.
+- **Catalog**: Vulcan will build a catalog page for data consumers. This page will consist of more clear information on data that is exposed as APIs. Description, Column information are all included.
 
-## Further help
+<p align="center">
+  <img src="https://i.imgur.com/qz6swW2.png" width="800" >
+</p>
 
-Visit the [Nx Documentation](https://nx.dev) to learn more.
+<p align="center">
+  <img src="https://i.imgur.com/YZFczO3.png" width="800" >
+</p>
 
-## ☁ Nx Cloud
+- **API Documentation**: Vulcan will build a swagger page for backend engineers.
 
-### Distributed Computation Caching & Distributed Task Execution
+<p align="center">
+  <img src="https://i.imgur.com/oH9UEoD.png" width="800" >
+</p>
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
+### Step 3: Connect from framework & applications
 
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
+On catalog page, you can preview data here and connect from your own framework and applications.
 
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
+- You can `Copy API URL` to use it at frontend / backend.
+- You can download the selected data as CSV or JSON.
 
-Visit [Nx Cloud](https://nx.app/) to learn more.
+<p align="center">
+  <img src="https://i.imgur.com/YZFczO3.png" width="800" >
+</p>
+
+- You can follow the steps to connect from Excel / Google Spreadsheet / Zapier / Retools.
+
+<p align="center">
+  <img src="https://i.imgur.com/zOEdRYT.png" width="800" >
+</p>
+
+## Installation
+
+- npm / yarn
+    ```bash
+    npm install @vulcan-sql/cli
+    yarn add @vulcan-sql/cli
+    ```
+    
+- brew
+    ```sql
+    brew install vulcan
+    ```
+    
+
+## Quickstart
+
+1. Initialize a Vulcan project
+    ```bash
+    vulcan init --name my-first-vulcan-project && cd my-first-vulcan-project
+    ```
+    
+2. Start Vulcan server.
+    ```bash
+    vulcan start --watch
+    ```
+    
+3. Visit API & Catalog
+    ```bash
+    Vulcan started...
+    Visit API document at http://localhost:8080/doc
+    Visit Catalog at http://localhost:8080/catalog
+    ```
+
+## Demo Screenshot
+<p align="center">
+  <img src="https://i.imgur.com/j4jcYj1.png" width="800" >
+</p>
+
+> 🔑 **Login Page**: data consumers will be asked to authenticate themselves.
+
+<p align="center">
+  <img src="https://i.imgur.com/0VmXMpl.png" width="800" >
+</p>
+
+> 📖 **Catalog**: After logged-in, data consumers can see what endpoints are available to be used.
+
+<p align="center">
+  <img src="https://i.imgur.com/YZFczO3.png" width="800" >
+</p>
+
+> ✅ **Endpoint**: data consumers can view the detail of one endpoint and preview the data.
+
+<p align="center">
+  <img src="https://i.imgur.com/zOEdRYT.png" width="800" >
+</p>
+
+> 🔌 **Connect**: data consumers will be able to follow the guide and connect from their applications.
+
+## Community
+* Welcome to our [Slack](https://join.slack.com/t/vulcan-bhi6765/shared_invite/zt-1dzixpy38-pKrcewZ6eM3wSqAs6~is8Q) to give us feedbacks!
+* If any issues, please visit [Github Issues](https://github.com/Canner/vulcan/issues)
+
