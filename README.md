@@ -10,7 +10,7 @@
     <img alt="" src="https://img.shields.io/npm/v/@vulcan-sql/core?color=orange&style=for-the-badge">
   </a>
   <a aria-label="License" href="https://github.com/Canner/vulcan/blob/develop/LICENSE">
-    <img alt="" src="https://img.shields.io/github/license/Canner/vulcan?color=orange&style=for-the-badge">
+    <img alt="" src="https://img.shields.io/github/license/canner/vulcan?color=orange&style=for-the-badge">
   </a>
   <a aria-label="Join the community on GitHub" href="https://join.slack.com/t/vulcan-bhi6765/shared_invite/zt-1dzixpy38-pKrcewZ6eM3wSqAs6~is8Q">
     <img alt="" src="https://img.shields.io/badge/-JOIN%20THE%20COMMUNITY-orange?style=for-the-badge&logo=Slack&labelColor=black&logoWidth=20">
