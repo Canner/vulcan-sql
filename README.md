@@ -79,7 +79,7 @@ Response
 
   If you want to throw errors based on data, for example, run a query first, if no data return, throw `404 not found`.
   
-  ```bash
+  ```sql
   {% req user %}
   select * from public.users where userName = '{{ parames.userName }}';
   {% endreq %}
@@ -99,7 +99,7 @@ Response
     
   ```sql
   select
-    // masking address if query user is not admin
+    --- masking address if query user is not admin
     {% if context.user == 'ADMIN' %}
       {% "address" %}
     {% elif %}
@@ -109,7 +109,8 @@ Response
     orderId,
     amount
   from orders
-  // limit the data to the store user belongs to.
+
+  --- limit the data to the store user belongs to.
   where store = {{ context.user.store }}
   ```
 </details>
