@@ -6,7 +6,7 @@
   <a aria-label="Canner" href="https://cannerdata.com/">
     <img src="https://img.shields.io/badge/%F0%9F%A7%A1-Made%20by%20Canner-orange?style=for-the-badge">
   </a>
-  <a aria-label="NPM version" href="">
+  <a aria-label="NPM version" href="https://www.npmjs.com/package/@vulcan-sql/core">
     <img alt="" src="https://img.shields.io/npm/v/@vulcan-sql/core?color=orange&style=for-the-badge">
   </a>
   <a aria-label="License" href="https://github.com/Canner/vulcan/blob/develop/LICENSE">
