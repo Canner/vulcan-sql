@@ -47,7 +47,7 @@ Vulcan also builds documentations and a self-served catalog, so **data consumers
 
 ### Step 1: Instant API with just SQL.
 <p align="center">
-  <img src="https://i.imgur.com/2PMrlJC.png" width="800" >
+  <img src="https://i.imgur.com/2PMrlJC.png" width="600" >
 </p>
 
 Building API with just SQL. No complex web framework and business logic.
