@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "build": "packages/build",
+    "cli": "packages/cli",
     "core": "packages/core",
     "extension-dbt": "packages/extension-dbt",
     "integration-testing": "packages/integration-testing",
