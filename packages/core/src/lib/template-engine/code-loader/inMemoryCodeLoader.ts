@@ -6,7 +6,7 @@ import {
 } from '@vulcan-sql/core/models';
 
 @VulcanInternalExtension()
-@VulcanExtensionId('inMemory')
+@VulcanExtensionId('InMemory')
 export class InMemoryCodeLoader extends CodeLoader {
   private source = new Map<string, object>();
 

@@ -1,0 +1,23 @@
+name: '{{ options.projectName }}'
+description: A starter Vulcan project
+version: 0.1.0
+template:
+  provider: LocalFile
+  # Path to .sql files
+  folderPath: sqls
+  codeLoader: InMemory
+artifact:
+  provider: LocalFile
+  serializer: JSON
+  # Path to build result
+  filePath: result.json
+schema-parser:
+  reader: LocalFile
+  # Path to .yaml files
+  folderPath: sqls
+document-generator:
+  specs:
+    - oas3
+  folderPath: .
+types:
+  - RESTFUL

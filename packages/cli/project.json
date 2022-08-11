@@ -44,12 +44,52 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "command": "node src/index.js {args.cmd}",
-        "cwd": "dist/packages/cli"
+        "cwd": "dist/packages/cli",
+        "forwardAllArgs": false
       },
       "dependsOn": [
         {
           "projects": "self",
           "target": "build"
+        },
+        {
+          "projects": "self",
+          "target": "cp-assets"
+        }
+      ]
+    },
+    "cp-assets": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "cp -r packages/cli/src/schemas dist/packages/cli/src",
+            "forwardAllArgs": false
+          }
+        ]
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "install": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "chmod +x ./src/index.js && npm i -g . && echo done.",
+            "forwardAllArgs": false
+          }
+        ],
+        "cwd": "dist/packages/cli"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "cp-assets"
         }
       ]
     }

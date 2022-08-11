@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { program } from 'commander';
 import { InitCommand } from './commands';
 import { Logger } from 'tslog';
