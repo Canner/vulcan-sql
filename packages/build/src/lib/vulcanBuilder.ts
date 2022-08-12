@@ -9,9 +9,14 @@ import {
 import { DocumentGenerator } from './document-generator';
 
 export class VulcanBuilder {
-  public async build(options: IBuildOptions) {
+  private options: IBuildOptions;
+  constructor(options: IBuildOptions) {
+    this.options = options;
+  }
+
+  public async build() {
     const container = new Container();
-    await container.load(options);
+    await container.load(this.options);
     const schemaParser = container.get<SchemaParser>(TYPES.SchemaParser);
     const templateEngine = container.get<TemplateEngine>(
       CORE_TYPES.TemplateEngine
