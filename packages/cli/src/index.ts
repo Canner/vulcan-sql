@@ -1,33 +1,37 @@
 #!/usr/bin/env node
 
 import { program } from 'commander';
-import { InitCommand, StartCommand, VersionCommand } from './commands';
-import { Logger } from 'tslog';
-
-// We don't use createLogger helper from core package because CLI will be installed before all packages.
-const logger = new Logger({
-  name: 'CLI',
-  minLevel: 'info',
-  exposeErrorCodeFrame: false,
-  displayFilePath: 'hidden',
-  displayFunctionName: false,
-});
-
-const initCommand = new InitCommand(logger);
-const startCommand = new StartCommand(logger);
-const versionCommand = new VersionCommand(logger);
+import { handleInit, handleStart, handleVersion } from './commands';
+import { handleBuild } from './commands/build';
+import { handleServe } from './commands/serve';
+import { logger } from './utils';
 
 program.exitOverride();
 
 program.command('version').action(async () => {
-  await versionCommand.handle();
+  await handleVersion();
 });
 
 program
   .command('init')
   .option('-p --project-name <project-name>')
   .action(async (options) => {
-    await initCommand.handle(options);
+    await handleInit(options);
+  });
+
+program
+  .command('build')
+  .option('-c --config <config-path>')
+  .action(async (options) => {
+    await handleBuild(options);
+  });
+
+program
+  .command('serve')
+  .option('-c --config <config-path>')
+  .option('-p --port <port>')
+  .action(async (options) => {
+    await handleServe(options);
   });
 
 program
@@ -35,7 +39,7 @@ program
   .option('-c --config <config-path>')
   .option('-p --port <port>')
   .action(async (options) => {
-    await startCommand.handle(options);
+    await handleStart(options);
   });
 
 (async () => {
