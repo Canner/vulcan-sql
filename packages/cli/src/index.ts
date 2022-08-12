@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { program } from 'commander';
-import { InitCommand, StartCommand } from './commands';
+import { InitCommand, StartCommand, VersionCommand } from './commands';
 import { Logger } from 'tslog';
 
 // We don't use createLogger helper from core package because CLI will be installed before all packages.
@@ -15,8 +15,13 @@ const logger = new Logger({
 
 const initCommand = new InitCommand(logger);
 const startCommand = new StartCommand(logger);
+const versionCommand = new VersionCommand(logger);
 
 program.exitOverride();
+
+program.command('version').action(async () => {
+  await versionCommand.handle();
+});
 
 program
   .command('init')
