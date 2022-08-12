@@ -85,7 +85,7 @@ export class InitCommand extends Command {
       );
       installSpinner.succeed('Project has been created.');
       installSpinner.start('Installing dependencies...');
-      await this.execAndWait(`yarn --silent`, projectPath);
+      await this.execAndWait(`npm install --silent`, projectPath);
       installSpinner.succeed(`Dependencies have been installed.`);
       installSpinner.start('Writing initial content...');
       await this.addInitFiles(projectPath, options);

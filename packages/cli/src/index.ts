@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { program } from 'commander';
-import { InitCommand } from './commands';
+import { InitCommand, StartCommand } from './commands';
 import { Logger } from 'tslog';
 
 // We don't use createLogger helper from core package because CLI will be installed before all packages.
@@ -14,6 +14,7 @@ const logger = new Logger({
 });
 
 const initCommand = new InitCommand(logger);
+const startCommand = new StartCommand(logger);
 
 program.exitOverride();
 
@@ -24,6 +25,14 @@ program
     await initCommand.handle(options);
   });
 
+program
+  .command('start')
+  .option('-c --config <config-path>')
+  .option('-p --port <port>')
+  .action(async (options) => {
+    await startCommand.handle(options);
+  });
+
 (async () => {
   try {
     await program.parseAsync();
@@ -31,6 +40,6 @@ program
     // Ignore error with exit code = 0, e.g. commander.helpDisplayed error
     if (e?.exitCode === 0) return;
     logger.prettyError(e, true, false, false);
-    process.exit(1);
+    process.exit(e?.exitCode ?? 1);
   }
 })();
