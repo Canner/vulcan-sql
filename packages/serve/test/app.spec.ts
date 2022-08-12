@@ -14,6 +14,8 @@ import {
   TemplateEngine,
   ValidatorDefinition,
   ValidatorLoader,
+  extensionModule as coreExtensionModule,
+  TYPES as CORE_TYPES,
 } from '@vulcan-sql/core';
 import {
   RouteGenerator,
@@ -25,12 +27,8 @@ import {
   PaginationTransformer,
 } from '@vulcan-sql/serve/route';
 import { Container } from 'inversify';
-import {
-  extensionModule as coreExtensionModule,
-  TYPES as CORE_TYPES,
-} from '@vulcan-sql/core/containers';
-import { TYPES } from '../src/containers/types';
 import { extensionModule } from '../src/containers/modules';
+import { TYPES } from '@vulcan-sql/serve';
 
 describe('Test vulcan server for practicing middleware', () => {
   let container: Container;

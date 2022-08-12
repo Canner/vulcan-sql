@@ -13,10 +13,10 @@ import {
   ValidatorDefinition,
   ValidatorLoader,
   extensionModule,
+  TYPES as CORE_TYPES,
 } from '@vulcan-sql/core';
 import { Container } from 'inversify';
 import { TYPES } from '@vulcan-sql/serve/containers';
-import { TYPES as CORE_TYPES } from '@vulcan-sql/core/containers';
 
 describe('Test request validator - validate successfully', () => {
   let container: Container;

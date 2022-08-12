@@ -1,6 +1,10 @@
 import faker from '@faker-js/faker';
 import * as sinon from 'ts-sinon';
-import { APISchema, TemplateEngine } from '@vulcan-sql/core';
+import {
+  APISchema,
+  TemplateEngine,
+  TYPES as CORE_TYPES,
+} from '@vulcan-sql/core';
 import {
   APIProviderType,
   GraphQLRoute,
@@ -12,7 +16,6 @@ import {
 } from '@vulcan-sql/serve/route';
 import { Container } from 'inversify';
 import { TYPES } from '@vulcan-sql/serve/containers';
-import { TYPES as CORE_TYPES } from '@vulcan-sql/core/containers';
 
 describe('Test route generator ', () => {
   let container: Container;

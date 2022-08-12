@@ -12,7 +12,7 @@ import {
 } from '@vulcan-sql/core/models';
 import { inject } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
-import { TemplateEngineOptions } from 'packages/core/src/options';
+import { TemplateEngineOptions } from '@vulcan-sql/core/options';
 
 @VulcanInternalExtension()
 @VulcanExtensionId('LocalFile')
