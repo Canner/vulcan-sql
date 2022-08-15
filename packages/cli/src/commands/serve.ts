@@ -1,7 +1,7 @@
 import * as jsYAML from 'js-yaml';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { localModulePath, logger } from '../utils';
+import { addShutdownJob, localModulePath, logger } from '../utils';
 
 export interface ServeCommandOptions {
   config: string;
@@ -25,6 +25,11 @@ export const serveVulcan = async (options: ServeCommandOptions) => {
   const server = new VulcanServer(config);
   await server.start(options.port);
   logger.info(`Server is listening at port ${options.port}.`);
+  addShutdownJob(async () => {
+    logger.info(`Stopping server...`);
+    await server.close();
+    logger.info(`Server stopped`);
+  });
 };
 
 export const handleServe = async (
