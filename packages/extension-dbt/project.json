@@ -3,14 +3,33 @@
   "sourceRoot": "packages/extension-dbt/src",
   "targets": {
     "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts extension-dbt"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "tsc"
+        }
+      ]
+    },
+    "tsc": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/extension-dbt",
         "main": "packages/extension-dbt/src/index.ts",
         "tsConfig": "packages/extension-dbt/tsconfig.lib.json",
-        "assets": ["packages/extension-dbt/*.md"]
-      }
+        "assets": ["packages/extension-dbt/*.md"],
+        "buildableProjectDepsInPackageJsonType": "dependencies"
+      },
+      "dependsOn": [
+        {
+          "projects": "dependencies",
+          "target": "build"
+        }
+      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",

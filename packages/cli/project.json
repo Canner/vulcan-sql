@@ -3,14 +3,42 @@
   "sourceRoot": "packages/cli/src",
   "targets": {
     "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "yarn ts-node ./tools/scripts/replaceAlias.ts cli",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "chmod +x dist/packages/cli/src/index.js",
+            "forwardAllArgs": false
+          }
+        ]
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "tsc"
+        }
+      ]
+    },
+    "tsc": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/cli",
         "main": "packages/cli/src/index.ts",
         "tsConfig": "packages/cli/tsconfig.lib.json",
-        "assets": ["packages/cli/*.md"]
-      }
+        "assets": ["packages/cli/*.md", "packages/cli/src/schemas/**/*.*"],
+        "buildableProjectDepsInPackageJsonType": "dependencies"
+      },
+      "dependsOn": [
+        {
+          "projects": "dependencies",
+          "target": "build"
+        }
+      ]
     },
     "publish": {
       "executor": "@nrwl/workspace:run-commands",
@@ -40,47 +68,12 @@
         "passWithNoTests": true
       }
     },
-    "run": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "command": "node src/index.js {args.cmd}",
-        "cwd": "dist/packages/cli",
-        "forwardAllArgs": false
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        },
-        {
-          "projects": "self",
-          "target": "cp-assets"
-        }
-      ]
-    },
-    "cp-assets": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "commands": [
-          {
-            "command": "cp -r packages/cli/src/schemas dist/packages/cli/src",
-            "forwardAllArgs": false
-          }
-        ]
-      },
-      "dependsOn": [
-        {
-          "projects": "self",
-          "target": "build"
-        }
-      ]
-    },
     "install": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
           {
-            "command": "chmod +x ./src/index.js && npm i -g . && echo done.",
+            "command": "npm i -g . && echo done.",
             "forwardAllArgs": false
           }
         ],
@@ -89,7 +82,7 @@
       "dependsOn": [
         {
           "projects": "self",
-          "target": "cp-assets"
+          "target": "build"
         }
       ]
     }

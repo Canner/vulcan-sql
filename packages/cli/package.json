@@ -1,5 +1,6 @@
 {
   "name": "@vulcan-sql/cli",
+  "description": "CLI tools for Vulcan",
   "version": "0.1.0",
   "type": "commonjs",
   "bin": {

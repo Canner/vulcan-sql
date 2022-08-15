@@ -3,14 +3,33 @@
   "sourceRoot": "packages/test-utility/src",
   "targets": {
     "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts test-utility"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "tsc"
+        }
+      ]
+    },
+    "tsc": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/test-utility",
         "main": "packages/test-utility/src/index.ts",
         "tsConfig": "packages/test-utility/tsconfig.lib.json",
-        "assets": ["packages/test-utility/*.md"]
-      }
+        "assets": ["packages/test-utility/*.md"],
+        "buildableProjectDepsInPackageJsonType": "dependencies"
+      },
+      "dependsOn": [
+        {
+          "projects": "dependencies",
+          "target": "build"
+        }
+      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
