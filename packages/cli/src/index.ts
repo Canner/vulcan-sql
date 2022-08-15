@@ -8,36 +8,55 @@ import { logger } from './utils';
 
 program.exitOverride();
 
-program.command('version').action(async () => {
-  await handleVersion();
-});
+program
+  .command('version')
+  .description('show the version of CLI and Vulcan packages')
+  .action(async () => {
+    await handleVersion();
+  });
 
 program
   .command('init')
-  .option('-p --project-name <project-name>')
+  .description('create a new Vulcan project')
+  .option('-p --project-name <project-name>', 'specify project name')
   .action(async (options) => {
     await handleInit(options);
   });
 
 program
   .command('build')
-  .option('-c --config <config-path>')
+  .description('build Vulcan project')
+  .option(
+    '-c --config <config-path>',
+    'path to Vulcan config file',
+    './vulcan.yaml'
+  )
   .action(async (options) => {
     await handleBuild(options);
   });
 
 program
   .command('serve')
-  .option('-c --config <config-path>')
-  .option('-p --port <port>')
+  .description('serve Vulcan project')
+  .option(
+    '-c --config <config-path>',
+    'path to Vulcan config file',
+    './vulcan.yaml'
+  )
+  .option('-p --port <port>', 'server port', '3000')
   .action(async (options) => {
     await handleServe(options);
   });
 
 program
   .command('start')
-  .option('-c --config <config-path>')
-  .option('-p --port <port>')
+  .description('build and serve Vulcan project')
+  .option(
+    '-c --config <config-path>',
+    'path to Vulcan config file',
+    './vulcan.yaml'
+  )
+  .option('-p --port <port>', 'server port', '3000')
   .action(async (options) => {
     await handleStart(options);
   });
