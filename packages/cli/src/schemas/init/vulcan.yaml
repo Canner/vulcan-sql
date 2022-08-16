@@ -1,6 +1,6 @@
 name: '{{ options.projectName }}'
 description: A starter Vulcan project
-version: 0.1.0
+version: 0.1.0-alpha.1
 template:
   provider: LocalFile
   # Path to .sql files

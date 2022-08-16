@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/cli",
   "description": "CLI tools for Vulcan",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1",
   "type": "commonjs",
   "bin": {
     "vulcan": "./src/index.js"

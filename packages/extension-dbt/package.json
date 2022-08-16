@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/extension-dbt",
   "description": "Using dbt models form Vulcan projects",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"
