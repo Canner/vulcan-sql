@@ -108,6 +108,7 @@ export class NunjucksCompiler implements Compiler {
     } else if (extension instanceof FilterBuilder) {
       this.compileTimeEnv.addFilter(
         extension.filterName,
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         () => {}, // We don't need to implement transform function in compile time
         true
       );

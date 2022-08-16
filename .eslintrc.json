@@ -16,7 +16,8 @@
                 "sourceTag": "*",
                 "onlyDependOnLibsWithTags": ["*"]
               }
-            ]
+            ],
+            "allowCircularSelfDependency": true
           }
         ]
       }
@@ -24,7 +25,10 @@
     {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nrwl/nx/typescript"],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-non-null-assertion": "off"
+      }
     },
     {
       "files": ["*.js", "*.jsx"],

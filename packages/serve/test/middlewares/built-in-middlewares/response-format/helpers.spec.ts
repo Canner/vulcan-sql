@@ -14,9 +14,13 @@ import {
 } from '@vulcan-sql/serve/response-formatter';
 
 class HyperFormatter extends BaseResponseFormatter {
-  public format(): any {}
+  public format(): any {
+    return;
+  }
 
-  public toResponse() {}
+  public toResponse() {
+    return;
+  }
 }
 
 it.each([

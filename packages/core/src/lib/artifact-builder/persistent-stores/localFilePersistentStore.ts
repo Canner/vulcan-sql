@@ -1,7 +1,6 @@
 import { promises as fs } from 'fs';
 import {
   ArtifactBuilderProviderType,
-  IArtifactBuilderOptions,
   PersistentStore,
   VulcanExtensionId,
   VulcanInternalExtension,
