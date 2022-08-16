@@ -8,9 +8,13 @@ export const addShutdownJob = (job: JobBeforeShutdown) => {
   shutdownJobs.push(job);
 };
 
-process.on('SIGINT', async () => {
+export const runShutdownJobs = async () => {
   logger.info('Ctrl-C signal caught, stopping services...');
   await Promise.all(shutdownJobs.map((job) => job()));
   logger.info('Bye.');
+};
+
+process.on('SIGINT', async () => {
+  await runShutdownJobs();
   process.exit(0);
 });

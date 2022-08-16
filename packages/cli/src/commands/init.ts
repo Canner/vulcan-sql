@@ -52,7 +52,8 @@ export const createProject = async (
           name: options.projectName,
           dependencies: {
             '@vulcan-sql/core': options.version,
-            // TODO: Install build/serve package when they are ready
+            '@vulcan-sql/build': options.version,
+            '@vulcan-sql/serve': options.version,
           },
         },
         null,
