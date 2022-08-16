@@ -29,7 +29,7 @@ describe('Test rate limit middlewares', () => {
     });
     app.use(router.routes());
     // Act
-    server = app.listen(faker.internet.port());
+    server = app.listen(faker.datatype.number({ min: 20000, max: 30000 }));
   });
 
   afterAll(() => {

@@ -22,7 +22,7 @@ describe('Test cors middlewares', () => {
     // use middleware in koa app
     app.use(middleware.handle.bind(middleware));
     // Act
-    server = app.listen(faker.internet.port());
+    server = app.listen(faker.datatype.number({ min: 20000, max: 30000 }));
   });
 
   afterAll(() => {

@@ -26,5 +26,7 @@ it('Vulcan server should work with built artifacts', async () => {
   });
 
   // Act, Assert
-  await expect(server.start(faker.internet.port())).resolves.not.toThrow();
+  await expect(
+    server.start(faker.datatype.number({ min: 20000, max: 30000 }))
+  ).resolves.not.toThrow();
 });

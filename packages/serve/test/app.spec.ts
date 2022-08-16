@@ -85,7 +85,7 @@ describe('Test vulcan server for practicing middleware', () => {
     await app.buildRoutes([fakeSchema], [APIProviderType.RESTFUL]);
     const server = http
       .createServer(app.getHandler())
-      .listen(faker.internet.port());
+      .listen(faker.datatype.number({ min: 20000, max: 30000 }));
 
     // arrange expected result
     const expected = {
@@ -313,7 +313,7 @@ describe('Test vulcan server for calling restful APIs', () => {
       await app.buildRoutes([schema], [APIProviderType.RESTFUL]);
       server = http
         .createServer(app.getHandler())
-        .listen(faker.internet.port());
+        .listen(faker.datatype.number({ min: 20000, max: 30000 }));
 
       // arrange input api url
       const apiUrl = KoaRouter.url(schema.urlPath, ctx.params);
