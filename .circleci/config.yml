@@ -1,0 +1,63 @@
+version: 2.1
+
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: cimg/node:16.15.1
+
+set_env: &set_env
+  name: Setup Environment Variables
+  command: |
+
+    echo 'Fetching Base Commit from GitHub'
+    echo 'export CIRCLE_PR_NUMBER="${CIRCLE_PR_NUMBER:-${CIRCLE_PULL_REQUEST##*/}}"' >> $BASH_ENV
+    source $BASH_ENV
+    echo "export CIRCLE_PR_BASE_SHA=`curl -s https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pulls/${CIRCLE_PR_NUMBER} | jq -r '.base.sha'`" >> $BASH_ENV
+    echo 'export AFFECTED_ARGS="--base=${CIRCLE_PR_BASE_SHA}"' >> $BASH_ENV
+
+    source $BASH_ENV
+    echo $AFFECTED_ARGS
+
+yarn_cache: &yarn_cache
+  keys:
+    - node-deps-node16-{{ checksum "yarn.lock" }}
+    # fallback to using the latest cache if no exact match is found
+    - node-deps-node16-
+
+yarn_install: &yarn_install
+  name: Install Dependencies
+  command: yarn install --frozen-lockfile --non-interactive
+
+jobs:
+  install:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *yarn_cache
+      - run:
+          <<: *yarn_install
+      - save_cache:
+          key: node-deps-node16-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache
+            - node_modules
+  lint:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          <<: *set_env
+      - restore_cache:
+          <<: *yarn_cache
+      - run: yarn nx workspace-lint
+      - run: yarn nx affected --target=lint --head=HEAD --maxWarnings=0 ${AFFECTED_ARGS}
+
+workflows:
+  version: 2
+  pr-check:
+    jobs:
+      - install
+      - lint:
+          requires:
+            - install
