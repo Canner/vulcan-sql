@@ -117,9 +117,13 @@ const addInitFiles = async (
   }
 };
 
-const listFiles = async (path: string) => {
+const listFiles = async (pattern: string) => {
   return new Promise<string[]>((resolve, reject) => {
-    glob(path, (err, files) => {
+    // Windows use backslash when using path.resolve, e.g. C:\\Users\\xxxxx\\cli. but glob accepts only forward ward slash
+    // Glob: https://github.com/isaacs/node-glob#windows
+    // Path separator: https://nodejs.org/api/path.html#pathsep
+    const normalizedPattern = pattern.split(path.sep).join('/');
+    glob(normalizedPattern, (err, files) => {
       if (err) return reject(err);
       return resolve(files);
     });
