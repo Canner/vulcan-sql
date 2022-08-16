@@ -3,7 +3,9 @@ version: 2.1
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: cimg/node:16.15.1
+    # Jest has issues with node > 16.11.0, please stick node version until the issues are resolved
+    # https://github.com/facebook/jest/issues/11956
+    - image: cimg/node:16.10.0
 
 set_env: &set_env
   name: Setup Environment Variables
@@ -14,6 +16,7 @@ set_env: &set_env
     source $BASH_ENV
     echo "export CIRCLE_PR_BASE_SHA=`curl -s https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pulls/${CIRCLE_PR_NUMBER} | jq -r '.base.sha'`" >> $BASH_ENV
     echo 'export AFFECTED_ARGS="--base=${CIRCLE_PR_BASE_SHA}"' >> $BASH_ENV
+    echo 'export NODE_OPTIONS="--max_old_space_size=6144"' >> $BASH_ENV
 
     source $BASH_ENV
     echo $AFFECTED_ARGS
@@ -53,11 +56,25 @@ jobs:
       - run: yarn nx workspace-lint
       - run: yarn nx affected --target=lint --head=HEAD --maxWarnings=0 ${AFFECTED_ARGS}
 
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          <<: *set_env
+      - restore_cache:
+          <<: *yarn_cache
+      - run: yarn nx affected --target=test --head=HEAD --ci --code-coverage --maxWorkers=2 ${AFFECTED_ARGS}
+        # --maxWorkers=2 is required because we'll run virtual machine with 32 cores CPU (with actually 4 CPI), jest spawns lots of workers if we don't fix the worker size. 
+        # https://support.circleci.com/hc/en-us/articles/360005442714-Your-test-tools-are-smart-and-that-s-a-problem-Learn-about-when-optimization-goes-wrong-
 workflows:
   version: 2
   pr-check:
     jobs:
       - install
       - lint:
+          requires:
+            - install
+      - test:
           requires:
             - install
