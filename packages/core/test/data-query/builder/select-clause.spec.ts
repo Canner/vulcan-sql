@@ -37,11 +37,14 @@ const generateSelectRecords = (
   return result;
 };
 
+const createStub = () => {
+  return {
+    dataSource: sinon.stubInterface<DataSource>(),
+    bindParams: sinon.stubInterface<BindParameters>(),
+  };
+};
+
 describe('Test data query builder > select clause', () => {
-  let stubDataSource: sinon.StubbedInstance<DataSource>;
-  beforeEach(() => {
-    stubDataSource = sinon.stubInterface<DataSource>();
-  });
   it.each([
     ['*', '*', '*'],
     [undefined, '*', '*'],
@@ -82,8 +85,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
-        bindParams: sinon.stubInterface<BindParameters>(),
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
       columns.map((column) => {
         builder = column ? builder.select(column) : builder.select();
@@ -150,8 +153,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
-        bindParams: sinon.stubInterface<BindParameters>(),
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -223,8 +226,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
-        bindParams: sinon.stubInterface<BindParameters>(),
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -300,8 +303,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
-        bindParams: sinon.stubInterface<BindParameters>(),
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -374,8 +377,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
-        bindParams: sinon.stubInterface<BindParameters>(),
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -447,8 +450,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
-        bindParams: sinon.stubInterface<BindParameters>(),
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -520,8 +523,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
-        bindParams: sinon.stubInterface<BindParameters>(),
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -593,8 +596,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
-        bindParams: sinon.stubInterface<BindParameters>(),
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)

@@ -22,8 +22,13 @@ export class MockDataSource extends DataSource {
     // handle parameterized query statement
     let query = statement;
     for (const identifier of Object.keys(bindParams)) {
-      query = query.replace(identifier, bindParams[identifier]);
+      query = query.replace(
+        // escape special char '$'
+        new RegExp(identifier.replace('$', '\\$'), 'g'),
+        bindParams[identifier]
+      );
     }
+
     // query result
     const data = db.public.many(query);
     const readStream = new Stream.Readable({

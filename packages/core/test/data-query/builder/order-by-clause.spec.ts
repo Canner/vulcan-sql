@@ -6,12 +6,15 @@ import {
   OrderByClauseOperation,
 } from '@vulcan-sql/core/data-query';
 import { DataSource, BindParameters } from '@vulcan-sql/core';
-describe('Test data query builder > order by clause', () => {
-  let stubDataSource: sinon.StubbedInstance<DataSource>;
 
-  beforeEach(() => {
-    stubDataSource = sinon.stubInterface<DataSource>();
-  });
+const createStub = () => {
+  return {
+    dataSource: sinon.stubInterface<DataSource>(),
+    bindParams: sinon.stubInterface<BindParameters>(),
+  };
+};
+
+describe('Test data query builder > order by clause', () => {
   it.each([
     {
       column: faker.database.column(),
@@ -35,8 +38,8 @@ describe('Test data query builder > order by clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
-        dataSource: stubDataSource,
-        bindParams: sinon.stubInterface<BindParameters>(),
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
       builder.orderBy(column, direction);
 
@@ -77,8 +80,8 @@ describe('Test data query builder > order by clause', () => {
       // Act
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
-        dataSource: stubDataSource,
-        bindParams: sinon.stubInterface<BindParameters>(),
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
       builder
         .orderBy(first.column, first.direction)
