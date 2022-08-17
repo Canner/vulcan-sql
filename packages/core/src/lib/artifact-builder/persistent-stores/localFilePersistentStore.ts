@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import {
+  ArtifactBuilderProviderType,
   IArtifactBuilderOptions,
   PersistentStore,
   VulcanExtensionId,
@@ -10,7 +11,7 @@ import { TYPES } from '@vulcan-sql/core/types';
 import { ArtifactBuilderOptions } from '@vulcan-sql/core/options';
 
 @VulcanInternalExtension()
-@VulcanExtensionId('LocalFile')
+@VulcanExtensionId(ArtifactBuilderProviderType.LocalFile)
 export class LocalFilePersistentStore extends PersistentStore {
   private filePath: string;
 

@@ -1,12 +1,15 @@
 import { injectable, inject, optional } from 'inversify';
 import { TYPES } from '@vulcan-sql/build/containers';
-import { ISchemaParserOptions } from '@vulcan-sql/build/models';
+import {
+  ISchemaParserOptions,
+  SchemaReaderType,
+} from '@vulcan-sql/build/models';
 import { IsOptional, IsString, validateSync } from 'class-validator';
 
 @injectable()
 export class SchemaParserOptions implements ISchemaParserOptions {
   @IsString()
-  public readonly reader = 'LocalFile';
+  public readonly reader: string = SchemaReaderType.LocalFile;
 
   @IsString()
   @IsOptional()

@@ -3,6 +3,7 @@ import {
   ISchemaParserOptions,
   SchemaFormat,
   SchemaReader,
+  SchemaReaderType,
 } from '@vulcan-sql/build/models';
 import { SchemaParserOptions } from '@vulcan-sql/build/options';
 import { SchemaParser } from '@vulcan-sql/build/schema-parser';
@@ -31,7 +32,7 @@ beforeEach(async () => {
   container
     .bind<Partial<ISchemaParserOptions>>(TYPES.SchemaParserInputOptions)
     .toConstantValue({
-      reader: 'LocalFile',
+      reader: SchemaReaderType.LocalFile,
     });
   container
     .bind(TYPES.SchemaParserOptions)

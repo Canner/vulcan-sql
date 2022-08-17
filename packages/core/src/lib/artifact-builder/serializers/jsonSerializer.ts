@@ -1,11 +1,12 @@
 import {
+  ArtifactBuilderSerializerType,
   Serializer,
   VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
 
 @VulcanInternalExtension()
-@VulcanExtensionId('JSON')
+@VulcanExtensionId(ArtifactBuilderSerializerType.JSON)
 export class JSONSerializer<T> extends Serializer<T> {
   public serialize(data: T): Buffer {
     return Buffer.from(JSON.stringify(data), 'utf-8');

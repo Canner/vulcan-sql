@@ -30,6 +30,7 @@ export const templateEngineModule = (options: ITemplateEngineOptions = {}) =>
     ).toAutoNamedFactory<TemplateProvider>(TYPES.Extension_TemplateProvider);
 
     if (options.provider) {
+      // Template provider is an optional component, but we can't use templateEngine.compile() if provider wasn't bound.
       bind<TemplateProvider>(TYPES.TemplateProvider)
         .toDynamicValue((context) => {
           const factory = context.container.get<

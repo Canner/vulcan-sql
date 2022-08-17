@@ -1,12 +1,13 @@
 import * as path from 'path';
 import { LocalFilePersistentStore } from '@vulcan-sql/core/artifact-builder';
+import { ArtifactBuilderProviderType } from '@vulcan-sql/core';
 
 it('Should persist data to file', async () => {
   // Arrange
   const ps = new LocalFilePersistentStore(
     {
       filePath: path.resolve(__dirname, 'test.json'),
-      provider: 'LocalFile',
+      provider: ArtifactBuilderProviderType.LocalFile,
     } as any,
     {},
     ''
@@ -21,7 +22,7 @@ it('Should load persisted data from file with correct data', async () => {
   const ps = new LocalFilePersistentStore(
     {
       filePath: path.resolve(__dirname, 'test.json'),
-      provider: 'LocalFile',
+      provider: ArtifactBuilderProviderType.LocalFile,
     } as any,
     {},
     ''

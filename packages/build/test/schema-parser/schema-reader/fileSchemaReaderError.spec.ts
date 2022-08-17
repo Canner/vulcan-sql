@@ -1,3 +1,4 @@
+import { SchemaReaderType } from '@vulcan-sql/build';
 import { FileSchemaReader } from '@vulcan-sql/build/schema-parser';
 import * as path from 'path';
 
@@ -16,7 +17,7 @@ it('File schema reader should throw error with file search errors', async () => 
   const schemaReader = new FileSchemaReader(
     {
       folderPath: path.resolve(__dirname, '../test-schema'),
-      reader: 'LocalFile',
+      reader: SchemaReaderType.LocalFile,
     },
     {},
     ''

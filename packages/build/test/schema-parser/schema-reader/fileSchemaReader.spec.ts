@@ -1,4 +1,4 @@
-import { SchemaData } from '@vulcan-sql/build/models';
+import { SchemaData, SchemaReaderType } from '@vulcan-sql/build/models';
 import { FileSchemaReader } from '@vulcan-sql/build/schema-parser';
 import * as path from 'path';
 
@@ -7,7 +7,7 @@ it('File schema reader should provide correct files and contents', async () => {
   const schemaReader = new FileSchemaReader(
     {
       folderPath: path.resolve(__dirname, '../test-schema'),
-      reader: 'LocalFile',
+      reader: SchemaReaderType.LocalFile,
     },
     {},
     ''

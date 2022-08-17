@@ -7,6 +7,7 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import {
   ITemplateEngineOptions,
+  TemplateProviderType,
   VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
@@ -15,7 +16,7 @@ import { TYPES } from '@vulcan-sql/core/types';
 import { TemplateEngineOptions } from '@vulcan-sql/core/options';
 
 @VulcanInternalExtension()
-@VulcanExtensionId('LocalFile')
+@VulcanExtensionId(TemplateProviderType.LocalFile)
 export class FileTemplateProvider extends TemplateProvider {
   private options: ITemplateEngineOptions;
 

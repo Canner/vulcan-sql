@@ -1,4 +1,14 @@
-import { VulcanBuilder, IBuildOptions } from '@vulcan-sql/build';
+import {
+  VulcanBuilder,
+  IBuildOptions,
+  SchemaReaderType,
+  DocumentGeneratorSpec,
+} from '@vulcan-sql/build';
+import {
+  ArtifactBuilderProviderType,
+  ArtifactBuilderSerializerType,
+  TemplateProviderType,
+} from '@vulcan-sql/core';
 import { VulcanServer, ServeConfig, APIProviderType } from '@vulcan-sql/serve';
 import * as path from 'path';
 import * as supertest from 'supertest';
@@ -8,20 +18,20 @@ const projectConfig: ServeConfig & IBuildOptions = {
   description: 'Vulcan project for integration testing',
   version: '0.0.1',
   template: {
-    provider: 'LocalFile',
+    provider: TemplateProviderType.LocalFile,
     folderPath: path.resolve(__dirname, 'sqls'),
   },
   artifact: {
-    provider: 'LocalFile',
-    serializer: 'JSON',
+    provider: ArtifactBuilderProviderType.LocalFile,
+    serializer: ArtifactBuilderSerializerType.JSON,
     filePath: path.resolve(__dirname, 'result.json'),
   },
   'schema-parser': {
-    reader: 'LocalFile',
+    reader: SchemaReaderType.LocalFile,
     folderPath: path.resolve(__dirname, 'sqls'),
   },
   'document-generator': {
-    specs: ['oas3'],
+    specs: [DocumentGeneratorSpec.oas3],
     folderPath: __dirname,
   },
   types: [APIProviderType.RESTFUL],

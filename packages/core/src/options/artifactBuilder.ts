@@ -1,15 +1,19 @@
 import { injectable, inject, optional } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
-import { IArtifactBuilderOptions } from '@vulcan-sql/core/models';
+import {
+  ArtifactBuilderProviderType,
+  ArtifactBuilderSerializerType,
+  IArtifactBuilderOptions,
+} from '@vulcan-sql/core/models';
 import { IsString, validateSync, IsOptional } from 'class-validator';
 
 @injectable()
 export class ArtifactBuilderOptions implements IArtifactBuilderOptions {
   @IsString()
-  public readonly provider: string = 'LocalFile';
+  public readonly provider: string = ArtifactBuilderProviderType.LocalFile;
 
   @IsString()
-  public readonly serializer: string = 'JSON';
+  public readonly serializer: string = ArtifactBuilderSerializerType.JSON;
 
   @IsString()
   @IsOptional()

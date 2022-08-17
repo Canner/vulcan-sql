@@ -18,9 +18,10 @@ import {
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
+import { DocumentGeneratorSpec } from '@vulcan-sql/build/models';
 
 @VulcanInternalExtension()
-@VulcanExtensionId('oas3')
+@VulcanExtensionId(DocumentGeneratorSpec.oas3)
 export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
   // Follow the OpenAPI specification version 3.0.3
   // see https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md

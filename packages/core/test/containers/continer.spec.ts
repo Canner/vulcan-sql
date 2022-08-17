@@ -3,6 +3,11 @@ import { Container, TYPES } from '@vulcan-sql/core/containers';
 import { TemplateEngine } from '@vulcan-sql/core/template-engine';
 import * as path from 'path';
 import * as fs from 'fs';
+import {
+  ArtifactBuilderProviderType,
+  ArtifactBuilderSerializerType,
+  TemplateProviderType,
+} from '@vulcan-sql/core/models';
 
 it('Container should load options and resolve all dependencies', async () => {
   // Arrange
@@ -13,12 +18,12 @@ it('Container should load options and resolve all dependencies', async () => {
   const container = new Container();
   await container.load({
     artifact: {
-      provider: 'LocalFile',
+      provider: ArtifactBuilderProviderType.LocalFile,
       filePath: resultPath,
-      serializer: 'JSON',
+      serializer: ArtifactBuilderSerializerType.JSON,
     },
     template: {
-      provider: 'LocalFile',
+      provider: TemplateProviderType.LocalFile,
       folderPath: path.resolve(__dirname, 'test-template'),
     },
     extensions: {},

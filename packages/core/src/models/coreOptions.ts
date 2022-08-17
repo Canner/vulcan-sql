@@ -2,6 +2,15 @@ import { IArtifactBuilderOptions } from './artifactBuilderOptions';
 import { IExecutorOptions } from './executorOptions';
 import { ITemplateEngineOptions } from './templateEngineOptions';
 
+/**
+ * Extension alias
+ * Its values can be string or string[] like below:
+ * aModule: 'path/to/module'
+ * moduleGroup:
+ *   - 'bModule'
+ *   - 'cModule'
+ * Modules with the same alias share the same config.
+ */
 export type ExtensionAliases = Record<string, string | string[]>;
 
 export interface ICoreOptions {
@@ -11,10 +20,6 @@ export interface ICoreOptions {
   artifact: IArtifactBuilderOptions;
   template?: ITemplateEngineOptions;
   executor?: IExecutorOptions;
-  /**
-   * The extensions, could be module name or folder path (which need index.ts)
-   * E.g: [ 'extensionModule1', '/usr/extensions2' ]
-   *  */
   extensions?: ExtensionAliases;
   [moduleAlias: string]: any;
 }

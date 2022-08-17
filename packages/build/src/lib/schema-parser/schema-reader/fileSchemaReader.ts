@@ -2,6 +2,7 @@ import {
   SchemaFormat,
   SchemaData,
   SchemaReader,
+  SchemaReaderType,
 } from '@vulcan-sql/build/models';
 import * as glob from 'glob';
 import { promises as fs } from 'fs';
@@ -20,7 +21,7 @@ export interface FileSchemaReaderOptions {
 }
 
 @VulcanInternalExtension()
-@VulcanExtensionId('LocalFile')
+@VulcanExtensionId(SchemaReaderType.LocalFile)
 export class FileSchemaReader extends SchemaReader {
   private options: SchemaParserOptions;
 
