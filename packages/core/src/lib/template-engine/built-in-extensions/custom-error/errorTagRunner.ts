@@ -1,5 +1,10 @@
-import { TagRunner, TagRunnerOptions } from '../../extension-loader';
+import {
+  TagRunner,
+  TagRunnerOptions,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
 
+@VulcanInternalExtension()
 export class ErrorTagRunner extends TagRunner {
   public tags = ['error'];
 

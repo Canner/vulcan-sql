@@ -1,10 +1,12 @@
 import { Compiler, TemplateMetadata } from './compiler';
-import { TemplateProvider } from './template-providers';
-import { injectable, inject, interfaces } from 'inversify';
-import { TYPES } from '@vulcan-sql/core/containers';
+import { injectable, inject, optional } from 'inversify';
+import { TYPES } from '@vulcan-sql/core/types';
 import { TemplateEngineOptions } from '../../options';
-import { Pagination } from '@vulcan-sql/core/models';
-import { ICodeLoader } from './code-loader';
+import {
+  CodeLoader,
+  Pagination,
+  TemplateProvider,
+} from '@vulcan-sql/core/models';
 
 export type AllTemplateMetadata = Record<string, TemplateMetadata>;
 
@@ -18,22 +20,27 @@ export interface PreCompiledResult {
 @injectable()
 export class TemplateEngine {
   private compiler: Compiler;
-  private templateProvider: TemplateProvider;
-  private compilerLoader: ICodeLoader;
+  private templateProvider?: TemplateProvider;
+  private compilerLoader: CodeLoader;
 
   constructor(
     @inject(TYPES.Compiler) compiler: Compiler,
-    @inject(TYPES.Factory_TemplateProvider)
-    templateProviderFactory: interfaces.AutoNamedFactory<TemplateProvider>,
-    @inject(TYPES.TemplateEngineOptions) options: TemplateEngineOptions,
-    @inject(TYPES.CompilerLoader) compilerLoader: ICodeLoader
+    @inject(TYPES.TemplateProvider)
+    @optional()
+    templateProvider: TemplateProvider | undefined,
+    @inject(TYPES.CompilerLoader) compilerLoader: CodeLoader
   ) {
     this.compiler = compiler;
     this.compilerLoader = compilerLoader;
-    this.templateProvider = templateProviderFactory(options.provider);
+    if (templateProvider) this.templateProvider = templateProvider;
   }
 
   public async compile(): Promise<Required<PreCompiledResult>> {
+    if (!this.templateProvider)
+      throw new Error('Template provider has not been initialized.');
+
+    await this.templateProvider!.activate?.();
+
     const templateResult: Record<string, string> = {};
     const metadataResult: Record<string, TemplateMetadata> = {};
 

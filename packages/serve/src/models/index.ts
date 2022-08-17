@@ -1,3 +1,3 @@
 export * from './serveConfig';
 export * from './appConfig';
-export * from './middlewareConfig';
+export * from './extensions';

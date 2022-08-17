@@ -1,7 +1,10 @@
+import {
+  InputValidator,
+  VulcanExtensionId,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
 import * as Joi from 'joi';
 import { isUndefined } from 'lodash';
-import { IValidator } from '../validator';
-
 export interface StringInputArgs {
   // The string regex format pattern
   format?: string;
@@ -13,8 +16,9 @@ export interface StringInputArgs {
   max?: number;
 }
 
-export class StringTypeValidator implements IValidator {
-  public readonly name = 'string';
+@VulcanInternalExtension()
+@VulcanExtensionId('string')
+export class StringTypeValidator extends InputValidator {
   // Validator for arguments schema in schema.yaml, should match StringInputArgs
   private argsValidator = Joi.object({
     format: Joi.string().optional(),

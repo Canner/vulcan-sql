@@ -1,30 +1,17 @@
-import {
-  ITemplateEngineOptions,
-  OnInit,
-  TagBuilder,
-  TYPES,
-} from '@vulcan-sql/core';
-import { inject, injectable } from 'inversify';
+import { TagBuilder } from '@vulcan-sql/core';
 import * as nunjucks from 'nunjucks';
 import { promises as fs } from 'fs';
 import { chain } from 'lodash';
+import { DBTExtensionOptions } from './model';
 
-@injectable()
-export class DBTTagBuilder extends TagBuilder implements OnInit {
+export class DBTTagBuilder extends TagBuilder<DBTExtensionOptions> {
   public tags = ['dbt'];
-  private modelFiles: string[] = [];
   private models = new Map<string, string>();
 
-  constructor(
-    @inject(TYPES.TemplateEngineOptions) options: ITemplateEngineOptions
-  ) {
-    super();
-    this.modelFiles = options['dbt']?.modelFiles || [];
-  }
-
-  public async onInit() {
+  public override async onActivate() {
     this.models.clear();
-    for (const modelFile of this.modelFiles) {
+    const modelFiles = this.getConfig()?.modelFiles || [];
+    for (const modelFile of modelFiles) {
       const content = JSON.parse(await fs.readFile(modelFile, 'utf-8'));
       chain(content.nodes || [])
         .toPairs()

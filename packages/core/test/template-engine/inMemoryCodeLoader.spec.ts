@@ -3,7 +3,7 @@ import * as nunjucks from 'nunjucks';
 
 it('Should set/load compiled code correctly', async () => {
   // Arrange
-  const loader = new InMemoryCodeLoader();
+  const loader = new InMemoryCodeLoader({}, '');
   // Act
   loader.setSource('test', '(() => "test")()');
   const source = loader.getSource('test');
@@ -15,7 +15,7 @@ it('Should set/load compiled code correctly', async () => {
 
 it('If there is no source with the target name, the loader should return null', async () => {
   // Arrange
-  const loader = new InMemoryCodeLoader();
+  const loader = new InMemoryCodeLoader({}, '');
   // Act
   const source = loader.getSource('test');
   // Assert

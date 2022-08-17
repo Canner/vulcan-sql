@@ -1,11 +1,7 @@
-import {
-  OnAstVisit,
-  ProvideMetadata,
-  TagBuilder,
-} from '../../extension-loader';
 import * as nunjucks from 'nunjucks';
 import { chain } from 'lodash';
 import { METADATA_NAME } from './constants';
+import { TagBuilder, VulcanInternalExtension } from '@vulcan-sql/core/models';
 
 interface ErrorCode {
   code: string;
@@ -13,13 +9,11 @@ interface ErrorCode {
   columnNo: number;
 }
 
-export class ErrorTagBuilder
-  extends TagBuilder
-  implements OnAstVisit, ProvideMetadata
-{
+@VulcanInternalExtension()
+export class ErrorTagBuilder extends TagBuilder {
   public tags = ['error'];
+  public override metadataName = METADATA_NAME;
   private errorCodes: ErrorCode[] = [];
-  public metadataName = METADATA_NAME;
 
   public parse(parser: nunjucks.parser.Parser, nodes: typeof nunjucks.nodes) {
     // get the tag token
@@ -39,7 +33,7 @@ export class ErrorTagBuilder
     return this.createAsyncExtensionNode(errorMessage, []);
   }
 
-  public onVisit(node: nunjucks.nodes.Node) {
+  public override onVisit(node: nunjucks.nodes.Node) {
     if (node instanceof nunjucks.nodes.CallExtension) {
       if (node.extName !== this.getName()) return;
 
@@ -55,7 +49,7 @@ export class ErrorTagBuilder
     }
   }
 
-  public getMetadata() {
+  public override getMetadata() {
     return {
       errorCodes: chain(this.errorCodes)
         .groupBy('code')

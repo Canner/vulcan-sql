@@ -35,7 +35,9 @@ export class RequestValidator implements IRequestValidator {
   ) {
     await Promise.all(
       schemaValidators.map(async (schemaValidator) => {
-        const validator = await this.validatorLoader.load(schemaValidator.name);
+        const validator = this.validatorLoader.getValidator(
+          schemaValidator.name
+        );
         validator.validateData(fieldValue, schemaValidator.args);
       })
     );

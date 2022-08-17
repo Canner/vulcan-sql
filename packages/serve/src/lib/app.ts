@@ -2,7 +2,6 @@ import { APISchema } from '@vulcan-sql/core';
 import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
 import { isEmpty, uniq } from 'lodash';
-import { BaseRouteMiddleware, BuiltInRouteMiddlewares } from './middleware';
 import {
   RestfulRoute,
   BaseRoute,
@@ -10,18 +9,26 @@ import {
   GraphQLRoute,
   RouteGenerator,
 } from './route';
-import { AppConfig } from '../models';
-import { importExtensions, loadComponents } from './loader';
+import { inject, injectable, multiInject, optional } from 'inversify';
+import { TYPES } from '../containers';
+import { BaseRouteMiddleware } from '../models';
 
+@injectable()
 export class VulcanApplication {
   private app: Koa;
-  private config: AppConfig;
   private restfulRouter: KoaRouter;
   private graphqlRouter: KoaRouter;
   private generator: RouteGenerator;
-  constructor(config: AppConfig, generator: RouteGenerator) {
-    this.config = config;
+  private routeMiddlewares: BaseRouteMiddleware[];
+
+  constructor(
+    @inject(TYPES.RouteGenerator) generator: RouteGenerator,
+    @multiInject(TYPES.Extension_RouteMiddleware)
+    @optional()
+    routeMiddlewares: BaseRouteMiddleware[] = []
+  ) {
     this.generator = generator;
+    this.routeMiddlewares = routeMiddlewares;
     this.app = new Koa();
     this.restfulRouter = new KoaRouter();
     this.graphqlRouter = new KoaRouter();
@@ -77,17 +84,7 @@ export class VulcanApplication {
 
   /** load built-in and extensions middleware classes for app used */
   public async useMiddleware() {
-    // import extension middleware classes
-    const classesOfExtension = await importExtensions(
-      'middlewares',
-      this.config.extensions
-    );
-    const map = await loadComponents<BaseRouteMiddleware>(
-      [...BuiltInRouteMiddlewares, ...classesOfExtension],
-      this.config
-    );
-    for (const name of Object.keys(map)) {
-      const middleware = map[name];
+    for (const middleware of this.routeMiddlewares) {
       this.app.use(middleware.handle.bind(middleware));
     }
   }

@@ -1,30 +1,31 @@
-import {
-  TemplateEngine,
-  Compiler,
-  TemplateProvider,
-  ICodeLoader,
-} from '@vulcan-sql/core/template-engine';
+import { TemplateEngine, Compiler } from '@vulcan-sql/core/template-engine';
 import * as sinon from 'ts-sinon';
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import { Container } from 'inversify';
+import {
+  CodeLoader,
+  TemplateProvider,
+  TemplateProviderType,
+} from '@vulcan-sql/core';
 
 let container: Container;
 let stubCompiler: sinon.StubbedInstance<Compiler>;
 let stubTemplateProvider: sinon.StubbedInstance<TemplateProvider>;
-let stubCodeLoader: sinon.StubbedInstance<ICodeLoader>;
+let stubCodeLoader: sinon.StubbedInstance<CodeLoader>;
 
 beforeEach(() => {
   container = new Container();
   stubCompiler = sinon.stubInterface<Compiler>();
   stubTemplateProvider = sinon.stubInterface<TemplateProvider>();
-  stubCodeLoader = sinon.stubInterface<ICodeLoader>();
+  stubCodeLoader = sinon.stubInterface<CodeLoader>();
 
   container.bind(TYPES.Compiler).toConstantValue(stubCompiler);
-  container
-    .bind(TYPES.Factory_TemplateProvider)
-    .toConstantValue(() => stubTemplateProvider);
+  container.bind(TYPES.TemplateProvider).toConstantValue(stubTemplateProvider);
   container.bind(TYPES.TemplateEngine).to(TemplateEngine).inSingletonScope();
-  container.bind(TYPES.TemplateEngineOptions).toConstantValue({});
+  container.bind(TYPES.TemplateEngineOptions).toConstantValue({
+    provider: TemplateProviderType.LocalFile,
+    folderPath: '',
+  });
   container.bind(TYPES.CompilerLoader).toConstantValue(stubCodeLoader);
 
   stubCompiler.name = 'stub-compiler';

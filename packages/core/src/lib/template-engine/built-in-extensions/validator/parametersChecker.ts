@@ -1,10 +1,9 @@
-import { chain } from 'lodash';
-import * as nunjucks from 'nunjucks';
 import {
   CompileTimeExtension,
-  OnAstVisit,
-  ProvideMetadata,
-} from '../../extension-loader';
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
+import { chain } from 'lodash';
+import * as nunjucks from 'nunjucks';
 import {
   LOOK_UP_PARAMETER,
   PARAMETER_METADATA_NAME,
@@ -17,14 +16,12 @@ interface Parameter {
   columnNo: number;
 }
 
-export class ParametersChecker
-  extends CompileTimeExtension
-  implements OnAstVisit, ProvideMetadata
-{
-  public metadataName = PARAMETER_METADATA_NAME;
+@VulcanInternalExtension()
+export class ParametersChecker extends CompileTimeExtension {
+  public override metadataName = PARAMETER_METADATA_NAME;
   private parameters: Parameter[] = [];
 
-  public onVisit(node: nunjucks.nodes.Node): void {
+  public override onVisit(node: nunjucks.nodes.Node): void {
     if (node instanceof nunjucks.nodes.LookupVal) {
       let name = node.val.value;
       let parent: typeof node.target | null = node.target;
@@ -53,7 +50,7 @@ export class ParametersChecker
     }
   }
 
-  public getMetadata() {
+  public override getMetadata() {
     return chain(this.parameters)
       .groupBy('name')
       .values()

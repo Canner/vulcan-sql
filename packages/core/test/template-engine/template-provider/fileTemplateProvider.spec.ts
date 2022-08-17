@@ -1,35 +1,18 @@
-import { TYPES } from '@vulcan-sql/core/containers';
-import {
-  ITemplateEngineOptions,
-  TemplateProviderType,
-} from '@vulcan-sql/core/models';
-import {
-  FileTemplateProvider,
-  Template,
-} from '@vulcan-sql/core/template-engine';
-import { Container } from 'inversify';
+import { Template } from '@vulcan-sql/core/models';
 import * as path from 'path';
-
-let container: Container;
-
-beforeEach(() => {
-  container = new Container();
-  container
-    .bind<ITemplateEngineOptions>(TYPES.TemplateEngineOptions)
-    .toConstantValue({
-      provider: TemplateProviderType.LocalFile,
-      folderPath: path.resolve(__dirname, '../test-templates'),
-    });
-  container.bind(TYPES.TemplateProvider).to(FileTemplateProvider);
-});
-
-afterEach(() => {
-  container.unbindAll();
-});
+import { FileTemplateProvider } from '@vulcan-sql/core/template-engine';
 
 it('File template provider should provide correct files and contents', async () => {
   // Arrange
-  const provider = container.get<FileTemplateProvider>(TYPES.TemplateProvider);
+  const provider = new FileTemplateProvider(
+    {
+      provider: '',
+      folderPath: path.resolve(__dirname, '../test-templates') as any,
+      codeLoader: '',
+    },
+    {},
+    ''
+  );
   const templates: Template[] = [];
 
   // Act

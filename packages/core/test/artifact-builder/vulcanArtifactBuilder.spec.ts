@@ -5,7 +5,7 @@ import {
   VulcanArtifactBuilder,
 } from '@vulcan-sql/core/artifact-builder';
 import { Container } from 'inversify';
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import * as sinon from 'ts-sinon';
 
 let container: Container;
@@ -20,12 +20,8 @@ beforeEach(() => {
   container = new Container();
   mockPersistentStore = sinon.stubInterface();
 
-  container
-    .bind(TYPES.Factory_PersistentStore)
-    .toConstantValue(() => mockPersistentStore);
-  container
-    .bind(TYPES.Factory_Serializer)
-    .toConstantValue(() => new JSONSerializer());
+  container.bind(TYPES.PersistentStore).toConstantValue(mockPersistentStore);
+  container.bind(TYPES.Serializer).toConstantValue(new JSONSerializer({}, ''));
 
   container.bind(TYPES.ArtifactBuilderOptions).toConstantValue({});
   container.bind(TYPES.ArtifactBuilder).to(VulcanArtifactBuilder);

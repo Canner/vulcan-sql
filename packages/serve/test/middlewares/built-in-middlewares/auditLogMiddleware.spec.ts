@@ -4,14 +4,12 @@ import { Request, Response } from 'koa';
 import { IncomingHttpHeaders } from 'http';
 import { ParsedUrlQuery } from 'querystring';
 import { KoaRouterContext } from '@vulcan-sql/serve/route';
+import * as core from '@vulcan-sql/core';
+import * as uuid from 'uuid';
 import {
   AuditLoggingMiddleware,
   RequestIdMiddleware,
 } from '@vulcan-sql/serve/middleware';
-import * as core from '@vulcan-sql/core';
-import * as uuid from 'uuid';
-import { LoggerOptions } from '@vulcan-sql/core';
-import { MiddlewareConfig } from '@vulcan-sql/serve';
 
 describe('Test audit logging middlewares', () => {
   afterEach(() => {
@@ -51,7 +49,7 @@ describe('Test audit logging middlewares', () => {
       `response: body = ${JSON.stringify(ctx.response.body)}`,
     ];
     // Act
-    const middleware = new AuditLoggingMiddleware({});
+    const middleware = new AuditLoggingMiddleware({}, '');
     // Use spy to trace the logger from getLogger( scopeName: 'AUDIT' }) to know in logger.info(...)
     const spy = sinon.default.spy(core.getLogger({ scopeName: 'AUDIT' }));
     await middleware.handle(ctx, async () => Promise.resolve());
@@ -103,16 +101,15 @@ describe('Test audit logging middlewares', () => {
     };
 
     // setup request-id middleware run first.
-    const stubReqIdMiddleware = new RequestIdMiddleware({});
-    const middleware = new AuditLoggingMiddleware({
-      middlewares: {
-        'audit-log': {
-          options: {
-            displayRequestId: true,
-          } as LoggerOptions,
+    const stubReqIdMiddleware = new RequestIdMiddleware({}, '');
+    const middleware = new AuditLoggingMiddleware(
+      {
+        options: {
+          displayRequestId: true,
         },
-      } as MiddlewareConfig,
-    });
+      },
+      ''
+    );
     // Use spy to trace the logger from getLogger( scopeName: 'AUDIT' }) to know in logger.info(...)
     // it will get the setting of logger from above new audit logging middleware
     const spy = sinon.default.spy(

@@ -1,0 +1,8 @@
+url: /user
+request:
+  - fieldName: id
+    fieldIn: query
+    description: user id
+    validators:
+      - uuid
+      - required

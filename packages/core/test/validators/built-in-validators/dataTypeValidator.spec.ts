@@ -12,7 +12,7 @@ describe('Test "date" type validator', () => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new DateTypeValidator();
+      const validator = new DateTypeValidator({}, '');
       // Assert
       expect(() => validator.validateSchema(args)).not.toThrow();
     }
@@ -29,7 +29,7 @@ describe('Test "date" type validator', () => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new DateTypeValidator();
+      const validator = new DateTypeValidator({}, '');
 
       // Assert
       expect(() => validator.validateSchema(args)).toThrow();
@@ -50,7 +50,7 @@ describe('Test "date" type validator', () => {
       const args = JSON.parse(inputArgs);
 
       // Act
-      const validator = new DateTypeValidator();
+      const validator = new DateTypeValidator({}, '');
 
       // Assert
       expect(() => validator.validateData(data, args)).not.toThrow();
@@ -68,7 +68,7 @@ describe('Test "date" type validator', () => {
       const args = JSON.parse(inputArgs);
 
       // Act
-      const validator = new DateTypeValidator();
+      const validator = new DateTypeValidator({}, '');
 
       // Assert
       expect(() => validator.validateData(data, args)).toThrow();

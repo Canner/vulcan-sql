@@ -2,7 +2,7 @@ name: Role
 url: /detail/role/:id
 request:
   - name: id
-    in: query
+    fieldIn: query
     description: role id
     validators:
       - uuid

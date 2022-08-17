@@ -5,11 +5,10 @@ it('Should replace with table name of dbt model with type table', async () => {
   // Arrange
   const { compileAndLoad, execute, getExecutedQueries } = await getTestCompiler(
     {
-      extensionNames: [path.join(__dirname, '..', 'src')],
-      config: {
-        dbt: {
-          modelFiles: [path.join(__dirname, 'test-artifact.json')],
-        },
+      extensions: { dbt: path.join(__dirname, '..', 'src') },
+
+      dbt: {
+        modelFiles: [path.join(__dirname, 'test-artifact.json')],
       },
     }
   );
@@ -27,11 +26,10 @@ it('Should replace with table name of dbt model with type view', async () => {
   // Arrange
   const { compileAndLoad, execute, getExecutedQueries } = await getTestCompiler(
     {
-      extensionNames: [path.join(__dirname, '..', 'src')],
-      config: {
-        dbt: {
-          modelFiles: [path.join(__dirname, 'test-artifact.json')],
-        },
+      extensions: { dbt: path.join(__dirname, '..', 'src') },
+
+      dbt: {
+        modelFiles: [path.join(__dirname, 'test-artifact.json')],
       },
     }
   );
@@ -49,11 +47,10 @@ it('Should replace with sub-query of dbt model with type ephemeral', async () =>
   // Arrange
   const { compileAndLoad, execute, getExecutedQueries } = await getTestCompiler(
     {
-      extensionNames: [path.join(__dirname, '..', 'src')],
-      config: {
-        dbt: {
-          modelFiles: [path.join(__dirname, 'test-artifact.json')],
-        },
+      extensions: { dbt: path.join(__dirname, '..', 'src') },
+
+      dbt: {
+        modelFiles: [path.join(__dirname, 'test-artifact.json')],
       },
     }
   );
@@ -76,11 +73,9 @@ it('Should replace with table name of dbt model with type incremental', async ()
   // Arrange
   const { compileAndLoad, execute, getExecutedQueries } = await getTestCompiler(
     {
-      extensionNames: [path.join(__dirname, '..', 'src')],
-      config: {
-        dbt: {
-          modelFiles: [path.join(__dirname, 'test-artifact.json')],
-        },
+      extensions: { dbt: path.join(__dirname, '..', 'src') },
+      dbt: {
+        modelFiles: [path.join(__dirname, 'test-artifact.json')],
       },
     }
   );
@@ -98,14 +93,12 @@ it('Should merge multiple artifacts', async () => {
   // Arrange
   const { compileAndLoad, execute, getExecutedQueries } = await getTestCompiler(
     {
-      extensionNames: [path.join(__dirname, '..', 'src')],
-      config: {
-        dbt: {
-          modelFiles: [
-            path.join(__dirname, 'test-artifact.json'),
-            path.join(__dirname, 'test-artifact-2.json'),
-          ],
-        },
+      extensions: { dbt: path.join(__dirname, '..', 'src') },
+      dbt: {
+        modelFiles: [
+          path.join(__dirname, 'test-artifact.json'),
+          path.join(__dirname, 'test-artifact-2.json'),
+        ],
       },
     }
   );
@@ -126,14 +119,12 @@ it('Should merge multiple artifacts', async () => {
 it('Should throw error when models are unambiguous', async () => {
   // Arrange
   const { compileAndLoad } = await getTestCompiler({
-    extensionNames: [path.join(__dirname, '..', 'src')],
-    config: {
-      dbt: {
-        modelFiles: [
-          path.join(__dirname, 'test-artifact-2.json'),
-          path.join(__dirname, 'test-artifact-2.json'),
-        ],
-      },
+    extensions: { dbt: path.join(__dirname, '..', 'src') },
+    dbt: {
+      modelFiles: [
+        path.join(__dirname, 'test-artifact-2.json'),
+        path.join(__dirname, 'test-artifact-2.json'),
+      ],
     },
   });
 
@@ -146,11 +137,9 @@ it('Should throw error when models are unambiguous', async () => {
 it('Should throw error when model name not found', async () => {
   // Arrange
   const { compileAndLoad } = await getTestCompiler({
-    extensionNames: [path.join(__dirname, '..', 'src')],
-    config: {
-      dbt: {
-        modelFiles: [path.join(__dirname, 'test-artifact.json')],
-      },
+    extensions: { dbt: path.join(__dirname, '..', 'src') },
+    dbt: {
+      modelFiles: [path.join(__dirname, 'test-artifact.json')],
     },
   });
 
@@ -163,11 +152,9 @@ it('Should throw error when model name not found', async () => {
 it('Should throw error when argument type is not correct', async () => {
   // Arrange
   const { compileAndLoad } = await getTestCompiler({
-    extensionNames: [path.join(__dirname, '..', 'src')],
-    config: {
-      dbt: {
-        modelFiles: [path.join(__dirname, 'test-artifact.json')],
-      },
+    extensions: { dbt: path.join(__dirname, '..', 'src') },
+    dbt: {
+      modelFiles: [path.join(__dirname, 'test-artifact.json')],
     },
   });
 
@@ -180,11 +167,9 @@ it('Should throw error when argument type is not correct', async () => {
 it('Should throw error when there are too many arguments', async () => {
   // Arrange
   const { compileAndLoad } = await getTestCompiler({
-    extensionNames: [path.join(__dirname, '..', 'src')],
-    config: {
-      dbt: {
-        modelFiles: [path.join(__dirname, 'test-artifact.json')],
-      },
+    extensions: { dbt: path.join(__dirname, '..', 'src') },
+    dbt: {
+      modelFiles: [path.join(__dirname, 'test-artifact.json')],
     },
   });
 
@@ -198,8 +183,8 @@ it('Should not throw error even if there is no dbt config', async () => {
   // Arrange
   const { compileAndLoad, execute, getExecutedQueries } = await getTestCompiler(
     {
-      extensionNames: [path.join(__dirname, '..', 'src')],
-      config: {},
+      extensions: { dbt: path.join(__dirname, '..', 'src') },
+      dbt: {},
     }
   );
 
@@ -216,11 +201,9 @@ it('Should not throw error even if the artifact file is empty', async () => {
   // Arrange
   const { compileAndLoad, execute, getExecutedQueries } = await getTestCompiler(
     {
-      extensionNames: [path.join(__dirname, '..', 'src')],
-      config: {
-        dbt: {
-          modelFiles: [path.join(__dirname, 'empty-artifact.json')],
-        },
+      extensions: { dbt: path.join(__dirname, '..', 'src') },
+      dbt: {
+        modelFiles: [path.join(__dirname, 'empty-artifact.json')],
       },
     }
   );

@@ -15,7 +15,7 @@ describe('Test "required" type validator', () => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new RequiredValidator();
+      const validator = new RequiredValidator({}, '');
 
       // Assert
       expect(() => validator.validateSchema(args)).not.toThrow();
@@ -34,7 +34,7 @@ describe('Test "required" type validator', () => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new RequiredValidator();
+      const validator = new RequiredValidator({}, '');
 
       // Assert
       expect(() => validator.validateSchema(args)).toThrow();
@@ -55,7 +55,7 @@ describe('Test "required" type validator', () => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new RequiredValidator();
+      const validator = new RequiredValidator({}, '');
 
       // Assert
       expect(() => validator.validateData(data, args)).not.toThrow();
@@ -79,7 +79,7 @@ describe('Test "required" type validator', () => {
       // Arrange
       const args = JSON.parse(inputArgs);
       // Act
-      const validator = new RequiredValidator();
+      const validator = new RequiredValidator({}, '');
 
       // Assert
       expect(() => validator.validateData(data, args)).toThrow();

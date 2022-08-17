@@ -29,7 +29,9 @@ export class CheckValidator extends SchemaParserMiddleware {
         throw new Error('Validator name is required');
       }
 
-      const validator = await this.validatorLoader.load(validatorRequest.name);
+      const validator = this.validatorLoader.getValidator(
+        validatorRequest.name
+      );
 
       // TODO: indicate the detail of error
       validator.validateSchema(validatorRequest.args);

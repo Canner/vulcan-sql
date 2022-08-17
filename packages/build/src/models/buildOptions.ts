@@ -1,9 +1,8 @@
 import { ICoreOptions } from '@vulcan-sql/core';
+import { IDocumentGeneratorOptions } from './documentGeneratorOptions';
 import { ISchemaParserOptions } from './schemaParserOptions';
 
 export interface IBuildOptions extends ICoreOptions {
-  name?: string;
-  description?: string;
-  version?: string;
-  schemaParser: ISchemaParserOptions;
+  'schema-parser'?: ISchemaParserOptions;
+  'document-generator'?: IDocumentGeneratorOptions;
 }

@@ -1,6 +1,7 @@
+import { FilterRunner, VulcanInternalExtension } from '@vulcan-sql/core/models';
 import { uniq, uniqBy } from 'lodash';
-import { FilterRunner } from '../../extension-loader';
 
+@VulcanInternalExtension()
 export class UniqueFilterRunner extends FilterRunner {
   public filterName = 'unique';
   public async transform({

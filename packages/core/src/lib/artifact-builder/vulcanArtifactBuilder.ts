@@ -1,9 +1,8 @@
 import { Artifact, ArtifactBuilder } from './artifactBuilder';
-import { PersistentStore } from './persistent-stores';
-import { Serializer } from './serializers';
-import { inject, injectable, interfaces } from 'inversify';
-import { TYPES } from '@vulcan-sql/core/containers';
-import { IArtifactBuilderOptions } from '../../models/artifactBuilderOptions';
+import { PersistentStore } from '@vulcan-sql/core/models';
+import { Serializer } from '@vulcan-sql/core/models';
+import { inject, injectable } from 'inversify';
+import { TYPES } from '@vulcan-sql/core/types';
 
 @injectable()
 export class VulcanArtifactBuilder implements ArtifactBuilder {
@@ -11,14 +10,13 @@ export class VulcanArtifactBuilder implements ArtifactBuilder {
   private persistentStore: PersistentStore;
 
   constructor(
-    @inject(TYPES.Factory_PersistentStore)
-    persistentStoreFactory: interfaces.AutoNamedFactory<PersistentStore>,
-    @inject(TYPES.Factory_Serializer)
-    serializerFactory: interfaces.AutoNamedFactory<Serializer<any>>,
-    @inject(TYPES.ArtifactBuilderOptions) options: IArtifactBuilderOptions
+    @inject(TYPES.PersistentStore)
+    persistentStore: PersistentStore,
+    @inject(TYPES.Serializer)
+    serializer: Serializer<any>
   ) {
-    this.serializer = serializerFactory(options.serializer);
-    this.persistentStore = persistentStoreFactory(options.provider);
+    this.serializer = serializer;
+    this.persistentStore = persistentStore;
   }
 
   public async build(artifact: Artifact): Promise<void> {

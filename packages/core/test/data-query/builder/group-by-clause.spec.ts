@@ -4,13 +4,13 @@ import {
   GroupByClauseOperations,
   DataQueryBuilder,
 } from '@vulcan-sql/core/data-query';
-import { IDataSource } from '@vulcan-sql/core/data-source';
+import { DataSource } from '@vulcan-sql/core/models';
 
 describe('Test data query builder > group by clause', () => {
-  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+  let stubDataSource: sinon.StubbedInstance<DataSource>;
 
   beforeEach(() => {
-    stubDataSource = sinon.stubInterface<IDataSource>();
+    stubDataSource = sinon.stubInterface<DataSource>();
   });
 
   it.each([

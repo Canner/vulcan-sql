@@ -1,6 +1,13 @@
 import * as Stream from 'stream';
-import { getLogger } from '@vulcan-sql/core';
-import { BaseResponseFormatter, toBuffer } from './responseFormatter';
+import {
+  getLogger,
+  VulcanExtensionId,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core';
+import {
+  BaseResponseFormatter,
+  toBuffer,
+} from '../../models/extensions/responseFormatter';
 import { isUndefined } from 'lodash';
 import { KoaRouterContext } from '../route';
 
@@ -46,11 +53,9 @@ class JsonStringTransformer extends Stream.Transform {
   }
 }
 
+@VulcanInternalExtension()
+@VulcanExtensionId('json')
 export class JsonFormatter extends BaseResponseFormatter {
-  constructor() {
-    super('json');
-  }
-
   public format(data: Stream.Readable) {
     const jsonStream = new JsonStringTransformer();
     // Read data stream and convert the format to json format stream.

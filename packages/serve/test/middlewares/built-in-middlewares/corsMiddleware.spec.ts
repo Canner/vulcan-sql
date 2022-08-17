@@ -1,9 +1,8 @@
 import faker from '@faker-js/faker';
 import * as Koa from 'koa';
 import * as supertest from 'supertest';
-import { CorsOptions, CorsMiddleware } from '@vulcan-sql/serve/middleware';
 import { Server } from 'http';
-import { MiddlewareConfig } from '@vulcan-sql/serve';
+import { CorsMiddleware } from '@vulcan-sql/serve/middleware';
 
 describe('Test cors middlewares', () => {
   let server: Server;
@@ -12,15 +11,14 @@ describe('Test cors middlewares', () => {
     // Should use koa app and supertest for testing, because it will call koa context method in cors middleware.
     const app = new Koa();
 
-    const middleware = new CorsMiddleware({
-      middlewares: {
-        cors: {
-          options: {
-            origin: domain,
-          } as CorsOptions,
-        } as MiddlewareConfig,
+    const middleware = new CorsMiddleware(
+      {
+        options: {
+          origin: domain,
+        },
       },
-    });
+      ''
+    );
     // use middleware in koa app
     app.use(middleware.handle.bind(middleware));
     // Act

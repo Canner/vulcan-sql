@@ -41,7 +41,7 @@ describe('Test to respond to csv', () => {
     expected.push(null);
 
     // Act
-    const formatter = new CsvFormatter();
+    const formatter = new CsvFormatter({}, '');
     formatter.formatToResponse(ctx);
     // Assert
     expect(ctx.response.body).toEqual(expected);
@@ -110,7 +110,7 @@ describe('Test to respond to csv', () => {
       };
 
       // Act
-      const formatter = new CsvFormatter();
+      const formatter = new CsvFormatter({}, '');
       formatter.formatToResponse(ctx);
       // Assert
 

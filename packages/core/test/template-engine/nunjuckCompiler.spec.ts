@@ -29,7 +29,7 @@ it('Nunjucks compiler should reject the extension which has no valid super class
   // Arrange
   const { compiler } = await createTestCompiler();
   // Action, Assert
-  expect(() => compiler.loadExtension({})).toThrow(
+  expect(() => compiler.loadExtension({} as any)).toThrow(
     'Extension must be of type RuntimeExtension or CompileTimeExtension'
   );
 });

@@ -1,8 +1,16 @@
 import * as Stream from 'stream';
-import { DataColumn, getLogger } from '@vulcan-sql/core';
+import {
+  DataColumn,
+  getLogger,
+  VulcanExtensionId,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core';
 import { isArray, isObject, isUndefined } from 'lodash';
 import { KoaRouterContext } from '../route';
-import { BaseResponseFormatter, toBuffer } from './responseFormatter';
+import {
+  BaseResponseFormatter,
+  toBuffer,
+} from '../../models/extensions/responseFormatter';
 
 const logger = getLogger({ scopeName: 'SERVE' });
 
@@ -74,11 +82,9 @@ class CsvTransformer extends Stream.Transform {
   }
 }
 
+@VulcanInternalExtension()
+@VulcanExtensionId('csv')
 export class CsvFormatter extends BaseResponseFormatter {
-  constructor() {
-    super('csv');
-  }
-
   public format(data: Stream.Readable, columns?: DataColumn[]) {
     if (!columns) throw new Error('must provide columns');
     // create csv transform stream and define transform to csv way.

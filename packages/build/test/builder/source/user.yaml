@@ -2,7 +2,7 @@ name: User
 url: /user/:id
 request:
   - name: id
-    in: query
+    fieldIn: query
     description: user id
     validators:
       - uuid

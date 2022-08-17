@@ -34,10 +34,10 @@ export class RestfulRoute extends BaseRoute {
 
   public async respond(ctx: KoaRouterContext) {
     const transformed = await this.prepare(ctx);
-    await this.handle(transformed);
-    // TODO: get template engine handled result and return response by checking API schema
+    const result = await this.handle(transformed);
     ctx.response.body = {
-      ...transformed,
+      data: result.getData(),
+      columns: result.getColumns(),
     };
   }
 

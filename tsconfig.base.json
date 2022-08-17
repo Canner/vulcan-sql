@@ -18,6 +18,12 @@
     "paths": {
       "@vulcan-sql/build": ["packages/build/src/index"],
       "@vulcan-sql/build/containers": ["packages/build/src/containers/index"],
+      "@vulcan-sql/build/doc-generator": [
+        "packages/build/src/lib/document-generator/index"
+      ],
+      "@vulcan-sql/build/doc-generator/*": [
+        "packages/build/src/lib/document-generator/*"
+      ],
       "@vulcan-sql/build/models": ["packages/build/src/models/index"],
       "@vulcan-sql/build/options": ["packages/build/src/options/index"],
       "@vulcan-sql/build/schema-parser": [
@@ -25,12 +31,6 @@
       ],
       "@vulcan-sql/build/schema-parser/*": [
         "packages/build/src/lib/schema-parser/*"
-      ],
-      "@vulcan-sql/build/spec-generator": [
-        "packages/build/src/lib/spec-generator/index"
-      ],
-      "@vulcan-sql/build/spec-generator/*": [
-        "packages/build/src/lib/spec-generator/*"
       ],
       "@vulcan-sql/core": ["packages/core/src/index"],
       "@vulcan-sql/core/artifact-builder": [
@@ -47,12 +47,14 @@
       ],
       "@vulcan-sql/core/data-source/*": ["packages/core/src/lib/data-source/*"],
       "@vulcan-sql/core/models": ["packages/core/src/models/index"],
+      "@vulcan-sql/core/options": ["packages/core/src/options/index"],
       "@vulcan-sql/core/template-engine": [
         "packages/core/src/lib/template-engine/index"
       ],
       "@vulcan-sql/core/template-engine/*": [
         "packages/core/src/lib/template-engine/*"
       ],
+      "@vulcan-sql/core/types": ["packages/core/src/containers/types"],
       "@vulcan-sql/core/utils": ["packages/core/src/lib/utils/index"],
       "@vulcan-sql/core/validators": ["packages/core/src/lib/validators/index"],
       "@vulcan-sql/core/validators/*": ["packages/core/src/lib/validators/*"],
@@ -63,10 +65,14 @@
         "packages/core/src/lib/validators/built-in-validators/*"
       ],
       "@vulcan-sql/extension-dbt": ["packages/extension-dbt/src/index"],
+      "@vulcan-sql/integration-testing": [
+        "packages/integration-testing/src/index.ts"
+      ],
       "@vulcan-sql/serve": ["packages/serve/src/index"],
       "@vulcan-sql/serve/app": ["packages/serve/src/lib/app.ts"],
       "@vulcan-sql/serve/config": ["packages/serve/src/lib/config"],
       "@vulcan-sql/serve/containers": ["packages/serve/src/containers/index"],
+      "@vulcan-sql/serve/loader": ["packages/serve/src/lib/loader"],
       "@vulcan-sql/serve/middleware": [
         "packages/serve/src/lib/middleware/index"
       ],
@@ -77,18 +83,16 @@
         "packages/serve/src/lib/pagination/index"
       ],
       "@vulcan-sql/serve/pagination/*": ["packages/serve/src/lib/pagination/*"],
-      "@vulcan-sql/serve/route": ["packages/serve/src/lib/route/index"],
-      "@vulcan-sql/serve/route/*": ["packages/serve/src/lib/route/*"],
-      "@vulcan-sql/serve/utils": ["packages/serve/src/lib/utils/index"],
-      "@vulcan-sql/serve/utils/*": ["packages/serve/src/lib/utils/*"],
       "@vulcan-sql/serve/response-formatter": [
         "packages/serve/src/lib/response-formatter/index"
       ],
       "@vulcan-sql/serve/response-formatter/*": [
         "packages/serve/src/lib/response-formatter/*"
       ],
-
-      "@vulcan-sql/serve/loader": ["packages/serve/src/lib/loader"],
+      "@vulcan-sql/serve/route": ["packages/serve/src/lib/route/index"],
+      "@vulcan-sql/serve/route/*": ["packages/serve/src/lib/route/*"],
+      "@vulcan-sql/serve/utils": ["packages/serve/src/lib/utils/index"],
+      "@vulcan-sql/serve/utils/*": ["packages/serve/src/lib/utils/*"],
       "@vulcan-sql/test-utility": ["packages/test-utility/src/index.ts"]
     }
   },

@@ -1,7 +1,7 @@
 import {
+  ArtifactBuilderProviderType,
+  ArtifactBuilderSerializerType,
   IArtifactBuilderOptions,
-  PersistentStoreType,
-  SerializerType,
   TYPES,
 } from '../../src';
 import { Container } from 'inversify';
@@ -23,8 +23,8 @@ it('Should provide correct default option values', async () => {
     TYPES.ArtifactBuilderOptions
   );
   // Assert
-  expect(options.provider).toBe(PersistentStoreType.LocalFile);
-  expect(options.serializer).toBe(SerializerType.JSON);
+  expect(options.provider).toBe(ArtifactBuilderProviderType.LocalFile);
+  expect(options.serializer).toBe(ArtifactBuilderSerializerType.JSON);
 });
 
 it('Can override some option properties', async () => {
@@ -38,7 +38,7 @@ it('Can override some option properties', async () => {
     TYPES.ArtifactBuilderOptions
   );
   // Assert
-  expect(options.provider).toBe(PersistentStoreType.LocalFile);
+  expect(options.provider).toBe(ArtifactBuilderProviderType.LocalFile);
   expect(options.filePath).toBe('./result.json');
 });
 

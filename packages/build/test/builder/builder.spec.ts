@@ -1,9 +1,13 @@
 import { VulcanBuilder } from '../../src';
 import * as path from 'path';
-import { IBuildOptions, SchemaReaderType } from '@vulcan-sql/build/models';
 import {
-  PersistentStoreType,
-  SerializerType,
+  DocumentGeneratorSpec,
+  IBuildOptions,
+  SchemaReaderType,
+} from '@vulcan-sql/build/models';
+import {
+  ArtifactBuilderProviderType,
+  ArtifactBuilderSerializerType,
   TemplateProviderType,
 } from '@vulcan-sql/core';
 
@@ -11,20 +15,24 @@ it('Builder.build should work', async () => {
   // Arrange
   const builder = new VulcanBuilder();
   const options: IBuildOptions = {
-    schemaParser: {
+    'schema-parser': {
       reader: SchemaReaderType.LocalFile,
       folderPath: path.resolve(__dirname, 'source'),
     },
+    'document-generator': {
+      specs: [DocumentGeneratorSpec.oas3],
+      folderPath: path.resolve(__dirname),
+    },
     artifact: {
-      provider: PersistentStoreType.LocalFile,
-      serializer: SerializerType.JSON,
+      provider: ArtifactBuilderProviderType.LocalFile,
+      serializer: ArtifactBuilderSerializerType.JSON,
       filePath: path.resolve(__dirname, 'result.json'),
     },
     template: {
       provider: TemplateProviderType.LocalFile,
       folderPath: path.resolve(__dirname, 'source'),
     },
-    extensions: [],
+    extensions: {},
   };
 
   // Act, Assert

@@ -5,12 +5,12 @@ import {
   Direction,
   OrderByClauseOperation,
 } from '@vulcan-sql/core/data-query';
-import { IDataSource } from '@vulcan-sql/core';
+import { DataSource } from '@vulcan-sql/core';
 describe('Test data query builder > order by clause', () => {
-  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+  let stubDataSource: sinon.StubbedInstance<DataSource>;
 
   beforeEach(() => {
-    stubDataSource = sinon.stubInterface<IDataSource>();
+    stubDataSource = sinon.stubInterface<DataSource>();
   });
   it.each([
     {

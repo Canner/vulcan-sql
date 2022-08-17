@@ -9,7 +9,7 @@ import {
   SelectedColumn,
 } from '@vulcan-sql/core/data-query';
 import { find, isEmpty } from 'lodash';
-import { IDataSource } from '@vulcan-sql/core/data-source';
+import { DataSource } from '@vulcan-sql/core/models';
 
 // Use to generate select record expected results
 const generateSelectRecords = (
@@ -38,9 +38,9 @@ const generateSelectRecords = (
 };
 
 describe('Test data query builder > select clause', () => {
-  let stubDataSource: sinon.StubbedInstance<IDataSource>;
+  let stubDataSource: sinon.StubbedInstance<DataSource>;
   beforeEach(() => {
-    stubDataSource = sinon.stubInterface<IDataSource>();
+    stubDataSource = sinon.stubInterface<DataSource>();
   });
   it.each([
     ['*', '*', '*'],

@@ -2,7 +2,8 @@ import * as sinon from 'ts-sinon';
 import * as nunjucks from 'nunjucks';
 import { Container } from 'inversify';
 import {
-  bindExtensions,
+  extensionModule,
+  ICoreOptions,
   IDataQueryBuilder,
   IExecutor,
   InMemoryCodeLoader,
@@ -13,13 +14,7 @@ import {
   TYPES,
 } from '@vulcan-sql/core';
 
-export const getTestCompiler = async ({
-  extensionNames = [],
-  config = {},
-}: {
-  extensionNames?: string[];
-  config?: Partial<ITemplateEngineOptions>;
-} = {}) => {
+export const getTestCompiler = async (config: Partial<ICoreOptions> = {}) => {
   const container = new Container();
   // Builder and executor
   const stubQueryBuilder = sinon.stubInterface<IDataQueryBuilder>();
@@ -34,7 +29,7 @@ export const getTestCompiler = async ({
     .inSingletonScope();
 
   // Extension
-  await bindExtensions(container.bind.bind(container), extensionNames);
+  await container.loadAsync(extensionModule(config as any));
 
   // Compiler
   container.bind(TYPES.Compiler).to(NunjucksCompiler).inSingletonScope();
@@ -65,7 +60,6 @@ export const getTestCompiler = async ({
     .toConstantValue({
       folderPath: '',
       provider: TemplateProviderType.LocalFile,
-      ...config,
     });
   container
     .bind<ITemplateEngineOptions>(TYPES.TemplateEngineOptions)

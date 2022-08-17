@@ -1,28 +1,44 @@
-import { Template, TemplateProvider } from './templateProvider';
+import {
+  Template,
+  TemplateProvider,
+} from '../../../models/extensions/templateProvider';
 import * as glob from 'glob';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { inject, injectable } from 'inversify';
-import { TYPES } from '@vulcan-sql/core/containers';
-import { ITemplateEngineOptions } from '@vulcan-sql/core/models';
+import {
+  ITemplateEngineOptions,
+  TemplateProviderType,
+  VulcanExtensionId,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
+import { inject } from 'inversify';
+import { TYPES } from '@vulcan-sql/core/types';
+import { TemplateEngineOptions } from '@vulcan-sql/core/options';
 
-@injectable()
-export class FileTemplateProvider implements TemplateProvider {
+@VulcanInternalExtension()
+@VulcanExtensionId(TemplateProviderType.LocalFile)
+export class FileTemplateProvider extends TemplateProvider {
   private options: ITemplateEngineOptions;
 
   constructor(
-    @inject(TYPES.TemplateEngineOptions) options: ITemplateEngineOptions
+    @inject(TYPES.TemplateEngineOptions) options: TemplateEngineOptions,
+    @inject(TYPES.ExtensionConfig) config: any,
+    @inject(TYPES.ExtensionName) moduleName: string
   ) {
+    super(config, moduleName);
     this.options = options;
   }
 
   public async *getTemplates(): AsyncGenerator<Template> {
+    if (!this.options?.folderPath)
+      throw new Error(`Config template.folderPath is required`);
+
     const files = await this.getTemplateFilePaths();
 
     for (const file of files) {
       yield {
         name: path
-          .relative(this.options.folderPath, file)
+          .relative(this.options.folderPath!, file)
           .replace(/\.sql$/, ''),
         statement: await fs.readFile(file, 'utf8'),
       };
@@ -32,7 +48,7 @@ export class FileTemplateProvider implements TemplateProvider {
   private async getTemplateFilePaths(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       glob(
-        path.resolve(this.options.folderPath, '**', '*.sql'),
+        path.resolve(this.options.folderPath!, '**', '*.sql'),
         { nodir: true },
         (err, files) => {
           if (err) return reject(err);

@@ -1,5 +1,9 @@
-import { FilterBuilder } from '../../extension-loader';
+import {
+  FilterBuilder,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
 
+@VulcanInternalExtension()
 export class UniqueFilterBuilder extends FilterBuilder {
   public filterName = 'unique';
 }

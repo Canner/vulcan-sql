@@ -1,5 +1,9 @@
 import { APISchema, AllTemplateMetadata } from '@vulcan-sql/core';
-import { SchemaData, SchemaFormat, SchemaReader } from './schema-reader';
+import {
+  SchemaData,
+  SchemaFormat,
+  SchemaReader,
+} from '@vulcan-sql/build/models';
 import * as yaml from 'js-yaml';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 import * as compose from 'koa-compose';
@@ -12,7 +16,6 @@ import {
 } from 'inversify';
 import { TYPES } from '@vulcan-sql/build/containers';
 import { SchemaParserOptions } from '@vulcan-sql/build/options';
-
 export interface SchemaParseResult {
   schemas: APISchema[];
 }
@@ -23,14 +26,13 @@ export class SchemaParser {
   private middleware: SchemaParserMiddleware['handle'][] = [];
 
   constructor(
-    @inject(TYPES.Factory_SchemaReader)
-    schemaReaderFactory: interfaces.AutoNamedFactory<SchemaReader>,
-    @inject(TYPES.SchemaParserOptions) schemaParserOptions: SchemaParserOptions,
+    @inject(TYPES.SchemaReader)
+    schemaReader: SchemaReader,
     @multiInject(TYPES.SchemaParserMiddleware)
     @optional()
     middlewares: SchemaParserMiddleware[] = []
   ) {
-    this.schemaReader = schemaReaderFactory(schemaParserOptions.reader);
+    this.schemaReader = schemaReader;
 
     // Load middleware
     middlewares.forEach(this.use.bind(this));

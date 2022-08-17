@@ -12,10 +12,11 @@ import {
   RequestSchema,
   ValidatorDefinition,
   ValidatorLoader,
+  extensionModule,
+  TYPES as CORE_TYPES,
 } from '@vulcan-sql/core';
 import { Container } from 'inversify';
 import { TYPES } from '@vulcan-sql/serve/containers';
-import { TYPES as CORE_TYPES } from '@vulcan-sql/core/containers';
 
 describe('Test request validator - validate successfully', () => {
   let container: Container;
@@ -142,14 +143,15 @@ describe('Test request validator - validate successfully', () => {
     },
   ];
 
-  beforeEach(() => {
+  beforeEach(async () => {
     container = new Container();
+    await container.loadAsync(extensionModule({} as any));
     container.bind(CORE_TYPES.ValidatorLoader).to(ValidatorLoader);
     container.bind(TYPES.RequestValidator).to(RequestValidator);
   });
 
-  afterEach(() => {
-    container.unbindAll();
+  afterEach(async () => {
+    await container.unbindAllAsync();
   });
   it.each([
     [fakeSchemas[0], fakeKoaContexts[0]],

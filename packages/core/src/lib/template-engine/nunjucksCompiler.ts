@@ -2,40 +2,41 @@ import { Compiler, CompileResult } from './compiler';
 import * as nunjucks from 'nunjucks';
 import * as transformer from 'nunjucks/src/transformer';
 import { inject, injectable, multiInject, named, optional } from 'inversify';
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import {
-  CompileTimeExtension,
-  Extension,
-  FilterBuilder,
-  FilterRunner,
   generateMetadata,
   implementedOnAstVisit,
-  implementedOnInit,
   implementedProvideMetadata,
   OnAstVisit,
   ProvideMetadata,
+  walkAst,
+} from './extension-utils';
+import { IDataQueryBuilder } from '../data-query';
+import {
+  Pagination,
+  TemplateEngineExtension,
   RuntimeExtension,
+  CompileTimeExtension,
   TagBuilder,
   TagRunner,
-  walkAst,
-} from './extension-loader';
-import { IDataQueryBuilder } from '../data-query';
-import { Pagination } from '@vulcan-sql/core/models';
+  FilterBuilder,
+  FilterRunner,
+} from '@vulcan-sql/core/models';
 
 @injectable()
 export class NunjucksCompiler implements Compiler {
   public name = 'nunjucks';
   private runtimeEnv: nunjucks.Environment;
   private compileTimeEnv: nunjucks.Environment;
-  private extensions: Extension[];
+  private extensions: TemplateEngineExtension[];
   private astVisitors: OnAstVisit[] = [];
   private metadataProviders: ProvideMetadata[] = [];
   private extensionsInitialized = false;
 
   constructor(
-    @multiInject(TYPES.CompilerExtension)
+    @multiInject(TYPES.Extension_TemplateEngine)
     @optional()
-    extensions: Extension[] = [],
+    extensions: TemplateEngineExtension[] = [],
     @inject(TYPES.CompilerEnvironment)
     @named('runtime')
     runtimeEnv: nunjucks.Environment,
@@ -84,7 +85,7 @@ export class NunjucksCompiler implements Compiler {
     return builder.value();
   }
 
-  public loadExtension(extension: Extension): void {
+  public loadExtension(extension: TemplateEngineExtension): void {
     if (extension instanceof RuntimeExtension) {
       this.loadRuntimeExtensions(extension);
     } else if (extension instanceof CompileTimeExtension) {
@@ -164,9 +165,7 @@ export class NunjucksCompiler implements Compiler {
   private async initializeExtensions() {
     if (this.extensionsInitialized) return;
     for (const extension of this.extensions) {
-      if (implementedOnInit(extension)) {
-        await extension.onInit();
-      }
+      if (extension.activate) await extension.activate();
     }
     this.extensionsInitialized = true;
   }

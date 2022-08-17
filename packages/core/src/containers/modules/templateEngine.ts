@@ -1,11 +1,10 @@
-import { TYPES } from '@vulcan-sql/core/containers';
+import { TYPES } from '@vulcan-sql/core/types';
 import {
+  CodeLoader,
   ITemplateEngineOptions,
-  TemplateProviderType,
+  TemplateProvider,
 } from '@vulcan-sql/core/models';
 import {
-  FileTemplateProvider,
-  TemplateProvider,
   InMemoryCodeLoader,
   NunjucksCompiler,
   Compiler,
@@ -14,14 +13,8 @@ import {
 import { AsyncContainerModule, interfaces } from 'inversify';
 import { TemplateEngineOptions } from '../../options';
 import * as nunjucks from 'nunjucks';
-// TODO: fix the path
-import { bindExtensions } from '@vulcan-sql/core/template-engine/extension-loader';
-import { ICodeLoader } from '@vulcan-sql/core/template-engine/code-loader';
 
-export const templateEngineModule = (
-  options: ITemplateEngineOptions,
-  extensions: string[]
-) =>
+export const templateEngineModule = (options: ITemplateEngineOptions = {}) =>
   new AsyncContainerModule(async (bind) => {
     // Options
     bind<ITemplateEngineOptions>(
@@ -32,26 +25,35 @@ export const templateEngineModule = (
       .inSingletonScope();
 
     // TemplateProvider
-    bind<TemplateProvider>(TYPES.TemplateProvider)
-      .to(FileTemplateProvider)
-      .inSingletonScope()
-      .whenTargetNamed(TemplateProviderType.LocalFile);
-
     bind<interfaces.AutoNamedFactory<TemplateProvider>>(
       TYPES.Factory_TemplateProvider
-    ).toAutoNamedFactory<TemplateProvider>(TYPES.TemplateProvider);
+    ).toAutoNamedFactory<TemplateProvider>(TYPES.Extension_TemplateProvider);
+
+    if (options.provider) {
+      // Template provider is an optional component, but we can't use templateEngine.compile() if provider wasn't bound.
+      bind<TemplateProvider>(TYPES.TemplateProvider)
+        .toDynamicValue((context) => {
+          const factory = context.container.get<
+            interfaces.AutoNamedFactory<TemplateProvider>
+          >(TYPES.Factory_TemplateProvider);
+          return factory(options.provider!);
+        })
+        .inSingletonScope();
+    }
 
     // Compiler environment
     bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
       .toDynamicValue((context) => {
         // We only need loader in runtime
-        const loader = context.container.get<nunjucks.ILoader>(
+        const codeLoader = context.container.get<CodeLoader>(
           TYPES.CompilerLoader
         );
-        return new nunjucks.Environment(loader);
+
+        return new nunjucks.Environment(codeLoader);
       })
       .inSingletonScope()
       .whenTargetNamed('runtime');
+
     bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
       .toDynamicValue(() => {
         return new nunjucks.Environment();
@@ -60,8 +62,19 @@ export const templateEngineModule = (
       .whenTargetNamed('compileTime');
 
     // Loader
-    bind<ICodeLoader>(TYPES.CompilerLoader)
-      .to(InMemoryCodeLoader)
+    bind<interfaces.AutoNamedFactory<CodeLoader>>(
+      TYPES.Factory_CompilerLoader
+    ).toAutoNamedFactory(TYPES.Extension_CompilerLoader);
+    bind<CodeLoader>(TYPES.CompilerLoader)
+      .toDynamicValue((context) => {
+        const loaderFactory = context.container.get<
+          interfaces.AutoNamedFactory<CodeLoader>
+        >(TYPES.Factory_CompilerLoader);
+        const options = context.container.get<TemplateEngineOptions>(
+          TYPES.TemplateEngineOptions
+        );
+        return loaderFactory(options.codeLoader);
+      })
       .inSingletonScope();
 
     // Compiler
@@ -71,7 +84,4 @@ export const templateEngineModule = (
     bind<TemplateEngine>(TYPES.TemplateEngine)
       .to(TemplateEngine)
       .inSingletonScope();
-
-    // Load Extensions
-    await bindExtensions(bind, extensions);
   });

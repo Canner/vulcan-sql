@@ -1,9 +1,13 @@
 import * as nunjucks from 'nunjucks';
-import { injectable } from 'inversify';
-import { ICodeLoader } from './codeLoader';
+import {
+  CodeLoader,
+  VulcanExtensionId,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
 
-@injectable()
-export class InMemoryCodeLoader implements ICodeLoader {
+@VulcanInternalExtension()
+@VulcanExtensionId('inMemory')
+export class InMemoryCodeLoader extends CodeLoader {
   private source = new Map<string, object>();
 
   public setSource(name: string, code: string) {

@@ -11,15 +11,18 @@ import * as sinon from 'ts-sinon';
 it('Should set and compose constraints', async () => {
   // Arrange
   const stubValidatorLoader = sinon.stubInterface<IValidatorLoader>();
-  stubValidatorLoader.load.callsFake(async (name) => ({
-    name,
-    validateData: () => null,
-    validateSchema: () => null,
-    getConstraints: (args) => {
-      if (name === 'required') return [Constraint.Required()];
-      return [Constraint.MinValue(args.value)];
-    },
-  }));
+  stubValidatorLoader.getValidator.callsFake(
+    (name) =>
+      ({
+        name,
+        validateData: () => null,
+        validateSchema: () => null,
+        getConstraints: (args: any) => {
+          if (name === 'required') return [Constraint.Required()];
+          return [Constraint.MinValue(args.value)];
+        },
+      } as any)
+  );
 
   const schema: RawAPISchema = {
     templateSource: 'existed/path',

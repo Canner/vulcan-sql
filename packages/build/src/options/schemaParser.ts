@@ -9,7 +9,7 @@ import { IsOptional, IsString, validateSync } from 'class-validator';
 @injectable()
 export class SchemaParserOptions implements ISchemaParserOptions {
   @IsString()
-  public readonly reader: SchemaReaderType = SchemaReaderType.LocalFile;
+  public readonly reader: string = SchemaReaderType.LocalFile;
 
   @IsString()
   @IsOptional()

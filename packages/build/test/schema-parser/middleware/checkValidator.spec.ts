@@ -14,11 +14,11 @@ it('Should pass if there is no error', async () => {
     ],
   };
   const stubValidatorLoader = sinon.stubInterface<IValidatorLoader>();
-  stubValidatorLoader.load.resolves({
+  stubValidatorLoader.getValidator.returns({
     name: 'validator1',
     validateSchema: () => null,
     validateData: () => null,
-  });
+  } as any);
   const checkValidator = new CheckValidator(stubValidatorLoader);
 
   // Act Assert
@@ -38,11 +38,11 @@ it('Should throw if some validators have no name', async () => {
     ],
   };
   const stubValidatorLoader = sinon.stubInterface<IValidatorLoader>();
-  stubValidatorLoader.load.resolves({
+  stubValidatorLoader.getValidator.returns({
     name: 'validator1',
     validateSchema: () => null,
     validateData: () => null,
-  });
+  } as any);
   const checkValidator = new CheckValidator(stubValidatorLoader);
 
   // Act Assert
@@ -62,13 +62,13 @@ it('Should throw if the arguments of a validator is invalid', async () => {
     ],
   };
   const stubValidatorLoader = sinon.stubInterface<IValidatorLoader>();
-  stubValidatorLoader.load.resolves({
+  stubValidatorLoader.getValidator.returns({
     name: 'validator1',
     validateSchema: () => {
       throw new Error();
     },
     validateData: () => null,
-  });
+  } as any);
   const checkValidator = new CheckValidator(stubValidatorLoader);
 
   // Act Assert
