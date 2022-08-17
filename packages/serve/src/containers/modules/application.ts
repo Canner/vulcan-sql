@@ -4,5 +4,5 @@ import { TYPES } from '../types';
 
 export const applicationModule = () =>
   new AsyncContainerModule(async (bind) => {
-    bind(TYPES.VulcanApplication).to(VulcanApplication);
+    bind<VulcanApplication>(TYPES.VulcanApplication).to(VulcanApplication);
   });

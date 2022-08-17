@@ -61,9 +61,9 @@ export const templateEngineModule = (options: ITemplateEngineOptions = {}) =>
       .whenTargetNamed('compileTime');
 
     // Loader
-    bind(TYPES.Factory_CompilerLoader).toAutoNamedFactory(
-      TYPES.Extension_CompilerLoader
-    );
+    bind<interfaces.AutoNamedFactory<CodeLoader>>(
+      TYPES.Factory_CompilerLoader
+    ).toAutoNamedFactory(TYPES.Extension_CompilerLoader);
     bind<CodeLoader>(TYPES.CompilerLoader)
       .toDynamicValue((context) => {
         const loaderFactory = context.container.get<

@@ -8,13 +8,13 @@ import { ExecutorOptions } from '../../options';
 export const executorModule = (options: IExecutorOptions = {}) =>
   new AsyncContainerModule(async (bind) => {
     // Options
-    bind(TYPES.ExecutorInputOptions).toConstantValue(options);
-    bind(TYPES.ExecutorOptions).to(ExecutorOptions);
+    bind<IExecutorOptions>(TYPES.ExecutorInputOptions).toConstantValue(options);
+    bind<IExecutorOptions>(TYPES.ExecutorOptions).to(ExecutorOptions);
 
     // Data source
-    bind(TYPES.Factory_DataSource).toAutoNamedFactory(
-      TYPES.Extension_DataSource
-    );
+    bind<interfaces.AutoNamedFactory<DataSource>>(
+      TYPES.Factory_DataSource
+    ).toAutoNamedFactory(TYPES.Extension_DataSource);
     bind<DataSource>(TYPES.DataSource).toDynamicValue((context) => {
       const factory = context.container.get<
         interfaces.AutoNamedFactory<DataSource>
