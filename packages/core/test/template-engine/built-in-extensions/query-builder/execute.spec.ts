@@ -58,3 +58,29 @@ select * from group where userId = '{{ user.value()[0].id }}';
     'something went wrong'
   );
 });
+
+it('Extension should create builder with query and bind parameters ', async () => {
+  // Arrange
+  const { compiler, loader, builder, executor } = await createTestCompiler();
+  const { compiledData } = await compiler.compile(
+    `
+{% req userCount main %}
+select count(*) as count from user where user.id = '{{ context.params.userId }}';
+{% endreq %}
+    `
+  );
+  builder.value.onFirstCall().resolves([{ count: 1 }]);
+  // Action
+  loader.setSource('test', compiledData);
+  await compiler.execute('test', {
+    context: { params: { userId: '@userId' } },
+    ['_paramBinds']: { '@userId': '000000' },
+  });
+  // Assert
+  expect(executor.createBuilder.firstCall.args[0]).toBe(
+    `select count(*) as count from user where user.id = '@userId';`
+  );
+  expect(executor.createBuilder.firstCall.args[1]).toEqual({
+    '@userId': '000000',
+  });
+});

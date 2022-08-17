@@ -75,8 +75,8 @@ export class TemplateEngine {
         context: {
           ...others,
           ['params']: prepared?.identifiers || {},
-          ['_paramBinds']: prepared?.binds || {},
         },
+        ['_paramBinds']: prepared?.binds || {},
       },
       pagination
     );

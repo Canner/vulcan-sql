@@ -76,10 +76,10 @@ it('Template engine render function should forward correct data to compiler', as
     name: 'name',
   };
   const expected = {
+    _paramBinds: {},
     context: {
       ...context,
       params: {},
-      _paramBinds: {},
     },
   };
 
