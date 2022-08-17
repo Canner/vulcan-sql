@@ -3,6 +3,8 @@
   "projects": {
     "build": "packages/build",
     "cli": "packages/cli",
+    "catalog-server": "packages/catalog-server",
+    "catalog-server-e2e": "packages/catalog-server-e2e",
     "core": "packages/core",
     "extension-dbt": "packages/extension-dbt",
     "extension-debug-tools": "packages/extension-debug-tools",

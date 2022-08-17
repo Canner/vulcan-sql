@@ -1,0 +1,28 @@
+{
+  "root": "packages/catalog-server-e2e",
+  "sourceRoot": "packages/catalog-server-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "packages/catalog-server-e2e/cypress.json",
+        "devServerTarget": "catalog-server:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "catalog-server:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/catalog-server-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["catalog-server"]
+}
