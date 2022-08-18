@@ -29,7 +29,7 @@ set_env: &set_env
       # Merge into develop branch, use main branch as the base.
 
       echo "Using main branch as the base"
-      echo 'export AFFECTED_ARGS="--head=HEAD --base=main"' >> $BASH_ENV 
+      echo 'export AFFECTED_ARGS="--head=HEAD --base=origin/main"' >> $BASH_ENV 
 
     else
 
