@@ -7,15 +7,8 @@ import {
 import * as yaml from 'js-yaml';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 import * as compose from 'koa-compose';
-import {
-  inject,
-  injectable,
-  interfaces,
-  multiInject,
-  optional,
-} from 'inversify';
+import { inject, injectable, multiInject, optional } from 'inversify';
 import { TYPES } from '@vulcan-sql/build/containers';
-import { SchemaParserOptions } from '@vulcan-sql/build/options';
 export interface SchemaParseResult {
   schemas: APISchema[];
 }

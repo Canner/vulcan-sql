@@ -1,4 +1,3 @@
-import { VulcanInternalExtension } from '@vulcan-sql/core';
 import { BaseRouteMiddleware } from '@vulcan-sql/serve/models';
 import { KoaRouterContext, KoaNext } from '@vulcan-sql/serve/route';
 

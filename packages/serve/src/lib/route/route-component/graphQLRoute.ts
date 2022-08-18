@@ -20,7 +20,8 @@ export class GraphQLRoute extends BaseRoute {
     return transformed;
   }
 
-  protected async prepare(ctx: KoaRouterContext) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected async prepare(_ctx: KoaRouterContext) {
     /**
      * TODO: the graphql need to transform from body.
      * Therefore, current request and pagination transformer not suitable (need to provide another graphql transform method or class)

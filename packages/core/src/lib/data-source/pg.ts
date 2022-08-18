@@ -13,6 +13,7 @@ import {
 @VulcanInternalExtension()
 @VulcanExtensionId('pg')
 export class PGDataSource extends DataSource {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async execute(options: ExecuteOptions): Promise<DataResult> {
     return {
       getColumns: () => {

@@ -33,7 +33,7 @@ export const mergedModules = async <T extends ModuleProperties>(
   modules: Array<T>
 ) => {
   const module = modules.reduce(
-    (merged: ModuleProperties, current: ModuleProperties, _) => {
+    (merged: ModuleProperties, current: ModuleProperties) => {
       for (const extension of Object.keys(current)) {
         // if current extension property has been existed in merged module, concat it.
         if (extension in merged)
