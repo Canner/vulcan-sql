@@ -1,34 +1,11 @@
-import { BaseRoute, KoaRouterContext } from './baseRoute';
-import { inject, injectable } from 'inversify';
-import { TYPES } from '@vulcan-sql/serve/containers';
-import { APISchema, TemplateEngine } from '@vulcan-sql/core';
-import { IRequestTransformer } from './requestTransformer';
-import { IRequestValidator } from './requestValidator';
-import { IPaginationTransformer } from './paginationTransformer';
+import { BaseRoute, KoaRouterContext, RouteOptions } from './baseRoute';
 
 export class RestfulRoute extends BaseRoute {
   public readonly urlPath: string;
 
-  constructor({
-    apiSchema,
-    reqTransformer,
-    reqValidator,
-    paginationTransformer,
-    templateEngine,
-  }: {
-    apiSchema: APISchema;
-    reqTransformer: IRequestTransformer;
-    reqValidator: IRequestValidator;
-    paginationTransformer: IPaginationTransformer;
-    templateEngine: TemplateEngine;
-  }) {
-    super({
-      apiSchema,
-      reqTransformer,
-      reqValidator,
-      paginationTransformer,
-      templateEngine,
-    });
+  constructor(options: RouteOptions) {
+    super(options);
+    const { apiSchema } = options;
     this.urlPath = apiSchema.urlPath;
   }
 

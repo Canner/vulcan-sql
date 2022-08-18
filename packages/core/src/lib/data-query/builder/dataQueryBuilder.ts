@@ -1,4 +1,10 @@
-import { DataSource, Pagination } from '@vulcan-sql/core/models';
+import {
+  DataSource,
+  PreparedQueryParams,
+  Pagination,
+  BindParameters,
+} from '@vulcan-sql/core/models';
+import * as uuid from 'uuid';
 
 import { find, isEmpty } from 'lodash';
 import {
@@ -180,7 +186,9 @@ export interface IDataQueryBuilder {
   readonly statement: string;
   readonly operations: SQLClauseOperation;
   readonly dataSource: DataSource;
-
+  readonly bindParams: BindParameters;
+  // used for distinguish different builder
+  readonly identifier: string;
   // Select clause methods
   select(...columns: Array<SelectedColumn | string>): IDataQueryBuilder;
   distinct(...columns: Array<SelectedColumn | string>): IDataQueryBuilder;
@@ -405,18 +413,24 @@ export class DataQueryBuilder implements IDataQueryBuilder {
   // record all operations for different SQL clauses
   public readonly operations: SQLClauseOperation;
   public readonly dataSource: DataSource;
+  public readonly bindParams: BindParameters;
   public pagination?: Pagination;
+  public readonly identifier: string;
   constructor({
     statement,
     operations,
+    bindParams,
     dataSource,
   }: {
     statement: string;
     operations?: SQLClauseOperation;
+    bindParams: BindParameters;
     dataSource: DataSource;
   }) {
+    this.identifier = uuid.v4();
     this.statement = statement;
     this.dataSource = dataSource;
+    this.bindParams = bindParams;
     this.operations = operations || {
       select: null,
       where: [],
@@ -618,6 +632,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
     const wrappedBuilder = new DataQueryBuilder({
       statement: '',
       dataSource: this.dataSource,
+      bindParams: this.bindParams,
     });
     builderCallback(wrappedBuilder);
     this.recordWhere({
@@ -1065,6 +1080,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
       statement: this.statement,
       dataSource: this.dataSource,
       operations: this.operations,
+      bindParams: this.bindParams,
     });
   }
 
@@ -1078,6 +1094,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
     const result = await this.dataSource.execute({
       statement: this.statement,
       operations: this.operations,
+      bindParams: this.bindParams,
       pagination: this.pagination,
     });
 

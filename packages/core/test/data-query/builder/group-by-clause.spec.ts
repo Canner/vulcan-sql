@@ -4,13 +4,15 @@ import {
   GroupByClauseOperations,
   DataQueryBuilder,
 } from '@vulcan-sql/core/data-query';
-import { DataSource } from '@vulcan-sql/core/models';
+import { DataSource, BindParameters } from '@vulcan-sql/core/models';
 
 describe('Test data query builder > group by clause', () => {
   let stubDataSource: sinon.StubbedInstance<DataSource>;
+  let stubBindParameters: sinon.StubbedInstance<BindParameters>;
 
   beforeEach(() => {
     stubDataSource = sinon.stubInterface<DataSource>();
+    stubBindParameters = sinon.stubInterface<BindParameters>();
   });
 
   it.each([
@@ -30,6 +32,7 @@ describe('Test data query builder > group by clause', () => {
       let builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: stubBindParameters,
       });
       columns.map((column) => {
         builder = builder.groupBy(column);
@@ -55,6 +58,7 @@ describe('Test data query builder > group by clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
+        bindParams: stubBindParameters,
       });
       builder.groupBy(first, second, third);
 

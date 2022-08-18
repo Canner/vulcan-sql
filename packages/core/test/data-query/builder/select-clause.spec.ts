@@ -9,7 +9,7 @@ import {
   SelectedColumn,
 } from '@vulcan-sql/core/data-query';
 import { find, isEmpty } from 'lodash';
-import { DataSource } from '@vulcan-sql/core/models';
+import { DataSource, BindParameters } from '@vulcan-sql/core/models';
 
 // Use to generate select record expected results
 const generateSelectRecords = (
@@ -37,11 +37,14 @@ const generateSelectRecords = (
   return result;
 };
 
+const createStub = () => {
+  return {
+    dataSource: sinon.stubInterface<DataSource>(),
+    bindParams: sinon.stubInterface<BindParameters>(),
+  };
+};
+
 describe('Test data query builder > select clause', () => {
-  let stubDataSource: sinon.StubbedInstance<DataSource>;
-  beforeEach(() => {
-    stubDataSource = sinon.stubInterface<DataSource>();
-  });
   it.each([
     ['*', '*', '*'],
     [undefined, '*', '*'],
@@ -82,7 +85,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
       columns.map((column) => {
         builder = column ? builder.select(column) : builder.select();
@@ -149,7 +153,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -221,7 +226,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -297,7 +303,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -370,7 +377,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -442,7 +450,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -514,7 +523,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -586,7 +596,8 @@ describe('Test data query builder > select clause', () => {
       // Act
       let builder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)

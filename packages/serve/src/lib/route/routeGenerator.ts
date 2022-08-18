@@ -1,5 +1,5 @@
 import { IPaginationTransformer } from '@vulcan-sql/serve/route';
-import { APISchema, TemplateEngine } from '@vulcan-sql/core';
+import { APISchema, DataSource, TemplateEngine } from '@vulcan-sql/core';
 import {
   RestfulRoute,
   GraphQLRoute,
@@ -27,6 +27,7 @@ export class RouteGenerator {
   private reqTransformer: IRequestTransformer;
   private paginationTransformer: IPaginationTransformer;
   private templateEngine: TemplateEngine;
+  private dataSource: DataSource;
   private apiOptions: APIRouteBuilderOption = {
     [APIProviderType.RESTFUL]: RestfulRoute,
     [APIProviderType.GRAPHQL]: GraphQLRoute,
@@ -37,11 +38,13 @@ export class RouteGenerator {
     @inject(TYPES.RequestValidator) reqValidator: IRequestValidator,
     @inject(TYPES.PaginationTransformer)
     paginationTransformer: IPaginationTransformer,
+    @inject(CORE_TYPES.DataSource) dataSource: DataSource,
     @inject(CORE_TYPES.TemplateEngine) templateEngine: TemplateEngine
   ) {
     this.reqValidator = reqValidator;
     this.reqTransformer = reqTransformer;
     this.paginationTransformer = paginationTransformer;
+    this.dataSource = dataSource;
     this.templateEngine = templateEngine;
   }
 
@@ -54,6 +57,7 @@ export class RouteGenerator {
       reqTransformer: this.reqTransformer,
       reqValidator: this.reqValidator,
       paginationTransformer: this.paginationTransformer,
+      dataSource: this.dataSource,
       templateEngine: this.templateEngine,
     });
   }

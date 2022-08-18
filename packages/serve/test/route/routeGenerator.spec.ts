@@ -2,6 +2,7 @@ import faker from '@faker-js/faker';
 import * as sinon from 'ts-sinon';
 import {
   APISchema,
+  DataSource,
   TemplateEngine,
   TYPES as CORE_TYPES,
 } from '@vulcan-sql/core';
@@ -23,6 +24,7 @@ describe('Test route generator ', () => {
   let stubReqValidator: sinon.StubbedInstance<IRequestValidator>;
   let stubPaginationTransformer: sinon.StubbedInstance<IPaginationTransformer>;
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
+  let stubDataSource: sinon.StubbedInstance<DataSource>;
   const fakeSchemas: Array<APISchema> = Array(
     faker.datatype.number({ min: 2, max: 4 })
   ).fill(sinon.stubInterface<APISchema>());
@@ -32,6 +34,7 @@ describe('Test route generator ', () => {
     stubReqTransformer = sinon.stubInterface<IRequestTransformer>();
     stubReqValidator = sinon.stubInterface<IRequestValidator>();
     stubPaginationTransformer = sinon.stubInterface<IPaginationTransformer>();
+    stubDataSource = sinon.stubInterface<DataSource>();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
 
     container
@@ -44,6 +47,7 @@ describe('Test route generator ', () => {
     container
       .bind(CORE_TYPES.TemplateEngine)
       .toConstantValue(stubTemplateEngine);
+    container.bind(CORE_TYPES.DataSource).toConstantValue(stubDataSource);
     container.bind(TYPES.RouteGenerator).to(RouteGenerator);
   });
 
@@ -65,6 +69,7 @@ describe('Test route generator ', () => {
         paginationTransformer: container.get<IPaginationTransformer>(
           TYPES.PaginationTransformer
         ),
+        dataSource: container.get<DataSource>(CORE_TYPES.DataSource),
         templateEngine: container.get<TemplateEngine>(
           CORE_TYPES.TemplateEngine
         ),
@@ -100,6 +105,7 @@ describe('Test route generator ', () => {
         paginationTransformer: container.get<IPaginationTransformer>(
           TYPES.PaginationTransformer
         ),
+        dataSource: container.get<DataSource>(CORE_TYPES.DataSource),
         templateEngine: container.get<TemplateEngine>(
           CORE_TYPES.TemplateEngine
         ),

@@ -9,7 +9,7 @@ import {
 
 let server: VulcanServer;
 
-beforeEach(async () => {
+afterEach(async () => {
   await server?.close();
 });
 

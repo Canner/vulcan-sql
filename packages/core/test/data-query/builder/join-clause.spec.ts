@@ -13,18 +13,20 @@ import {
   LogicalOperator,
   NullPredicateInput,
 } from '@vulcan-sql/core/data-query';
-import { DataSource } from '@vulcan-sql/core';
+import { DataSource, BindParameters } from '@vulcan-sql/core';
+
+const createStub = () => {
+  return {
+    dataSource: sinon.stubInterface<DataSource>(),
+    bindParams: sinon.stubInterface<BindParameters>(),
+  };
+};
 
 describe('Test data query builder > join clause', () => {
-  let stubDataSource: sinon.StubbedInstance<DataSource>;
-
-  beforeEach(() => {
-    stubDataSource = sinon.stubInterface<DataSource>();
-  });
-
   const joinBuilder = new DataQueryBuilder({
     statement: 'select * from products',
-    dataSource: sinon.stubInterface<DataSource>(),
+    dataSource: createStub().dataSource,
+    bindParams: createStub().bindParams,
   });
   const alias = 'products';
   const joinOnClauseOperations: Array<JoinOnClauseOperation> = [
@@ -121,7 +123,8 @@ describe('Test data query builder > join clause', () => {
       // Act
       const queryBuilder = new DataQueryBuilder({
         statement,
-        dataSource: stubDataSource,
+        dataSource: createStub().dataSource,
+        bindParams: createStub().bindParams,
       });
       const joinCallMapper = {
         [JoinCommandType.INNER_JOIN]: (builder: IDataQueryBuilder) =>
