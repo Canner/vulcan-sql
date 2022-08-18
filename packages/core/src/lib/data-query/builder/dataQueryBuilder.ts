@@ -1,6 +1,5 @@
 import {
   DataSource,
-  PreparedQueryParams,
   Pagination,
   BindParameters,
 } from '@vulcan-sql/core/models';
