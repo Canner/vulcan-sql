@@ -1,5 +1,27 @@
 {
   "name": "@vulcan-sql/build",
-  "version": "0.0.1",
-  "type": "commonjs"
+  "description": "Vulcan package for building projects",
+  "version": "0.1.0-alpha.1",
+  "type": "commonjs",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "vulcan",
+    "vulcan-sql",
+    "data",
+    "sql",
+    "database",
+    "data-warehouse",
+    "data-lake",
+    "api-builder"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Canner/vulcan.git"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "@vulcan-sql/core": "0.1.0-alpha.1"
+  }
 }

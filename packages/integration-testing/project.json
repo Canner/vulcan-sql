@@ -2,16 +2,6 @@
   "root": "packages/integration-testing",
   "sourceRoot": "packages/integration-testing/src",
   "targets": {
-    "build": {
-      "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/packages/integration-testing",
-        "main": "packages/integration-testing/src/index.ts",
-        "tsConfig": "packages/integration-testing/tsconfig.lib.json",
-        "assets": ["packages/integration-testing/*.md"]
-      }
-    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],

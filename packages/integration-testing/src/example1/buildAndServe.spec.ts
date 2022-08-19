@@ -53,8 +53,8 @@ afterEach(async () => {
 });
 
 it('Example1: Build and serve should work', async () => {
-  const builder = new VulcanBuilder();
-  await builder.build(projectConfig);
+  const builder = new VulcanBuilder(projectConfig);
+  await builder.build();
   server = new VulcanServer(projectConfig);
   const httpServer = await server.start(3000);
 

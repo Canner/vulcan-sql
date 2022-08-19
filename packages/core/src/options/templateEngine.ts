@@ -15,7 +15,7 @@ export class TemplateEngineOptions implements ITemplateEngineOptions {
 
   @IsString()
   @IsOptional()
-  public readonly codeLoader: string = 'inMemory';
+  public readonly codeLoader: string = 'InMemory';
 
   constructor(
     @inject(TYPES.TemplateEngineInputOptions)

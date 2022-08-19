@@ -1,8 +1,11 @@
 {
-  "name": "@vulcan-sql/extension-dbt",
-  "description": "Using dbt models form Vulcan projects",
+  "name": "@vulcan-sql/cli",
+  "description": "CLI tools for Vulcan",
   "version": "0.1.0-alpha.1",
   "type": "commonjs",
+  "bin": {
+    "vulcan": "./src/index.js"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -14,15 +17,11 @@
     "database",
     "data-warehouse",
     "data-lake",
-    "api-builder",
-    "dbt"
+    "api-builder"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Canner/vulcan.git"
   },
-  "license": "MIT",
-  "peerDependencies": {
-    "@vulcan-sql/core": "0.x"
-  }
+  "license": "MIT"
 }

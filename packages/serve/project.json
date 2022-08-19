@@ -10,14 +10,33 @@
       }
     },
     "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts serve"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "tsc"
+        }
+      ]
+    },
+    "tsc": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/serve",
         "main": "packages/serve/src/index.ts",
         "tsConfig": "packages/serve/tsconfig.lib.json",
-        "assets": ["packages/serve/*.md"]
-      }
+        "assets": ["packages/serve/*.md"],
+        "buildableProjectDepsInPackageJsonType": "dependencies"
+      },
+      "dependsOn": [
+        {
+          "projects": "dependencies",
+          "target": "build"
+        }
+      ]
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
@@ -33,6 +52,19 @@
         "jestConfig": "packages/serve/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node ../../../tools/scripts/publish.mjs {args.tag}",
+        "cwd": "dist/packages/serve"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
     }
   },
   "tags": []

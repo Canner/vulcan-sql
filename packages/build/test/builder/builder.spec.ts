@@ -13,7 +13,6 @@ import {
 
 it('Builder.build should work', async () => {
   // Arrange
-  const builder = new VulcanBuilder();
   const options: IBuildOptions = {
     'schema-parser': {
       reader: SchemaReaderType.LocalFile,
@@ -34,7 +33,8 @@ it('Builder.build should work', async () => {
     },
     extensions: {},
   };
+  const builder = new VulcanBuilder(options);
 
   // Act, Assert
-  await expect(builder.build(options)).resolves.not.toThrow();
+  await expect(builder.build()).resolves.not.toThrow();
 });
