@@ -62,3 +62,10 @@ it('Start command should build the project and start Vulcan server', async () =>
   expect(result.statusCode).toBe(200);
   await runShutdownJobs();
 });
+
+it('Version command should execute without error', async () => {
+  // Action, Assert
+  await expect(
+    program.parseAsync(['node', 'vulcan', 'version'])
+  ).resolves.not.toThrow();
+});
