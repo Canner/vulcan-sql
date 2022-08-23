@@ -1,4 +1,9 @@
-import { ExtensionBase, VulcanExtension } from '@vulcan-sql/core';
+import {
+  DocumentOptions,
+  DocumentSpec,
+  ExtensionBase,
+  VulcanExtension,
+} from '@vulcan-sql/core';
 import { TYPES } from '@vulcan-sql/serve/types';
 import { KoaContext, Next } from '@vulcan-sql/serve/models';
 import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
