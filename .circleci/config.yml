@@ -117,10 +117,24 @@ jobs:
       - restore_cache:
           keys:
             - codecov-0.1.0_4653
+      - run: rm -rf ./coverage
+        # Clear coverage folder
       - run: yarn nx affected --target=test --ci --coverage --maxWorkers=2 --coverageReporters=lcov ${AFFECTED_ARGS}
         # --maxWorkers=2 is required because we'll run virtual machine with 32 cores CPU (with actually 4 CPI), jest spawns lots of workers if we don't fix the worker size.
         # https://support.circleci.com/hc/en-us/articles/360005442714-Your-test-tools-are-smart-and-that-s-a-problem-Learn-about-when-optimization-goes-wrong-
-      - run: ./codecov -t ${CODECOV_TOKEN}
+      - run:
+          name: upload reports with flags
+          command: |
+            if [ -d "coverage/packages" ] 
+            then
+              for path in $(find coverage/packages -maxdepth 1 -type d | grep coverage/packages/); do
+                package=${path##coverage/packages/}
+                echo "Uploading coverage report for package: $package"
+                ./codecov -t ${CODECOV_TOKEN} -f coverage/packages/$package/lcov.info -F $package
+              done
+            else
+              echo "No coverage report found."
+            fi
 
 workflows:
   version: 2
