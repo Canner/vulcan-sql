@@ -27,6 +27,7 @@
     "nunjucks": "^3.2.3",
     "openapi3-ts": "^2.0.2",
     "ora": "^5.4.1",
+    "redoc": "2.0.0-rc.76",
     "reflect-metadata": "^0.1.13",
     "tslib": "^2.3.0",
     "tslog": "^3.3.3",

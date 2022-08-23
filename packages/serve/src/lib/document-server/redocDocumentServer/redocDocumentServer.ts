@@ -11,7 +11,7 @@ import * as nunjucks from 'nunjucks';
 import { Next } from 'koa';
 import * as Router from 'koa-router';
 import { DocumentServer } from '@vulcan-sql/serve/models';
-import { promises as fs } from 'fs';
+import * as fs from 'fs';
 import * as path from 'path';
 import { inject } from 'inversify';
 import { v4 } from 'uuid';
@@ -38,23 +38,42 @@ export class RedocDocumentServer extends DocumentServer {
 
   public override async onActivate() {
     // Set routes
+    // html index
     this.router.get(`/${this.urlPrefix}`, async (ctx, next) => {
       await next();
       ctx.response.body = this.docContent;
     });
-    const specUrl = `/${this.urlPrefix}/spec/${v4()}`;
+    // spec file
+    // TODO: it should be spec.yaml but extension will be removed by response-format/middleware, wait for fixing
+    const specUrl = `/${this.urlPrefix}/spec`;
     this.router.get(specUrl, async (ctx, next) => {
       await next();
       ctx.response.body = await this.getSpec(DocumentSpec.oas3);
     });
-    // Load template
-    const template = await fs.readFile(
+    // redoc js file
+    // redoc's package.json point to bundles/redoc.lib.js file which we can't use directly
+    // we should use the file redoc.standalone.js at the same folder instead.
+    const redocPath = path.resolve(
+      require.resolve('redoc'),
+      '..',
+      'redoc.standalone.js'
+    );
+    // TODO: it should be redoc.js but extension will be removed by response-format/middleware, wait for fixing
+    const bundleFileUrl = `/${this.urlPrefix}/redoc`;
+    this.router.get(bundleFileUrl, async (ctx, next) => {
+      await next();
+      ctx.response.body = fs.createReadStream(redocPath);
+    });
+
+    // Load template and render it
+    const template = await fs.promises.readFile(
       path.resolve(__dirname, 'template', 'redoc.html'),
       'utf-8'
     );
     this.docContent = nunjucks.renderString(template, {
       title: `${this.projectOption.name} - Vulcan`,
       specUrl,
+      bundleFileUrl,
     });
   }
 

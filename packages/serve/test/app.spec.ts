@@ -16,6 +16,7 @@ import {
   extensionModule as coreExtensionModule,
   TYPES as CORE_TYPES,
   DataSource,
+  DocumentOptions,
 } from '@vulcan-sql/core';
 import {
   RouteGenerator,
@@ -66,6 +67,13 @@ describe('Test vulcan server for practicing middleware', () => {
       .toConstantValue(stubTemplateEngine);
     container.bind(TYPES.RouteGenerator).to(RouteGenerator);
     container.bind(TYPES.VulcanApplication).to(VulcanApplication);
+    container.bind(TYPES.Factory_DocumentServer).toConstantValue(() => null);
+    container.bind(CORE_TYPES.DocumentOptions).toDynamicValue(
+      () =>
+        new DocumentOptions({
+          server: [],
+        })
+    );
   });
 
   afterEach(() => {
@@ -293,6 +301,13 @@ describe('Test vulcan server for calling restful APIs', () => {
       .toConstantValue(stubTemplateEngine);
     container.bind(TYPES.RouteGenerator).to(RouteGenerator);
     container.bind(TYPES.VulcanApplication).to(VulcanApplication);
+    container.bind(TYPES.Factory_DocumentServer).toConstantValue(() => null);
+    container.bind(CORE_TYPES.DocumentOptions).toDynamicValue(
+      () =>
+        new DocumentOptions({
+          server: [],
+        })
+    );
   });
 
   afterEach(() => {

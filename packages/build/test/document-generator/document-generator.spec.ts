@@ -18,6 +18,7 @@ it('Document generator should write YAML files while generating documents', asyn
     {
       specs: ['spec1', 'spec2'],
       folderPath: __dirname,
+      server: [],
     }
   );
 

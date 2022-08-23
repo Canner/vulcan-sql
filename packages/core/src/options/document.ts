@@ -7,7 +7,7 @@ import { TYPES } from '@vulcan-sql/core/types';
 export class DocumentOptions implements IDocumentOptions {
   @IsArray()
   @IsOptional()
-  public readonly specs = [DocumentSpec.oas3];
+  public readonly specs: string[] = [DocumentSpec.oas3];
 
   @IsString()
   public readonly folderPath: string = '.';
