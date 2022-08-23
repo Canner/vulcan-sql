@@ -1,8 +1,11 @@
-import { APISchema } from '@vulcan-sql/core';
+import {
+  APISchema,
+  DocumentOptions,
+  TYPES as CORE_TYPES,
+} from '@vulcan-sql/core';
 import { inject, injectable, interfaces } from 'inversify';
 import { TYPES } from '../../containers/types';
 import { SpecGenerator } from '../../models/extensions';
-import { DocumentGeneratorOptions } from '../../options/documentGenerator';
 import * as jsYAML from 'js-yaml';
 import * as path from 'path';
 import { promises as fs } from 'fs';
@@ -15,7 +18,7 @@ export class DocumentGenerator {
   constructor(
     @inject(TYPES.Factory_SpecGenerator)
     specGeneratorFactory: interfaces.AutoNamedFactory<SpecGenerator>,
-    @inject(TYPES.DocumentGeneratorOptions) options: DocumentGeneratorOptions
+    @inject(CORE_TYPES.DocumentOptions) options: DocumentOptions
   ) {
     this.specGenerators = [];
     for (const spec of options.specs) {

@@ -1,21 +1,21 @@
 import { injectable, inject, optional } from 'inversify';
-import { TYPES } from '@vulcan-sql/build/containers';
-import { IDocumentGeneratorOptions } from '@vulcan-sql/build/models';
 import { IsOptional, IsArray, validateSync, IsString } from 'class-validator';
+import { IDocumentOptions } from '../models';
+import { TYPES } from '@vulcan-sql/core/types';
 
 @injectable()
-export class DocumentGeneratorOptions implements IDocumentGeneratorOptions {
+export class DocumentOptions implements IDocumentOptions {
   @IsArray()
   @IsOptional()
   public readonly specs = ['oas3'];
 
   @IsString()
-  public readonly folderPath!: string;
+  public readonly folderPath: string = '.';
 
   constructor(
-    @inject(TYPES.DocumentGeneratorInputOptions)
+    @inject(TYPES.DocumentInputOptions)
     @optional()
-    options: Partial<IDocumentGeneratorOptions> = {}
+    options: Partial<IDocumentOptions> = {}
   ) {
     Object.assign(this, options);
     const errors = validateSync(this);

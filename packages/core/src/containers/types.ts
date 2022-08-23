@@ -30,6 +30,9 @@ export const TYPES = {
   Factory_DataSource: Symbol.for('Factory_DataSource'),
   // Validator
   ValidatorLoader: Symbol.for('ValidatorLoader'),
+  // Document
+  DocumentInputOptions: Symbol.for('DocumentInputOptions'),
+  DocumentOptions: Symbol.for('DocumentOptions'),
   // Extensions
   ExtensionConfig: Symbol.for('ExtensionConfig'),
   ExtensionName: Symbol.for('ExtensionName'),

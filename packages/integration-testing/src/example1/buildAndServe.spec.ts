@@ -2,12 +2,12 @@ import {
   VulcanBuilder,
   IBuildOptions,
   SchemaReaderType,
-  DocumentGeneratorSpec,
 } from '@vulcan-sql/build';
 import {
   ArtifactBuilderProviderType,
   ArtifactBuilderSerializerType,
   TemplateProviderType,
+  DocumentSpec,
 } from '@vulcan-sql/core';
 import { VulcanServer, ServeConfig, APIProviderType } from '@vulcan-sql/serve';
 import * as path from 'path';
@@ -31,8 +31,8 @@ const projectConfig: ServeConfig & IBuildOptions = {
     reader: SchemaReaderType.LocalFile,
     folderPath: path.resolve(__dirname, 'sqls'),
   },
-  'document-generator': {
-    specs: [DocumentGeneratorSpec.oas3],
+  document: {
+    specs: [DocumentSpec.oas3],
     folderPath: __dirname,
   },
   types: [APIProviderType.RESTFUL],

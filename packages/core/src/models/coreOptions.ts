@@ -1,4 +1,5 @@
 import { IArtifactBuilderOptions } from './artifactBuilderOptions';
+import { IDocumentOptions } from './documentOptions';
 import { IExecutorOptions } from './executorOptions';
 import { ITemplateEngineOptions } from './templateEngineOptions';
 
@@ -21,5 +22,6 @@ export interface ICoreOptions {
   template?: ITemplateEngineOptions;
   executor?: IExecutorOptions;
   extensions?: ExtensionAliases;
+  document?: IDocumentOptions;
   [moduleAlias: string]: any;
 }
