@@ -1,0 +1,5 @@
+flag_management:
+  default_rules: # the rules that will be followed for any flag added, generally
+    # Reference of past coverage for tests that are not run on current commit.
+    # https://docs.codecov.com/docs/carryforward-flags
+    carryforward: true
