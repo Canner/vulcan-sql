@@ -12,6 +12,7 @@ import {
 import { VulcanServer, ServeConfig, APIProviderType } from '@vulcan-sql/serve';
 import * as path from 'path';
 import * as supertest from 'supertest';
+import faker from '@faker-js/faker';
 
 const projectConfig: ServeConfig & IBuildOptions = {
   name: 'example project 1',
@@ -47,6 +48,7 @@ const projectConfig: ServeConfig & IBuildOptions = {
   'enforce-https': {
     enabled: false,
   },
+  port: faker.datatype.number({ min: 20000, max: 30000 }),
 };
 
 let server: VulcanServer;
@@ -63,7 +65,7 @@ it('Example1: Build and serve should work', async () => {
 
   const agent = supertest(httpServer);
   const result = await agent.get(
-    '/user?id=436193eb-f686-4105-ad7b-b5945276c14a'
+    '/api/user/436193eb-f686-4105-ad7b-b5945276c14a'
   );
   expect(result.body).toContainEqual({
     id: '436193eb-f686-4105-ad7b-b5945276c14a',

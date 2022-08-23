@@ -6,7 +6,7 @@ export class RestfulRoute extends BaseRoute {
   constructor(options: RouteOptions) {
     super(options);
     const { apiSchema } = options;
-    this.urlPath = apiSchema.urlPath;
+    this.urlPath = this.combineURLs('/api', apiSchema.urlPath);
   }
 
   public async respond(ctx: KoaContext) {
@@ -33,5 +33,9 @@ export class RestfulRoute extends BaseRoute {
       reqParams,
       pagination,
     };
+  }
+
+  private combineURLs(baseURL: string, relativeURL = ''): string {
+    return baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '');
   }
 }

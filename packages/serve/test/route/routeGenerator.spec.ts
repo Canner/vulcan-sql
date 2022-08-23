@@ -28,6 +28,8 @@ describe('Test route generator ', () => {
   const fakeSchemas: Array<APISchema> = Array(
     faker.datatype.number({ min: 2, max: 4 })
   ).fill(sinon.stubInterface<APISchema>());
+  // url path must be set or router won't initialize
+  fakeSchemas.forEach((schema) => (schema.urlPath = '/'));
 
   beforeEach(() => {
     container = new Container();
