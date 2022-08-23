@@ -1,0 +1,11 @@
+{
+  "name": "@vulcan-sql/extension-debug-tools",
+  "version": "0.1.0-alpha.1",
+  "type": "commonjs",
+  "peerDependencies": {
+    "@vulcan-sql/core": "*"
+  },
+  "devDependencies": {
+    "@vulcan-sql/test-utility": "0.1.0-alpha.1"
+  }
+}

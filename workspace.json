@@ -5,6 +5,7 @@
     "cli": "packages/cli",
     "core": "packages/core",
     "extension-dbt": "packages/extension-dbt",
+    "extension-debug-tools": "packages/extension-debug-tools",
     "integration-testing": "packages/integration-testing",
     "serve": "packages/serve",
     "test-utility": "packages/test-utility"
