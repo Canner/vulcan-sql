@@ -1,16 +1,19 @@
 import { injectable, inject, optional } from 'inversify';
 import { IsOptional, IsArray, validateSync, IsString } from 'class-validator';
-import { IDocumentOptions } from '../models';
+import { DocumentServerType, DocumentSpec, IDocumentOptions } from '../models';
 import { TYPES } from '@vulcan-sql/core/types';
 
 @injectable()
 export class DocumentOptions implements IDocumentOptions {
   @IsArray()
   @IsOptional()
-  public readonly specs = ['oas3'];
+  public readonly specs = [DocumentSpec.oas3];
 
   @IsString()
   public readonly folderPath: string = '.';
+
+  @IsArray()
+  public readonly server: string[] = [DocumentServerType.redoc];
 
   constructor(
     @inject(TYPES.DocumentInputOptions)

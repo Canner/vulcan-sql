@@ -64,9 +64,7 @@ it('Example1: Build and serve should work', async () => {
   const httpServer = (await server.start())['http'];
 
   const agent = supertest(httpServer);
-  const result = await agent.get(
-    '/api/user/436193eb-f686-4105-ad7b-b5945276c14a'
-  );
+  const result = await agent.get('/doc');
   expect(result.body).toContainEqual({
     id: '436193eb-f686-4105-ad7b-b5945276c14a',
     name: 'ivan',

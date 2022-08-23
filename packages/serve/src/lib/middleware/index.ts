@@ -5,6 +5,7 @@ export * from './rateLimitMiddleware';
 export * from './authMiddleware';
 export * from './response-format';
 export * from './enforceHttpsMiddleware';
+export * from './docServerMiddleware';
 
 import { CorsMiddleware } from './corsMiddleware';
 import { AuthMiddleware } from './authMiddleware';
@@ -14,6 +15,7 @@ import { AuditLoggingMiddleware } from './auditLogMiddleware';
 import { ResponseFormatMiddleware } from './response-format';
 import { EnforceHttpsMiddleware } from './enforceHttpsMiddleware';
 import { ClassType, ExtensionBase } from '@vulcan-sql/core';
+import { DocServerMiddleware } from './docServerMiddleware';
 
 // The order is the middleware running order
 export const BuiltInRouteMiddlewares: ClassType<ExtensionBase>[] = [
@@ -24,4 +26,5 @@ export const BuiltInRouteMiddlewares: ClassType<ExtensionBase>[] = [
   RateLimitMiddleware,
   AuthMiddleware,
   ResponseFormatMiddleware,
+  DocServerMiddleware,
 ];
