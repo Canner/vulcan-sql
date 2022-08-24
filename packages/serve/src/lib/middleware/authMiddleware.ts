@@ -54,11 +54,8 @@ export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
     for (const name of Object.keys(this.authenticators)) {
       // skip the disappeared auth type name in options
       if (!options[name]) continue;
-
       // authenticate
-      const authenticator = this.authenticators[name];
-      if (authenticator.activate) await authenticator.activate();
-      const result = await authenticator.authenticate(context);
+      const result = await this.authenticators[name].authenticate(context);
       // if state is incorrect, change to next authentication
       if (result.status === AuthStatus.INCORRECT) continue;
       // if state is failed, return directly
@@ -70,7 +67,6 @@ export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
         };
         return;
       }
-
       // set auth user information to context
       context.state.user = result.user!;
       await next();

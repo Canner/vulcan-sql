@@ -1,5 +1,13 @@
-export * from './basicAuthenticator';
+export * from './simpleTokenAuthenticator';
+export * from './passwordFileAuthenticator';
+export * from './httpBasicAuthenticator';
 
-import { BasicAuthenticator } from './basicAuthenticator';
+import { SimpleTokenAuthenticator } from './simpleTokenAuthenticator';
+import { PasswordFileAuthenticator } from './passwordFileAuthenticator';
+import { BasicAuthenticator } from './httpBasicAuthenticator';
 
-export const BuiltInAuthenticators = [BasicAuthenticator];
+export const BuiltInAuthenticators = [
+  BasicAuthenticator,
+  SimpleTokenAuthenticator,
+  PasswordFileAuthenticator,
+];
