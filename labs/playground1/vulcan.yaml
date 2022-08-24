@@ -1,0 +1,34 @@
+name: playground1
+description: A starter Vulcan project
+version: 0.1.0-alpha.1
+template:
+  provider: LocalFile
+  # Path to .sql files
+  folderPath: sqls
+  codeLoader: InMemory
+artifact:
+  provider: LocalFile
+  serializer: JSON
+  # Path to build result
+  filePath: result.json
+schema-parser:
+  reader: LocalFile
+  # Path to .yaml files
+  folderPath: sqls
+document-generator:
+  specs:
+    - oas3
+  folderPath: .
+types:
+  - RESTFUL
+extensions:
+  mockDb: playground-exts
+executor:
+  type: "duck"
+rate-limit:
+  options:
+    interval:
+      min: 1
+    max: 10000
+enforce-https:
+  enabled: false
