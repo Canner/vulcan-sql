@@ -1,34 +1,50 @@
 import { VulcanExtension, ExtensionBase } from '@vulcan-sql/core';
-import { KoaContext, UserAuthOptions } from '@vulcan-sql/serve/models';
+import { KoaContext } from '@vulcan-sql/serve/models';
 import { TYPES } from '../../containers/types';
 
 export interface AuthUserInfo {
   name: string;
-  method: string;
   attr: {
     [field: string]: string | boolean | number;
   };
 }
 
+export enum AuthStatus {
+  /**
+   * SUCCESS: Request format correct and match the one of user credentials
+   * INCORRECT: Request format is incorrect for authenticator needed, skip and check next authenticator
+   * FAIL: Request format correct, but not match the user credentials
+   */
+  SUCCESS = 'SUCCESS',
+  FAIL = 'FAIL',
+  INCORRECT = 'INCORRECT',
+}
 export interface AuthResult {
-  authenticated: boolean;
+  status: AuthStatus;
+  /* auth type */
+  type: string;
+  /* auth result message */
+  message?: string;
   user?: AuthUserInfo;
+  [key: string]: any;
 }
 
 export interface IAuthenticator {
-  authenticate(
-    usersOptions: Array<UserAuthOptions>,
-    context: KoaContext
-  ): Promise<AuthResult>;
+  authenticate(context: KoaContext): Promise<AuthResult>;
 }
 
-@VulcanExtension(TYPES.Extension_Authenticator)
-export abstract class BaseAuthenticator
+@VulcanExtension(TYPES.Extension_Authenticator, { enforcedId: true })
+export abstract class BaseAuthenticator<AuthTypeOption>
   extends ExtensionBase
   implements IAuthenticator
 {
-  public abstract authenticate(
-    usersOptions: Array<UserAuthOptions>,
-    context: KoaContext
-  ): Promise<AuthResult>;
+  public abstract authenticate(context: KoaContext): Promise<AuthResult>;
+
+  protected getOptions(): AuthTypeOption | undefined {
+    if (this.getConfig())
+      return this.getConfig()?.['options'][
+        this.getExtensionId()!
+      ] as AuthTypeOption;
+    return undefined;
+  }
 }

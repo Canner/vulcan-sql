@@ -6,16 +6,17 @@ import {
   KoaContext,
   BuiltInMiddleware,
   BaseAuthenticator,
-  UserAuthOptions,
+  AuthStatus,
 } from '@vulcan-sql/serve/models';
 import { TYPES } from '@vulcan-sql/serve/containers';
 
 export interface AuthOptions {
-  ['user-auth']?: Array<UserAuthOptions>;
+  // different auth type settings
+  [authType: string]: any;
 }
 
 export type AuthenticatorMap = {
-  [name: string]: BaseAuthenticator;
+  [name: string]: BaseAuthenticator<any>;
 };
 
 /** The middleware used to check request auth information.
@@ -24,11 +25,12 @@ export type AuthenticatorMap = {
 @VulcanInternalExtension('auth')
 export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
   private authenticators: AuthenticatorMap;
+
   constructor(
     @inject(CORE_TYPES.ExtensionConfig) config: any,
     @inject(CORE_TYPES.ExtensionName) name: string,
     @multiInject(TYPES.Extension_Authenticator)
-    authenticators: BaseAuthenticator[]
+    authenticators: BaseAuthenticator<any>[]
   ) {
     super(config, name);
 
@@ -46,21 +48,35 @@ export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
     if (!this.enabled) return next();
 
     const options = (this.getOptions() as AuthOptions) || {};
-    if (isEmpty(options['user-auth'])) return next();
+    if (isEmpty(options)) return next();
 
-    // authenticate each user by selected auth method in config
+    // pass current context to authenticate different users of auth type with with config
     for (const name of Object.keys(this.authenticators)) {
-      const result = await this.authenticators[name].authenticate(
-        options['user-auth'] || [],
-        context
-      );
-      if (!result.authenticated) continue;
+      // skip the disappeared auth type name in options
+      if (!options[name]) continue;
+
+      // authenticate
+      const authenticator = this.authenticators[name];
+      if (authenticator.activate) await authenticator.activate();
+      const result = await authenticator.authenticate(context);
+      // if state is incorrect, change to next authentication
+      if (result.status === AuthStatus.INCORRECT) continue;
+      // if state is failed, return directly
+      if (result.status === AuthStatus.FAIL) {
+        context.status = 401;
+        context.body = {
+          type: result.type,
+          message: result.message || 'authentication failed',
+        };
+        return;
+      }
 
       // set auth user information to context
       context.state.user = result.user!;
       await next();
       return;
     }
-    throw new Error('authentication failed.');
+
+    throw new Error('all types of authentication failed.');
   }
 }
