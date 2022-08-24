@@ -14,7 +14,6 @@ import { DocumentServer } from '@vulcan-sql/serve/models';
 import * as fs from 'fs';
 import * as path from 'path';
 import { inject } from 'inversify';
-import { v4 } from 'uuid';
 
 @VulcanInternalExtension('redoc')
 @VulcanExtensionId(DocumentServerType.redoc)
@@ -63,6 +62,7 @@ export class RedocDocumentServer extends DocumentServer {
     this.router.get(bundleFileUrl, async (ctx, next) => {
       await next();
       ctx.response.body = fs.createReadStream(redocPath);
+      ctx.set('Content-Type', 'application/javascript');
     });
 
     // Load template and render it

@@ -30,7 +30,7 @@ export class DocServerMiddleware extends BuiltInMiddleware {
     }
   }
 
-  public override async activate(): Promise<void> {
+  public override async onActivate(): Promise<void> {
     for (const serve of this.servers) await serve.activate();
   }
 
