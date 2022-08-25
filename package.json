@@ -8,6 +8,7 @@
   "private": true,
   "dependencies": {
     "@koa/cors": "^3.3.0",
+    "apache-md5": "^1.1.7",
     "class-validator": "^0.13.2",
     "commander": "^9.4.0",
     "dayjs": "^1.11.2",

@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as readline from 'readline';
+import md5 from 'apache-md5';
 import {
   BaseAuthenticator,
   KoaContext,
@@ -25,8 +26,8 @@ interface PasswordFileOptions {
 interface TokenListOptions {
   /* user name */
   name: string;
-  /* hashed password by bcrypt */
-  password: string;
+  /* hashed password by apache md5 */
+  hashPassword: string;
   /* the user attribute which could used after auth successful */
   attr: { [field: string]: string | boolean | number };
 }
@@ -38,8 +39,8 @@ export interface BasicOptions {
 
 type UserCredentialsMap = {
   [name: string]: {
-    /* hashed password by bcrypt */
-    password: string;
+    /* hashed password by apache md5 */
+    hashPassword: string;
     /* the user attribute which could used after auth successful */
     attr: { [field: string]: string | boolean | number };
   };
@@ -56,11 +57,9 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
     this.options = (this.getOptions() as BasicOptions) || this.options;
     // load "token-users" in options
     for (const option of this.options['token-users'] || []) {
-      const { name, password, attr } = option;
-      if (!password.startsWith('$2y$'))
-        throw new Error(`Must hash bcrypt for ${this.getExtensionId()} type.`);
-
-      this.usersCredentials[name] = { password, attr };
+      const { name, hashPassword, attr } = option;
+      this.isMD5Hashed(hashPassword);
+      this.usersCredentials[name] = { hashPassword, attr };
     }
     // load "password-file" in options
     if (!this.options['password-file']) return;
@@ -70,16 +69,14 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
     const reader = readline.createInterface({
       input: fs.createReadStream(path),
     });
-    // username:hashed-password
+    // username:hashPassword
     for await (const line of reader) {
       const name = line.split(':')[0] || '';
-      const password = line.split(':')[1] || '';
-      if (!password.startsWith('$2y$'))
-        throw new Error(`Must hash bcrypt for ${this.getExtensionId()} type.`);
-
+      const hashPassword = line.split(':')[1] || '';
+      this.isMD5Hashed(hashPassword);
       // if users exist the same name, add attr to here, or as empty
       this.usersCredentials[name] = {
-        password,
+        hashPassword,
         attr: users.find((user) => user.name === name)?.attr || {},
       };
     }
@@ -103,8 +100,8 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
     try {
       return await this.verify(bareToken);
     } catch (err) {
+      // if not found matched user credential, add WWW-Authenticate and return failed
       context.set('WWW-Authenticate', this.getExtensionId()!);
-      // if not found matched user credential, return failed
       return {
         status: AuthStatus.FAIL,
         type: this.getExtensionId()!,
@@ -115,11 +112,12 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
 
   private async verify(baredToken: string) {
     const username = baredToken.split(':')[0] || '';
+    // bare password from Basic specification
     const password = baredToken.split(':')[1] || '';
     // if authenticated, return user data
     if (
       !(username in this.usersCredentials) ||
-      !(this.usersCredentials[username].password === password)
+      !(md5(password) === this.usersCredentials[username].hashPassword)
     )
       throw new Error(
         `authenticate user by ${this.getExtensionId()} type failed.`
@@ -133,5 +131,10 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
         attr: this.usersCredentials[username].attr,
       },
     } as AuthResult;
+  }
+
+  private isMD5Hashed(value: string) {
+    if (!value.startsWith('$apr1$'))
+      throw new Error(`"${this.getExtensionId()}" type must hash apache md5.`);
   }
 }
