@@ -41,10 +41,12 @@ export abstract class BaseAuthenticator<AuthTypeOption>
   public abstract authenticate(context: KoaContext): Promise<AuthResult>;
 
   protected getOptions(): AuthTypeOption | undefined {
-    if (this.getConfig())
-      return this.getConfig()?.['options'][
-        this.getExtensionId()!
-      ] as AuthTypeOption;
-    return undefined;
+    if (!this.getConfig()) return undefined;
+    if (!this.getConfig()['options']) return undefined;
+    const options = this.getConfig()['options'][
+      this.getExtensionId()!
+    ] as AuthTypeOption;
+
+    return options;
   }
 }

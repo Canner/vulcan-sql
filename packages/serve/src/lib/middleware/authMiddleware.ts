@@ -36,6 +36,7 @@ export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
 
     this.authenticators = authenticators.reduce<AuthenticatorMap>(
       (prev, authenticator) => {
+        if (authenticator.activate) authenticator.activate();
         prev[authenticator.getExtensionId()!] = authenticator;
         return prev;
       },

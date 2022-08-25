@@ -5,8 +5,7 @@ export const TYPES = {
   PaginationTransformer: Symbol.for('PaginationTransformer'),
   Route: Symbol.for('Route'),
   RouteGenerator: Symbol.for('RouteGenerator'),
-  // Authenticator
-  UserAuthOptions: Symbol.for('UserAuthOptions'),
+
   // Application
   AppConfig: Symbol.for('AppConfig'),
   VulcanApplication: Symbol.for('VulcanApplication'),
