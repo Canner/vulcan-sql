@@ -2,4 +2,4 @@ select
 *
 from "artworks"
 where 
-concat(', ' , ConstituentID , ',') like '%, {{ context.params.id }},%'
+concat(', ' , ConstituentID , ',') like concat('%, ', {{ context.params.id }} , ',%');

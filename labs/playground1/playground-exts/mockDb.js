@@ -3,6 +3,16 @@ const { Stream } = require('stream');
 const duckdb = require('duckdb');
 const path = require('path');
 const db = new duckdb.Database(path.resolve(__dirname, '..', 'test-data', 'moma.db'));
+const _ = require('lodash');
+// TODO: create logger from core package;
+const { Logger } = require('tslog');
+const logger = new Logger({
+  name: 'duckdb',
+  minLevel: 'info',
+  exposeErrorCodeFrame: false,
+  displayFilePath: 'hidden',
+  displayFunctionName: false,
+});
 
 const getType = (value) => {
   const jsType = typeof (value);
@@ -18,17 +28,22 @@ class MockDataSource extends DataSource {
     const { statement, bindParams } = options;
     // handle parameterized query statement
     let query = statement;
-    for (const identifier of Object.keys(bindParams)) {
-      query = query.replace(
-        // escape special char '$'
-        new RegExp(identifier.replace('$', '\\$'), 'g'),
-        bindParams[identifier]
-      );
-    }
+
+    const parameters =
+      // {$1: 'v1', $3: 'v3', $2: 'v2' }
+      _.chain(bindParams)
+        // [[$1, 'v1'], [$3, 'v3'], [$2, 'v2']]
+        .toPairs()
+        // [[$1, 'v1'], [$2, 'v2'], [$3, 'v3']]
+        .orderBy(([name,]) => Number(name.slice(1)))
+        // ['v1,'v2','v3']
+        .map(([_, value]) => value)
+        .value()
+
 
     return new Promise((resolve, reject) => {
-      console.log(query);
-      db.all(query, function (err, res) {
+      logger.info(query, parameters);
+      db.all(query, ...parameters, function (err, res) {
         if (err) {
           return reject(err)
         }

@@ -5,8 +5,3 @@ request:
     description: constituent id
     validators:
       - required
-  - fieldName: acq_lt
-    fieldIn: query
-    description: acquired data latter than
-    validators:
-      - date
