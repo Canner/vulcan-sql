@@ -12,6 +12,15 @@ const defaultOptions: BuildCommandOptions = {
   config: './vulcan.yaml',
 };
 
+export const mergeBuildDefaultOption = (
+  options: Partial<BuildCommandOptions>
+) => {
+  return {
+    ...defaultOptions,
+    ...options,
+  } as BuildCommandOptions;
+};
+
 export const buildVulcan = async (options: BuildCommandOptions) => {
   const configPath = path.resolve(process.cwd(), options.config);
   const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
@@ -36,9 +45,5 @@ export const buildVulcan = async (options: BuildCommandOptions) => {
 export const handleBuild = async (
   options: Partial<BuildCommandOptions>
 ): Promise<void> => {
-  options = {
-    ...defaultOptions,
-    ...options,
-  };
-  await buildVulcan(options as BuildCommandOptions);
+  await buildVulcan(mergeBuildDefaultOption(options));
 };

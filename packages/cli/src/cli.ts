@@ -56,6 +56,7 @@ program
     './vulcan.yaml'
   )
   .option('-p --port <port>', 'server port', '3000')
+  .option('-w --watch', 'watch file changes', false)
   .action(async (options) => {
     await handleStart(options);
   });
