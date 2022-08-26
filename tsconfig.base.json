@@ -66,6 +66,9 @@
         "packages/core/src/lib/validators/built-in-validators/*"
       ],
       "@vulcan-sql/extension-dbt": ["packages/extension-dbt/src/index"],
+      "@vulcan-sql/extension-debug-tools": [
+        "packages/extension-debug-tools/src/index.ts"
+      ],
       "@vulcan-sql/integration-testing": [
         "packages/integration-testing/src/index"
       ],
