@@ -8,6 +8,8 @@ export interface IExecutor {
     query: string,
     bindParams: BindParameters
   ): Promise<IDataQueryBuilder>;
+
+  getDataSource(): Promise<DataSource>;
 }
 
 @injectable()
@@ -16,6 +18,11 @@ export class QueryExecutor implements IExecutor {
   constructor(@inject(TYPES.DataSource) dataSource: DataSource) {
     this.dataSource = dataSource;
   }
+
+  public async getDataSource() {
+    return this.dataSource;
+  }
+
   /**
    * create data query builder
    * @returns

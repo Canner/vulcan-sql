@@ -61,19 +61,27 @@ it('Printer should generate mermaid for each AST tree', async () => {
     13[Filter]
     13 --name--> 14
     14[Symbol]
-    15{{"string"}}
+    15{{"sanitize"}}
     14 --value--> 15
     13 --args--> 16
     16[NodeList]
     16 --"children[0]"--> 17
-    17[Symbol]
-    18{{"c"}}
-    17 --value--> 18
-    8 --"children[2]"--> 19
-    19[Output]
-    19 --"children[0]"--> 20
-    20[TemplateData]
-    21{{"d"}}
-    20 --value--> 21
+    17[Filter]
+    17 --name--> 18
+    18[Symbol]
+    19{{"string"}}
+    18 --value--> 19
+    17 --args--> 20
+    20[NodeList]
+    20 --"children[0]"--> 21
+    21[Symbol]
+    22{{"c"}}
+    21 --value--> 22
+    8 --"children[2]"--> 23
+    23[Output]
+    23 --"children[0]"--> 24
+    24[TemplateData]
+    25{{"d"}}
+    24 --value--> 25
 `);
 });

@@ -6,27 +6,17 @@ import { ExtensionBase } from './base';
 import { VulcanExtension } from './decorators';
 
 // Original request parameters
-export interface RequestParameters {
-  [name: string]: any;
+export interface RequestParameter {
+  parameterIndex: number;
+  value: any;
 }
 
-export type BindParameters = {
-  // the value is real param data
-  [identifier: string]: string;
-};
+export type BindParameters = Map<string, string>;
 
 export type IdentifierParameters = {
   // the value is identifier
   [paramName: string]: string;
 };
-
-// prepared query parameters for providing data source to prevent sql
-export interface PreparedQueryParams {
-  // e.g: params['members'] = '@members'
-  identifiers: IdentifierParameters;
-  // e.g: binds['@members'] = '17'
-  binds: BindParameters;
-}
 
 export type DataColumn = { name: string; type: string };
 
@@ -45,6 +35,6 @@ export interface ExecuteOptions {
 @VulcanExtension(TYPES.Extension_DataSource, { enforcedId: true })
 export abstract class DataSource extends ExtensionBase {
   abstract execute(options: ExecuteOptions): Promise<DataResult>;
-  // prepare parameterized format for query in the later
-  abstract prepare(params: RequestParameters): Promise<PreparedQueryParams>;
+  // prepare parameterized format for query later
+  abstract prepare(param: RequestParameter): Promise<string>;
 }

@@ -2,6 +2,7 @@ import { inject } from 'inversify';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 import {
   APISchema,
+  DataSource,
   FieldDataType,
   ResponseProperty,
   TemplateEngine,
@@ -11,12 +12,15 @@ import { unionBy } from 'lodash';
 
 export class ResponseSampler extends SchemaParserMiddleware {
   private templateEngine: TemplateEngine;
+  private dataSource: DataSource;
 
   constructor(
-    @inject(CORE_TYPES.TemplateEngine) templateEngine: TemplateEngine
+    @inject(CORE_TYPES.TemplateEngine) templateEngine: TemplateEngine,
+    @inject(CORE_TYPES.DataSource) dataSource: DataSource
   ) {
     super();
     this.templateEngine = templateEngine;
+    this.dataSource = dataSource;
   }
 
   public async handle(
@@ -27,9 +31,11 @@ export class ResponseSampler extends SchemaParserMiddleware {
     const schema = rawSchema as APISchema;
     if (!schema.exampleParameter) return;
 
+    const prepared = await this.dataSource.prepare(schema.exampleParameter);
+
     const response = await this.templateEngine.execute(
       schema.templateSource,
-      { context: { params: schema.exampleParameter } },
+      { ['_prepared']: prepared },
       // We only need the columns of this query, so we set offset/limit both to 0 here.
       {
         limit: 0,
@@ -37,7 +43,7 @@ export class ResponseSampler extends SchemaParserMiddleware {
       }
     );
     // TODO: I haven't known the response of queryBuilder.value(), assume that there is a "columns" property that indicates the columns' name and type here.
-    const columns: { name: string; type: string }[] = response.columns;
+    const columns: { name: string; type: string }[] = response.getColumns();
     const responseColumns = this.normalizeResponseColumns(columns);
     schema.response = this.mergeResponse(
       schema.response || [],

@@ -1,4 +1,8 @@
-import { FilterRunner, VulcanInternalExtension } from '@vulcan-sql/core/models';
+import {
+  FilterRunner,
+  FilterRunnerTransformOptions,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core/models';
 import { uniq, uniqBy } from 'lodash';
 
 @VulcanInternalExtension()
@@ -7,10 +11,7 @@ export class UniqueFilterRunner extends FilterRunner {
   public async transform({
     value,
     args,
-  }: {
-    value: any[];
-    args: any[];
-  }): Promise<any> {
+  }: FilterRunnerTransformOptions): Promise<any> {
     if (args.length === 0) {
       return uniq(value);
     }

@@ -8,7 +8,7 @@ import * as sinon from 'ts-sinon';
 import * as nunjucks from 'nunjucks';
 import { IDataQueryBuilder, IExecutor } from '@vulcan-sql/core/data-query';
 import { extensionModule } from '../../src/containers/modules';
-import { ICoreOptions } from '@vulcan-sql/core';
+import { DataSource, ICoreOptions } from '@vulcan-sql/core';
 import { DeepPartial } from 'ts-essentials';
 
 export const createTestCompiler = async ({
@@ -21,6 +21,11 @@ export const createTestCompiler = async ({
   stubQueryBuilder.count.returns(stubQueryBuilder);
   const stubExecutor = sinon.stubInterface<IExecutor>();
   stubExecutor.createBuilder.resolves(stubQueryBuilder);
+  const stubDataSource = sinon.stubInterface<DataSource>();
+  stubDataSource.prepare.callsFake(
+    async ({ parameterIndex }) => `$${parameterIndex}`
+  );
+  stubExecutor.getDataSource.resolves(stubDataSource);
 
   container
     .bind(TYPES.CompilerLoader)
