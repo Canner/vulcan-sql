@@ -4,7 +4,7 @@ import { Request } from 'koa';
 import { IncomingHttpHeaders } from 'http';
 import { ParsedUrlQuery } from 'querystring';
 import { asyncReqIdStorage, FieldInType } from '@vulcan-sql/core';
-import { KoaRouterContext } from '@vulcan-sql/serve/route';
+import { KoaContext } from '@vulcan-sql/serve/models';
 import * as uuid from 'uuid';
 import { RequestIdMiddleware } from '@vulcan-sql/serve/middleware';
 
@@ -16,8 +16,8 @@ describe('Test request-id middlewares', () => {
   it('Should get same request-id when option is default and pass "x-request-id"', async () => {
     // Arrange
     const expected = faker.datatype.uuid();
-    const ctx: KoaRouterContext = {
-      ...sinon.stubInterface<KoaRouterContext>(),
+    const ctx: KoaContext = {
+      ...sinon.stubInterface<KoaContext>(),
       request: {
         ...sinon.stubInterface<Request>(),
         header: {
@@ -41,8 +41,8 @@ describe('Test request-id middlewares', () => {
   it('Should get same request-id when setup option "Test-Request-ID" in query and pass "test-request-id"', async () => {
     // Arrange
     const expected = faker.datatype.uuid();
-    const ctx: KoaRouterContext = {
-      ...sinon.stubInterface<KoaRouterContext>(),
+    const ctx: KoaContext = {
+      ...sinon.stubInterface<KoaContext>(),
       request: {
         ...sinon.stubInterface<Request>(),
         query: {
@@ -75,8 +75,8 @@ describe('Test request-id middlewares', () => {
     // Arrange
     // the uuid.v4() result is the mock result in __mocks__/uuid.ts
     const expected = uuid.v4();
-    const ctx: KoaRouterContext = {
-      ...sinon.stubInterface<KoaRouterContext>(),
+    const ctx: KoaContext = {
+      ...sinon.stubInterface<KoaContext>(),
       request: {
         ...sinon.stubInterface<Request>(),
         query: {
@@ -105,8 +105,8 @@ describe('Test request-id middlewares', () => {
     // Arrange
     // the uuid.v4() result is the mock result in __mocks__/uuid.ts
     const expected = uuid.v4();
-    const ctx: KoaRouterContext = {
-      ...sinon.stubInterface<KoaRouterContext>(),
+    const ctx: KoaContext = {
+      ...sinon.stubInterface<KoaContext>(),
       request: {
         ...sinon.stubInterface<Request>(),
         header: {

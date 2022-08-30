@@ -8,9 +8,9 @@ import {
 } from '@vulcan-sql/core';
 import {
   IPaginationTransformer,
-  KoaRouterContext,
   PaginationTransformer,
 } from '@vulcan-sql/serve/route';
+import { KoaContext } from '@vulcan-sql/serve/models';
 import { Container } from 'inversify';
 import { TYPES } from '@vulcan-sql/serve/containers';
 
@@ -47,9 +47,9 @@ describe('Test pagination transformer - transform successfully', () => {
       },
     },
   ];
-  const fakeKoaContexts: Array<KoaRouterContext> = [
+  const fakeKoaContexts: Array<KoaContext> = [
     {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       request: {
         ...sinon.stubInterface<Request>(),
         query: {
@@ -59,7 +59,7 @@ describe('Test pagination transformer - transform successfully', () => {
       },
     },
     {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       request: {
         ...sinon.stubInterface<Request>(),
         query: {
@@ -69,7 +69,7 @@ describe('Test pagination transformer - transform successfully', () => {
       },
     },
     {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       request: {
         ...sinon.stubInterface<Request>(),
         query: {
@@ -95,7 +95,7 @@ describe('Test pagination transformer - transform successfully', () => {
     ['keyset pagination', fakeSchemas[2], fakeKoaContexts[2]],
   ])(
     'Should success when give api schema and koa context request from %p',
-    async (_: string, schema: APISchema, ctx: KoaRouterContext) => {
+    async (_: string, schema: APISchema, ctx: KoaContext) => {
       // Arrange
       let expected = {};
       const query = ctx.request.query;

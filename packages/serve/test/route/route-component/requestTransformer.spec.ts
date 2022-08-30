@@ -9,10 +9,10 @@ import {
 } from '@vulcan-sql/core';
 import {
   IRequestTransformer,
-  KoaRouterContext,
   RequestParameters,
   RequestTransformer,
 } from '@vulcan-sql/serve/route';
+import { KoaContext } from '@vulcan-sql/serve/models';
 import { Container } from 'inversify';
 import { TYPES } from '@vulcan-sql/serve/containers';
 
@@ -87,16 +87,16 @@ describe('Test request transformer - transform successfully', () => {
       ],
     },
   ];
-  const fakeKoaContexts: Array<KoaRouterContext> = [
+  const fakeKoaContexts: Array<KoaContext> = [
     {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       params: {
         id: faker.datatype.number().toString(),
         uuid: faker.datatype.uuid(),
       },
     },
     {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       params: {
         uuid: faker.datatype.uuid(),
       },
@@ -108,7 +108,7 @@ describe('Test request transformer - transform successfully', () => {
       },
     },
     {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       request: {
         ...sinon.stubInterface<Request>(),
         header: {
@@ -120,7 +120,7 @@ describe('Test request transformer - transform successfully', () => {
       },
     },
     {
-      ...sinon.stubInterface<KoaRouterContext>(),
+      ...sinon.stubInterface<KoaContext>(),
       request: {
         ...sinon.stubInterface<Request>(),
         query: {
@@ -144,7 +144,7 @@ describe('Test request transformer - transform successfully', () => {
     ['query parameters', fakeSchemas[3], fakeKoaContexts[3]],
   ])(
     'Should success when give api schema and koa context request from %p',
-    async (_: string, schema: APISchema, ctx: KoaRouterContext) => {
+    async (_: string, schema: APISchema, ctx: KoaContext) => {
       // Arrange
       const expected: RequestParameters = {};
       schema.request.map((param: RequestSchema) => {

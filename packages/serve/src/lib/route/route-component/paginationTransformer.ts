@@ -1,4 +1,4 @@
-import { KoaRouterContext } from '@vulcan-sql/serve/route';
+import { KoaContext } from '@vulcan-sql/serve/models';
 import { APISchema, PaginationMode, Pagination } from '@vulcan-sql/core';
 import {
   CursorBasedStrategy,
@@ -9,14 +9,14 @@ import { injectable } from 'inversify';
 
 export interface IPaginationTransformer {
   transform(
-    ctx: KoaRouterContext,
+    ctx: KoaContext,
     apiSchema: APISchema
   ): Promise<Pagination | undefined>;
 }
 
 @injectable()
 export class PaginationTransformer {
-  public async transform(ctx: KoaRouterContext, apiSchema: APISchema) {
+  public async transform(ctx: KoaContext, apiSchema: APISchema) {
     const { pagination } = apiSchema;
 
     if (pagination) {
@@ -27,7 +27,7 @@ export class PaginationTransformer {
 
       const offset = new OffsetBasedStrategy();
       const cursor = new CursorBasedStrategy();
-      const keyset = new KeysetBasedStrategy(pagination);
+      const keyset = new KeysetBasedStrategy(pagination.keyName);
       const strategyMapper = {
         [PaginationMode.OFFSET]: offset.transform.bind(offset),
         [PaginationMode.CURSOR]: cursor.transform.bind(cursor),

@@ -1,5 +1,5 @@
 import { ExtensionBase, VulcanExtension } from '@vulcan-sql/core';
-import { KoaRouterContext, KoaNext } from '@vulcan-sql/serve/route';
+import { KoaContext, Next } from '@vulcan-sql/serve/models';
 import { inject } from 'inversify';
 import { isUndefined } from 'lodash';
 import { TYPES } from '../../containers/types';
@@ -12,10 +12,7 @@ export interface BuiltInMiddlewareConfig<Option = any> {
 
 @VulcanExtension(TYPES.Extension_RouteMiddleware)
 export abstract class BaseRouteMiddleware<C = any> extends ExtensionBase<C> {
-  public abstract handle(
-    context: KoaRouterContext,
-    next: KoaNext
-  ): Promise<void>;
+  public abstract handle(context: KoaContext, next: Next): Promise<void>;
 }
 
 export abstract class BuiltInMiddleware<

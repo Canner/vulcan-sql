@@ -1,4 +1,5 @@
-import { BaseRoute, KoaRouterContext, RouteOptions } from './baseRoute';
+import { BaseRoute, RouteOptions } from './baseRoute';
+import { KoaContext } from '@vulcan-sql/serve/models';
 
 export class GraphQLRoute extends BaseRoute {
   public readonly operationName: string;
@@ -13,15 +14,16 @@ export class GraphQLRoute extends BaseRoute {
     // TODO: generate graphql type by api schema
   }
 
-  public async respond(ctx: KoaRouterContext) {
+  public async respond(ctx: KoaContext) {
     const transformed = await this.prepare(ctx);
-    await this.handle(transformed);
+    const authUser = ctx.state.user;
+    await this.handle(authUser, transformed);
     // TODO: get template engine handled result and return response by checking API schema
     return transformed;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async prepare(_ctx: KoaRouterContext) {
+  protected async prepare(_ctx: KoaContext) {
     /**
      * TODO: the graphql need to transform from body.
      * Therefore, current request and pagination transformer not suitable (need to provide another graphql transform method or class)

@@ -6,7 +6,7 @@ import {
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
 import { isArray, isObject, isUndefined } from 'lodash';
-import { KoaRouterContext } from '../route';
+import { KoaContext } from '@vulcan-sql/serve/models';
 import {
   BaseResponseFormatter,
   toBuffer,
@@ -109,7 +109,7 @@ export class CsvFormatter extends BaseResponseFormatter {
 
   public toResponse(
     stream: Stream.Readable | Stream.Transform,
-    ctx: KoaRouterContext
+    ctx: KoaContext
   ) {
     // get file name by url path. e.g: url = '/urls/orders', result = orders
     const size = ctx.url.split('/').length;

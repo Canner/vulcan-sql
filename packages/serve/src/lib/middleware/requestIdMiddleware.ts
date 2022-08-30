@@ -4,8 +4,7 @@ import {
   asyncReqIdStorage,
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
-import { KoaRouterContext, KoaNext } from '@vulcan-sql/serve/route';
-import { BuiltInMiddleware } from '@vulcan-sql/serve/models';
+import { BuiltInMiddleware, KoaContext, Next } from '@vulcan-sql/serve/models';
 import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { inject } from 'inversify';
 
@@ -32,7 +31,7 @@ export class RequestIdMiddleware extends BuiltInMiddleware<RequestIdOptions> {
     if (!this.options['name']) this.options['name'] = 'X-Request-ID';
     if (!this.options['fieldIn']) this.options['fieldIn'] = FieldInType.HEADER;
   }
-  public async handle(context: KoaRouterContext, next: KoaNext) {
+  public async handle(context: KoaContext, next: Next) {
     if (!this.enabled) return next();
 
     const { request } = context;

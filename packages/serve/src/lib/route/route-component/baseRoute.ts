@@ -1,5 +1,4 @@
-import { Next as KoaNext } from 'koa';
-import { RouterContext as KoaRouterContext } from 'koa-router';
+import { AuthUserInfo, KoaContext } from '@vulcan-sql/serve/models';
 import {
   APISchema,
   TemplateEngine,
@@ -9,8 +8,6 @@ import {
 import { IRequestValidator } from './requestValidator';
 import { IRequestTransformer, RequestParameters } from './requestTransformer';
 import { IPaginationTransformer } from './paginationTransformer';
-
-export { KoaRouterContext, KoaNext };
 
 export interface TransformedRequest {
   reqParams: RequestParameters;
@@ -27,7 +24,7 @@ export interface RouteOptions {
 }
 
 export interface IRoute {
-  respond(ctx: KoaRouterContext): Promise<any>;
+  respond(ctx: KoaContext): Promise<any>;
 }
 
 export abstract class BaseRoute implements IRoute {
@@ -53,13 +50,11 @@ export abstract class BaseRoute implements IRoute {
     this.templateEngine = templateEngine;
   }
 
-  public abstract respond(ctx: KoaRouterContext): Promise<any>;
+  public abstract respond(ctx: KoaContext): Promise<any>;
 
-  protected abstract prepare(
-    ctx: KoaRouterContext
-  ): Promise<TransformedRequest>;
+  protected abstract prepare(ctx: KoaContext): Promise<TransformedRequest>;
 
-  protected async handle(transformed: TransformedRequest) {
+  protected async handle(user: AuthUserInfo, transformed: TransformedRequest) {
     const { reqParams } = transformed;
     // could template name or template path, use for template engine
     const { templateSource } = this.apiSchema;
@@ -67,6 +62,7 @@ export abstract class BaseRoute implements IRoute {
     const prepared = await this.dataSource.prepare(reqParams);
 
     const result = await this.templateEngine.execute(templateSource, {
+      ['user']: user,
       ['_prepared']: prepared,
     });
     return result;

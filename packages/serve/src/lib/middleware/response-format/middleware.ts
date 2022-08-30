@@ -1,8 +1,8 @@
+import { KoaContext, Next } from '@vulcan-sql/serve/models';
 import {
   BaseResponseFormatter,
   BuiltInMiddleware,
 } from '@vulcan-sql/serve/models';
-import { KoaRouterContext, KoaNext } from '@vulcan-sql/serve/route';
 import { checkUsableFormat, ResponseFormatterMap } from './helpers';
 import { VulcanInternalExtension } from '@vulcan-sql/core';
 import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
@@ -40,8 +40,7 @@ export class ResponseFormatMiddleware extends BuiltInMiddleware<ResponseFormatOp
     this.supportedFormats = formats.map((format) => format.toLowerCase());
     this.defaultFormat = !options.default ? 'json' : options.default;
   }
-
-  public async handle(context: KoaRouterContext, next: KoaNext) {
+  public async handle(context: KoaContext, next: Next) {
     // return to skip the middleware, if disabled
     if (!this.enabled) return next();
 

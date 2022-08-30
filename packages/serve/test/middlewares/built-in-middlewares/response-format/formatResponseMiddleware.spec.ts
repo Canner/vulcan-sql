@@ -1,7 +1,6 @@
 import * as sinon from 'ts-sinon';
-import { KoaRouterContext } from '@vulcan-sql/serve';
 import { ResponseFormatMiddleware } from '@vulcan-sql/serve/middleware';
-
+import { KoaContext } from '@vulcan-sql/serve/models';
 describe('Test format response middleware', () => {
   afterEach(() => {
     sinon.default.restore();
@@ -9,8 +8,8 @@ describe('Test format response middleware', () => {
 
   it('Test to get default json format and empty supported format when not set any config for response formatter', async () => {
     // Arrange
-    const ctx: KoaRouterContext = {
-      ...sinon.stubInterface<KoaRouterContext>(),
+    const ctx: KoaContext = {
+      ...sinon.stubInterface<KoaContext>(),
     };
     // Act
     const middleware = new ResponseFormatMiddleware(
@@ -29,8 +28,8 @@ describe('Test format response middleware', () => {
 
   it('Test to get default "csv" format and empty supported format when set "default" is "csv', async () => {
     // Arrange
-    const ctx: KoaRouterContext = {
-      ...sinon.stubInterface<KoaRouterContext>(),
+    const ctx: KoaContext = {
+      ...sinon.stubInterface<KoaContext>(),
     };
     // Act
     const middleware = new ResponseFormatMiddleware(
@@ -52,8 +51,8 @@ describe('Test format response middleware', () => {
 
   it('Test to get ["hyper", "csv"] formats when set "formats" to ["hyper", "csv"]', async () => {
     // Arrange
-    const ctx: KoaRouterContext = {
-      ...sinon.stubInterface<KoaRouterContext>(),
+    const ctx: KoaContext = {
+      ...sinon.stubInterface<KoaContext>(),
     };
     // Act
     const middleware = new ResponseFormatMiddleware(
