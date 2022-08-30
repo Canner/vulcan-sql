@@ -19,7 +19,7 @@ const authenticate = async (
 
 describe('Test simple-token authenticator', () => {
   const expectIncorrect = {
-    status: AuthStatus.INCORRECT,
+    status: AuthStatus.INDETERMINATE,
     type: 'simple-token',
   };
   const expectFailed = {

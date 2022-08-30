@@ -36,12 +36,17 @@ export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
 
     this.authenticators = authenticators.reduce<AuthenticatorMap>(
       (prev, authenticator) => {
-        if (authenticator.activate) authenticator.activate();
         prev[authenticator.getExtensionId()!] = authenticator;
         return prev;
       },
       {}
     );
+  }
+  public override async onActivate() {
+    for (const authId of Object.keys(this.authenticators)) {
+      const authenticator = this.authenticators[authId];
+      if (authenticator.activate) await authenticator.activate();
+    }
   }
 
   public async handle(context: KoaContext, next: Next) {
@@ -57,8 +62,8 @@ export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
       if (!options[name]) continue;
       // authenticate
       const result = await this.authenticators[name].authenticate(context);
-      // if state is incorrect, change to next authentication
-      if (result.status === AuthStatus.INCORRECT) continue;
+      // if state is indeterminate, change to next authentication
+      if (result.status === AuthStatus.INDETERMINATE) continue;
       // if state is failed, return directly
       if (result.status === AuthStatus.FAIL) {
         context.status = 401;

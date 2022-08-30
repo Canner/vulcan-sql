@@ -12,12 +12,12 @@ export interface AuthUserInfo {
 export enum AuthStatus {
   /**
    * SUCCESS: Request format correct and match the one of user credentials
-   * INCORRECT: Request format is incorrect for authenticator needed, skip and check next authenticator
+   * INDETERMINATE: Request format is unclear for authenticator needed, skip and check next authenticator
    * FAIL: Request format correct, but not match the user credentials
    */
   SUCCESS = 'SUCCESS',
   FAIL = 'FAIL',
-  INCORRECT = 'INCORRECT',
+  INDETERMINATE = 'INDETERMINATE',
 }
 export interface AuthResult {
   status: AuthStatus;

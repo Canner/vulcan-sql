@@ -85,6 +85,7 @@ export class VulcanApplication {
   /** load built-in and extensions middleware classes for app used */
   public async useMiddleware() {
     for (const middleware of this.routeMiddlewares) {
+      if (middleware.activate) await middleware.activate();
       this.app.use(middleware.handle.bind(middleware));
     }
   }

@@ -16,7 +16,7 @@ const authenticate = async (
 
 describe('Test password-file authenticator', () => {
   const expectIncorrect = {
-    status: AuthStatus.INCORRECT,
+    status: AuthStatus.INDETERMINATE,
     type: 'password-file',
   };
   const expectFailed = {

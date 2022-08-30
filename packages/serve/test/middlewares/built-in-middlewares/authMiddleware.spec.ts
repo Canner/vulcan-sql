@@ -168,7 +168,7 @@ describe('Test auth middlewares', () => {
       // stub authenticator
       authenticator.getExtensionId.returns(type);
       authenticator.authenticate.resolves({
-        status: AuthStatus.INCORRECT,
+        status: AuthStatus.INDETERMINATE,
         type,
       } as AuthResult);
 

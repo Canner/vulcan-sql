@@ -20,7 +20,7 @@ const authenticate = async (
 
 describe('Test http basic authenticator', () => {
   const expectIncorrect = {
-    status: AuthStatus.INCORRECT,
+    status: AuthStatus.INDETERMINATE,
     type: 'basic',
   };
   const expectFailed = {

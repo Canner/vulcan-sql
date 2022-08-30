@@ -89,7 +89,7 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
 
   public async authenticate(context: KoaContext) {
     const incorrect = {
-      status: AuthStatus.INCORRECT,
+      status: AuthStatus.INDETERMINATE,
       type: this.getExtensionId()!,
     };
     if (isEmpty(this.options)) return incorrect;
