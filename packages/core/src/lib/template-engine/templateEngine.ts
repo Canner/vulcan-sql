@@ -66,12 +66,6 @@ export class TemplateEngine {
     pagination?: Pagination
   ): Promise<DataResult> {
     // wrap to context object
-    return this.compiler.execute(
-      templateName,
-      {
-        context: data,
-      },
-      pagination
-    );
+    return this.compiler.execute(templateName, data, pagination);
   }
 }
