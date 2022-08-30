@@ -1,10 +1,8 @@
 import { Stream } from 'stream';
 import {
-  BindParameters,
   DataResult,
   DataSource,
   ExecuteOptions,
-  IdentifierParameters,
   RequestParameter,
   VulcanExtensionId,
   VulcanInternalExtension,

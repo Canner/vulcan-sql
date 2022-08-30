@@ -2,7 +2,6 @@ import { inject } from 'inversify';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 import {
   APISchema,
-  DataSource,
   FieldDataType,
   ResponseProperty,
   TemplateEngine,

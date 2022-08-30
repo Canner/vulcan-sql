@@ -4,11 +4,7 @@ import {
 } from '@vulcan-sql/core/models';
 import * as nunjucks from 'nunjucks';
 import { visitChildren } from '../../extension-utils';
-import {
-  REFERENCE_SEARCH_MAX_DEPTH,
-  SANITIZER_NAME,
-  SANITIZE_SOURCES,
-} from './constants';
+import { SANITIZER_NAME } from './constants';
 
 @VulcanInternalExtension()
 export class SanitizerBuilder extends FilterBuilder {

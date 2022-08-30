@@ -1,5 +1,5 @@
 import { IPaginationTransformer } from '@vulcan-sql/serve/route';
-import { APISchema, DataSource, TemplateEngine } from '@vulcan-sql/core';
+import { APISchema, TemplateEngine } from '@vulcan-sql/core';
 import {
   RestfulRoute,
   GraphQLRoute,
