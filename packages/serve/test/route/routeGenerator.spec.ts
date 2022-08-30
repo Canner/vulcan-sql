@@ -71,7 +71,6 @@ describe('Test route generator ', () => {
         paginationTransformer: container.get<IPaginationTransformer>(
           TYPES.PaginationTransformer
         ),
-        dataSource: container.get<DataSource>(CORE_TYPES.DataSource),
         templateEngine: container.get<TemplateEngine>(
           CORE_TYPES.TemplateEngine
         ),
@@ -107,7 +106,6 @@ describe('Test route generator ', () => {
         paginationTransformer: container.get<IPaginationTransformer>(
           TYPES.PaginationTransformer
         ),
-        dataSource: container.get<DataSource>(CORE_TYPES.DataSource),
         templateEngine: container.get<TemplateEngine>(
           CORE_TYPES.TemplateEngine
         ),

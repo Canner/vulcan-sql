@@ -3,6 +3,7 @@ import { injectable, inject, optional } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import {
   CodeLoader,
+  DataResult,
   Pagination,
   TemplateProvider,
 } from '@vulcan-sql/core/models';
@@ -63,7 +64,7 @@ export class TemplateEngine {
     templateName: string,
     data: T,
     pagination?: Pagination
-  ): Promise<any> {
+  ): Promise<DataResult> {
     // wrap to context object
     return this.compiler.execute(
       templateName,

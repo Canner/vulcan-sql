@@ -12,15 +12,12 @@ import { unionBy } from 'lodash';
 
 export class ResponseSampler extends SchemaParserMiddleware {
   private templateEngine: TemplateEngine;
-  private dataSource: DataSource;
 
   constructor(
-    @inject(CORE_TYPES.TemplateEngine) templateEngine: TemplateEngine,
-    @inject(CORE_TYPES.DataSource) dataSource: DataSource
+    @inject(CORE_TYPES.TemplateEngine) templateEngine: TemplateEngine
   ) {
     super();
     this.templateEngine = templateEngine;
-    this.dataSource = dataSource;
   }
 
   public async handle(
@@ -31,11 +28,9 @@ export class ResponseSampler extends SchemaParserMiddleware {
     const schema = rawSchema as APISchema;
     if (!schema.exampleParameter) return;
 
-    const prepared = await this.dataSource.prepare(schema.exampleParameter);
-
     const response = await this.templateEngine.execute(
       schema.templateSource,
-      { ['_prepared']: prepared },
+      { context: { params: schema.exampleParameter } },
       // We only need the columns of this query, so we set offset/limit both to 0 here.
       {
         limit: 0,

@@ -13,16 +13,19 @@ it('Nunjucks compiler should compile template without error.', async () => {
 
 it('Nunjucks compiler should load compiled code and execute rendered template with it', async () => {
   // Arrange
-  const { compiler, loader, getCreatedQueries } = await createTestCompiler();
+  const { compiler, loader, getCreatedQueries, getCreatedBinding } =
+    await createTestCompiler();
   const { compiledData } = await compiler.compile('Hello {{ name }}!');
 
   // Action
   loader.setSource('test', compiledData);
   await compiler.execute('test', { name: 'World' });
   const queries = await getCreatedQueries();
+  const binding = await getCreatedBinding();
 
   // Assert
-  expect(queries[0]).toBe('Hello World!');
+  expect(queries[0]).toBe('Hello $1!');
+  expect(binding[0].get('$1')).toBe('World');
 });
 
 it('Nunjucks compiler should reject the extension which has no valid super class', async () => {
