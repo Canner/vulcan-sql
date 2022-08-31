@@ -15,11 +15,7 @@ export class SanitizerBuilder extends FilterBuilder {
 
   private addSanitizer(node: nunjucks.nodes.Node, parentHasOutputNode = false) {
     visitChildren(node, (child, replace) => {
-      if (
-        child instanceof nunjucks.nodes.LookupVal ||
-        child instanceof nunjucks.nodes.FunCall ||
-        child instanceof nunjucks.nodes.Symbol
-      ) {
+      if (this.isNodeNeedToBeSanitize(child)) {
         if (!parentHasOutputNode && !(node instanceof nunjucks.nodes.Output))
           return;
         const filter = new nunjucks.nodes.Filter(node.lineno, node.colno);
@@ -40,5 +36,13 @@ export class SanitizerBuilder extends FilterBuilder {
         );
       }
     });
+  }
+
+  private isNodeNeedToBeSanitize(node: nunjucks.nodes.Node): boolean {
+    return (
+      node instanceof nunjucks.nodes.LookupVal ||
+      node instanceof nunjucks.nodes.FunCall ||
+      node instanceof nunjucks.nodes.Symbol
+    );
   }
 }

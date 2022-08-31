@@ -7,7 +7,9 @@ import { VulcanExtension } from './decorators';
 
 // Original request parameters
 export interface RequestParameter {
+  /** The index (starts from 1) of parameters, it's useful to generate parameter id like $1, $2 ...etc. */
   parameterIndex: number;
+  /** The raw value (not name) */
   value: any;
 }
 
@@ -28,9 +30,12 @@ export interface DataResult {
 export interface ExecuteOptions {
   statement: string;
   operations: SQLClauseOperation;
+  /** The parameter bindings, we guarantee the order of the keys in the map is the same as the order when they were used in queries. */
   bindParams: BindParameters;
   pagination?: Pagination;
 }
+
+export type PrepareParameter = { (param: RequestParameter): Promise<string> };
 
 @VulcanExtension(TYPES.Extension_DataSource, { enforcedId: true })
 export abstract class DataSource extends ExtensionBase {

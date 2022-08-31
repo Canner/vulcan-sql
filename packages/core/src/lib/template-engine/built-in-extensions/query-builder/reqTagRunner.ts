@@ -26,9 +26,9 @@ export class ReqTagRunner extends TagRunner {
   public async run({ context, args, contentArgs }: TagRunnerOptions) {
     const name = args[0];
 
-    const dataSource = await this.executor.getDataSource();
-
-    const parameterizer = new Parameterizer(dataSource);
+    const parameterizer = new Parameterizer(
+      this.executor.prepare.bind(this.executor)
+    );
     // parameterizer from parent, we should set it back after rendered our context.
     const parentParameterizer = context.lookup(PARAMETERIZER_VAR_NAME);
     context.setVariable(PARAMETERIZER_VAR_NAME, parameterizer);

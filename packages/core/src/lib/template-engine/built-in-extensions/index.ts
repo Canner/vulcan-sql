@@ -4,5 +4,3 @@ import SqlHelper from './sql-helper';
 import Validator from './validator';
 
 export default [CustomError, QueryBuilder, SqlHelper, Validator];
-
-export * from './query-builder';

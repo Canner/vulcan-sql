@@ -20,7 +20,7 @@ export class SanitizerRunner extends FilterRunner {
     else {
       input = new TemplateInput(value);
     }
-
+    // Parameterizer should be set by req tag runner
     const parameterizer = context.lookup(PARAMETERIZER_VAR_NAME);
     if (!parameterizer) throw new Error(`No parameterizer found`);
     return await input.parameterize(parameterizer);

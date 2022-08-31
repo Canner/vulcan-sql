@@ -13,5 +13,3 @@ export default [
   SanitizerBuilder,
   SanitizerRunner,
 ];
-
-export * from './templateInput';
