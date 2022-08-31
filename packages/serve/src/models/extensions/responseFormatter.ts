@@ -30,7 +30,7 @@ export abstract class BaseResponseFormatter
   implements IFormatter
 {
   public formatToResponse(ctx: KoaContext) {
-    // keep response body the same if it is not provided by template engine, e.g. document server content ...etc.
+    // keep response body the same if it is not provided by template engine, e.g. document router content ...etc.
     if (!has(ctx.response.body, 'data') || !has(ctx.response.body, 'columns')) {
       return;
     }

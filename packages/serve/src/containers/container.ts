@@ -2,7 +2,7 @@ import { Container as InversifyContainer } from 'inversify';
 import { Container as CoreContainer } from '@vulcan-sql/core';
 import {
   applicationModule,
-  documentServerModule,
+  documentRouterModule,
   extensionModule,
   routeGeneratorModule,
 } from './modules';
@@ -26,7 +26,7 @@ export class Container {
     this.inversifyContainer.load(routeGeneratorModule());
     await this.inversifyContainer.loadAsync(extensionModule(config));
     await this.inversifyContainer.loadAsync(applicationModule());
-    await this.inversifyContainer.loadAsync(documentServerModule());
+    await this.inversifyContainer.loadAsync(documentRouterModule());
   }
 
   public async unload() {

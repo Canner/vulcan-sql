@@ -1,6 +1,6 @@
 import {
   DocumentOptions,
-  DocumentServerType,
+  DocumentRouterType,
   DocumentSpec,
   ProjectOptions,
   TYPES as CORE_TYPES,
@@ -10,14 +10,14 @@ import {
 import * as nunjucks from 'nunjucks';
 import { Next } from 'koa';
 import * as Router from 'koa-router';
-import { DocumentServer } from '@vulcan-sql/serve/models';
+import { DocumentRouter } from '@vulcan-sql/serve/models';
 import * as fs from 'fs';
 import * as path from 'path';
 import { inject } from 'inversify';
 
 @VulcanInternalExtension('redoc')
-@VulcanExtensionId(DocumentServerType.redoc)
-export class RedocDocumentServer extends DocumentServer {
+@VulcanExtensionId(DocumentRouterType.redoc)
+export class RedocDocumentRouters extends DocumentRouter {
   private router = new Router();
   private docContent = '';
   private projectOption: ProjectOptions;

@@ -1,27 +1,27 @@
 import { DocumentOptions } from '@vulcan-sql/core';
-import { DocServerMiddleware, DocumentServer } from '@vulcan-sql/serve';
+import { DocRouterMiddleware, DocumentRouter } from '@vulcan-sql/serve';
 import * as compose from 'koa-compose';
 import * as sinon from 'ts-sinon';
 
 describe('Test doc server middlewares', () => {
-  let mockDocServer: Record<string, sinon.StubbedInstance<DocumentServer<any>>>;
+  let mockDocServer: Record<string, sinon.StubbedInstance<DocumentRouter<any>>>;
   let mockOption: DocumentOptions;
   const mockDocServerFactory = (name: string) => mockDocServer[name];
 
   beforeEach(() => {
     mockDocServer = {
-      m1: sinon.stubInterface<DocumentServer>(),
-      m2: sinon.stubInterface<DocumentServer>(),
-      m3: sinon.stubInterface<DocumentServer>(),
+      m1: sinon.stubInterface<DocumentRouter>(),
+      m2: sinon.stubInterface<DocumentRouter>(),
+      m3: sinon.stubInterface<DocumentRouter>(),
     };
     mockOption = new DocumentOptions({
-      server: ['m1', 'm2'],
+      router: ['m1', 'm2'],
     });
   });
 
-  it('Should active corresponding document servers', async () => {
+  it('Should active corresponding document router', async () => {
     // Arrange
-    const middleware = new DocServerMiddleware(
+    const middleware = new DocRouterMiddleware(
       {},
       '',
       mockDocServerFactory,
@@ -55,7 +55,7 @@ describe('Test doc server middlewares', () => {
       await next();
       executeOrder.push(6);
     });
-    const mid2 = new DocServerMiddleware(
+    const mid2 = new DocRouterMiddleware(
       {},
       '',
       mockDocServerFactory,

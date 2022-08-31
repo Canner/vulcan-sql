@@ -1,6 +1,6 @@
 import {
   BuiltInMiddleware,
-  DocumentServer,
+  DocumentRouter,
   KoaContext,
   Next,
 } from '@vulcan-sql/serve/models';
@@ -14,19 +14,19 @@ import { TYPES } from '@vulcan-sql/serve/containers';
 import * as compose from 'koa-compose';
 
 @VulcanInternalExtension()
-export class DocServerMiddleware extends BuiltInMiddleware {
-  private servers: DocumentServer[] = [];
+export class DocRouterMiddleware extends BuiltInMiddleware {
+  private servers: DocumentRouter[] = [];
 
   constructor(
     @inject(CORE_TYPES.ExtensionConfig) config: any,
     @inject(CORE_TYPES.ExtensionName) name: string,
-    @inject(TYPES.Factory_DocumentServer)
-    documentServerFactory: interfaces.AutoNamedFactory<DocumentServer>,
+    @inject(TYPES.Factory_DocumentRouter)
+    documentRouterFactory: interfaces.AutoNamedFactory<DocumentRouter>,
     @inject(CORE_TYPES.DocumentOptions) options: DocumentOptions
   ) {
     super(config, name);
-    for (const serverType of options.server) {
-      this.servers.push(documentServerFactory(serverType));
+    for (const serverType of options.router) {
+      this.servers.push(documentRouterFactory(serverType));
     }
   }
 

@@ -67,11 +67,11 @@ describe('Test vulcan server for practicing middleware', () => {
       .toConstantValue(stubTemplateEngine);
     container.bind(TYPES.RouteGenerator).to(RouteGenerator);
     container.bind(TYPES.VulcanApplication).to(VulcanApplication);
-    container.bind(TYPES.Factory_DocumentServer).toConstantValue(() => null);
+    container.bind(TYPES.Factory_DocumentRouter).toConstantValue(() => null);
     container.bind(CORE_TYPES.DocumentOptions).toDynamicValue(
       () =>
         new DocumentOptions({
-          server: [],
+          router: [],
         })
     );
   });
@@ -301,11 +301,11 @@ describe('Test vulcan server for calling restful APIs', () => {
       .toConstantValue(stubTemplateEngine);
     container.bind(TYPES.RouteGenerator).to(RouteGenerator);
     container.bind(TYPES.VulcanApplication).to(VulcanApplication);
-    container.bind(TYPES.Factory_DocumentServer).toConstantValue(() => null);
+    container.bind(TYPES.Factory_DocumentRouter).toConstantValue(() => null);
     container.bind(CORE_TYPES.DocumentOptions).toDynamicValue(
       () =>
         new DocumentOptions({
-          server: [],
+          router: [],
         })
     );
   });

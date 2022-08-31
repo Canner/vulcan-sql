@@ -11,8 +11,8 @@ import { inject } from 'inversify';
 import * as fs from 'fs';
 import * as path from 'path';
 
-@VulcanExtension(TYPES.Extension_DocumentServer)
-export abstract class DocumentServer<C = any> extends ExtensionBase<C> {
+@VulcanExtension(TYPES.Extension_DocumentRouter)
+export abstract class DocumentRouter<C = any> extends ExtensionBase<C> {
   private documentOptions: DocumentOptions;
 
   constructor(

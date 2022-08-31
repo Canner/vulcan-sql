@@ -1,5 +1,5 @@
 import { DocumentOptions, ProjectOptions } from '@vulcan-sql/core';
-import { RedocDocumentServer } from '../../src/lib/document-server';
+import { RedocDocumentRouters } from '../../src/lib/document-router';
 import * as Koa from 'koa';
 import * as supertest from 'supertest';
 import faker from '@faker-js/faker';
@@ -13,7 +13,7 @@ afterEach(() => {
 
 it('Should serve redoc server with all the required contents', async () => {
   // Arrange
-  const server = new RedocDocumentServer(
+  const server = new RedocDocumentRouters(
     {},
     '',
     new DocumentOptions({
@@ -44,7 +44,7 @@ it('Should serve redoc server with all the required contents', async () => {
 
 it('Should follow the url path we set', async () => {
   // Arrange
-  const server = new RedocDocumentServer(
+  const server = new RedocDocumentRouters(
     {
       url: 'some-path-other-than-doc',
     },

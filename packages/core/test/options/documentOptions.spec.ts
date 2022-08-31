@@ -1,5 +1,5 @@
 import {
-  DocumentServerType,
+  DocumentRouterType,
   DocumentSpec,
   IDocumentOptions,
   TYPES,
@@ -20,7 +20,7 @@ it('Should provide correct default option values', async () => {
   // Assert
   expect(options.folderPath).toBe('.');
   expect(options.specs).toEqual([DocumentSpec.oas3]);
-  expect(options.server).toEqual([DocumentServerType.redoc]);
+  expect(options.router).toEqual([DocumentRouterType.redoc]);
 });
 
 it('Can override some option properties', async () => {
@@ -34,7 +34,7 @@ it('Can override some option properties', async () => {
   // Assert
   expect(options.folderPath).toBe('./some/folder');
   expect(options.specs).toEqual([DocumentSpec.oas3]);
-  expect(options.server).toEqual([DocumentServerType.redoc]);
+  expect(options.router).toEqual([DocumentRouterType.redoc]);
 });
 
 it('Schema validation should work', async () => {
