@@ -1,7 +1,7 @@
 import { APISchema } from '@vulcan-sql/core';
 import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
-import { isEmpty, uniq } from 'lodash';
+import { uniq } from 'lodash';
 import {
   RestfulRoute,
   BaseRoute,
@@ -42,7 +42,7 @@ export class VulcanApplication {
   }
   public async buildRoutes(
     schemas: Array<APISchema>,
-    apiTypes: Array<APIProviderType>
+    apiTypes?: Array<APIProviderType>
   ) {
     // setup API route according to api types and api schemas
     const routeMapper = {
@@ -52,9 +52,8 @@ export class VulcanApplication {
         this.setGraphQL(routes as Array<GraphQLRoute>),
     };
 
-    // check existed at least one type
-    const types = uniq(apiTypes);
-    if (isEmpty(types)) throw new Error(`The API type must provided.`);
+    // check existed at least one type, if not provide, default is restful
+    const types = uniq(apiTypes || [APIProviderType.RESTFUL]);
 
     for (const type of types) {
       const routes = await this.generator.multiGenerate(schemas, type);

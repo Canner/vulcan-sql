@@ -44,6 +44,9 @@ const projectConfig: ServeConfig & IBuildOptions = {
   'rate-limit': {
     options: { interval: { min: 1 }, max: 10000 },
   },
+  'enforce-https': {
+    enabled: false,
+  },
 };
 
 let server: VulcanServer;
@@ -56,7 +59,7 @@ it('Example1: Build and serve should work', async () => {
   const builder = new VulcanBuilder(projectConfig);
   await builder.build();
   server = new VulcanServer(projectConfig);
-  const httpServer = await server.start(3000);
+  const httpServer = (await server.start())['http'];
 
   const agent = supertest(httpServer);
   const result = await agent.get(

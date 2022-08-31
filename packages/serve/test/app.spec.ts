@@ -19,7 +19,6 @@ import {
 } from '@vulcan-sql/core';
 import {
   RouteGenerator,
-  APIProviderType,
   RequestParameters,
   RequestTransformer,
   RequestValidator,
@@ -82,7 +81,7 @@ describe('Test vulcan server for practicing middleware', () => {
 
     const app = container.get<VulcanApplication>(TYPES.VulcanApplication);
     await app.useMiddleware();
-    await app.buildRoutes([fakeSchema], [APIProviderType.RESTFUL]);
+    await app.buildRoutes([fakeSchema]);
     const server = http
       .createServer(app.getHandler())
       .listen(faker.datatype.number({ min: 20000, max: 30000 }));
@@ -275,6 +274,9 @@ describe('Test vulcan server for calling restful APIs', () => {
     );
     await container.loadAsync(
       extensionModule({
+        'enforce-https': {
+          enabled: false,
+        },
         'response-format': {
           enabled: false,
         },
@@ -310,7 +312,7 @@ describe('Test vulcan server for calling restful APIs', () => {
       // Arrange, close response format middlewares to make expected work.
       const app = container.get<VulcanApplication>(TYPES.VulcanApplication);
       await app.useMiddleware();
-      await app.buildRoutes([schema], [APIProviderType.RESTFUL]);
+      await app.buildRoutes([schema]);
       server = http
         .createServer(app.getHandler())
         .listen(faker.datatype.number({ min: 20000, max: 30000 }));

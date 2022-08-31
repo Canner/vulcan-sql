@@ -1,10 +1,21 @@
 import { ICoreOptions } from '@vulcan-sql/core';
 import { APIProviderType } from '@vulcan-sql/serve/route';
 
-// The serve package config
-export interface ServeConfig extends ICoreOptions {
-  /* The API types would like to build */
-  ['types']: Array<APIProviderType>;
+export interface sslFileOptions {
+  /* key file path */
+  key: string;
+  /* certificate file path */
+  cert: string;
+  /** certificate bundle */
+  ca: string;
 }
 
-export type AppConfig = Omit<ServeConfig, 'artifact' | 'template' | 'types'>;
+// The serve package config
+export interface ServeConfig extends ICoreOptions {
+  /* http port, if not setup, default is 3000 */
+  ['port']?: number;
+  /* The API types would like to build */
+  ['types']?: Array<APIProviderType>;
+  /** When 'enforce-https' is enabled and type is LOCAL in middleware, need the ssl key and cert*/
+  ['ssl']?: sslFileOptions;
+}
