@@ -1,7 +1,7 @@
 import { ICoreOptions } from '@vulcan-sql/core/models';
 import { Container as InversifyContainer } from 'inversify';
 import { ProjectOptions } from '../options';
-import { extensionModule } from './modules';
+import { documentModule, extensionModule } from './modules';
 import {
   artifactBuilderModule,
   executorModule,
@@ -33,6 +33,7 @@ export class Container {
     );
     await this.inversifyContainer.loadAsync(validatorLoaderModule());
     await this.inversifyContainer.loadAsync(extensionModule(options));
+    await this.inversifyContainer.loadAsync(documentModule(options.document));
   }
 
   public async unload() {

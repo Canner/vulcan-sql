@@ -8,8 +8,11 @@ export const TYPES = {
 
   // Application
   VulcanApplication: Symbol.for('VulcanApplication'),
+  // Document router
+  Factory_DocumentRouter: Symbol.for('Factory_DocumentRouter'),
   // Extensions
   Extension_RouteMiddleware: Symbol.for('Extension_RouteMiddleware'),
   Extension_Authenticator: Symbol.for('Extension_Authenticator'),
   Extension_Formatter: Symbol.for('Extension_Formatter'),
+  Extension_DocumentRouter: Symbol.for('Extension_DocumentRouter'),
 };

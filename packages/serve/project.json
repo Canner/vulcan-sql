@@ -28,7 +28,10 @@
         "outputPath": "dist/packages/serve",
         "main": "packages/serve/src/index.ts",
         "tsConfig": "packages/serve/tsconfig.lib.json",
-        "assets": ["packages/serve/*.md"],
+        "assets": [
+          "packages/serve/*.md",
+          "packages/serve/src/lib/document-router/redoc-document-router/template/*.*"
+        ],
         "buildableProjectDepsInPackageJsonType": "dependencies"
       },
       "dependsOn": [

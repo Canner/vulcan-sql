@@ -30,11 +30,8 @@ export abstract class BaseResponseFormatter
   implements IFormatter
 {
   public formatToResponse(ctx: KoaContext) {
-    // return empty csv stream data or column is not exist
+    // keep response body the same if it is not provided by template engine, e.g. document router content ...etc.
     if (!has(ctx.response.body, 'data') || !has(ctx.response.body, 'columns')) {
-      const stream = new Stream.Readable();
-      stream.push(null);
-      this.toResponse(stream, ctx);
       return;
     }
     // if response has data and columns.

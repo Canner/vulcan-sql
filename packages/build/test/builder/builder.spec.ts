@@ -1,13 +1,10 @@
 import { VulcanBuilder } from '../../src';
 import * as path from 'path';
-import {
-  DocumentGeneratorSpec,
-  IBuildOptions,
-  SchemaReaderType,
-} from '@vulcan-sql/build/models';
+import { IBuildOptions, SchemaReaderType } from '@vulcan-sql/build/models';
 import {
   ArtifactBuilderProviderType,
   ArtifactBuilderSerializerType,
+  DocumentSpec,
   TemplateProviderType,
 } from '@vulcan-sql/core';
 
@@ -18,8 +15,8 @@ it('Builder.build should work', async () => {
       reader: SchemaReaderType.LocalFile,
       folderPath: path.resolve(__dirname, 'source'),
     },
-    'document-generator': {
-      specs: [DocumentGeneratorSpec.oas3],
+    document: {
+      specs: [DocumentSpec.oas3],
       folderPath: path.resolve(__dirname),
     },
     artifact: {

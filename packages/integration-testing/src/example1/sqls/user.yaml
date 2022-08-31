@@ -1,7 +1,7 @@
-url: /user
+urlPath: /user/:id
 request:
   - fieldName: id
-    fieldIn: query
+    fieldIn: path
     description: user id
     validators:
       - uuid

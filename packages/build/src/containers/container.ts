@@ -26,9 +26,7 @@ export class Container {
       schemaParserModule(options['schema-parser'])
     );
     await this.inversifyContainer.loadAsync(extensionModule(options));
-    await this.inversifyContainer.loadAsync(
-      documentGeneratorModule(options['document-generator'])
-    );
+    await this.inversifyContainer.loadAsync(documentGeneratorModule());
   }
 
   public async unload() {

@@ -8,8 +8,6 @@ export const TYPES = {
   SchemaParserMiddleware: Symbol.for('SchemaParserMiddleware'),
   // Document
   DocumentGenerator: Symbol.for('DocumentGenerator'),
-  DocumentGeneratorInputOptions: Symbol.for('DocumentGeneratorInputOptions'),
-  DocumentGeneratorOptions: Symbol.for('DocumentGeneratorOptions'),
   Factory_SpecGenerator: Symbol.for('Factory_SpecGenerator'),
   // Extension
   Extension_SchemaReader: Symbol.for('Extension_SchemaReader'),

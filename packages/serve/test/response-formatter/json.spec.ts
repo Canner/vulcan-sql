@@ -7,17 +7,17 @@ import faker from '@faker-js/faker';
 import { arrayToStream, streamToString } from '../test-utils';
 
 describe('Test to respond to json', () => {
-  it('Test to get empty stream when not found "data" or "columns" in ctx.response.body', () => {
+  it('Test to keep original response when not found "data" or "columns" in ctx.response.body', () => {
     // Arrange
+    const expected = 'hello';
     const stubResponse = sinon.stubInterface<Response>();
     stubResponse.set.callsFake(() => null);
+    stubResponse.body = expected;
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       url: faker.internet.url(),
       response: stubResponse,
     };
-    const expected = new Stream.Readable();
-    expected.push(null);
     // Act
     const formatter = new JsonFormatter({}, '');
     formatter.formatToResponse(ctx);
