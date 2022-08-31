@@ -1,4 +1,7 @@
-import { IDataQueryBuilder } from '@vulcan-sql/core/data-query';
+import {
+  DataQueryBuilder,
+  IDataQueryBuilder,
+} from '@vulcan-sql/core/data-query';
 import {
   FilterRunner,
   FilterRunnerTransformOptions,
@@ -11,9 +14,11 @@ export class ExecutorRunner extends FilterRunner {
   public filterName = EXECUTE_FILTER_NAME;
 
   public async transform({
-    value,
+    value: builder,
   }: FilterRunnerTransformOptions): Promise<any> {
-    const builder: IDataQueryBuilder = value;
+    // if input value is not query builder, call the function .value and to nothing.
+    if (!(builder instanceof DataQueryBuilder)) return builder.value();
+    // TODO: convert stream to value
     return builder.value();
   }
 }
