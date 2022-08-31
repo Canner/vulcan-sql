@@ -157,3 +157,74 @@ it('The binding keys should be in order which they are used', async () => {
     '$2',
   ]);
 });
+
+it('Should render raw value when using raw filter', async () => {
+  // Arrange
+  const { compiler, loader, builder, executor } = await createTestCompiler();
+  const { compiledData } = await compiler.compile(
+    `{{ context.params.id | raw }}{{ context.params.name | upper | raw }}`
+  );
+  builder.value.onFirstCall().resolves([{ id: 1, name: 'freda' }]);
+  // Action
+  loader.setSource('test', compiledData);
+  await compiler.execute('test', {
+    context: { params: { id: 1, name: 'freda' } },
+  });
+  // Assert
+  expect(executor.createBuilder.firstCall.args[0]).toBe('1FREDA');
+});
+
+it('Raw value should be wrapped again when accessing its children', async () => {
+  // Arrange
+  const { compiler, loader, builder, executor } = await createTestCompiler();
+  const { compiledData } = await compiler.compile(
+    `{{ (context.params.data | raw).name }}`
+  );
+  builder.value.onFirstCall().resolves([{ id: 1, name: 'freda' }]);
+  // Action
+  loader.setSource('test', compiledData);
+  await compiler.execute('test', {
+    context: { params: { data: { id: 1, name: 'freda' } } },
+  });
+  // Assert
+  expect(executor.createBuilder.firstCall.args[0]).toBe('$1');
+  expect(executor.createBuilder.firstCall.args[1].get('$1')).toBe('freda');
+});
+
+it('Raw value should be wrapped again when raw filter is chaining again', async () => {
+  // Arrange
+  const { compiler, loader, builder, executor } = await createTestCompiler();
+  const { compiledData } = await compiler.compile(
+    `{{ context.params.name | raw | upper }}`
+  );
+  builder.value.onFirstCall().resolves([{ id: 1, name: 'freda' }]);
+  // Action
+  loader.setSource('test', compiledData);
+  await compiler.execute('test', {
+    context: { params: { name: 'freda' } },
+  });
+  // Assert
+  expect(executor.createBuilder.firstCall.args[0]).toBe('$1');
+  expect(executor.createBuilder.firstCall.args[1].get('$1')).toBe('FREDA');
+});
+
+it('Raw value should be wrapped again when it is assigned to variables and is rendered', async () => {
+  // Arrange
+  const { compiler, loader, builder, executor } = await createTestCompiler();
+  const { compiledData } = await compiler.compile(
+    `{% set someVar = (context.params.name | upper | raw) %}
+{% if someVar == "FREDA" %}This should be rendered{% endif %}
+{{ someVar }}`
+  );
+  builder.value.onFirstCall().resolves([{ id: 1, name: 'freda' }]);
+  // Action
+  loader.setSource('test', compiledData);
+  await compiler.execute('test', {
+    context: { params: { name: 'freda' } },
+  });
+  // Assert
+  expect(executor.createBuilder.firstCall.args[0]).toBe(
+    'This should be rendered\n$1'
+  );
+  expect(executor.createBuilder.firstCall.args[1].get('$1')).toBe('FREDA');
+});

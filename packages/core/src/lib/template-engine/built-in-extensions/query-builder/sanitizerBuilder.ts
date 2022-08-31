@@ -4,7 +4,7 @@ import {
 } from '@vulcan-sql/core/models';
 import * as nunjucks from 'nunjucks';
 import { visitChildren } from '../../extension-utils';
-import { SANITIZER_NAME } from './constants';
+import { RAW_FILTER_NAME, SANITIZER_NAME } from './constants';
 
 @VulcanInternalExtension()
 export class SanitizerBuilder extends FilterBuilder {
@@ -15,6 +15,15 @@ export class SanitizerBuilder extends FilterBuilder {
 
   private addSanitizer(node: nunjucks.nodes.Node, parentHasOutputNode = false) {
     visitChildren(node, (child, replace) => {
+      // Visitor should be stopped by raw filter
+      if (
+        child instanceof nunjucks.nodes.Filter &&
+        child.name instanceof nunjucks.nodes.Symbol &&
+        child.name.value === RAW_FILTER_NAME
+      ) {
+        return;
+      }
+
       if (this.isNodeNeedToBeSanitize(child)) {
         if (!parentHasOutputNode && !(node instanceof nunjucks.nodes.Output))
           return;
@@ -41,6 +50,7 @@ export class SanitizerBuilder extends FilterBuilder {
   private isNodeNeedToBeSanitize(node: nunjucks.nodes.Node): boolean {
     return (
       node instanceof nunjucks.nodes.LookupVal ||
+      // includes FunCall, Filter
       node instanceof nunjucks.nodes.FunCall ||
       node instanceof nunjucks.nodes.Symbol
     );

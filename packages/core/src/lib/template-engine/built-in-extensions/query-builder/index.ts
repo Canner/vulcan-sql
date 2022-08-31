@@ -4,6 +4,8 @@ import { ExecutorRunner } from './executorRunner';
 import { ExecutorBuilder } from './executorBuilder';
 import { SanitizerBuilder } from './sanitizerBuilder';
 import { SanitizerRunner } from './sanitizerRunner';
+import { RawBuilder } from './rawBuilder';
+import { RawRunner } from './rawRunner';
 
 export default [
   ReqTagBuilder,
@@ -12,4 +14,6 @@ export default [
   ExecutorBuilder,
   SanitizerBuilder,
   SanitizerRunner,
+  RawBuilder,
+  RawRunner,
 ];
