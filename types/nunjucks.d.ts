@@ -51,6 +51,25 @@ declare module 'nunjucks' {
     ): string;
   }
 
+  export interface Context {
+    init(ctx: Context, blocks: any, env: Environment): void;
+    lookup<T = any>(name: string): T | undefined;
+    setVariable<T = any>(name: string, val: T): void;
+    getVariables(): Record<string, any>;
+    addBlock(name: string, block: any): this;
+    getBlock(name: string): any;
+    getSuper(
+      env: Environment,
+      name: string,
+      block: any,
+      frame: any,
+      runtime: any,
+      cb: any
+    ): void;
+    addExport(name: string): void;
+    getExported(): Record<string, any>;
+  }
+
   export class Template {
     constructor(
       src: string,

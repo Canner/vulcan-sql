@@ -24,7 +24,7 @@ export class ReqTagRunner extends TagRunner {
   }
 
   public async run({ context, args, contentArgs }: TagRunnerOptions) {
-    const name = args[0];
+    const name = String(args[0]);
 
     const parameterizer = new Parameterizer(
       this.executor.prepare.bind(this.executor)
