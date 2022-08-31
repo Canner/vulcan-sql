@@ -1,7 +1,7 @@
 import { SQLClauseOperation } from '@vulcan-sql/core/data-query';
 import { Pagination } from '@vulcan-sql/core/models';
 import { TYPES } from '@vulcan-sql/core/types';
-import { Stream } from 'stream';
+import { Readable } from 'stream';
 import { ExtensionBase } from './base';
 import { VulcanExtension } from './decorators';
 
@@ -24,7 +24,7 @@ export type DataColumn = { name: string; type: string };
 
 export interface DataResult {
   getColumns: () => DataColumn[];
-  getData: () => Stream;
+  getData: () => Readable;
 }
 
 export interface ExecuteOptions {
