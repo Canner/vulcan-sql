@@ -8,9 +8,13 @@ import {
   CodeLoader,
 } from '@vulcan-sql/core';
 import { Container, TYPES } from '../containers';
-import { ServeConfig } from '../models';
+import { ServeConfig, sslFileOptions } from '../models';
 import { VulcanApplication } from './app';
-import { getEnforceHttpsOptions } from './middleware';
+import {
+  EnforceHttpsOptions,
+  getEnforceHttpsOptions,
+  ResolverType,
+} from './middleware';
 export class VulcanServer {
   private config: ServeConfig;
   private container: Container;
@@ -23,11 +27,13 @@ export class VulcanServer {
     this.container = new Container();
   }
   /**
-   * Start the vulcan server
-   * @param port the http port for server start, default is 3000
-   * @param httpsPort the https port for https server start when you set "type" = LOCAL in "enforce-https" middleware and provide ssl file, default port is 3001
+   * Start the vulcan server. default http port is 3000, you could also change it by setting "port" under config.
+   *
+   * When you enabled "enforce-https" options and add "ssl" options in the config, it will run the https server too locally (default "type" = LOCAL under "enforce-https" options).
+   *
+   * If you don't set the "port" under "enforce-https" options, it will use the default 3001 as https port.
    */
-  public async start(port = 3000, httpsPort = 3001) {
+  public async start() {
     if (!isEmpty(this.servers))
       throw new Error('Server has created, please close it first.');
 
@@ -54,7 +60,7 @@ export class VulcanServer {
     await app.useMiddleware();
     await app.buildRoutes(schemas, this.config['types']);
     // Run server
-    this.servers = this.runServer(app, port, httpsPort);
+    this.servers = this.runServer(app);
     return this.servers;
   }
   public async close() {
@@ -67,27 +73,52 @@ export class VulcanServer {
   }
 
   /**
-   * Run server for https when config has setup ssl and middleware 'enforce-https' enabled with LOCAL type, or keep http
+   * Run server
+   * for https when config has setup ssl and middleware 'enforce-https' enabled with "LOCAL" type, or keep http
    */
-  private runServer(app: VulcanApplication, port: number, httpsPort: number) {
-    const options = getEnforceHttpsOptions(this.config['enforce-https']);
-    if (options && this.config.ssl) {
-      const options = {
-        key: fs.readFileSync(this.config.ssl.keyFile),
-        cert: fs.readFileSync(this.config.ssl.certFile),
-      };
+  private runServer(app: VulcanApplication) {
+    const { enabled, options } = getEnforceHttpsOptions(
+      this.config['enforce-https']
+    );
 
-      const httpServer = http.createServer(app.getHandler()).listen(port);
-      const httpsServer = https
-        .createServer(options, app.getHandler())
-        .listen(httpsPort);
-      return {
-        http: httpServer,
-        https: httpsServer,
-      };
+    const httpPort = this.config['port'] || 3000;
+    const httpServer = http.createServer(app.getHandler()).listen(httpPort);
+
+    if (enabled && options['type'] === ResolverType.LOCAL) {
+      const httpsServer = this.createHttpsServer(
+        app,
+        options,
+        this.config['ssl']!
+      );
+      return { http: httpServer, https: httpsServer };
     }
-    return {
-      http: http.createServer(app.getHandler()).listen(port),
-    };
+
+    return { http: httpServer };
+  }
+
+  private createHttpsServer(
+    app: VulcanApplication,
+    options: EnforceHttpsOptions,
+    ssl: sslFileOptions
+  ) {
+    // check ssl file
+    if (!fs.existsSync(ssl.key) || !fs.existsSync(ssl.cert))
+      throw new Error(
+        'Must need key and cert file at least when open https server.'
+      );
+
+    // create https server
+    const httpsPort = options['port'] || 3001;
+    return https
+      .createServer(
+        {
+          key: fs.readFileSync(ssl.key),
+          cert: fs.readFileSync(ssl.cert),
+          // if ca not exist, set undefined
+          ca: fs.existsSync(ssl.ca) ? fs.readFileSync(ssl.ca) : undefined,
+        },
+        app.getHandler()
+      )
+      .listen(httpsPort);
   }
 }

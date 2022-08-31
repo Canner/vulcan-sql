@@ -7,9 +7,9 @@ import {
   EnforceHttpsMiddleware,
   ResolverType,
 } from '@vulcan-sql/serve/middleware';
-import { AppConfig } from '@vulcan-sql/serve/models';
+import { ServeConfig } from '@vulcan-sql/serve/models';
 
-const runServer = (config: AppConfig) => {
+const runServer = (config: Omit<ServeConfig, 'artifact' | 'template'>) => {
   // Arrange
   const port = faker.internet.port();
   const app = new Koa();

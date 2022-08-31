@@ -1,4 +1,4 @@
-import { omit } from 'lodash';
+import { isUndefined, omit } from 'lodash';
 import { inject } from 'inversify';
 import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { VulcanInternalExtension } from '@vulcan-sql/core';
@@ -45,10 +45,16 @@ export type EnforceHttpsOptions = Omit<SslOptions, 'resolver'> & {
   proto?: string;
 };
 
+export interface EnforceHttpsConfig {
+  enabled: boolean;
+  options: EnforceHttpsOptions;
+}
+
 // enforce https middleware
 @VulcanInternalExtension('enforce-https')
 export class EnforceHttpsMiddleware extends BuiltInMiddleware<EnforceHttpsOptions> {
   private koaEnforceHttps = sslify(
+    // if not setup "enforce-https", default sslify is LOCAL type
     this.getOptions() ? this.transformOptions(this.getOptions()!) : undefined
   );
 
@@ -116,9 +122,26 @@ export class EnforceHttpsMiddleware extends BuiltInMiddleware<EnforceHttpsOption
 /**
  * Get enforce https options in config
  * @param options EnforceHttpsOptions
- * @returns return enforce https options when "enforce-https" is
+ * @returns beside you disabled it, or it return enforce https options when setup "enforce-https"( if not found options, default is LOCAL type ).
  */
-export const getEnforceHttpsOptions = (options?: EnforceHttpsOptions) => {
-  if (options) return options as EnforceHttpsOptions;
-  return undefined;
+export const getEnforceHttpsOptions = (options?: {
+  enabled: boolean;
+  options: EnforceHttpsOptions;
+}): {
+  enabled: boolean;
+  options: EnforceHttpsOptions;
+} => {
+  // if not given "enforce-https" options, return default options
+  if (!options)
+    return {
+      enabled: true,
+      options: { type: ResolverType.LOCAL } as EnforceHttpsOptions,
+    };
+
+  return {
+    enabled: isUndefined(options['enabled']) ? true : false,
+    options:
+      options['options'] ||
+      ({ type: ResolverType.LOCAL } as EnforceHttpsOptions),
+  };
 };

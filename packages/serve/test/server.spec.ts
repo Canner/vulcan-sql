@@ -16,6 +16,7 @@ afterEach(async () => {
 it('Vulcan server should work with built artifacts', async () => {
   // Arrange
   server = new VulcanServer({
+    port: faker.datatype.number({ min: 20000, max: 30000 }),
     artifact: {
       provider: ArtifactBuilderProviderType.LocalFile,
       serializer: ArtifactBuilderSerializerType.JSON,
@@ -23,10 +24,11 @@ it('Vulcan server should work with built artifacts', async () => {
     },
     extensions: {},
     types: [APIProviderType.RESTFUL],
+    'enforce-https': {
+      enabled: false,
+    },
   });
 
   // Act, Assert
-  await expect(
-    server.start(faker.datatype.number({ min: 20000, max: 30000 }))
-  ).resolves.not.toThrow();
+  await expect(server.start()).resolves.not.toThrow();
 });
