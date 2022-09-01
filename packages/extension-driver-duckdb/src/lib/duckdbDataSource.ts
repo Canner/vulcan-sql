@@ -56,7 +56,7 @@ export class DuckDBDataSource extends DataSource<DuckDBOptions> {
     const parameters = Array.from(bindParams.values());
     this.logRequest(sql, parameters);
 
-    const result = await statement.stream(parameters);
+    const result = await statement.stream(...parameters);
     const firstChunk = await result.nextChunk();
     return {
       getColumns: () => {
@@ -82,8 +82,13 @@ export class DuckDBDataSource extends DataSource<DuckDBOptions> {
           },
         });
         // Send the first chunk
-        for (const row of firstChunk) {
-          stream.push(row);
+        if (firstChunk) {
+          for (const row of firstChunk) {
+            stream.push(row);
+          }
+        } else {
+          // If there is no data, close the stream.
+          stream.push(null);
         }
         return stream;
       },
@@ -96,7 +101,7 @@ export class DuckDBDataSource extends DataSource<DuckDBOptions> {
 
   private logRequest(sql: string, parameters: string[]) {
     if (this.getConfig()?.['log-queries']) {
-      if (this.getConfig()?.['log-parameters']) {
+      if (this.getConfig()!['log-parameters']) {
         this.logger.info(sql, parameters);
       } else {
         this.logger.info(sql);

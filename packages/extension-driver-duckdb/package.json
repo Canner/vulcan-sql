@@ -23,6 +23,6 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@vulcan-sql/core": "0.x"
+    "@vulcan-sql/core": ">= 0.1.0 || >= 0.1.0-alpha.1"
   }
 }
