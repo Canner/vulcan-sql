@@ -1,5 +1,5 @@
 
-.PHONY: install build start pkg-core pkg-build pkg-serve pkg-cli clean
+.PHONY: install build start pkg-core pkg-build pkg-serve pkg-cli clean pkg-extension-driver-duckdb
 
 # start vulcan server (default goal)
 start: install build test-data/moma.db ../../node_modules
@@ -7,14 +7,11 @@ start: install build test-data/moma.db ../../node_modules
 
 # install node modules and like playground extensions
 install:
-	@yarn; \
-	cd ./playground-exts; \
-	yarn link; \
-	cd ..; \
-	yarn link "playground-exts"
+	@yarn;
 
 # build the required packages
-build: pkg-core pkg-build pkg-serve pkg-cli
+build: pkg-core pkg-build pkg-serve pkg-cli pkg-extension-driver-duckdb
+
 
 # build for core pakge
 pkg-core: ../../node_modules
@@ -39,6 +36,14 @@ pkg-serve: ../../node_modules
 	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
 	rm -rf ./labs/playground1/node_modules/@vulcan-sql/serve; \
 	cp -R ./dist/packages/serve ./labs/playground1/node_modules/@vulcan-sql
+
+# build for extension-driver-duckdb pakge
+pkg-extension-driver-duckdb: ../../node_modules
+	@cd ../..; \
+	yarn nx build extension-driver-duckdb; \
+	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
+	rm -rf ./labs/playground1/node_modules/@vulcan-sql/extension-driver-duckdb; \
+	cp -R ./dist/packages/extension-driver-duckdb ./labs/playground1/node_modules/@vulcan-sql
 
 # build and install for cli pakge
 pkg-cli: ../../node_modules

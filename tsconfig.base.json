@@ -69,13 +69,17 @@
       "@vulcan-sql/extension-debug-tools": [
         "packages/extension-debug-tools/src/index.ts"
       ],
+      "@vulcan-sql/extension-driver-duckdb": [
+        "packages/extension-driver-duckdb/src/index.ts"
+      ],
       "@vulcan-sql/integration-testing": [
         "packages/integration-testing/src/index"
       ],
       "@vulcan-sql/serve": ["packages/serve/src/index"],
       "@vulcan-sql/serve/app": ["packages/serve/src/lib/app.ts"],
+      "@vulcan-sql/serve/auth": ["packages/serve/src/lib/auth/index"],
+      "@vulcan-sql/serve/auth/*": ["packages/serve/src/lib/auth/*"],
       "@vulcan-sql/serve/containers": ["packages/serve/src/containers/index"],
-      "@vulcan-sql/serve/types": ["packages/serve/src/containers/types"],
       "@vulcan-sql/serve/loader": ["packages/serve/src/lib/loader"],
       "@vulcan-sql/serve/middleware": [
         "packages/serve/src/lib/middleware/index"
@@ -95,11 +99,10 @@
       ],
       "@vulcan-sql/serve/route": ["packages/serve/src/lib/route/index"],
       "@vulcan-sql/serve/route/*": ["packages/serve/src/lib/route/*"],
+      "@vulcan-sql/serve/types": ["packages/serve/src/containers/types"],
       "@vulcan-sql/serve/utils": ["packages/serve/src/lib/utils/index"],
       "@vulcan-sql/serve/utils/*": ["packages/serve/src/lib/utils/*"],
-      "@vulcan-sql/test-utility": ["packages/test-utility/src/index"],
-      "@vulcan-sql/serve/auth": ["packages/serve/src/lib/auth/index"],
-      "@vulcan-sql/serve/auth/*": ["packages/serve/src/lib/auth/*"]
+      "@vulcan-sql/test-utility": ["packages/test-utility/src/index"]
     }
   },
   "exclude": ["node_modules", "tmp"]

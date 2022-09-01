@@ -6,6 +6,7 @@
     "core": "packages/core",
     "extension-dbt": "packages/extension-dbt",
     "extension-debug-tools": "packages/extension-debug-tools",
+    "extension-driver-duckdb": "packages/extension-driver-duckdb",
     "integration-testing": "packages/integration-testing",
     "serve": "packages/serve",
     "test-utility": "packages/test-utility"
