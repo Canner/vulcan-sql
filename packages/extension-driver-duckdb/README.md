@@ -1,11 +1,29 @@
 # extension-driver-duckdb
 
-This library was generated with [Nx](https://nx.dev).
+[Duckdb](https://duckdb.org/) driver for Vulcan SQL
 
-## Building
+## Install
 
-Run `nx build extension-driver-duckdb` to build the library.
+1. Install package
 
-## Running unit tests
+   ```sql
+   npm i @vulcan-sql/extension-driver-duckdb
+   ```
 
-Run `nx test extension-driver-duckdb` to execute the unit tests via [Jest](https://jestjs.io).
+2. Update `vulcan.yaml`
+
+   ```yaml
+   extensions:
+     duckdb: '@vulcan-sql/extension-driver-duckdb'
+
+   executor:
+     type: 'duckdb'
+
+   duckdb:
+     # Optional: Path to your persistent DB, if this value is not set, we use in-memory database. (default: ":memory:")
+     persistent-path: 'path-to-a-folder'
+     # Optional: Whether log query requests (default: false)
+     log-queries: false
+     # Optional: Whether log query requests' parameters, please be aware that query parameters might contain sensitive data (default: false)
+     log-parameters: false
+   ```

@@ -1,6 +1,6 @@
 {
   "name": "@vulcan-sql/extension-driver-duckdb",
-  "description": "duckbe driver for Vulcan SQL",
+  "description": "duckdb driver for Vulcan SQL",
   "version": "0.1.0-alpha.1",
   "type": "commonjs",
   "publishConfig": {
