@@ -32,7 +32,7 @@ beforeAll(async () => {
       `insert into users values(${i + 4}, 'user${i}', 18000, false);`
     );
   }
-});
+}, 20000); // Inserting test data might takes some time
 
 afterAll(async () => {
   if (fs.existsSync(testFile)) fs.unlinkSync(testFile);
