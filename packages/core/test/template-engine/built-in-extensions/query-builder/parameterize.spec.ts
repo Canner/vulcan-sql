@@ -1,3 +1,4 @@
+import { arrayToStream } from '@vulcan-sql/core';
 import { createTestCompiler } from '../../testCompiler';
 
 const queryTest = async (
@@ -9,7 +10,12 @@ const queryTest = async (
   // Arrange
   const { compiler, loader, builder, executor } = await createTestCompiler();
   const { compiledData } = await compiler.compile(template);
-  builder.value.onFirstCall().resolves([{ id: 1, name: 'freda' }]);
+  builder.value
+    .onFirstCall()
+    .resolves({
+      getColumns: () => [],
+      getData: () => arrayToStream([{ id: 1, name: 'freda' }]),
+    });
   // Action
   loader.setSource('test', compiledData);
   await compiler.execute('test', {

@@ -1,11 +1,15 @@
-import { DataQueryBuilder } from '@vulcan-sql/core/data-query';
 import {
+  DataResult,
   FilterRunner,
   FilterRunnerTransformOptions,
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
-import { Readable } from 'stream';
+import { streamToArray } from '@vulcan-sql/core/utils';
 import { EXECUTE_FILTER_NAME } from './constants';
+
+const isDataResult = (response: any): response is DataResult => {
+  return response.getColumns && response.getData;
+};
 
 @VulcanInternalExtension()
 export class ExecutorRunner extends FilterRunner {
@@ -14,25 +18,14 @@ export class ExecutorRunner extends FilterRunner {
   public async transform({
     value: builder,
   }: FilterRunnerTransformOptions): Promise<any> {
-    // if input value is not query builder, call the function .value and to nothing.
-    if (!(builder instanceof DataQueryBuilder)) return builder.value();
+    const response = await builder.value();
 
-    const { getData } = await builder.value();
+    // if input value is not a query builder, call the function .value and do nothing.
+    if (!isDataResult(response)) return response;
+
+    const { getData } = response;
     const dataStream = getData();
-    const data = this.downloadStream(dataStream);
+    const data = await streamToArray(dataStream);
     return data;
-  }
-
-  private async downloadStream(stream: Readable) {
-    const rows: any[] = [];
-    return new Promise<any[]>((resolve, reject) => {
-      stream.on('data', (data) => {
-        rows.push(data);
-      });
-      stream.on('end', () => {
-        resolve(rows);
-      });
-      stream.on('error', (err) => reject(err));
-    });
   }
 }

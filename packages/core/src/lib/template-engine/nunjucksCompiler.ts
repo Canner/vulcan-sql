@@ -21,6 +21,7 @@ import {
   TagRunner,
   FilterBuilder,
   FilterRunner,
+  DataResult,
 } from '@vulcan-sql/core/models';
 
 @injectable()
@@ -78,7 +79,7 @@ export class NunjucksCompiler implements Compiler {
     templateName: string,
     data: T,
     pagination?: Pagination
-  ): Promise<any> {
+  ): Promise<DataResult> {
     await this.initializeExtensions();
     const builder = await this.renderAndGetMainBuilder(templateName, data);
     if (pagination) builder.paginate(pagination);
