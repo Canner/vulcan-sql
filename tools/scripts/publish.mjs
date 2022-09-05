@@ -7,7 +7,8 @@ if (process.env.READY_FOR_PUBLISH !== 'true') {
 
 // Executing publish script: node path/to/publish.mjs {tag}
 // Default "tag" to "alpha" so we won't publish the "latest" tag by accident.
-const [, , tag = 'alpha'] = process.argv;
+let [, , tag] = process.argv;
+if (!tag || tag === 'undefined') tag = 'alpha';
 
 // Execute "npm publish" to publish
 execSync(`npm publish --tag ${tag}`);
