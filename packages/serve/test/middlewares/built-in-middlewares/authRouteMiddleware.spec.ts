@@ -182,4 +182,30 @@ describe('Test auth route middleware', () => {
     expect(response.body).toEqual(expected);
     server.close();
   });
+
+  it('Should failed when call GET /auth?type=a3 but auth identity "a3" failed', async () => {
+    // Arrange
+    const error = new Error('please provide "token"');
+    const expected = {
+      message: error.message,
+    };
+    const stubAuthenticator = sinon.stubInterface<BaseAuthenticator<any>>();
+    stubAuthenticator.authIdentity.rejects(error);
+    stubAuthenticator.getExtensionId.returns('a3');
+    const server = await runServer(
+      { a3: {} },
+      {
+        a3: stubAuthenticator,
+      }
+    );
+
+    // Act
+    const request = supertest(server).get(`/auth?type=a3`);
+    const response = await request;
+
+    // Assert
+    expect(response.statusCode).toEqual(400);
+    expect(response.body).toEqual(expected);
+    server.close();
+  });
 });

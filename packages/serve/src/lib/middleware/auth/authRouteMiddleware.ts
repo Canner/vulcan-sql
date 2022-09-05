@@ -98,9 +98,15 @@ export class AuthRouteMiddleware extends BuiltInMiddleware<AuthOptions> {
         return;
       }
       // type does not support
-      const result = await this.authenticators[type].authIdentity(context);
-      context.body = result;
-      return;
+      try {
+        const result = await this.authenticators[type].authIdentity(context);
+        context.body = result;
+      } catch (err) {
+        context.status = 400;
+        context.body = {
+          message: (err as Error).message,
+        };
+      }
     });
   }
 }
