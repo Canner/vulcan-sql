@@ -7,14 +7,24 @@ import {
   SimpleTokenOptions,
 } from '@vulcan-sql/serve/auth';
 import { AuthResult, AuthStatus, KoaContext } from '@vulcan-sql/serve/models';
+import { ParsedUrlQuery } from 'querystring';
 
-const authenticate = async (
+const authCredential = async (
   ctx: KoaContext,
   options: any
 ): Promise<AuthResult> => {
   const authenticator = new SimpleTokenAuthenticator({ options }, '');
   await authenticator.activate();
-  return await authenticator.authenticate(ctx);
+  return await authenticator.authCredential(ctx);
+};
+
+const authIdentity = async (
+  ctx: KoaContext,
+  options: any
+): Promise<Record<string, any>> => {
+  const authenticator = new SimpleTokenAuthenticator({ options }, '');
+  await authenticator.activate();
+  return await authenticator.authIdentity(ctx);
 };
 
 describe('Test simple-token authenticator', () => {
@@ -55,13 +65,13 @@ describe('Test simple-token authenticator', () => {
       } as KoaContext;
 
       // Act
-      const result = await authenticate(ctx, options);
+      const result = await authCredential(ctx, options);
 
       // Assert
       expect(result).toEqual(expectIncorrect);
     }
   );
-  it('Test to auth failed when request header not exist "authorization" key', async () => {
+  it('Test to auth credential failed when request header not exist "authorization" key', async () => {
     // Arrange
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
@@ -74,13 +84,13 @@ describe('Test simple-token authenticator', () => {
     } as KoaContext;
 
     // Act
-    const result = await authenticate(ctx, { 'simple-token': userLists });
+    const result = await authCredential(ctx, { 'simple-token': userLists });
 
     // Assert
     expect(result).toEqual(expectIncorrect);
   });
 
-  it('Should auth failed when request header "authorization" not start with "simple-token"', async () => {
+  it('Should auth credential failed when request header "authorization" not start with "simple-token"', async () => {
     // Arrange
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
@@ -94,13 +104,13 @@ describe('Test simple-token authenticator', () => {
     } as KoaContext;
 
     // Act
-    const result = await authenticate(ctx, { 'simple-token': userLists });
+    const result = await authCredential(ctx, { 'simple-token': userLists });
 
     // Assert
     expect(result).toEqual(expectIncorrect);
   });
 
-  it('Should auth failed when request header "authorization" not matched in empty simple-token" options', async () => {
+  it('Should auth credential failed when request header "authorization" not matched in empty simple-token" options', async () => {
     // Arrange
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
@@ -114,7 +124,7 @@ describe('Test simple-token authenticator', () => {
     };
 
     // Act
-    const result = await authenticate(ctx, { 'simple-token': userLists });
+    const result = await authCredential(ctx, { 'simple-token': userLists });
 
     // Assert
     expect(result).toEqual(expectFailed);
@@ -128,7 +138,7 @@ describe('Test simple-token authenticator', () => {
     ['simple-token', userLists[0]],
     ['simple-token', userLists[1]],
   ])(
-    'Should auth successful when request header "authorization" matched in "simple-token" options',
+    'Should auth credential successful when request header "authorization" matched in "simple-token" options',
     async (authScheme, userData) => {
       // Arrange
       const ctx = {
@@ -152,7 +162,7 @@ describe('Test simple-token authenticator', () => {
       } as AuthResult;
 
       // Act
-      const result = await authenticate(ctx, {
+      const result = await authCredential(ctx, {
         'simple-token': userLists,
       });
 
@@ -160,4 +170,71 @@ describe('Test simple-token authenticator', () => {
       expect(result).toEqual(expected);
     }
   );
+
+  it('Should auth identity successful when request matched in "simple-token" options', async () => {
+    // Arrange
+    const token = Buffer.from('user1:test1').toString('base64');
+    const ctx = {
+      ...sinon.stubInterface<KoaContext>(),
+      request: {
+        ...sinon.stubInterface<Request>(),
+        query: {
+          ...sinon.stubInterface<ParsedUrlQuery>(),
+          token: token,
+        },
+      },
+    } as KoaContext;
+
+    // Act
+    const result = await authIdentity(ctx, {
+      'simple-token': userLists,
+    });
+
+    // Assert
+    expect(result['token']).toEqual(token);
+  });
+
+  it('Should auth identity failed when request not matched in "simple-token" options', async () => {
+    // Arrange
+    const expected = new Error('authenticate user identity failed.');
+    const token = Buffer.from('user3:test3').toString('base64');
+    const ctx = {
+      ...sinon.stubInterface<KoaContext>(),
+      request: {
+        ...sinon.stubInterface<Request>(),
+        query: {
+          ...sinon.stubInterface<ParsedUrlQuery>(),
+          token: token,
+        },
+      },
+    } as KoaContext;
+
+    // Act
+    const action = authIdentity(ctx, {
+      'simple-token': userLists,
+    });
+
+    // Assert
+    expect(action).rejects.toThrow(expected);
+  });
+
+  it('Should auth identity failed when miss request field', async () => {
+    // Arrange
+    const expected = new Error('please provide "token".');
+    const ctx = {
+      ...sinon.stubInterface<KoaContext>(),
+      request: {
+        ...sinon.stubInterface<Request>(),
+        query: {
+          ...sinon.stubInterface<ParsedUrlQuery>(),
+        },
+      },
+    };
+    // Act
+    const action = authIdentity(ctx, {
+      'simple-token': userLists,
+    });
+    // Assert
+    expect(action).rejects.toThrow(expected);
+  });
 });

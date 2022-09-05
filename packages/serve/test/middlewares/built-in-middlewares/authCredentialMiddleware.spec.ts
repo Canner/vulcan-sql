@@ -1,5 +1,5 @@
 import * as sinon from 'ts-sinon';
-import { AuthMiddleware } from '@vulcan-sql/serve/middleware';
+import { AuthCredentialMiddleware } from '@vulcan-sql/serve/middleware';
 import {
   AuthResult,
   AuthStatus,
@@ -13,7 +13,7 @@ import {
   SimpleTokenAuthenticator,
 } from '@vulcan-sql/serve';
 
-describe('Test auth middlewares', () => {
+describe('Test auth credential middleware', () => {
   afterEach(() => {
     sinon.default.restore();
   });
@@ -24,7 +24,7 @@ describe('Test auth middlewares', () => {
       ...sinon.stubInterface<KoaContext>(),
     };
     // Act
-    const middleware = new AuthMiddleware(
+    const middleware = new AuthCredentialMiddleware(
       {
         enabled: false,
       },
@@ -40,27 +40,25 @@ describe('Test auth middlewares', () => {
   });
 
   it.each([[{}], [undefined]])(
-    'Should return to skip auth middleware when options = %p',
+    'Should throw error when options = %p',
     async (options) => {
       // Arrange
+      const expected = new Error(
+        'please set at least one auth type and user credential when you enable the "auth" options.'
+      );
       const ctx: KoaContext = {
         ...sinon.stubInterface<KoaContext>(),
       };
       // Act
-      const middleware = new AuthMiddleware(
-        {
-          options: options,
-        },
+      const middleware = new AuthCredentialMiddleware(
+        { options: options },
         '',
         []
       );
 
-      // spy the async function to do test
-      const spy = jest.spyOn(lodash, 'isEmpty');
+      const action = middleware.handle(ctx, async () => Promise.resolve());
 
-      await middleware.handle(ctx, async () => Promise.resolve());
-
-      expect(spy).toHaveBeenCalled();
+      expect(action).rejects.toThrow(expected);
     }
   );
 
@@ -81,7 +79,7 @@ describe('Test auth middlewares', () => {
 
       // stub authenticator
       authenticator.getExtensionId.returns(type);
-      authenticator.authenticate.resolves({
+      authenticator.authCredential.resolves({
         status: AuthStatus.SUCCESS,
         type,
         user: {
@@ -98,7 +96,7 @@ describe('Test auth middlewares', () => {
       };
 
       // Act
-      const middleware = new AuthMiddleware(
+      const middleware = new AuthCredentialMiddleware(
         { options: { [type]: options } },
         '',
         [authenticator]
@@ -127,7 +125,7 @@ describe('Test auth middlewares', () => {
 
       // stub authenticator
       authenticator.getExtensionId.returns(type);
-      authenticator.authenticate.resolves({
+      authenticator.authCredential.resolves({
         status: AuthStatus.FAIL,
         type,
         message: expected.message,
@@ -140,7 +138,7 @@ describe('Test auth middlewares', () => {
       };
 
       // Act
-      const middleware = new AuthMiddleware(
+      const middleware = new AuthCredentialMiddleware(
         { options: { [type]: options } },
         '',
         [authenticator]
@@ -161,13 +159,13 @@ describe('Test auth middlewares', () => {
     'Should auth successful when request match  authorization',
     async (type, authenticator) => {
       // Arrange
-      const expected = new Error('all types of authentication failed.');
+      const expected = new Error('all types of authenticator failed.');
 
       const options = {};
 
       // stub authenticator
       authenticator.getExtensionId.returns(type);
-      authenticator.authenticate.resolves({
+      authenticator.authCredential.resolves({
         status: AuthStatus.INDETERMINATE,
         type,
       } as AuthResult);
@@ -179,7 +177,7 @@ describe('Test auth middlewares', () => {
       };
 
       // Act
-      const middleware = new AuthMiddleware(
+      const middleware = new AuthCredentialMiddleware(
         { options: { [type]: options } },
         '',
         [authenticator]

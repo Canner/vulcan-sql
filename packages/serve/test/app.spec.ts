@@ -55,7 +55,13 @@ describe('Test vulcan server for practicing middleware', () => {
         },
       })
     );
-    await container.loadAsync(extensionModule({} as any));
+    await container.loadAsync(
+      extensionModule({
+        auth: {
+          enabled: false,
+        },
+      } as any)
+    );
 
     container.bind(CORE_TYPES.ValidatorLoader).to(ValidatorLoader);
     container.bind(TYPES.PaginationTransformer).to(PaginationTransformer);
@@ -286,6 +292,9 @@ describe('Test vulcan server for calling restful APIs', () => {
           enabled: false,
         },
         'response-format': {
+          enabled: false,
+        },
+        auth: {
           enabled: false,
         },
       } as any)

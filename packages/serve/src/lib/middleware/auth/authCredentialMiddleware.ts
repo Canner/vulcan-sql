@@ -7,15 +7,11 @@ import {
   BuiltInMiddleware,
   BaseAuthenticator,
   AuthStatus,
+  AuthOptions,
 } from '@vulcan-sql/serve/models';
 import { TYPES } from '@vulcan-sql/serve/containers';
 
-export interface AuthOptions {
-  // different auth type settings
-  [authType: string]: any;
-}
-
-export type AuthenticatorMap = {
+type AuthenticatorMap = {
   [name: string]: BaseAuthenticator<any>;
 };
 
@@ -23,7 +19,7 @@ export type AuthenticatorMap = {
  *  It seek the 'auth' module name to match data through built-in and customized authenticator by BaseAuthenticator
  * */
 @VulcanInternalExtension('auth')
-export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
+export class AuthCredentialMiddleware extends BuiltInMiddleware<AuthOptions> {
   private authenticators: AuthenticatorMap;
 
   constructor(
@@ -43,8 +39,8 @@ export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
     );
   }
   public override async onActivate() {
-    for (const authId of Object.keys(this.authenticators)) {
-      const authenticator = this.authenticators[authId];
+    for (const name of Object.keys(this.authenticators)) {
+      const authenticator = this.authenticators[name];
       if (authenticator.activate) await authenticator.activate();
     }
   }
@@ -54,14 +50,17 @@ export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
     if (!this.enabled) return next();
 
     const options = (this.getOptions() as AuthOptions) || {};
-    if (isEmpty(options)) return next();
+    if (isEmpty(options))
+      throw new Error(
+        'please set at least one auth type and user credential when you enable the "auth" options.'
+      );
 
-    // pass current context to authenticate different users of auth type with with config
+    // pass current context to auth token for users
     for (const name of Object.keys(this.authenticators)) {
       // skip the disappeared auth type name in options
       if (!options[name]) continue;
-      // authenticate
-      const result = await this.authenticators[name].authenticate(context);
+      // auth token
+      const result = await this.authenticators[name].authCredential(context);
       // if state is indeterminate, change to next authentication
       if (result.status === AuthStatus.INDETERMINATE) continue;
       // if state is failed, return directly
@@ -69,7 +68,7 @@ export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
         context.status = 401;
         context.body = {
           type: result.type,
-          message: result.message || 'authentication failed',
+          message: result.message || 'verify token failed',
         };
         return;
       }
@@ -79,6 +78,6 @@ export class AuthMiddleware extends BuiltInMiddleware<AuthOptions> {
       return;
     }
 
-    throw new Error('all types of authentication failed.');
+    throw new Error('all types of authenticator failed.');
   }
 }

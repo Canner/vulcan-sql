@@ -48,6 +48,9 @@ const projectConfig: ServeConfig & IBuildOptions = {
   'enforce-https': {
     enabled: false,
   },
+  auth: {
+    enabled: false,
+  },
   port: faker.datatype.number({ min: 20000, max: 30000 }),
 };
 

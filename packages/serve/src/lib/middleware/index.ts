@@ -2,13 +2,13 @@ export * from './corsMiddleware';
 export * from './requestIdMiddleware';
 export * from './accessLogMiddleware';
 export * from './rateLimitMiddleware';
-export * from './authMiddleware';
+export * from './auth';
 export * from './response-format';
 export * from './enforceHttpsMiddleware';
 export * from './docRouterMiddleware';
 
 import { CorsMiddleware } from './corsMiddleware';
-import { AuthMiddleware } from './authMiddleware';
+import { AuthRouteMiddleware, AuthCredentialMiddleware } from './auth';
 import { RateLimitMiddleware } from './rateLimitMiddleware';
 import { RequestIdMiddleware } from './requestIdMiddleware';
 import { AccessLogMiddleware } from './accessLogMiddleware';
@@ -24,7 +24,8 @@ export const BuiltInRouteMiddlewares: ClassType<ExtensionBase>[] = [
   EnforceHttpsMiddleware,
   RequestIdMiddleware,
   RateLimitMiddleware,
-  AuthMiddleware,
+  AuthRouteMiddleware,
+  AuthCredentialMiddleware,
   ResponseFormatMiddleware,
   DocRouterMiddleware,
 ];

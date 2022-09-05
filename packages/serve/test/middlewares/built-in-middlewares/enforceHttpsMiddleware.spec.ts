@@ -11,7 +11,7 @@ import { ServeConfig } from '@vulcan-sql/serve/models';
 
 const runServer = (config: Omit<ServeConfig, 'artifact' | 'template'>) => {
   // Arrange
-  const port = faker.internet.port();
+  const port = faker.datatype.number({ min: 20000, max: 30000 });
   const app = new Koa();
   const router = new KoaRouter();
   const middleware = new EnforceHttpsMiddleware(config['enforce-https'], '');
