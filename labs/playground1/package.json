@@ -1,0 +1,8 @@
+{
+  "name": "my-first-vulcan-project",
+  "dependencies": {
+    "duckdb": "^0.4.0",
+    "lodash": "^4.17.21",
+    "redoc": "^2.0.0-rc.76"
+  }
+}

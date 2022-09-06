@@ -1,0 +1,7 @@
+urlPath: /artist/:id
+request:
+  - fieldName: id
+    fieldIn: path
+    description: constituent id
+    validators:
+      - required

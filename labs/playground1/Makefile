@@ -1,0 +1,68 @@
+
+.PHONY: install build start pkg-core pkg-build pkg-serve pkg-cli clean
+
+# start vulcan server (default goal)
+start: install build test-data/moma.db ../../node_modules
+	@vulcan start
+
+# install node modules and like playground extensions
+install:
+	@yarn; \
+	cd ./playground-exts; \
+	yarn link; \
+	cd ..; \
+	yarn link "playground-exts"
+
+# build the required packages
+build: pkg-core pkg-build pkg-serve pkg-cli
+
+# build for core pakge
+pkg-core: ../../node_modules
+	@cd ../..; \
+	yarn nx build core; \
+	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
+	rm -rf ./labs/playground1/node_modules/@vulcan-sql/core; \
+	cp -R ./dist/packages/core ./labs/playground1/node_modules/@vulcan-sql
+
+# build for build pakge
+pkg-build: ../../node_modules
+	@cd ../..; \
+	yarn nx build build; \
+	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
+	rm -rf ./labs/playground1/node_modules/@vulcan-sql/build; \
+	cp -R ./dist/packages/build ./labs/playground1/node_modules/@vulcan-sql
+
+# build for serve pakge
+pkg-serve: ../../node_modules
+	@cd ../..; \
+	yarn nx build serve; \
+	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
+	rm -rf ./labs/playground1/node_modules/@vulcan-sql/serve; \
+	cp -R ./dist/packages/serve ./labs/playground1/node_modules/@vulcan-sql
+
+# build and install for cli pakge
+pkg-cli: ../../node_modules
+	@cd ../..; \
+	yarn nx install cli;
+
+test-data/artists.csv:
+	@echo "downloading artists.csv ..."; \
+	curl -s -o "test-data/artists.csv" "https://media.githubusercontent.com/media/MuseumofModernArt/collection/master/Artists.csv"
+
+test-data/artworks.csv:
+	@echo "downloading artworks.csv ..."; \
+	curl -s -o "test-data/artworks.csv" "https://media.githubusercontent.com/media/MuseumofModernArt/collection/master/Artworks.csv"
+
+test-data/moma.db: test-data/artists.csv test-data/artworks.csv
+	@cd test-data; \
+	node getdata.js
+
+# install node modules for parent folder
+../../node_modules: ../../package.json
+	@cd ../..; \
+	yarn
+
+clean:
+	@rm -rf node_modules; \
+	rm -rf test-data/*.csv; \
+	rm -rf test-data/moma.db
