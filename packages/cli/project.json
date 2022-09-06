@@ -85,6 +85,37 @@
           "target": "build"
         }
       ]
+    },
+    "build:docker": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "docker build -f ./packages/cli/Dockerfile -t vulcan-sql/cli .",
+            "forwardAllArgs": false
+          }
+        ],
+        "cwd": "."
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "publish:docker": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node ../../../tools/scripts/publishDocker.mjs {args.tag}",
+        "cwd": "dist/packages/cli"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build:docker"
+        }
+      ]
     }
   },
   "tags": []
