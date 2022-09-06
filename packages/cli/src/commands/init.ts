@@ -35,10 +35,14 @@ const validateAnswer = (name: string) => (input: string) => {
 };
 
 export const createProject = async (
+  initPath: string | undefined,
   options: InitCommandOptions
 ): Promise<void> => {
-  const projectPath = path.resolve(process.cwd(), options.projectName);
-  await fs.mkdir(projectPath);
+  const projectPath = path.resolve(
+    process.cwd(),
+    initPath || options.projectName
+  );
+  await fs.mkdir(projectPath, { recursive: true });
   const existedFiles = await fs.readdir(projectPath);
   if (existedFiles.length > 0)
     throw new Error(`Path ${projectPath} is not empty`);
@@ -131,6 +135,7 @@ const listFiles = async (pattern: string) => {
 };
 
 export const handleInit = async (
+  initPath: string | undefined,
   options: Partial<InitCommandOptions>
 ): Promise<void> => {
   const question = [];
@@ -153,5 +158,5 @@ export const handleInit = async (
     ...(await inquirer.prompt(question)),
   };
 
-  await createProject(options as InitCommandOptions);
+  await createProject(initPath, options as InitCommandOptions);
 };
