@@ -100,6 +100,7 @@ export class ReqTagBuilder extends TagBuilder {
     if (!this.hasMainBuilder) {
       this.wrapOutputWithBuilder();
     }
+    this.reset();
   }
 
   public override getMetadata() {
@@ -146,5 +147,11 @@ export class ReqTagBuilder extends TagBuilder {
     args.addChild(new nunjucks.nodes.Literal(0, 0, 'true'));
     const builder = this.createAsyncExtensionNode(args, originalChildren);
     this.root.children = [builder];
+  }
+
+  private reset() {
+    this.variableList.clear();
+    this.root = undefined;
+    this.hasMainBuilder = false;
   }
 }

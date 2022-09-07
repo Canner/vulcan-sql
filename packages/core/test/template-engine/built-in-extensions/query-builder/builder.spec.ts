@@ -127,3 +127,21 @@ it('Extension should throw an error if there are multiple builders using same na
     `We can't declare multiple builder with same name. Duplicated name: user (declared at 1:7 and 2:7)`
   );
 });
+
+it('Extension should reset after compiled each template', async () => {
+  // Arrange
+  const { compiler } = await createTestCompiler();
+  compiler.compile(
+    `
+  {% req user main %} select * from users; {% endreq %}
+  `
+  );
+  // Act, Arrange
+  await expect(
+    compiler.compile(
+      `
+    {% req user main %} select * from users; {% endreq %}
+    `
+    )
+  ).resolves.not.toThrow();
+});
