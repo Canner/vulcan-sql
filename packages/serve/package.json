@@ -1,6 +1,6 @@
 {
   "name": "@vulcan-sql/serve",
-  "description": "Vulcan package for serving projects",
+  "description": "VulcanSQL package for serving projects",
   "version": "0.1.0-alpha.1",
   "type": "commonjs",
   "publishConfig": {
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Canner/vulcan.git"
+    "url": "https://github.com/Canner/vulcan-sql.git"
   },
   "license": "MIT",
   "peerDependencies": {

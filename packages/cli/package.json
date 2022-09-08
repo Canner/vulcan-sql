@@ -1,6 +1,6 @@
 {
   "name": "@vulcan-sql/cli",
-  "description": "CLI tools for Vulcan",
+  "description": "CLI tools for VulcanSQL",
   "version": "0.1.0-alpha.1",
   "type": "commonjs",
   "bin": {
@@ -21,7 +21,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Canner/vulcan.git"
+    "url": "https://github.com/Canner/vulcan-sql.git"
   },
   "license": "MIT"
 }
