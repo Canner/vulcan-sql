@@ -13,10 +13,10 @@ if (!packageName) throw new Error(`Can't find package name`);
 const version = getVersionByArguments();
 const tag = getReleaseTag();
 
-// run docker build xxx -t vulcan-sql/<package-name> before publish
+// run docker build xxx -t vulcan-sql/<package-name>:<version> before publish
 // we tag it with url and version
-execSync(`docker tag vulcan-sql/${packageName} ghcr.io/canner/vulcan-sql/${packageName}:${version}`);
-execSync(`docker tag vulcan-sql/${packageName} ghcr.io/canner/vulcan-sql/${packageName}:${tag}`);
+execSync(`docker tag vulcan-sql/${packageName}:${version} ghcr.io/canner/vulcan-sql/${packageName}:${version}`);
+execSync(`docker tag vulcan-sql/${packageName}:${version} ghcr.io/canner/vulcan-sql/${packageName}:${tag}`);
 // push
 execSync(`docker push ghcr.io/canner/vulcan-sql/${packageName}:${version}`);
 execSync(`docker push ghcr.io/canner/vulcan-sql/${packageName}:${tag}`);

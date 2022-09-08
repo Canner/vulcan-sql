@@ -89,13 +89,8 @@
     "build:docker": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "commands": [
-          {
-            "command": "docker build -f ./packages/cli/Dockerfile -t vulcan-sql/cli .",
-            "forwardAllArgs": false
-          }
-        ],
-        "cwd": "."
+        "command": "node ../../../tools/scripts/buildDocker.mjs {args.tag}",
+        "cwd": "dist/packages/cli"
       },
       "dependsOn": [
         {
