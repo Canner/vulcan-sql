@@ -8,6 +8,11 @@ executors:
       # https://github.com/facebook/jest/issues/11956
       - image: cimg/node:16.10.0
 
+parameters:
+  workflow_name:
+    type: string
+    default: 'none'
+
 # Set some environment variables like the base SHA of PRs ...etc.
 set_env: &set_env
   name: Setup Environment Variables
@@ -26,11 +31,21 @@ set_env: &set_env
       echo 'export AFFECTED_ARGS="--head=HEAD --base=${CIRCLE_PR_BASE_SHA}"' >> $BASH_ENV
 
     elif [ "$CIRCLE_BRANCH" == "develop" ]; then
-      # Merge into develop branch, use main branch as the base.
+      # Use the last build commit if there is nightly-build tag
 
-      echo "Using main branch as the base"
-      echo 'export AFFECTED_ARGS="--head=HEAD --base=origin/main"' >> $BASH_ENV 
+      last_commit="$(git rev-list -n 1 tags/nightly-build || echo '')"
 
+      # Check whether the commit is on the target branch
+      if [ "$last_commit" != "" ] && [ "$(git merge-base $last_commit $CIRCLE_BRANCH)" == "$last_commit" ]; then
+        # use last build sha as the base.
+        echo "Using $last_commit as the base (last build)"
+        echo "export AFFECTED_ARGS=\"--head=HEAD --base=$last_commit\"" >> $BASH_ENV
+      else
+        # use main branch as the base.
+        echo "Using main branch as the base"
+        echo 'export AFFECTED_ARGS="--head=HEAD --base=origin/main"' >> $BASH_ENV 
+      fi
+      
     else
 
       echo "Testing/Linting on all packages"
@@ -136,9 +151,48 @@ jobs:
               echo "No coverage report found."
             fi
 
+  nightly-build:
+    executor: node-executor
+    steps:
+      - checkout
+      - run:
+          <<: *set_env
+      - restore_cache:
+          <<: *yarn_cache
+      # Setup remote docker to build image
+      # https://circleci.com/docs/building-docker-images
+      - setup_remote_docker
+      - run:
+          name: NPM publish
+          # running with yarn nx causes npm config issues
+          command: ./node_modules/.bin/nx affected --target=publish ${AFFECTED_ARGS} --tag dev
+          environment:
+            READY_FOR_PUBLISH: 'true'
+      - run:
+          name: Docker login
+          command: echo "${GITHUB_PAT}" | docker login ghcr.io -u ${GITHUB_USER} --password-stdin
+      - run:
+          name: Docker publish
+          command: yarn nx affected --target=publish:docker ${AFFECTED_ARGS} --tag dev
+          environment:
+            READY_FOR_PUBLISH: 'true'
+      # After a success build, move the tag nightly-build to HEAD
+      - run:
+          name: Move nightly-build tag
+          command: |
+            # delete remote tag
+            git push origin :refs/tags/nightly-build
+            # tag current HEAD
+            git tag -f nightly-build
+            # push tag
+            git push origin $CIRCLE_BRANCH --tags
+
 workflows:
   version: 2
   pr-check:
+    when:
+      not:
+        equal: [scheduled_pipeline, << pipeline.trigger_source >>]
     jobs:
       - install
       - lint:
@@ -147,3 +201,25 @@ workflows:
       - test:
           requires:
             - install
+  nightly-build:
+    when:
+      or:
+        - and:
+            - equal: [scheduled_pipeline, << pipeline.trigger_source >>]
+            - equal: ['nightly build', << pipeline.schedule.name >>]
+        - and:
+            - equal: [api, << pipeline.trigger_source >>]
+            - equal: ['nightly build', << pipeline.parameters.workflow_name >>]
+    jobs:
+      - install
+      - lint:
+          requires:
+            - install
+      - test:
+          requires:
+            - install
+      - nightly-build:
+          requires:
+            - install
+            - lint
+            - test

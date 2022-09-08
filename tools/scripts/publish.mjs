@@ -19,5 +19,7 @@ const packageJSON = JSON.parse(fs.readFileSync(packageJSONPath, 'utf-8'));
 packageJSON.version = version;
 fs.writeFileSync(packageJSONPath, JSON.stringify(packageJSON, null, 2), 'utf-8');
 
+// Set npm credential
+fs.writeFileSync('.npmrc', '//registry.npmjs.org/:_authToken=${NPM_TOKEN}', 'utf-8');
 // Execute "npm publish" to publish
 execSync(`npm publish --tag ${tag}`); 
