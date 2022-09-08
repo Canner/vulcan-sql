@@ -1,9 +1,9 @@
-# Playground 1 - Basic Vulcan project with MoMA dataset
+# Playground 1 - Basic VulcanSQL project with MoMA dataset
 
 This project contains these resources for testing your development:
 
-- Latest Vulcan packages that are built from local files.
-- Basic Vulcan configuration.
+- Latest VulcanSQL packages that are built from local files.
+- Basic VulcanSQL configuration.
 - In-memory data warehouse - [DuckDB](https://duckdb.org/) and its driver.
 - Testing data: [The Museum of Modern Art (MoMA)](https://github.com/MuseumofModernArt/collection).
 
@@ -14,7 +14,7 @@ cd ./lab/playground1
 make
 ```
 
-- This command installs Vulcan CLI too, you can use `vulcan start` instead of `make` if the source codes aren’t changed.
+- This command installs VulcanSQL CLI too, you can use `vulcan start` instead of `make` if the source codes aren’t changed.
 
 ## Testing Data
 

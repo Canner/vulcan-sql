@@ -9,8 +9,8 @@
   <a aria-label="NPM version" href="https://www.npmjs.com/package/@vulcan-sql/core">
     <img alt="" src="https://img.shields.io/npm/v/@vulcan-sql/core?color=orange&style=for-the-badge">
   </a>
-  <a aria-label="License" href="https://github.com/Canner/vulcan/blob/develop/LICENSE">
-    <img alt="" src="https://img.shields.io/github/license/canner/vulcan?color=orange&style=for-the-badge">
+  <a aria-label="License" href="https://github.com/Canner/vulcan-sql/blob/develop/LICENSE">
+    <img alt="" src="https://img.shields.io/github/license/canner/vulcan-sql?color=orange&style=for-the-badge">
   </a>
   <a aria-label="Join the community on GitHub" href="https://join.slack.com/t/vulcan-bhi6765/shared_invite/zt-1dzixpy38-pKrcewZ6eM3wSqAs6~is8Q">
     <img alt="" src="https://img.shields.io/badge/-JOIN%20THE%20COMMUNITY-orange?style=for-the-badge&logo=Slack&labelColor=black&logoWidth=20">
@@ -19,7 +19,7 @@
 
 > 🚀 Release in Sep 2022.
 
-## Why Vulcan
+## Why VulcanSQL
 > ⚡️ Data analyst / analytical engineers’ time should focus on important matters like data transformation and communicating with data consumers on high level.
 
 <p align="center">
@@ -32,9 +32,9 @@ Data analysts and analytical engineers often take lots of time helping data cons
   <img src="https://i.imgur.com/dn5kzXC.png" width="800" >
 </p>
 
-With Vulcan, we prepare what data consumers need for you. Imagine you can **unify the data access by building APIs instantly with just SQL. Authorization, validation, pagination features work out of the box.**
+With VulcanSQL, we prepare what data consumers need for you. Imagine you can **unify the data access by building APIs instantly with just SQL. Authorization, validation, pagination features work out of the box.**
 
-Vulcan also builds documentations and a self-serve catalog, so **data consumers can understand the data and get data from the tools they’re using all by themselves without using any SQL**.
+VulcanSQL also builds documentations and a self-serve catalog, so **data consumers can understand the data and get data from the tools they’re using all by themselves without using any SQL**.
 
 ## Features
 - Build API instantly with just SQL.
@@ -43,7 +43,7 @@ Vulcan also builds documentations and a self-serve catalog, so **data consumers 
 - API documentation is automatically built.
 - Self-serve API catalog for data consumers. A step-by-step guide to get data from Excel / Google spreadsheet, Zapier, Retool, etc.
 
-## How Vulcan works?
+## How VulcanSQL works?
 
 ### Step 1: Instant API with just SQL.
 <p align="center">
@@ -138,9 +138,9 @@ Response
 
 ### Step 2: Build self-serve documentation and catalog
 
-Vulcan will automatically build documentation and catalog.
+VulcanSQL will automatically build documentation and catalog.
 
-- **Catalog**: Vulcan will build a catalog page for data consumers. This page will consist of more clear information on data that is exposed as APIs. Description, Column information are all included.
+- **Catalog**: VulcanSQL will build a catalog page for data consumers. This page will consist of more clear information on data that is exposed as APIs. Description, Column information are all included.
 
 <p align="center">
   <img src="https://i.imgur.com/qz6swW2.png" width="800" >
@@ -150,7 +150,7 @@ Vulcan will automatically build documentation and catalog.
   <img src="https://i.imgur.com/YZFczO3.png" width="800" >
 </p>
 
-- **API Documentation**: Vulcan will build a swagger page for backend engineers.
+- **API Documentation**: VulcanSQL will build a swagger page for backend engineers.
 
 <p align="center">
   <img src="https://i.imgur.com/oH9UEoD.png" width="800" >
@@ -183,18 +183,18 @@ On API catalog page, you can preview data here and connect from your own framewo
     
 - brew
     ```sql
-    brew install vulcan
+    brew install vulcan-sql
     ```
     
 
 ## Quickstart
 
-1. Initialize a Vulcan project
+1. Initialize a VulcanSQL project
     ```bash
     vulcan init --name my-first-vulcan-project && cd my-first-vulcan-project
     ```
     
-2. Start Vulcan server.
+2. Start VulcanSQL server.
     ```bash
     vulcan start --watch
     ```
@@ -233,5 +233,5 @@ On API catalog page, you can preview data here and connect from your own framewo
 
 ## Community
 * Welcome to our [Slack](https://join.slack.com/t/vulcan-bhi6765/shared_invite/zt-1dzixpy38-pKrcewZ6eM3wSqAs6~is8Q) to give us feedbacks!
-* If any issues, please visit [Github Issues](https://github.com/Canner/vulcan/issues)
+* If any issues, please visit [Github Issues](https://github.com/Canner/vulcan-sql/issues)
 
