@@ -44,3 +44,6 @@ test-vulcan-project*
 
 # Local configuration
 .env.local
+
+# application files
+.tokens.json
