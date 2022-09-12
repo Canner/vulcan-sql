@@ -369,6 +369,7 @@ describe('Test vulcan server for calling restful APIs', () => {
 
       // Assert
       expect(response.body.data).toEqual(expected);
-    }
+    },
+    10000
   );
 });

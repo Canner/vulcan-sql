@@ -21,9 +21,13 @@ export enum LoggingLevel {
   FATAL = 'fatal',
 }
 
+type DisplayFilePathTypes = 'hidden' | 'displayAll' | 'hideNodeModulesOnly';
+
 export interface LoggerOptions {
   level?: LoggingLevel;
   displayRequestId?: boolean;
+  displayFunctionName?: boolean;
+  displayFilePath?: DisplayFilePathTypes;
 }
 
 type LoggerMapConfig = {
@@ -34,18 +38,26 @@ const defaultMapConfig: LoggerMapConfig = {
   [LoggingScope.CORE]: {
     level: LoggingLevel.DEBUG,
     displayRequestId: false,
+    displayFilePath: 'hideNodeModulesOnly',
+    displayFunctionName: true,
   },
   [LoggingScope.BUILD]: {
     level: LoggingLevel.DEBUG,
     displayRequestId: false,
+    displayFilePath: 'hideNodeModulesOnly',
+    displayFunctionName: true,
   },
   [LoggingScope.SERVE]: {
     level: LoggingLevel.DEBUG,
     displayRequestId: false,
+    displayFilePath: 'hideNodeModulesOnly',
+    displayFunctionName: true,
   },
   [LoggingScope.AUDIT]: {
     level: LoggingLevel.DEBUG,
     displayRequestId: false,
+    displayFilePath: 'hidden',
+    displayFunctionName: false,
   },
 };
 
@@ -95,6 +107,9 @@ class LoggerFactory {
       minLevel: options.level || prevSettings.minLevel,
       displayRequestId:
         options.displayRequestId || prevSettings.displayRequestId,
+      displayFunctionName:
+        options.displayFunctionName || prevSettings.displayFunctionName,
+      displayFilePath: options.displayFilePath || prevSettings.displayFilePath,
     });
   }
 
@@ -106,6 +121,11 @@ class LoggerFactory {
       requestId: () => this.asyncReqIdStorage.getStore()?.requestId as string,
       displayRequestId:
         options?.displayRequestId || defaultMapConfig[name].displayRequestId,
+      displayFunctionName:
+        options?.displayFunctionName ||
+        defaultMapConfig[name].displayFunctionName,
+      displayFilePath:
+        options?.displayFilePath || defaultMapConfig[name].displayFilePath,
     });
   }
 }

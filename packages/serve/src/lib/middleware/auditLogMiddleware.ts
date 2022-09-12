@@ -3,6 +3,7 @@ import {
   LoggerOptions,
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
+import * as bytes from 'bytes';
 import { BuiltInMiddleware, KoaContext, Next } from '@vulcan-sql/serve/models';
 
 @VulcanInternalExtension('audit-log')
@@ -15,17 +16,22 @@ export class AuditLoggingMiddleware extends BuiltInMiddleware<LoggerOptions> {
   public async handle(context: KoaContext, next: Next) {
     if (!this.enabled) return next();
 
-    const { path, request, params, response } = context;
-    const { header, query } = request;
+    const { request: req, response: resp, params } = context;
+
+    const reqSize = req.length ? bytes(req.length).toLowerCase() : 'none';
+    const respSize = resp.length ? bytes(resp.length).toLowerCase() : 'none';
     /**
      * TODO: The response body of our API server might be huge.
      * We can let users to set what data they want to record in config in the future.
      */
-    this.logger.info(`request: path = ${path}`);
-    this.logger.info(`request: header = ${JSON.stringify(header)}`);
-    this.logger.info(`request: query = ${JSON.stringify(query)}`);
-    this.logger.info(`request: params = ${JSON.stringify(params)}.`);
+    this.logger.info(
+      `--> ${req.ip} -- "${req.method} ${req.path}" -- size: ${reqSize}`
+    );
+    this.logger.info(` -> header: ${JSON.stringify(req.header)}`);
+    this.logger.info(` -> query: ${JSON.stringify(req.query)}`);
+    this.logger.info(` -> params: ${JSON.stringify(params)}`);
     await next();
-    this.logger.info(`response: body = ${JSON.stringify(response.body)}`);
+    this.logger.info(`<-- status: ${resp.status} -- size: ${respSize}`);
+    this.logger.info(` <- header: ${JSON.stringify(resp.header)}`);
   }
 }

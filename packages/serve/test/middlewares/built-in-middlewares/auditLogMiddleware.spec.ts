@@ -10,6 +10,7 @@ import {
   AuditLoggingMiddleware,
   RequestIdMiddleware,
 } from '@vulcan-sql/serve/middleware';
+import bytes = require('bytes');
 
 describe('Test audit logging middlewares', () => {
   afterEach(() => {
@@ -19,12 +20,16 @@ describe('Test audit logging middlewares', () => {
     // Arrange
     const ctx: KoaContext = {
       ...sinon.stubInterface<KoaContext>(),
-      path: faker.internet.url(),
+
       params: {
         uuid: faker.datatype.uuid(),
       },
       request: {
         ...sinon.stubInterface<Request>(),
+        ip: faker.internet.ip(),
+        method: faker.internet.httpMethod(),
+        path: faker.internet.url(),
+        length: faker.datatype.number({ min: 100, max: 100000 }),
         header: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           'X-Agent': 'test-normal-client',
@@ -36,17 +41,26 @@ describe('Test audit logging middlewares', () => {
       },
       response: {
         ...sinon.stubInterface<Response>(),
+        status: 200,
+        length: faker.datatype.number({ min: 100, max: 100000 }),
         body: {
           result: 'OK',
         },
       },
     };
+    const { request: req, response: resp } = ctx;
+
     const expected = [
-      `request: path = ${ctx.path}`,
-      `request: header = ${JSON.stringify(ctx.request.header)}`,
-      `request: query = ${JSON.stringify(ctx.request.query)}`,
-      `request: params = ${JSON.stringify(ctx.params)}.`,
-      `response: body = ${JSON.stringify(ctx.response.body)}`,
+      `--> ${req.ip} -- "${req.method} ${req.path}" -- size: ${
+        req.length ? bytes(req.length).toLowerCase() : 'none'
+      }`,
+      ` -> header: ${JSON.stringify(req.header)}`,
+      ` -> query: ${JSON.stringify(req.query)}`,
+      ` -> params: ${JSON.stringify(ctx.params)}`,
+      `<-- status: ${resp.status} -- size: ${
+        resp.length ? bytes(resp.length).toLowerCase() : 'none'
+      }`,
+      ` <- header: ${JSON.stringify(resp.header)}`,
     ];
     // Act
     const middleware = new AuditLoggingMiddleware({}, '');
@@ -66,16 +80,20 @@ describe('Test audit logging middlewares', () => {
     // Arrange
     const ctx: KoaContext = {
       ...sinon.stubInterface<KoaContext>(),
-      path: faker.internet.url(),
       params: {
         uuid: faker.datatype.uuid(),
       },
       request: {
         ...sinon.stubInterface<Request>(),
+        ip: faker.internet.ip(),
+        method: faker.internet.httpMethod(),
+        path: faker.internet.url(),
+        length: faker.datatype.number({ min: 100, max: 100000 }),
         header: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           'X-Agent': 'test-school-client',
         },
+
         query: {
           ...sinon.stubInterface<ParsedUrlQuery>(),
           sortby: 'score',
@@ -83,20 +101,29 @@ describe('Test audit logging middlewares', () => {
       },
       response: {
         ...sinon.stubInterface<Response>(),
+        length: faker.datatype.number({ min: 100, max: 100000 }),
+        status: 200,
         body: {
           result: 'Success',
         },
       },
     };
 
+    const { request: req, response: resp } = ctx;
+
     const expected = {
       requestId: uuid.v4(),
       info: [
-        `request: path = ${ctx.path}`,
-        `request: header = ${JSON.stringify(ctx.request.header)}`,
-        `request: query = ${JSON.stringify(ctx.request.query)}`,
-        `request: params = ${JSON.stringify(ctx.params)}.`,
-        `response: body = ${JSON.stringify(ctx.response.body)}`,
+        `--> ${req.ip} -- "${req.method} ${req.path}" -- size: ${
+          req.length ? bytes(req.length).toLowerCase() : 'none'
+        }`,
+        ` -> header: ${JSON.stringify(req.header)}`,
+        ` -> query: ${JSON.stringify(req.query)}`,
+        ` -> params: ${JSON.stringify(ctx.params)}`,
+        `<-- status: ${resp.status} -- size: ${
+          resp.length ? bytes(resp.length).toLowerCase() : 'none'
+        }`,
+        ` <- header: ${JSON.stringify(resp.header)}`,
       ],
     };
 

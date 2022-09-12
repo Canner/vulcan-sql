@@ -8,6 +8,7 @@
   "private": true,
   "dependencies": {
     "@koa/cors": "^3.3.0",
+    "bytes": "^3.1.2",
     "class-validator": "^0.13.2",
     "commander": "^9.4.0",
     "dayjs": "^1.11.2",
@@ -42,6 +43,7 @@
     "@nrwl/linter": "14.0.3",
     "@nrwl/workspace": "14.0.3",
     "@types/bcryptjs": "^2.4.2",
+    "@types/bytes": "^3.1.1",
     "@types/from2": "^2.3.1",
     "@types/glob": "^7.2.0",
     "@types/inquirer": "^8.0.0",
