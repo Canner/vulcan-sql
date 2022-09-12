@@ -7,12 +7,12 @@ import { KoaContext } from '@vulcan-sql/serve/models';
 import * as core from '@vulcan-sql/core';
 import * as uuid from 'uuid';
 import {
-  AuditLoggingMiddleware,
+  AccessLogMiddleware,
   RequestIdMiddleware,
 } from '@vulcan-sql/serve/middleware';
 import bytes = require('bytes');
 
-describe('Test audit logging middlewares', () => {
+describe('Test access log middlewares', () => {
   afterEach(() => {
     sinon.default.restore();
   });
@@ -63,9 +63,9 @@ describe('Test audit logging middlewares', () => {
       ` <- header: ${JSON.stringify(resp.header)}`,
     ];
     // Act
-    const middleware = new AuditLoggingMiddleware({}, '');
-    // Use spy to trace the logger from getLogger( scopeName: 'AUDIT' }) to know in logger.info(...)
-    const spy = sinon.default.spy(core.getLogger({ scopeName: 'AUDIT' }));
+    const middleware = new AccessLogMiddleware({}, '');
+    // Use spy to trace the logger from getLogger( scopeName: 'ACCESS_LOG' }) to know in logger.info(...)
+    const spy = sinon.default.spy(core.getLogger({ scopeName: 'ACCESS_LOG' }));
     await middleware.handle(ctx, async () => Promise.resolve());
 
     // Assert
@@ -129,7 +129,7 @@ describe('Test audit logging middlewares', () => {
 
     // setup request-id middleware run first.
     const stubReqIdMiddleware = new RequestIdMiddleware({}, '');
-    const middleware = new AuditLoggingMiddleware(
+    const middleware = new AccessLogMiddleware(
       {
         options: {
           displayRequestId: true,
@@ -137,11 +137,11 @@ describe('Test audit logging middlewares', () => {
       },
       ''
     );
-    // Use spy to trace the logger from getLogger( scopeName: 'AUDIT' }) to know in logger.info(...)
-    // it will get the setting of logger from above new audit logging middleware
+    // Use spy to trace the logger from getLogger( scopeName: 'ACCESS_LOG' }) to know in logger.info(...)
+    // it will get the setting of logger from above new ACCESS_LOG logging middleware
     const spy = sinon.default.spy(
       core.getLogger({
-        scopeName: 'AUDIT',
+        scopeName: 'ACCESS_LOG',
       })
     );
     // Act

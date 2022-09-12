@@ -6,10 +6,10 @@ import {
 import * as bytes from 'bytes';
 import { BuiltInMiddleware, KoaContext, Next } from '@vulcan-sql/serve/models';
 
-@VulcanInternalExtension('audit-log')
-export class AuditLoggingMiddleware extends BuiltInMiddleware<LoggerOptions> {
+@VulcanInternalExtension('access-log')
+export class AccessLogMiddleware extends BuiltInMiddleware<LoggerOptions> {
   private logger = getLogger({
-    scopeName: 'AUDIT',
+    scopeName: 'ACCESS_LOG',
     options: this.getOptions(),
   });
 

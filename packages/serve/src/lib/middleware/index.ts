@@ -1,6 +1,6 @@
 export * from './corsMiddleware';
 export * from './requestIdMiddleware';
-export * from './auditLogMiddleware';
+export * from './accessLogMiddleware';
 export * from './rateLimitMiddleware';
 export * from './authMiddleware';
 export * from './response-format';
@@ -11,7 +11,7 @@ import { CorsMiddleware } from './corsMiddleware';
 import { AuthMiddleware } from './authMiddleware';
 import { RateLimitMiddleware } from './rateLimitMiddleware';
 import { RequestIdMiddleware } from './requestIdMiddleware';
-import { AuditLoggingMiddleware } from './auditLogMiddleware';
+import { AccessLogMiddleware } from './accessLogMiddleware';
 import { ResponseFormatMiddleware } from './response-format';
 import { EnforceHttpsMiddleware } from './enforceHttpsMiddleware';
 import { ClassType, ExtensionBase } from '@vulcan-sql/core';
@@ -22,7 +22,7 @@ export const BuiltInRouteMiddlewares: ClassType<ExtensionBase>[] = [
   CorsMiddleware,
   EnforceHttpsMiddleware,
   RequestIdMiddleware,
-  AuditLoggingMiddleware,
+  AccessLogMiddleware,
   RateLimitMiddleware,
   AuthMiddleware,
   ResponseFormatMiddleware,

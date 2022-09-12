@@ -6,7 +6,7 @@ export enum LoggingScope {
   CORE = 'CORE',
   BUILD = 'BUILD',
   SERVE = 'SERVE',
-  AUDIT = 'AUDIT',
+  ACCESS_LOG = 'ACCESS_LOG',
 }
 
 type LoggingScopeTypes = keyof typeof LoggingScope;
@@ -53,7 +53,7 @@ const defaultMapConfig: LoggerMapConfig = {
     displayFilePath: 'hideNodeModulesOnly',
     displayFunctionName: true,
   },
-  [LoggingScope.AUDIT]: {
+  [LoggingScope.ACCESS_LOG]: {
     level: LoggingLevel.DEBUG,
     displayRequestId: false,
     displayFilePath: 'hidden',
