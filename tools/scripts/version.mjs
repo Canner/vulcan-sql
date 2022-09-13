@@ -10,17 +10,17 @@ dayjs.extend(timezone);
 
 export function getNightlyVersion() {
   const packageJson = fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8');
-  const { version } = JSON.parse(packageJson);
+  const { major, minor, patch } = semver.parse(JSON.parse(packageJson).version);
   // 0.1.0-dev.20220907.0
-  return semver.inc(version, 'prerelease', `dev.${dayjs().tz('Asia/Taipei').format('YYYYMMDD')}`)
+  return `${major}.${minor}.${patch}-dev.${dayjs().tz('Asia/Taipei').format('YYYYMMDD')}.0`
 }
 
 
 export function getBetaVersion() {
   const packageJson = fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8');
-  const { version } = JSON.parse(packageJson);
+  const { major, minor, patch } = semver.parse(JSON.parse(packageJson).version);
   // 0.1.0-beta.0
-  return semver.inc(version, 'prerelease', `beta`)
+  return `${major}.${minor}.${patch}-beta.0`
 }
 
 export function getLatestVersion() {
