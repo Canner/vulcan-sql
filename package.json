@@ -30,6 +30,7 @@
     "ora": "^5.4.1",
     "redoc": "2.0.0-rc.76",
     "reflect-metadata": "^0.1.13",
+    "semver": "^7.3.7",
     "tslib": "^2.3.0",
     "tslog": "^3.3.3",
     "uuid": "^8.3.2"
@@ -58,6 +59,7 @@
     "@types/lodash": "^4.14.182",
     "@types/md5": "^2.3.2",
     "@types/node": "16.11.7",
+    "@types/semver": "^7.3.12",
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "~5.18.0",

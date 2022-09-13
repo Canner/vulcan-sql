@@ -14,10 +14,11 @@ program
 
 program
   .command('init')
+  .argument('[path]', 'folder path to initialize Vulcan project')
   .description('create a new Vulcan project')
   .option('-p --project-name <project-name>', 'specify project name')
-  .action(async (options) => {
-    await handleInit(options);
+  .action(async (path: string | undefined, options) => {
+    await handleInit(path, options || {});
   });
 
 program
