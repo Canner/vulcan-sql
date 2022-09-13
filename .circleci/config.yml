@@ -154,6 +154,10 @@ jobs:
   nightly-build:
     executor: node-executor
     steps:
+      # Using the deployment key with write access
+      - add_ssh_keys:
+          fingerprints:
+            - 'd8:c0:e1:c8:8b:8d:dd:f8:50:cd:d9:34:1c:21:3d:85'
       - checkout
       - run:
           <<: *set_env
