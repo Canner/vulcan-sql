@@ -35,7 +35,7 @@ export type PrepareParameterFunc = {
 };
 
 @VulcanExtension(TYPES.Extension_DataSource, { enforcedId: true })
-export abstract class DataSource extends ExtensionBase {
+export abstract class DataSource<C = any> extends ExtensionBase<C> {
   abstract execute(options: ExecuteOptions): Promise<DataResult>;
   // prepare parameterized format for query later
   abstract prepare(param: RequestParameter): Promise<string>;

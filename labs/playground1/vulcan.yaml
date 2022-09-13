@@ -22,9 +22,13 @@ document-generator:
 types:
   - RESTFUL
 extensions:
-  mockDb: playground-exts
+  duckdb: '@vulcan-sql/extension-driver-duckdb'
 executor:
-  type: "duck"
+  type: 'duckdb'
+duckdb:
+  persistent-path: ./test-data/moma.db
+  log-queries: true
+  log-parameters: true
 rate-limit:
   options:
     interval:

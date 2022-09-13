@@ -2,6 +2,7 @@ import { TYPES } from '../../containers/types';
 import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
 import { EXTENSION_IDENTIFIER_METADATA_KEY } from './decorators';
+import { getLogger } from '../../lib/utils';
 
 @injectable()
 export abstract class ExtensionBase<C = any> {
@@ -33,5 +34,11 @@ export abstract class ExtensionBase<C = any> {
 
   protected getConfig(): C | undefined {
     return this.config;
+  }
+
+  protected getLogger() {
+    return getLogger({
+      scopeName: 'CORE',
+    });
   }
 }
