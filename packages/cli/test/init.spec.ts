@@ -4,7 +4,8 @@ import * as jsYAML from 'js-yaml';
 import * as path from 'path';
 import { runShutdownJobs } from '../src/utils';
 
-const projectName = 'test-vulcan-project';
+const projectName = 'test-vulcan-project-init';
+const testingVersion = '0.1.2-dev.20220913.0';
 
 const workspaceRoot = path.resolve(__dirname, '..', '..', '..');
 const projectRoot = path.resolve(workspaceRoot, `${projectName}-with-path`);
@@ -29,6 +30,8 @@ it('Init command with folder path should create default config in target folder'
     'init',
     '-p',
     projectName,
+    '-v',
+    testingVersion,
     projectRoot,
   ]);
   // Action

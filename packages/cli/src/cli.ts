@@ -17,6 +17,7 @@ program
   .argument('[path]', 'folder path to initialize Vulcan project')
   .description('create a new Vulcan project')
   .option('-p --project-name <project-name>', 'specify project name')
+  .option('-v --version <version>', 'specify Vulcan version')
   .action(async (path: string | undefined, options) => {
     await handleInit(path, options || {});
   });

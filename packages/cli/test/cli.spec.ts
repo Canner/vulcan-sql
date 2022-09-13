@@ -4,16 +4,36 @@ import * as jsYAML from 'js-yaml';
 import * as path from 'path';
 import { runShutdownJobs } from '../src/utils';
 import * as supertest from 'supertest';
+import faker from '@faker-js/faker';
 
 const projectName = 'test-vulcan-project';
+const testingVersion = '0.1.2-dev.20220913.0';
+const testingServerPort = faker.datatype.number({ min: 20000, max: 30000 });
 
 const workspaceRoot = path.resolve(__dirname, '..', '..', '..');
 const projectRoot = path.resolve(workspaceRoot, projectName);
 
 beforeAll(async () => {
   await fs.rm(projectRoot, { recursive: true, force: true });
-  await program.parseAsync(['node', 'vulcan', 'init', '-p', projectName]);
+  await program.parseAsync([
+    'node',
+    'vulcan',
+    'init',
+    '-p',
+    projectName,
+    '-v',
+    testingVersion,
+  ]);
   process.chdir(projectRoot);
+  const projectConfig = jsYAML.load(
+    await fs.readFile(path.resolve(projectRoot, 'vulcan.yaml'), 'utf-8')
+  ) as Record<string, any>;
+  projectConfig['port'] = testingServerPort;
+  fs.writeFile(
+    path.resolve(projectRoot, 'vulcan.yaml'),
+    jsYAML.dump(projectConfig),
+    'utf-8'
+  );
 }, 30000);
 
 afterAll(async () => {
@@ -45,9 +65,9 @@ it('Build command should make result.json', async () => {
 it('Serve command should start Vulcan server', async () => {
   // Action
   await program.parseAsync(['node', 'vulcan', 'build']);
-  await program.parseAsync(['node', 'vulcan', 'serve', '-p', '12345']);
-  const agent = supertest('http://localhost:12345');
-  const result = await agent.get('/');
+  await program.parseAsync(['node', 'vulcan', 'serve']);
+  const agent = supertest(`http://localhost:${testingServerPort}`);
+  const result = await agent.get('/doc');
   // Assert
   expect(result.statusCode).toBe(200);
   await runShutdownJobs();
@@ -55,9 +75,9 @@ it('Serve command should start Vulcan server', async () => {
 
 it('Start command should build the project and start Vulcan server', async () => {
   // Action
-  await program.parseAsync(['node', 'vulcan', 'start', '-p', '12345']);
-  const agent = supertest('http://localhost:12345');
-  const result = await agent.get('/');
+  await program.parseAsync(['node', 'vulcan', 'start']);
+  const agent = supertest(`http://localhost:${testingServerPort}`);
+  const result = await agent.get('/doc');
   // Assert
   expect(result.statusCode).toBe(200);
   await runShutdownJobs();
