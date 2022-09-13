@@ -29,17 +29,7 @@ class MockDataSource extends DataSource {
     // handle parameterized query statement
     let query = statement;
 
-    const parameters =
-      // {$1: 'v1', $3: 'v3', $2: 'v2' }
-      _.chain(bindParams)
-        // [[$1, 'v1'], [$3, 'v3'], [$2, 'v2']]
-        .toPairs()
-        // [[$1, 'v1'], [$2, 'v2'], [$3, 'v3']]
-        .orderBy(([name,]) => Number(name.slice(1)))
-        // ['v1,'v2','v3']
-        .map(([_, value]) => value)
-        .value()
-
+    const parameters = Array.from(bindParams.values());
 
     return new Promise((resolve, reject) => {
       logger.info(query, parameters);
@@ -72,19 +62,7 @@ class MockDataSource extends DataSource {
   }
 
   async prepare(params) {
-    const identifiers = {};
-    const binds = {};
-    let index = 1;
-    for (const key of Object.keys(params)) {
-      const identifier = `$${index}`;
-      identifiers[key] = identifier;
-      binds[identifier] = params[key];
-      index += 1;
-    }
-    return {
-      identifiers,
-      binds,
-    };
+    return `$${params.parameterIndex}`
   }
 }
 

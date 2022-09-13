@@ -1,6 +1,7 @@
 import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
 import { ResponseSampler } from '@vulcan-sql/build/schema-parser/middleware/responseSampler';
 import { FieldDataType, TemplateEngine } from '@vulcan-sql/core';
+import { Stream } from 'stream';
 import * as sinon from 'ts-sinon';
 
 it('Should create response definition when example parameter is provided', async () => {
@@ -14,10 +15,11 @@ it('Should create response definition when example parameter is provided', async
   };
   const stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
   stubTemplateEngine.execute.resolves({
-    columns: [
+    getColumns: () => [
       { name: 'id', type: 'string' },
       { name: 'age', type: 'number' },
     ],
+    getData: () => new Stream(),
   });
   const responseSampler = new ResponseSampler(stubTemplateEngine);
   // Act
@@ -38,10 +40,11 @@ it('Should create response definition when example parameter is a empty object',
   };
   const stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
   stubTemplateEngine.execute.resolves({
-    columns: [
+    getColumns: () => [
       { name: 'id', type: 'string' },
       { name: 'age', type: 'number' },
     ],
+    getData: () => new Stream(),
   });
   const responseSampler = new ResponseSampler(stubTemplateEngine);
   // Act
@@ -61,10 +64,11 @@ it('Should not create response definition when example parameter is not provided
   };
   const stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
   stubTemplateEngine.execute.resolves({
-    columns: [
+    getColumns: () => [
       { name: 'id', type: 'string' },
       { name: 'age', type: 'number' },
     ],
+    getData: () => new Stream(),
   });
   const responseSampler = new ResponseSampler(stubTemplateEngine);
   // Act
@@ -88,11 +92,12 @@ it('Should append response definition when there are some existed definitions', 
   };
   const stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
   stubTemplateEngine.execute.resolves({
-    columns: [
+    getColumns: () => [
       { name: 'id', type: 'string' },
       { name: 'age', type: 'number' },
       { name: 'name', type: 'boolean' },
     ],
+    getData: () => new Stream(),
   });
   const responseSampler = new ResponseSampler(stubTemplateEngine);
   // Act

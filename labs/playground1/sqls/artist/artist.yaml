@@ -5,3 +5,5 @@ request:
     description: constituent id
     validators:
       - required
+exampleParameter:
+  id: "1"

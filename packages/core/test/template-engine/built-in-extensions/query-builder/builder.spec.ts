@@ -5,7 +5,7 @@ it('Extension should execute correct query and set/export the variable', async (
   const { compiler, loader, builder, executor } = await createTestCompiler();
   const { compiledData } = await compiler.compile(`
 {% req userCount main %}
-select count(*) as count from user where user.id = '{{ params.userId }}';
+select count(*) as count from user where user.id = {{ params.userId }};
 {% endreq %}
   `);
   builder.value.onFirstCall().resolves([{ count: 1 }]);
@@ -16,8 +16,9 @@ select count(*) as count from user where user.id = '{{ params.userId }}';
   });
   // Assert
   expect(executor.createBuilder.firstCall.args[0]).toBe(
-    `select count(*) as count from user where user.id = 'user-id';`
+    `select count(*) as count from user where user.id = $1;`
   );
+  expect(executor.createBuilder.firstCall.args[1].get('$1')).toBe(`user-id`);
   expect(result).toEqual([{ count: 1 }]);
 });
 

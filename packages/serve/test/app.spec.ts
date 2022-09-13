@@ -348,7 +348,7 @@ describe('Test vulcan server for calling restful APIs', () => {
       });
 
       stubTemplateEngine.execute.resolves({
-        getData: () => expected,
+        getData: () => expected as any,
         getColumns: () => [],
       });
       // Act

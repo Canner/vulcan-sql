@@ -36,8 +36,7 @@ export class ResponseSampler extends SchemaParserMiddleware {
         offset: 0,
       }
     );
-    // TODO: I haven't known the response of queryBuilder.value(), assume that there is a "columns" property that indicates the columns' name and type here.
-    const columns: { name: string; type: string }[] = response.columns;
+    const columns = response.getColumns();
     const responseColumns = this.normalizeResponseColumns(columns);
     schema.response = this.mergeResponse(
       schema.response || [],

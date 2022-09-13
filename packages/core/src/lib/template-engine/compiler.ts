@@ -1,3 +1,4 @@
+import { DataResult } from '@vulcan-sql/core/models';
 import { Pagination } from '../../models/pagination';
 
 export interface TemplateLocation {
@@ -32,5 +33,5 @@ export interface Compiler {
     templateName: string,
     data: T,
     pagination?: Pagination
-  ): Promise<any>;
+  ): Promise<DataResult>;
 }

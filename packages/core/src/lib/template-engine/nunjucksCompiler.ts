@@ -128,7 +128,10 @@ export class NunjucksCompiler implements Compiler {
     } else if (extension instanceof FilterRunner) {
       this.runtimeEnv.addFilter(
         extension.filterName,
-        extension.__transform.bind(extension),
+        function (this: any, value: any, ...args) {
+          // use classic function to receive context
+          extension.__transform(this, value, ...args);
+        },
         true
       );
     }

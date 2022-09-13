@@ -15,7 +15,10 @@ it('Extension should return correct values without unique by argument', async ()
   loader.setSource('test', compiledData);
   await compiler.execute('test', {});
   // Assert
-  expect(executor.createBuilder.firstCall.args[0]).toBe('1\n2\n3\n4');
+  expect(executor.createBuilder.firstCall.args[0]).toBe('$1\n$2\n$3\n$4');
+  expect(Array.from(executor.createBuilder.firstCall.args[1].values())).toEqual(
+    [1, 2, 3, 4]
+  );
 });
 
 it('Extension should return correct values with unique by keyword argument', async () => {
@@ -33,7 +36,10 @@ it('Extension should return correct values with unique by keyword argument', asy
   loader.setSource('test', compiledData);
   await compiler.execute('test', {});
   // Assert
-  expect(executor.createBuilder.firstCall.args[0]).toBe('Tom\nJoy');
+  expect(executor.createBuilder.firstCall.args[0]).toBe('$1\n$2');
+  expect(Array.from(executor.createBuilder.firstCall.args[1].values())).toEqual(
+    ['Tom', 'Joy']
+  );
 });
 
 it('Extension should return correct values with unique by argument', async () => {
@@ -51,5 +57,8 @@ it('Extension should return correct values with unique by argument', async () =>
   loader.setSource('test', compiledData);
   await compiler.execute('test', {});
   // Assert
-  expect(executor.createBuilder.firstCall.args[0]).toBe('Tom\nJoy');
+  expect(executor.createBuilder.firstCall.args[0]).toBe('$1\n$2');
+  expect(Array.from(executor.createBuilder.firstCall.args[1].values())).toEqual(
+    ['Tom', 'Joy']
+  );
 });

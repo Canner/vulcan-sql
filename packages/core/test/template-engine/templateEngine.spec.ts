@@ -36,7 +36,7 @@ beforeEach(() => {
       errors: [],
     },
   });
-  stubCompiler.execute.resolves('sql-result');
+  stubCompiler.execute.resolves('sql-result' as any);
 
   const generator = async function* () {
     yield {
@@ -80,18 +80,16 @@ it('Template engine render function should forward correct data to compiler', as
     name: 'name',
   };
   const expected = {
-    _paramBinds: {},
     context: {
       ...context,
-      params: {},
     },
   };
 
   // Act
-  const result = await templateEngine.execute('template-name', context);
+  const result = await templateEngine.execute('template-name', { context });
 
   // Assert
-  expect(stubCompiler.execute.getCalls()[0].args[1]).toEqual(expected);
+  expect(stubCompiler.execute.firstCall.args[1]).toEqual(expected);
   expect(result).toBe('sql-result');
 });
 

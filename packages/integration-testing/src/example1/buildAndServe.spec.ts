@@ -54,7 +54,7 @@ const projectConfig: ServeConfig & IBuildOptions = {
 let server: VulcanServer;
 
 afterEach(async () => {
-  await server.close();
+  await server?.close();
 });
 
 it('Example1: Build and serve should work', async () => {

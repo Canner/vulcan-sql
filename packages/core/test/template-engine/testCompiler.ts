@@ -21,6 +21,9 @@ export const createTestCompiler = async ({
   stubQueryBuilder.count.returns(stubQueryBuilder);
   const stubExecutor = sinon.stubInterface<IExecutor>();
   stubExecutor.createBuilder.resolves(stubQueryBuilder);
+  stubExecutor.prepare.callsFake(
+    async ({ parameterIndex }) => `$${parameterIndex}`
+  );
 
   container
     .bind(TYPES.CompilerLoader)
@@ -59,6 +62,10 @@ export const createTestCompiler = async ({
     getCreatedQueries: async () => {
       const calls = stubExecutor.createBuilder.getCalls();
       return calls.map((call) => call.args[0]);
+    },
+    getCreatedBinding: async () => {
+      const calls = stubExecutor.createBuilder.getCalls();
+      return calls.map((call) => call.args[1]);
     },
   };
 };

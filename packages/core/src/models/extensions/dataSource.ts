@@ -6,27 +6,14 @@ import { ExtensionBase } from './base';
 import { VulcanExtension } from './decorators';
 
 // Original request parameters
-export interface RequestParameters {
-  [name: string]: any;
+export interface RequestParameter {
+  /** The index (starts from 1) of parameters, it's useful to generate parameter id like $1, $2 ...etc. */
+  parameterIndex: number;
+  /** The raw value (not name) */
+  value: any;
 }
 
-export type BindParameters = {
-  // the value is real param data
-  [identifier: string]: string;
-};
-
-export type IdentifierParameters = {
-  // the value is identifier
-  [paramName: string]: string;
-};
-
-// prepared query parameters for providing data source to prevent sql
-export interface PreparedQueryParams {
-  // e.g: params['members'] = '@members'
-  identifiers: IdentifierParameters;
-  // e.g: binds['@members'] = '17'
-  binds: BindParameters;
-}
+export type BindParameters = Map<string, string>;
 
 export type DataColumn = { name: string; type: string };
 
@@ -38,13 +25,18 @@ export interface DataResult {
 export interface ExecuteOptions {
   statement: string;
   operations: SQLClauseOperation;
+  /** The parameter bindings, we guarantee the order of the keys in the map is the same as the order when they were used in queries. */
   bindParams: BindParameters;
   pagination?: Pagination;
 }
 
+export type PrepareParameterFunc = {
+  (param: RequestParameter): Promise<string>;
+};
+
 @VulcanExtension(TYPES.Extension_DataSource, { enforcedId: true })
 export abstract class DataSource extends ExtensionBase {
   abstract execute(options: ExecuteOptions): Promise<DataResult>;
-  // prepare parameterized format for query in the later
-  abstract prepare(params: RequestParameters): Promise<PreparedQueryParams>;
+  // prepare parameterized format for query later
+  abstract prepare(param: RequestParameter): Promise<string>;
 }

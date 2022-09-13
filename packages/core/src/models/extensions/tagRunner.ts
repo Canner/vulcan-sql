@@ -9,7 +9,7 @@ export type TagExtensionContentArgGetter = () => Promise<string>;
 export type TagExtensionArgTypes = string | number | boolean;
 
 export interface TagRunnerOptions {
-  context: any;
+  context: nunjucks.Context;
   args: TagExtensionArgTypes[];
   contentArgs: TagExtensionContentArgGetter[];
 }
