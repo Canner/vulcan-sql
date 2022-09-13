@@ -1,7 +1,7 @@
 import {
   BindParameters,
   DataSource,
-  PrepareParameter,
+  PrepareParameterFunc,
   RequestParameter,
 } from '@vulcan-sql/core/models';
 import { inject, injectable } from 'inversify';
@@ -13,7 +13,7 @@ export interface IExecutor {
     query: string,
     bindParams: BindParameters
   ): Promise<IDataQueryBuilder>;
-  prepare: PrepareParameter;
+  prepare: PrepareParameterFunc;
 }
 
 @injectable()

@@ -6,6 +6,10 @@ import * as nunjucks from 'nunjucks';
 import { visitChildren } from '../../extension-utils';
 import { RAW_FILTER_NAME, SANITIZER_NAME } from './constants';
 
+/**
+ * Add a sanitizer filter after all "lookup" like nodes, e.g. LookupVal, FunctionCall ...etc. In order to do sql injection prevention.
+ * {{ context.params.id }} -> {{ context.params.id | sanitizer }}
+ */
 @VulcanInternalExtension()
 export class SanitizerBuilder extends FilterBuilder {
   public filterName = SANITIZER_NAME;

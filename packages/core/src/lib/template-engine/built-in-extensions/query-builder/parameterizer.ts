@@ -1,4 +1,4 @@
-import { PrepareParameter } from '@vulcan-sql/core/models';
+import { PrepareParameterFunc } from '@vulcan-sql/core/models';
 
 export class Parameterizer {
   private parameterIndex = 1;
@@ -8,9 +8,9 @@ export class Parameterizer {
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#description
   private idToValueMapping = new Map<string, any>();
   private valueToIdMapping = new Map<any, string>();
-  private prepare: PrepareParameter;
+  private prepare: PrepareParameterFunc;
 
-  constructor(prepare: PrepareParameter) {
+  constructor(prepare: PrepareParameterFunc) {
     this.prepare = prepare;
   }
 

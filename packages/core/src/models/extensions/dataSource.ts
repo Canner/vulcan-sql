@@ -15,11 +15,6 @@ export interface RequestParameter {
 
 export type BindParameters = Map<string, string>;
 
-export type IdentifierParameters = {
-  // the value is identifier
-  [paramName: string]: string;
-};
-
 export type DataColumn = { name: string; type: string };
 
 export interface DataResult {
@@ -35,7 +30,9 @@ export interface ExecuteOptions {
   pagination?: Pagination;
 }
 
-export type PrepareParameter = { (param: RequestParameter): Promise<string> };
+export type PrepareParameterFunc = {
+  (param: RequestParameter): Promise<string>;
+};
 
 @VulcanExtension(TYPES.Extension_DataSource, { enforcedId: true })
 export abstract class DataSource extends ExtensionBase {
