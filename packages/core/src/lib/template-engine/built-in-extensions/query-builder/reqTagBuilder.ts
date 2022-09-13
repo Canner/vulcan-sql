@@ -1,12 +1,5 @@
-import { ReplaceChildFunc, visitChildren } from '../../extension-utils';
 import * as nunjucks from 'nunjucks';
-import {
-  EXECUTE_COMMAND_NAME,
-  EXECUTE_FILTER_NAME,
-  FINIAL_BUILDER_NAME,
-  METADATA_NAME,
-  REFERENCE_SEARCH_MAX_DEPTH,
-} from './constants';
+import { FINIAL_BUILDER_NAME, METADATA_NAME } from './constants';
 import { TagBuilder, VulcanInternalExtension } from '@vulcan-sql/core/models';
 
 interface DeclarationLocation {
@@ -100,8 +93,6 @@ export class ReqTagBuilder extends TagBuilder {
     ) {
       this.checkBuilder(node);
       this.checkMainBuilder(node);
-    } else {
-      visitChildren(node, this.replaceExecuteFunction.bind(this));
     }
   }
 
@@ -109,6 +100,7 @@ export class ReqTagBuilder extends TagBuilder {
     if (!this.hasMainBuilder) {
       this.wrapOutputWithBuilder();
     }
+    this.reset();
   }
 
   public override getMetadata() {
@@ -157,53 +149,9 @@ export class ReqTagBuilder extends TagBuilder {
     this.root.children = [builder];
   }
 
-  private replaceExecuteFunction(
-    node: nunjucks.nodes.Node,
-    replace: ReplaceChildFunc
-  ) {
-    if (
-      node instanceof nunjucks.nodes.FunCall &&
-      node.name instanceof nunjucks.nodes.LookupVal &&
-      node.name.val.value === EXECUTE_COMMAND_NAME
-    ) {
-      let targetNode: typeof node.name.target | null = node.name.target;
-      let depth = 0;
-      while (targetNode) {
-        depth++;
-        if (depth > REFERENCE_SEARCH_MAX_DEPTH) {
-          throw new Error('Max depth reached');
-        }
-        if (targetNode instanceof nunjucks.nodes.LookupVal) {
-          targetNode = targetNode.target;
-        } else if (targetNode instanceof nunjucks.nodes.FunCall) {
-          targetNode = targetNode.name;
-        } else if (targetNode instanceof nunjucks.nodes.Symbol) {
-          break;
-        } else {
-          throw new Error(
-            `Unexpected node type: ${
-              (targetNode as nunjucks.nodes.Node)?.typename
-            }`
-          );
-        }
-      }
-
-      // If the target node is a variable from {% req xxx %}, replace it with execute filter
-      if (this.variableList.has((targetNode as nunjucks.nodes.Symbol).value)) {
-        const args = new nunjucks.nodes.NodeList(node.lineno, node.colno);
-        args.addChild(node.name.target);
-        const filter = new nunjucks.nodes.Filter(
-          node.lineno,
-          node.colno,
-          new nunjucks.nodes.Symbol(
-            node.lineno,
-            node.colno,
-            EXECUTE_FILTER_NAME
-          ),
-          args
-        );
-        replace(filter);
-      }
-    }
+  private reset() {
+    this.variableList.clear();
+    this.root = undefined;
+    this.hasMainBuilder = false;
   }
 }

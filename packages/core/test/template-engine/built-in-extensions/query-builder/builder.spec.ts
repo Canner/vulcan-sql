@@ -1,3 +1,4 @@
+import { arrayToStream, streamToArray } from '@vulcan-sql/core';
 import { createTestCompiler } from '../../testCompiler';
 
 it('Extension should execute correct query and set/export the variable', async () => {
@@ -8,18 +9,22 @@ it('Extension should execute correct query and set/export the variable', async (
 select count(*) as count from user where user.id = {{ params.userId }};
 {% endreq %}
   `);
-  builder.value.onFirstCall().resolves([{ count: 1 }]);
+  builder.value.onFirstCall().resolves({
+    getColumns: () => [],
+    getData: () => arrayToStream([{ count: 1 }]),
+  });
   // Action
   loader.setSource('test', compiledData);
   const result = await compiler.execute('test', {
     params: { userId: 'user-id' },
   });
+  const resultData = await streamToArray(result.getData());
   // Assert
   expect(executor.createBuilder.firstCall.args[0]).toBe(
     `select count(*) as count from user where user.id = $1;`
   );
   expect(executor.createBuilder.firstCall.args[1].get('$1')).toBe(`user-id`);
-  expect(result).toEqual([{ count: 1 }]);
+  expect(resultData).toEqual([{ count: 1 }]);
 });
 
 it('If argument is not a symbol, extension should throw', async () => {
@@ -121,4 +126,22 @@ it('Extension should throw an error if there are multiple builders using same na
   ).rejects.toThrowError(
     `We can't declare multiple builder with same name. Duplicated name: user (declared at 1:7 and 2:7)`
   );
+});
+
+it('Extension should reset after compiled each template', async () => {
+  // Arrange
+  const { compiler } = await createTestCompiler();
+  compiler.compile(
+    `
+  {% req user main %} select * from users; {% endreq %}
+  `
+  );
+  // Act, Arrange
+  await expect(
+    compiler.compile(
+      `
+    {% req user main %} select * from users; {% endreq %}
+    `
+    )
+  ).resolves.not.toThrow();
 });

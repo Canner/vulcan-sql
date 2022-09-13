@@ -2,6 +2,7 @@ import {
   DataSource,
   Pagination,
   BindParameters,
+  DataResult,
 } from '@vulcan-sql/core/models';
 import * as uuid from 'uuid';
 
@@ -403,7 +404,7 @@ export interface IDataQueryBuilder {
   take(size: number, move: number): IDataQueryBuilder;
   // paginate
   paginate(pagination: Pagination): void;
-  value(): Promise<object>;
+  value(): Promise<DataResult>;
   clone(): IDataQueryBuilder;
 }
 

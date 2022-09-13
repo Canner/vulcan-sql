@@ -1,4 +1,4 @@
-import { Stream } from 'stream';
+import { Readable } from 'stream';
 import {
   DataResult,
   DataSource,
@@ -18,7 +18,7 @@ export class PGDataSource extends DataSource {
         return [];
       },
       getData: () => {
-        return new Stream();
+        return new Readable();
       },
     };
   }
