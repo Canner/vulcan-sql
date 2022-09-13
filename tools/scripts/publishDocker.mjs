@@ -3,6 +3,8 @@ import path from 'path';
 import fs from 'fs';
 import { execSync } from 'child_process';
 
+// node publishDocker.mjs <tag> <version>
+
 if (process.env.READY_FOR_PUBLISH !== 'true') {
   console.log(`Set env READY_FOR_PUBLISH=true before running publish commands.`)
   process.exit(1);

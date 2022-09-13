@@ -2,7 +2,7 @@ import { getVersionByArguments } from './version.mjs';
 import path from 'path';
 import fs from 'fs';
 import { execSync } from 'child_process';
-
+// node buildDocker.mjs <tag> <version>
 // CWD: ./dist/packages/xxx
 const packageJSONPath = path.resolve(process.cwd(), 'package.json');
 

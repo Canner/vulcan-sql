@@ -89,7 +89,7 @@
     "build:docker": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "node ../../../tools/scripts/buildDocker.mjs {args.tag}",
+        "command": "node ../../../tools/scripts/buildDocker.mjs {args.tag} {args.version}",
         "cwd": "dist/packages/cli"
       },
       "dependsOn": [
@@ -102,7 +102,7 @@
     "publish:docker": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "node ../../../tools/scripts/publishDocker.mjs {args.tag}",
+        "command": "node ../../../tools/scripts/publishDocker.mjs {args.tag} {args.version}",
         "cwd": "dist/packages/cli"
       },
       "dependsOn": [

@@ -41,9 +41,21 @@ export function getReleaseTag() {
   return tag;
 }
 
+/** Get the release version which is passed by argument directly */
+export function getReleaseVersionInArguments() {
+  // Executing publish script: node path/to/xxxx.mjs {tag} {version}
+  let [, , , version] = process.argv;
 
+  if (!version || version === 'undefined') return null;
 
+  return version;
+}
+
+/** Get the release version from argument or generate one by tag */
 export function getVersionByArguments() {
+  const versionFromInArg = getReleaseVersionInArguments();
+  if (versionFromInArg) return versionFromInArg;
+
   const tag = getReleaseTag();
   switch (tag) {
     case 'dev':
