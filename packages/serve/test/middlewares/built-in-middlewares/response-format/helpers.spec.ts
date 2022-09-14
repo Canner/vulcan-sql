@@ -1,109 +1,28 @@
-import { Request } from 'koa';
 import * as sinon from 'ts-sinon';
-import faker from '@faker-js/faker';
-import * as responseHelpers from '@vulcan-sql/serve/middleware/response-format/helpers';
-import { BaseResponseFormatter } from '@vulcan-sql/serve';
-import {
-  checkUsableFormat,
-  isReceivedFormatRequest,
-  ResponseFormatterMap,
-} from '@vulcan-sql/serve/middleware';
-import {
-  CsvFormatter,
-  JsonFormatter,
-} from '@vulcan-sql/serve/response-formatter';
+import { checkUsableFormat } from '@vulcan-sql/serve/middleware';
 import { KoaContext } from '@vulcan-sql/serve/models';
-
-class HyperFormatter extends BaseResponseFormatter {
-  public format(): any {
-    return;
-  }
-
-  public toResponse() {
-    return;
-  }
-}
-
-it.each([
-  {
-    request: {
-      path: `${faker.internet.url()}.json`,
-      accepts: jest.fn().mockReturnValue(false),
-    },
-    format: 'json',
-    expected: true,
-  },
-  {
-    request: {
-      path: faker.internet.url(),
-      accepts: jest.fn().mockReturnValue('application/json'),
-    },
-    format: 'json',
-    expected: true,
-  },
-  {
-    request: {
-      path: `${faker.internet.url()}.json`,
-      accepts: jest.fn().mockReturnValue(false),
-    },
-    format: 'csv',
-    expected: false,
-  },
-])(
-  'Test to get $expected when call received format request with $request, format "$format"',
-  ({ request, format, expected }) => {
-    // Arrange
-    const context = {
-      ...sinon.stubInterface<KoaContext>(),
-      request: {
-        ...sinon.stubInterface<Request>(),
-        path: request.path,
-        accepts: request.accepts,
-      } as Request,
-    };
-    // Act
-    const result = isReceivedFormatRequest(context, format);
-    // Assert
-    expect(result).toEqual(expected);
-  }
-);
 
 describe('Test to call check usable format function', () => {
   afterEach(() => {
     sinon.default.restore();
   });
-  it.each([
-    {
-      defaultFormat: 'json',
-      expected: 'json',
-    },
-    {
-      defaultFormat: 'csv',
-      expected: 'csv',
-    },
-    {
-      defaultFormat: 'hyper',
-      expected: 'hyper',
-    },
-  ])(
-    'Test to get default format "$expected" when check usable format with empty support formats',
-    ({ defaultFormat, expected }) => {
+
+  it.each([['json'], ['csv'], ['hyper']])(
+    'Test to get default format %p when context path no ending format and "Accept" header not matched.',
+    (format) => {
       // Arrange
-      const input = {
-        formatters: {
-          csv: new CsvFormatter({}, 'csv'),
-          json: new JsonFormatter({}, 'json'),
-          hyper: new HyperFormatter({}, ''),
-        } as ResponseFormatterMap,
-        supportedFormats: [],
+      const expected = format;
+      const context = {
+        ...sinon.stubInterface<KoaContext>(),
+        path: '/orders',
+        accepts: jest.fn().mockReturnValue(false),
       };
 
       // Act
       const result = checkUsableFormat({
-        context: sinon.stubInterface<KoaContext>(),
-        formatters: input.formatters,
-        supportedFormats: input.supportedFormats,
-        defaultFormat,
+        context,
+        supportedFormats: [],
+        defaultFormat: format,
       });
 
       // Assert
@@ -112,66 +31,87 @@ describe('Test to call check usable format function', () => {
   );
 
   it.each([
-    {
-      defaultFormat: 'hyper',
-    },
-    {
-      defaultFormat: 'json',
-    },
+    ['json', [], 'json'],
+    ['csv', [], 'csv'],
+    ['hyper', [], 'hyper'],
   ])(
-    'Test to throw error when check usable format with empty support formats, but default format "$defaultFormat" not existed in formatters',
-    ({ defaultFormat }) => {
+    'Test to get "Accept" format %p when context path no ending format but "Accept" header matched.',
+    (format, supportedFormats, acceptFormat) => {
       // Arrange
-      const expected = new Error(
-        `Not find implemented formatters named ${defaultFormat}`
-      );
+      const expected = acceptFormat;
+      const context = {
+        ...sinon.stubInterface<KoaContext>(),
+        path: '/orders',
+        accepts: jest.fn().mockReturnValue(acceptFormat),
+      };
 
       // Act
-      const checkUsableFormatAction = () =>
+      const result = checkUsableFormat({
+        context,
+        supportedFormats,
+        defaultFormat: 'json',
+      });
+
+      // Assert
+      expect(result).toEqual(expected);
+    }
+  );
+
+  it.each([
+    ['json', [], false],
+    ['json', [], '*/*'],
+    ['json', ['csv', 'hyper'], false],
+    ['json', ['csv', 'hyper'], '*/*'],
+    ['csv', ['hyper', 'json'], false],
+    ['csv', ['hyper', 'json'], '*/*'],
+    ['hyper', ['csv', 'json'], false],
+    ['hyper', ['csv', 'json'], '*/*'],
+  ])(
+    'Test to throw error when context path ending format %p not matched and "Accept" header %p also not matched.',
+    (format, supportedFormats, acceptFormat) => {
+      // Arrange
+      const expected = new Error(
+        `Url ending format and "Accept" header both not matched in "formats" options`
+      );
+      const context = {
+        ...sinon.stubInterface<KoaContext>(),
+        path: `/orders.${format}`,
+        accepts: jest.fn().mockReturnValue(acceptFormat),
+      };
+
+      // Act
+      const checkFunc = () =>
         checkUsableFormat({
-          context: sinon.stubInterface<KoaContext>(),
-          formatters: {},
-          supportedFormats: [],
-          defaultFormat,
+          context,
+          supportedFormats,
+          defaultFormat: 'json',
         });
 
       // Assert
-      expect(checkUsableFormatAction).toThrowError(expected);
+      expect(checkFunc).toThrowError(expected);
     }
   );
 
   it.each([
-    {
-      formatters: {
-        hyper: new HyperFormatter({}, ''),
-      } as ResponseFormatterMap,
-      supportedFormats: ['csv', 'json'],
-      defaultFormat: 'hyper',
-      expected: 'hyper',
-    },
-    {
-      formatters: {
-        json: new JsonFormatter({}, 'json'),
-      } as ResponseFormatterMap,
-      supportedFormats: ['csv', 'hyper'],
-      defaultFormat: 'json',
-      expected: 'json',
-    },
+    ['json', ['csv', 'hyper'], 'csv'],
+    ['csv', ['hyper', 'json'], 'hyper'],
+    ['hyper', ['csv', 'xml'], 'xml'],
   ])(
-    'Test to get default format "$expected" when check usable format with supported formats "$supportedFormats" but formatters not matched',
-    ({ formatters, supportedFormats, defaultFormat, expected }) => {
+    'Test to get "Accept" format when context path ending format %p not matched but "Accept" header matched.',
+    (format, supportedFormats, acceptFormat) => {
       // Arrange
-
-      sinon.default
-        .stub(responseHelpers, 'isReceivedFormatRequest')
-        .returns(true);
+      const expected = acceptFormat;
+      const context = {
+        ...sinon.stubInterface<KoaContext>(),
+        path: `/orders.${format}`,
+        accepts: jest.fn().mockReturnValue(acceptFormat),
+      };
 
       // Act
       const result = checkUsableFormat({
-        context: sinon.stubInterface<KoaContext>(),
-        formatters,
+        context,
         supportedFormats,
-        defaultFormat,
+        defaultFormat: 'json',
       });
 
       // Assert
@@ -180,79 +120,54 @@ describe('Test to call check usable format function', () => {
   );
 
   it.each([
-    {
-      formatters: {
-        json: new JsonFormatter({}, 'json'),
-        hyper: new HyperFormatter({}, ''),
-      } as ResponseFormatterMap,
-      supportedFormats: ['csv', 'hyper'],
-      defaultFormat: 'json',
-      expected: 'json',
-    },
-    {
-      formatters: {
-        json: new JsonFormatter({}, 'json'),
-        hyper: new HyperFormatter({}, ''),
-      } as ResponseFormatterMap,
-      supportedFormats: ['csv', 'json'],
-      defaultFormat: 'hyper',
-      expected: 'hyper',
-    },
+    ['json', ['json', 'hyper'], false],
+    ['json', ['json', 'hyper'], '*/*'],
+    ['csv', ['json', 'csv'], false],
+    ['csv', ['json', 'csv'], '*/*'],
+    ['hyper', ['csv', 'hyper'], false],
+    ['hyper', ['csv', 'hyper'], '*/*'],
   ])(
-    'Test to get default format "$expected" when check usable format with matched formatter in supported formats "$supportedFormats" but not received format request',
-    ({ formatters, supportedFormats, defaultFormat, expected }) => {
+    'Test to get url ending format when context path ending format matched but "Accept" header not matched.',
+    (format, supportedFormats, acceptFormat) => {
       // Arrange
-
-      sinon.default
-        .stub(responseHelpers, 'isReceivedFormatRequest')
-        .returns(false);
+      const expected = format;
+      const context = {
+        ...sinon.stubInterface<KoaContext>(),
+        path: `/orders.${format}`,
+        accepts: jest.fn().mockReturnValue(acceptFormat),
+      };
 
       // Act
       const result = checkUsableFormat({
-        context: sinon.stubInterface<KoaContext>(),
-        formatters,
+        context,
         supportedFormats,
-        defaultFormat,
+        defaultFormat: 'json',
       });
 
       // Assert
       expect(result).toEqual(expected);
     }
   );
-
   it.each([
-    {
-      formatters: {
-        json: new JsonFormatter({}, ''),
-        hyper: new HyperFormatter({}, ''),
-      } as ResponseFormatterMap,
-      supportedFormats: ['csv', 'json', 'hyper'],
-      defaultFormat: 'hyper',
-      expected: 'json',
-    },
-    {
-      formatters: {
-        json: new JsonFormatter({}, ''),
-        hyper: new HyperFormatter({}, ''),
-      } as ResponseFormatterMap,
-      supportedFormats: ['csv', 'hyper', 'json'],
-      defaultFormat: 'json',
-      expected: 'hyper',
-    },
+    ['json', ['json', 'hyper'], 'hyper'],
+    ['csv', ['json', 'csv'], 'json'],
+    ['hyper', ['csv', 'hyper'], 'csv'],
   ])(
-    'Test to get format "$expected" when check usable format with matched formatter in supported formats "$supportedFormats" and received format request',
-    ({ formatters, supportedFormats, defaultFormat, expected }) => {
+    'Test to get url ending format when context path ending format matched and "Accept" header also matched.',
+    (format, supportedFormats, acceptFormat) => {
       // Arrange
-      sinon.default
-        .stub(responseHelpers, 'isReceivedFormatRequest')
-        .returns(true);
+      const expected = format;
+      const context = {
+        ...sinon.stubInterface<KoaContext>(),
+        path: `/orders.${format}`,
+        accepts: jest.fn().mockReturnValue(acceptFormat),
+      };
 
       // Act
       const result = checkUsableFormat({
-        context: sinon.stubInterface<KoaContext>(),
-        formatters,
+        context,
         supportedFormats,
-        defaultFormat,
+        defaultFormat: 'json',
       });
 
       // Assert

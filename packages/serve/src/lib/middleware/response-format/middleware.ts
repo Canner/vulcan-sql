@@ -36,10 +36,25 @@ export class ResponseFormatMiddleware extends BuiltInMiddleware<ResponseFormatOp
       },
       {}
     );
-
     this.supportedFormats = formats.map((format) => format.toLowerCase());
     this.defaultFormat = !options.default ? 'json' : options.default;
   }
+
+  public override async onActivate() {
+    if (this.enabled) {
+      if (!Object.keys(this.formatters).includes(this.defaultFormat))
+        throw new Error(
+          `The type "${this.defaultFormat}" in "default" not implement extension`
+        );
+      this.supportedFormats.map((format) => {
+        if (!Object.keys(this.formatters).includes(format))
+          throw new Error(
+            `The type "${format}" in "formats" not implement extension`
+          );
+      });
+    }
+  }
+
   public async handle(context: KoaContext, next: Next) {
     // return to skip the middleware, if disabled
     if (!this.enabled) return next();
@@ -47,7 +62,6 @@ export class ResponseFormatMiddleware extends BuiltInMiddleware<ResponseFormatOp
     // get supported and request format to use.
     const format = checkUsableFormat({
       context,
-      formatters: this.formatters,
       supportedFormats: this.supportedFormats,
       defaultFormat: this.defaultFormat,
     });
