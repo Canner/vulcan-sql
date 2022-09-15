@@ -14,6 +14,14 @@ const createStub = () => {
   };
 };
 
+const createStubBuilder = ({ statement }: { statement: string }) =>
+  new DataQueryBuilder({
+    statement: statement,
+    dataSource: createStub().dataSource,
+    bindParams: createStub().bindParams,
+    profileName: '',
+  });
+
 describe('Test data query builder > order by clause', () => {
   it.each([
     {
@@ -36,11 +44,8 @@ describe('Test data query builder > order by clause', () => {
       ];
 
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
-        profileName: '',
       });
       builder.orderBy(column, direction);
 
@@ -79,11 +84,8 @@ describe('Test data query builder > order by clause', () => {
       const expected: Array<OrderByClauseOperation> = [first, second];
 
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
-        profileName: '',
       });
       builder
         .orderBy(first.column, first.direction)

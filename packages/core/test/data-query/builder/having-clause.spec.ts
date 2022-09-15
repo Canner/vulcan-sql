@@ -25,6 +25,14 @@ const createStub = () => {
   };
 };
 
+const createStubBuilder = ({ statement }: { statement: string }) =>
+  new DataQueryBuilder({
+    statement: statement,
+    dataSource: createStub().dataSource,
+    bindParams: createStub().bindParams,
+    profileName: '',
+  });
+
 describe('Test data query builder > having clause', () => {
   it.each([
     {
@@ -36,11 +44,8 @@ describe('Test data query builder > having clause', () => {
       and: {
         column: faker.database.column(),
         operator: '=',
-        value: new DataQueryBuilder({
+        value: createStubBuilder({
           statement: 'select * from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
       },
     },
@@ -52,11 +57,8 @@ describe('Test data query builder > having clause', () => {
           aggregateType: AggregateFuncType.AVG,
         } as SelectedColumn,
         operator: '=',
-        value: new DataQueryBuilder({
+        value: createStubBuilder({
           statement: 'select avg(*) from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
       },
       and: {
@@ -105,11 +107,8 @@ describe('Test data query builder > having clause', () => {
         },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
-        profileName: '',
       });
       if (having) builder.having(having.column, having.operator, having.value);
       if (and) builder.andHaving(and.column, and.operator, and.value);
@@ -131,11 +130,8 @@ describe('Test data query builder > having clause', () => {
       or: {
         column: faker.database.column(),
         operator: '=',
-        value: new DataQueryBuilder({
+        value: createStubBuilder({
           statement: 'select * from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
       },
     },
@@ -147,11 +143,8 @@ describe('Test data query builder > having clause', () => {
           aggregateType: AggregateFuncType.AVG,
         } as SelectedColumn,
         operator: '=',
-        value: new DataQueryBuilder({
+        value: createStubBuilder({
           statement: 'select avg(*) from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
       },
       or: {
@@ -200,11 +193,8 @@ describe('Test data query builder > having clause', () => {
         },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
-        profileName: '',
       });
       if (having) builder.having(having.column, having.operator, having.value);
       if (or) builder.orHaving(or.column, or.operator, or.value);
@@ -314,11 +304,8 @@ describe('Test data query builder > having clause', () => {
         },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
-        profileName: '',
       });
       if (havingIn) builder.havingIn(havingIn.column, havingIn.values);
       if (and) builder.andHavingIn(and.column, and.values);
@@ -429,11 +416,8 @@ describe('Test data query builder > having clause', () => {
         },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
-        profileName: '',
       });
       if (notIn) builder.havingNotIn(notIn.column, notIn.values);
       if (or) builder.orHavingIn(or.column, or.values);
@@ -526,11 +510,8 @@ describe('Test data query builder > having clause', () => {
         },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
-        profileName: '',
       });
       if (between)
         builder.havingBetween(between.column, between.min, between.max);
@@ -626,11 +607,8 @@ describe('Test data query builder > having clause', () => {
         },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
-        profileName: '',
       });
       if (notBetween)
         builder.havingNotBetween(
@@ -698,11 +676,8 @@ describe('Test data query builder > having clause', () => {
         },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
-        profileName: '',
       });
       if (isNull) builder.havingNull(isNull.column);
       if (and) builder.andHavingNull(and.column);
@@ -766,11 +741,8 @@ describe('Test data query builder > having clause', () => {
         },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
-        profileName: '',
       });
       if (notNull) builder.havingNotNull(notNull.column);
       if (or) builder.orHavingNull(or.column);
@@ -785,58 +757,40 @@ describe('Test data query builder > having clause', () => {
   it.each([
     {
       exists: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       and: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       andNot: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from orders',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
     },
     {
       exists: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       and: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       andNot: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from orders',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -854,11 +808,8 @@ describe('Test data query builder > having clause', () => {
         { command: ComparisonPredicate.EXISTS, data: andNot },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
-        profileName: '',
       });
       if (exists) builder.havingExists(exists);
       if (and) builder.andHavingExists(and);
@@ -873,58 +824,40 @@ describe('Test data query builder > having clause', () => {
   it.each([
     {
       exists: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       or: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       orNot: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from orders',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
     },
     {
       exists: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       or: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       orNot: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from orders',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
-          profileName: '',
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -943,11 +876,8 @@ describe('Test data query builder > having clause', () => {
         { command: ComparisonPredicate.EXISTS, data: orNot },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
-        profileName: '',
       });
       if (exists) builder.havingNotExists(exists);
       if (or) builder.orHavingExists(or);
