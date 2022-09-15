@@ -7,11 +7,12 @@ import { KoaContext } from '@vulcan-sql/serve/models';
 import * as core from '@vulcan-sql/core';
 import * as uuid from 'uuid';
 import {
-  AuditLoggingMiddleware,
+  AccessLogMiddleware,
   RequestIdMiddleware,
 } from '@vulcan-sql/serve/middleware';
+import bytes = require('bytes');
 
-describe('Test audit logging middlewares', () => {
+describe('Test access log middlewares', () => {
   afterEach(() => {
     sinon.default.restore();
   });
@@ -19,12 +20,16 @@ describe('Test audit logging middlewares', () => {
     // Arrange
     const ctx: KoaContext = {
       ...sinon.stubInterface<KoaContext>(),
-      path: faker.internet.url(),
+
       params: {
         uuid: faker.datatype.uuid(),
       },
       request: {
         ...sinon.stubInterface<Request>(),
+        ip: faker.internet.ip(),
+        method: faker.internet.httpMethod(),
+        path: faker.internet.url(),
+        length: faker.datatype.number({ min: 100, max: 100000 }),
         header: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           'X-Agent': 'test-normal-client',
@@ -36,22 +41,31 @@ describe('Test audit logging middlewares', () => {
       },
       response: {
         ...sinon.stubInterface<Response>(),
+        status: 200,
+        length: faker.datatype.number({ min: 100, max: 100000 }),
         body: {
           result: 'OK',
         },
       },
     };
+    const { request: req, response: resp } = ctx;
+
     const expected = [
-      `request: path = ${ctx.path}`,
-      `request: header = ${JSON.stringify(ctx.request.header)}`,
-      `request: query = ${JSON.stringify(ctx.request.query)}`,
-      `request: params = ${JSON.stringify(ctx.params)}.`,
-      `response: body = ${JSON.stringify(ctx.response.body)}`,
+      `--> ${req.ip} -- "${req.method} ${req.path}" -- size: ${
+        req.length ? bytes(req.length).toLowerCase() : 'none'
+      }`,
+      ` -> header: ${JSON.stringify(req.header)}`,
+      ` -> query: ${JSON.stringify(req.query)}`,
+      ` -> params: ${JSON.stringify(ctx.params)}`,
+      `<-- status: ${resp.status} -- size: ${
+        resp.length ? bytes(resp.length).toLowerCase() : 'none'
+      }`,
+      ` <- header: ${JSON.stringify(resp.header)}`,
     ];
     // Act
-    const middleware = new AuditLoggingMiddleware({}, '');
-    // Use spy to trace the logger from getLogger( scopeName: 'AUDIT' }) to know in logger.info(...)
-    const spy = sinon.default.spy(core.getLogger({ scopeName: 'AUDIT' }));
+    const middleware = new AccessLogMiddleware({}, '');
+    // Use spy to trace the logger from getLogger( scopeName: 'ACCESS_LOG' }) to know in logger.info(...)
+    const spy = sinon.default.spy(core.getLogger({ scopeName: 'ACCESS_LOG' }));
     await middleware.handle(ctx, async () => Promise.resolve());
 
     // Assert
@@ -66,16 +80,20 @@ describe('Test audit logging middlewares', () => {
     // Arrange
     const ctx: KoaContext = {
       ...sinon.stubInterface<KoaContext>(),
-      path: faker.internet.url(),
       params: {
         uuid: faker.datatype.uuid(),
       },
       request: {
         ...sinon.stubInterface<Request>(),
+        ip: faker.internet.ip(),
+        method: faker.internet.httpMethod(),
+        path: faker.internet.url(),
+        length: faker.datatype.number({ min: 100, max: 100000 }),
         header: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           'X-Agent': 'test-school-client',
         },
+
         query: {
           ...sinon.stubInterface<ParsedUrlQuery>(),
           sortby: 'score',
@@ -83,26 +101,35 @@ describe('Test audit logging middlewares', () => {
       },
       response: {
         ...sinon.stubInterface<Response>(),
+        length: faker.datatype.number({ min: 100, max: 100000 }),
+        status: 200,
         body: {
           result: 'Success',
         },
       },
     };
 
+    const { request: req, response: resp } = ctx;
+
     const expected = {
       requestId: uuid.v4(),
       info: [
-        `request: path = ${ctx.path}`,
-        `request: header = ${JSON.stringify(ctx.request.header)}`,
-        `request: query = ${JSON.stringify(ctx.request.query)}`,
-        `request: params = ${JSON.stringify(ctx.params)}.`,
-        `response: body = ${JSON.stringify(ctx.response.body)}`,
+        `--> ${req.ip} -- "${req.method} ${req.path}" -- size: ${
+          req.length ? bytes(req.length).toLowerCase() : 'none'
+        }`,
+        ` -> header: ${JSON.stringify(req.header)}`,
+        ` -> query: ${JSON.stringify(req.query)}`,
+        ` -> params: ${JSON.stringify(ctx.params)}`,
+        `<-- status: ${resp.status} -- size: ${
+          resp.length ? bytes(resp.length).toLowerCase() : 'none'
+        }`,
+        ` <- header: ${JSON.stringify(resp.header)}`,
       ],
     };
 
     // setup request-id middleware run first.
     const stubReqIdMiddleware = new RequestIdMiddleware({}, '');
-    const middleware = new AuditLoggingMiddleware(
+    const middleware = new AccessLogMiddleware(
       {
         options: {
           displayRequestId: true,
@@ -110,11 +137,11 @@ describe('Test audit logging middlewares', () => {
       },
       ''
     );
-    // Use spy to trace the logger from getLogger( scopeName: 'AUDIT' }) to know in logger.info(...)
-    // it will get the setting of logger from above new audit logging middleware
+    // Use spy to trace the logger from getLogger( scopeName: 'ACCESS_LOG' }) to know in logger.info(...)
+    // it will get the setting of logger from above new ACCESS_LOG logging middleware
     const spy = sinon.default.spy(
       core.getLogger({
-        scopeName: 'AUDIT',
+        scopeName: 'ACCESS_LOG',
       })
     );
     // Act

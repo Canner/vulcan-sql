@@ -1,6 +1,6 @@
 export * from './corsMiddleware';
 export * from './requestIdMiddleware';
-export * from './auditLogMiddleware';
+export * from './accessLogMiddleware';
 export * from './rateLimitMiddleware';
 export * from './authMiddleware';
 export * from './response-format';
@@ -11,7 +11,7 @@ import { CorsMiddleware } from './corsMiddleware';
 import { AuthMiddleware } from './authMiddleware';
 import { RateLimitMiddleware } from './rateLimitMiddleware';
 import { RequestIdMiddleware } from './requestIdMiddleware';
-import { AuditLoggingMiddleware } from './auditLogMiddleware';
+import { AccessLogMiddleware } from './accessLogMiddleware';
 import { ResponseFormatMiddleware } from './response-format';
 import { EnforceHttpsMiddleware } from './enforceHttpsMiddleware';
 import { ClassType, ExtensionBase } from '@vulcan-sql/core';
@@ -19,10 +19,10 @@ import { DocRouterMiddleware } from './docRouterMiddleware';
 
 // The order is the middleware running order
 export const BuiltInRouteMiddlewares: ClassType<ExtensionBase>[] = [
+  AccessLogMiddleware,
   CorsMiddleware,
   EnforceHttpsMiddleware,
   RequestIdMiddleware,
-  AuditLoggingMiddleware,
   RateLimitMiddleware,
   AuthMiddleware,
   ResponseFormatMiddleware,
