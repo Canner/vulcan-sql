@@ -8,6 +8,7 @@ import {
   ResolverType,
 } from '@vulcan-sql/serve/middleware';
 import { ServeConfig } from '@vulcan-sql/serve/models';
+import { Server } from 'http';
 
 const runServer = (config: Omit<ServeConfig, 'artifact' | 'template'>) => {
   // Arrange
@@ -30,9 +31,13 @@ const runServer = (config: Omit<ServeConfig, 'artifact' | 'template'>) => {
 };
 
 describe('Test enforce https middlewares for LOCAL resolver type', () => {
+  let server: Server;
+  afterEach(() => {
+    server?.close();
+  });
   it('Should get status code "301" when send GET request', async () => {
     // Arrange
-    const { server } = runServer({});
+    server = runServer({}).server;
 
     const request = supertest(server).get('/');
     // Act
@@ -41,13 +46,11 @@ describe('Test enforce https middlewares for LOCAL resolver type', () => {
     // Assert
     expect(response.statusCode).toEqual(301);
     expect(response.body).toEqual({});
-
-    server.close();
   });
 
   it('Should get status code "405" when send POST request', async () => {
     // Arrange
-    const { server } = runServer({});
+    server = runServer({}).server;
     const request = supertest(server).post('/');
     // Act
     const response = await request;
@@ -55,19 +58,17 @@ describe('Test enforce https middlewares for LOCAL resolver type', () => {
     // Assert
     expect(response.statusCode).toEqual(405);
     expect(response.body).toEqual({});
-
-    server.close();
   });
 
   it('Should get status code "301" when config allow POST redirect', async () => {
     // Arrange
-    const { server } = runServer({
+    server = runServer({
       'enforce-https': {
         options: {
           redirectMethods: ['POST'],
         } as EnforceHttpsOptions,
       },
-    });
+    }).server;
 
     const request = supertest(server).post('/');
     // Act
@@ -76,21 +77,23 @@ describe('Test enforce https middlewares for LOCAL resolver type', () => {
     // Assert
     expect(response.statusCode).toEqual(301);
     expect(response.body).toEqual({});
-
-    server.close();
   });
 });
 
 describe('Test enforce https middlewares for X_FORWARDED_PROTO resolver type', () => {
+  let server: Server;
+  afterEach(() => {
+    server?.close();
+  });
   it('Should get status code "301" when send GET request', async () => {
     // Arrange
-    const { server } = runServer({
+    server = runServer({
       'enforce-https': {
         options: {
           type: ResolverType.X_FORWARDED_PROTO.toString(),
         } as EnforceHttpsOptions,
       },
-    });
+    }).server;
 
     const request = supertest(server).get('/');
     // Act
@@ -99,19 +102,17 @@ describe('Test enforce https middlewares for X_FORWARDED_PROTO resolver type', (
     // Assert
     expect(response.statusCode).toEqual(301);
     expect(response.body).toEqual({});
-
-    server.close();
   });
 
   it('Should get status code "200" when send GET request with "x-forwarded-proto: https"', async () => {
     // Arrange
-    const { server } = runServer({
+    server = runServer({
       'enforce-https': {
         options: {
           type: ResolverType.X_FORWARDED_PROTO.toString(),
         } as EnforceHttpsOptions,
       },
-    });
+    }).server;
 
     const request = supertest(server)
       .get('/')
@@ -122,21 +123,23 @@ describe('Test enforce https middlewares for X_FORWARDED_PROTO resolver type', (
     // Assert
     expect(response.statusCode).toEqual(200);
     expect(response.body).toEqual({ result: 'ok' });
-
-    server.close();
   });
 });
 
 describe('Test enforce https middlewares for AZURE_ARR resolver type', () => {
+  let server: Server;
+  afterEach(() => {
+    server?.close();
+  });
   it('Should get status code "301" when send GET request', async () => {
     // Arrange
-    const { server } = runServer({
+    server = runServer({
       'enforce-https': {
         options: {
           type: ResolverType.AZURE_ARR.toString(),
         } as EnforceHttpsOptions,
       },
-    });
+    }).server;
 
     const request = supertest(server).get('/');
     // Act
@@ -145,19 +148,17 @@ describe('Test enforce https middlewares for AZURE_ARR resolver type', () => {
     // Assert
     expect(response.statusCode).toEqual(301);
     expect(response.body).toEqual({});
-
-    server.close();
   });
 
   it('Should get status code "200" when send GET request with "x-arr-ssl: https"', async () => {
     // Arrange
-    const { server } = runServer({
+    server = runServer({
       'enforce-https': {
         options: {
           type: ResolverType.AZURE_ARR.toString(),
         } as EnforceHttpsOptions,
       },
-    });
+    }).server;
 
     const request = supertest(server).get('/').set('x-arr-ssl', 'https');
     // Act
@@ -166,12 +167,14 @@ describe('Test enforce https middlewares for AZURE_ARR resolver type', () => {
     // Assert
     expect(response.statusCode).toEqual(200);
     expect(response.body).toEqual({ result: 'ok' });
-
-    server.close();
   });
 });
 
 describe('Test enforce https middlewares for CUSTOM resolver type', () => {
+  let server: Server;
+  afterEach(() => {
+    server?.close();
+  });
   it('Should throw error when not set proto in options', async () => {
     // Arrange
     const config = {
@@ -190,14 +193,14 @@ describe('Test enforce https middlewares for CUSTOM resolver type', () => {
   });
   it('Should get status code "301" when send GET request', async () => {
     // Arrange
-    const { server } = runServer({
+    server = runServer({
       'enforce-https': {
         options: {
           type: ResolverType.CUSTOM.toString(),
           proto: 'x-custom-proto',
         } as EnforceHttpsOptions,
       },
-    });
+    }).server;
 
     const request = supertest(server).get('/');
     // Act
@@ -206,20 +209,18 @@ describe('Test enforce https middlewares for CUSTOM resolver type', () => {
     // Assert
     expect(response.statusCode).toEqual(301);
     expect(response.body).toEqual({});
-
-    server.close();
   });
 
   it('Should get status code "200" when send GET request with "x-custom-proto: https"', async () => {
     // Arrange
-    const { server } = runServer({
+    server = runServer({
       'enforce-https': {
         options: {
           type: ResolverType.CUSTOM.toString(),
           proto: 'x-custom-proto',
         } as EnforceHttpsOptions,
       },
-    });
+    }).server;
 
     const request = supertest(server).get('/').set('x-custom-proto', 'https');
     // Act
@@ -228,21 +229,23 @@ describe('Test enforce https middlewares for CUSTOM resolver type', () => {
     // Assert
     expect(response.statusCode).toEqual(200);
     expect(response.body).toEqual({ result: 'ok' });
-
-    server.close();
   });
 });
 
 describe('Test enforce https middlewares for FORWARDED resolver type', () => {
+  let server: Server;
+  afterEach(() => {
+    server?.close();
+  });
   it('Should get status code "301" when send GET request', async () => {
     // Arrange
-    const { server } = runServer({
+    server = runServer({
       'enforce-https': {
         options: {
           type: ResolverType.FORWARDED.toString(),
         } as EnforceHttpsOptions,
       },
-    });
+    }).server;
 
     const request = supertest(server).get('/');
     // Act
@@ -251,19 +254,17 @@ describe('Test enforce https middlewares for FORWARDED resolver type', () => {
     // Assert
     expect(response.statusCode).toEqual(301);
     expect(response.body).toEqual({});
-
-    server.close();
   });
 
   it('Should get status code "200" when send GET request with "forwarded: by=foo;for=baz;host=localhost;proto=https', async () => {
     // Arrange
-    const { server } = runServer({
+    server = runServer({
       'enforce-https': {
         options: {
           type: ResolverType.FORWARDED.toString(),
         } as EnforceHttpsOptions,
       },
-    });
+    }).server;
 
     const request = supertest(server)
       .get('/')
@@ -274,7 +275,5 @@ describe('Test enforce https middlewares for FORWARDED resolver type', () => {
     // Assert
     expect(response.statusCode).toEqual(200);
     expect(response.body).toEqual({ result: 'ok' });
-
-    server.close();
   });
 });

@@ -9,6 +9,7 @@ import {
   BaseAuthenticator,
   KoaContext,
 } from '@vulcan-sql/serve/models';
+import { Server } from 'http';
 
 const runServer = async (
   options: AuthOptions,
@@ -31,6 +32,7 @@ describe('Test auth route middleware', () => {
     string,
     sinon.StubbedInstance<BaseAuthenticator<any>>
   >;
+  let server: Server;
 
   beforeAll(() => {
     const a1 = sinon.stubInterface<BaseAuthenticator<any>>();
@@ -47,6 +49,7 @@ describe('Test auth route middleware', () => {
     };
   });
   afterEach(() => {
+    server?.close();
     sinon.default.restore();
   });
 
@@ -132,14 +135,13 @@ describe('Test auth route middleware', () => {
     'Should get correct result when call GET /auth?type=%p',
     async (name, expected) => {
       // Arrange
-      const server = await runServer({ a1: {}, a2: {} }, stubAuthenticators);
+      server = await runServer({ a1: {}, a2: {} }, stubAuthenticators);
 
       // Act
       const request = supertest(server).get(`/auth?type=${name}`);
       const response = await request;
       // Assert
       expect(response.body).toEqual({ token: expected });
-      server.close();
     }
   );
 
@@ -151,7 +153,7 @@ describe('Test auth route middleware', () => {
         options
       )}.`,
     };
-    const server = await runServer(options, stubAuthenticators);
+    server = await runServer(options, stubAuthenticators);
 
     // Act
     const request = supertest(server).get(`/auth`);
@@ -160,7 +162,6 @@ describe('Test auth route middleware', () => {
     // Assert
     expect(response.statusCode).toEqual(400);
     expect(response.body).toEqual(expected);
-    server.close();
   });
 
   it('Should failed when call GET /auth?type=m1 but "m1" not setup in "auth" options', async () => {
@@ -171,7 +172,7 @@ describe('Test auth route middleware', () => {
         options
       )}.`,
     };
-    const server = await runServer(options, stubAuthenticators);
+    server = await runServer(options, stubAuthenticators);
 
     // Act
     const request = supertest(server).get(`/auth?type=m1`);
@@ -180,7 +181,6 @@ describe('Test auth route middleware', () => {
     // Assert
     expect(response.statusCode).toEqual(400);
     expect(response.body).toEqual(expected);
-    server.close();
   });
 
   it('Should failed when call GET /auth?type=a3 but auth identity "a3" failed', async () => {
@@ -192,7 +192,7 @@ describe('Test auth route middleware', () => {
     const stubAuthenticator = sinon.stubInterface<BaseAuthenticator<any>>();
     stubAuthenticator.authIdentity.rejects(error);
     stubAuthenticator.getExtensionId.returns('a3');
-    const server = await runServer(
+    server = await runServer(
       { a3: {} },
       {
         a3: stubAuthenticator,
@@ -206,6 +206,5 @@ describe('Test auth route middleware', () => {
     // Assert
     expect(response.statusCode).toEqual(400);
     expect(response.body).toEqual(expected);
-    server.close();
   });
 });
