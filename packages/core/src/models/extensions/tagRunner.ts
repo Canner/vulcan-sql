@@ -1,3 +1,4 @@
+import { NunjucksExecutionMetadata } from '../../lib/template-engine/nunjucksExecutionMetadata';
 import { TYPES } from '@vulcan-sql/core/types';
 import { sortBy } from 'lodash';
 import * as nunjucks from 'nunjucks';
@@ -12,6 +13,7 @@ export interface TagRunnerOptions {
   context: nunjucks.Context;
   args: TagExtensionArgTypes[];
   contentArgs: TagExtensionContentArgGetter[];
+  metadata: NunjucksExecutionMetadata;
 }
 
 @VulcanExtension(TYPES.Extension_TemplateEngine)
@@ -39,7 +41,8 @@ export abstract class TagRunner<C = any> extends RuntimeExtension<C> {
         });
       });
 
-    this.run({ context, args, contentArgs })
+    const metadata = NunjucksExecutionMetadata.load(context);
+    this.run({ context, args, contentArgs, metadata })
       .then((result) => callback(null, result))
       .catch((err) => callback(err, null));
   }

@@ -22,6 +22,11 @@ export interface CompileResult {
   metadata: TemplateMetadata;
 }
 
+export interface ExecuteContext {
+  parameters?: Record<string, any>;
+  profileName: string;
+}
+
 export interface Compiler {
   name: string;
   /**
@@ -29,9 +34,9 @@ export interface Compiler {
    * @param template The path or identifier of a template source
    */
   compile(template: string): Promise<CompileResult>;
-  execute<T extends object>(
+  execute(
     templateName: string,
-    data: T,
+    data: ExecuteContext,
     pagination?: Pagination
   ): Promise<DataResult>;
 }

@@ -1,8 +1,4 @@
-import {
-  IExecutor,
-  ProfileLoader,
-  QueryExecutor,
-} from '@vulcan-sql/core/data-query';
+import { ProfileLoader } from '@vulcan-sql/core/data-query';
 import { AsyncContainerModule, interfaces } from 'inversify';
 import { TYPES } from '../types';
 import { ProfileReader } from '../../models/extensions';

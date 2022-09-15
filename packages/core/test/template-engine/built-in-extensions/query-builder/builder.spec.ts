@@ -1,13 +1,19 @@
-import { arrayToStream, streamToArray } from '@vulcan-sql/core';
-import { CURRENT_PROFILE_NAME } from '@vulcan-sql/core/template-engine/built-in-extensions/query-builder/constants';
+import { arrayToStream, streamToArray } from '@vulcan-sql/core/utils';
 import { createTestCompiler } from '../../testCompiler';
 
 it('Extension should execute correct query and set/export the variable', async () => {
   // Arrange
-  const { compiler, loader, builder, executor } = await createTestCompiler();
+  const {
+    compiler,
+    loader,
+    builder,
+    executeTemplate,
+    getCreatedQueries,
+    getCreatedBinding,
+  } = await createTestCompiler();
   const { compiledData } = await compiler.compile(`
 {% req userCount main %}
-select count(*) as count from user where user.id = {{ params.userId }};
+select count(*) as count from user where user.id = {{ context.params.userId }};
 {% endreq %}
   `);
   builder.value.onFirstCall().resolves({
@@ -16,17 +22,17 @@ select count(*) as count from user where user.id = {{ params.userId }};
   });
   // Action
   loader.setSource('test', compiledData);
-  const result = await compiler.execute('test', {
-    params: { userId: 'user-id' },
-    [CURRENT_PROFILE_NAME]: 'mocked-profile',
+  const result = await executeTemplate('test', {
+    userId: 'user-id',
   });
   const resultData = await streamToArray(result.getData());
+  const queries = await getCreatedQueries();
+  const binding = await getCreatedBinding();
   // Assert
-  expect(executor.createBuilder.firstCall.args[0]).toBe('mocked-profile');
-  expect(executor.createBuilder.firstCall.args[1]).toBe(
+  expect(queries[0]).toBe(
     `select count(*) as count from user where user.id = $1;`
   );
-  expect(executor.createBuilder.firstCall.args[2].get('$1')).toBe(`user-id`);
+  expect(binding[0].get('$1')).toBe(`user-id`);
   expect(resultData).toEqual([{ count: 1 }]);
 });
 

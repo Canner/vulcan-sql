@@ -59,6 +59,11 @@ export const createTestCompiler = async ({
     executor: stubExecutor,
     compiler: container.get<NunjucksCompiler>(TYPES.Compiler),
     loader: container.get<InMemoryCodeLoader>(TYPES.CompilerLoader),
+    executeTemplate: async (name: string, parameters: any = {}) => {
+      return container
+        .get<NunjucksCompiler>(TYPES.Compiler)
+        .execute(name, { parameters, profileName: 'mocked-profile' });
+    },
     getCreatedProfiles: async () => {
       const calls = stubExecutor.createBuilder.getCalls();
       return calls.map((call) => call.args[0]);

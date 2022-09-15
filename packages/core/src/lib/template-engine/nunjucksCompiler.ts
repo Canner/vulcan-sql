@@ -1,4 +1,4 @@
-import { Compiler, CompileResult } from './compiler';
+import { Compiler, CompileResult, ExecuteContext } from './compiler';
 import * as nunjucks from 'nunjucks';
 import * as transformer from 'nunjucks/src/transformer';
 import { inject, injectable, multiInject, named, optional } from 'inversify';
@@ -23,6 +23,7 @@ import {
   FilterRunner,
   DataResult,
 } from '@vulcan-sql/core/models';
+import { NunjucksExecutionMetadata } from './nunjucksExecutionMetadata';
 
 @injectable()
 export class NunjucksCompiler implements Compiler {
@@ -75,13 +76,17 @@ export class NunjucksCompiler implements Compiler {
     return { ast: preProcessedAst, metadata };
   }
 
-  public async execute<T extends object>(
+  public async execute(
     templateName: string,
-    data: T,
+    data: ExecuteContext,
     pagination?: Pagination
   ): Promise<DataResult> {
     await this.initializeExtensions();
-    const builder = await this.renderAndGetMainBuilder(templateName, data);
+    const metadata = new NunjucksExecutionMetadata(data);
+    const builder = await this.renderAndGetMainBuilder(
+      templateName,
+      metadata.dump()
+    );
     if (pagination) builder.paginate(pagination);
     return builder.value();
   }
