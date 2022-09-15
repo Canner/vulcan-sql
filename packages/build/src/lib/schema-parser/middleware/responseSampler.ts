@@ -25,11 +25,14 @@ export class ResponseSampler extends SchemaParserMiddleware {
   ): Promise<void> {
     await next();
     const schema = rawSchema as APISchema;
-    if (!schema.exampleParameter) return;
+    if (!schema.sample) return;
 
     const response = await this.templateEngine.execute(
       schema.templateSource,
-      { context: { params: schema.exampleParameter } },
+      {
+        context: { params: schema.sample.parameters },
+        profileName: schema.sample.profile,
+      },
       // We only need the columns of this query, so we set offset/limit both to 0 here.
       {
         limit: 0,

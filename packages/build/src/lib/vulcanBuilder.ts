@@ -2,11 +2,15 @@ import { IBuildOptions } from '@vulcan-sql/build/models';
 import { Container, TYPES } from '@vulcan-sql/build/containers';
 import { SchemaParser } from '@vulcan-sql/build/schema-parser';
 import {
+  DataSource,
   TemplateEngine,
   TYPES as CORE_TYPES,
   VulcanArtifactBuilder,
+  getLogger,
 } from '@vulcan-sql/core';
 import { DocumentGenerator } from './document-generator';
+
+const logger = getLogger({ scopeName: 'BUILD' });
 
 export class VulcanBuilder {
   private options: IBuildOptions;
@@ -27,6 +31,15 @@ export class VulcanBuilder {
     const documentGenerator = container.get<DocumentGenerator>(
       TYPES.DocumentGenerator
     );
+
+    // Activate data sources
+    const dataSources =
+      container.getAll<DataSource>(CORE_TYPES.Extension_DataSource) || [];
+    for (const dataSource of dataSources) {
+      logger.debug(`Initializing data source: ${dataSource.getExtensionId()}`);
+      await dataSource.activate();
+      logger.debug(`Data source ${dataSource.getExtensionId()} initialized`);
+    }
 
     const { metadata, templates } = await templateEngine.compile();
     const { schemas } = await schemaParser.parse({ metadata });

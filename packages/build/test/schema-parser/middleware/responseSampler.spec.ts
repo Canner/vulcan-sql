@@ -9,8 +9,9 @@ it('Should create response definition when example parameter is provided', async
   const schema: RawAPISchema = {
     templateSource: 'existed/path',
     sourceName: 'some-name',
-    exampleParameter: {
-      someParam: 123,
+    sample: {
+      profile: 'mocked-profile',
+      parameters: { someParam: 123 },
     },
   };
   const stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
@@ -36,7 +37,7 @@ it('Should create response definition when example parameter is a empty object',
   const schema: RawAPISchema = {
     templateSource: 'existed/path',
     sourceName: 'some-name',
-    exampleParameter: {},
+    sample: {},
   };
   const stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
   stubTemplateEngine.execute.resolves({
@@ -82,7 +83,7 @@ it('Should append response definition when there are some existed definitions', 
   const schema: RawAPISchema = {
     templateSource: 'existed/path',
     sourceName: 'some-name',
-    exampleParameter: {},
+    sample: {},
     response: [
       {
         name: 'name',
