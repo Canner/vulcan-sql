@@ -23,6 +23,7 @@ describe('Test auth credential middleware', () => {
     const ctx: KoaContext = {
       ...sinon.stubInterface<KoaContext>(),
     };
+
     // Act
     const middleware = new AuthCredentialMiddleware(
       {
@@ -33,7 +34,7 @@ describe('Test auth credential middleware', () => {
     );
     // spy the async function to do test
     const spy = jest.spyOn(lodash, 'isEmpty');
-
+    await middleware.activate();
     await middleware.handle(ctx, async () => Promise.resolve());
 
     expect(spy).not.toHaveBeenCalled();
@@ -46,19 +47,16 @@ describe('Test auth credential middleware', () => {
       const expected = new Error(
         'please set at least one auth type and user credential when you enable the "auth" options.'
       );
-      const ctx: KoaContext = {
-        ...sinon.stubInterface<KoaContext>(),
-      };
+
       // Act
       const middleware = new AuthCredentialMiddleware(
         { options: options },
         '',
         []
       );
+      const activateFunc = async () => await middleware.activate();
 
-      const action = middleware.handle(ctx, async () => Promise.resolve());
-
-      expect(action).rejects.toThrow(expected);
+      expect(activateFunc).rejects.toThrow(expected);
     }
   );
 
@@ -101,7 +99,7 @@ describe('Test auth credential middleware', () => {
         '',
         [authenticator]
       );
-
+      await middleware.activate();
       await middleware.handle(ctx, async () => Promise.resolve());
 
       expect(ctx.state.user).toEqual(expected);
@@ -143,7 +141,7 @@ describe('Test auth credential middleware', () => {
         '',
         [authenticator]
       );
-
+      await middleware.activate();
       await middleware.handle(ctx, async () => Promise.resolve());
 
       expect(ctx.status).toEqual(401);
@@ -182,7 +180,7 @@ describe('Test auth credential middleware', () => {
         '',
         [authenticator]
       );
-
+      await middleware.activate();
       const handle = async () =>
         await middleware.handle(ctx, async () => Promise.resolve());
 

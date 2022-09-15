@@ -43,17 +43,19 @@ export class AuthCredentialMiddleware extends BuiltInMiddleware<AuthOptions> {
       const authenticator = this.authenticators[name];
       if (authenticator.activate) await authenticator.activate();
     }
+
+    if (this.enabled && isEmpty(this.getOptions())) {
+      throw new Error(
+        'please set at least one auth type and user credential when you enable the "auth" options.'
+      );
+    }
   }
 
   public async handle(context: KoaContext, next: Next) {
     // return to stop the middleware, if disabled
     if (!this.enabled) return next();
 
-    const options = (this.getOptions() as AuthOptions) || {};
-    if (isEmpty(options))
-      throw new Error(
-        'please set at least one auth type and user credential when you enable the "auth" options.'
-      );
+    const options = this.getOptions() as AuthOptions;
 
     // pass current context to auth token for users
     for (const name of Object.keys(this.authenticators)) {
