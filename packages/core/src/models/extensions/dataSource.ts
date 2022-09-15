@@ -1,6 +1,7 @@
 import { SQLClauseOperation } from '@vulcan-sql/core/data-query';
-import { Pagination } from '@vulcan-sql/core/models';
+import { Pagination, Profile } from '@vulcan-sql/core/models';
 import { TYPES } from '@vulcan-sql/core/types';
+import { inject, multiInject } from 'inversify';
 import { Readable } from 'stream';
 import { ExtensionBase } from './base';
 import { VulcanExtension } from './decorators';
@@ -36,6 +37,15 @@ export type PrepareParameterFunc = {
 
 @VulcanExtension(TYPES.Extension_DataSource, { enforcedId: true })
 export abstract class DataSource<C = any> extends ExtensionBase<C> {
+  constructor(
+    @inject(TYPES.ExtensionConfig) config: C,
+    @inject(TYPES.ExtensionName) moduleName: string,
+    @multiInject(TYPES.Profile) profiles: Profile[]
+  ) {
+    super(config, moduleName);
+    console.log(profiles);
+  }
+
   abstract execute(options: ExecuteOptions): Promise<DataResult>;
   // prepare parameterized format for query later
   abstract prepare(param: RequestParameter): Promise<string>;

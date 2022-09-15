@@ -4,6 +4,6 @@ export * from './artifactBuilderOptions';
 export * from './coreOptions';
 export * from './templateEngineOptions';
 export * from './extensions';
-export * from './executorOptions';
 export * from './documentOptions';
-export * from './profilesOptions';
+export * from './profilesLookupOptions';
+export * from './profile';

@@ -12,6 +12,7 @@ import {
   builtInSerializer,
 } from '@vulcan-sql/core/artifact-builder';
 import { builtInDataSource } from '@vulcan-sql/core/data-source';
+import { buildInProfileReaders } from '@vulcan-sql/core/data-query';
 
 export const extensionModule = (options: ICoreOptions) =>
   new AsyncContainerModule(async (bind) => {
@@ -34,6 +35,8 @@ export const extensionModule = (options: ICoreOptions) =>
     loader.loadInternalExtensionModule(builtInCodeLoader);
     // Data source (single module)
     loader.loadInternalExtensionModule(builtInDataSource);
+    // Profile reader (single module)
+    loader.loadInternalExtensionModule(buildInProfileReaders);
 
     // External extension modules
     await loader.loadExternalExtensionModules();
