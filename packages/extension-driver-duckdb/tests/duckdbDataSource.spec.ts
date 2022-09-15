@@ -40,14 +40,25 @@ afterAll(async () => {
 
 it('Should work with memory-only database', async () => {
   // Arrange
-  const dataSource = new DuckDBDataSource(null as any, 'duckdb'); // set config to null, test the tolerance
+  const dataSource = new DuckDBDataSource(null as any, 'duckdb', [
+    { name: 'mocked-profile', type: 'duck', connection: {} },
+  ]); // set config to null, test the tolerance
+  await dataSource.activate();
   const bindParams = new Map<string, any>();
   bindParams.set(
-    await dataSource.prepare({ parameterIndex: 1, value: 123 }),
+    await dataSource.prepare({
+      parameterIndex: 1,
+      value: 123,
+      profileName: 'mocked-profile',
+    }),
     123
   );
   bindParams.set(
-    await dataSource.prepare({ parameterIndex: 2, value: 456 }),
+    await dataSource.prepare({
+      parameterIndex: 2,
+      value: 456,
+      profileName: 'mocked-profile',
+    }),
     456
   );
   // Act
@@ -55,6 +66,7 @@ it('Should work with memory-only database', async () => {
     statement: 'select $1::INTEGER + $2::INTEGER as test',
     bindParams,
     operations: {} as any,
+    profileName: 'mocked-profile',
   });
   const columns = getColumns();
   const data = await streamToArray(getData());
@@ -65,12 +77,16 @@ it('Should work with memory-only database', async () => {
 
 it('Should work with persistent database', async () => {
   // Arrange
-  const dataSource = new DuckDBDataSource(
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
     {
-      'persistent-path': testFile,
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
     },
-    'duckdb'
-  );
+  ]);
+  await dataSource.activate();
   const bindParams = new Map<string, any>();
   bindParams.set('$1', 200);
   // Act
@@ -78,6 +94,7 @@ it('Should work with persistent database', async () => {
     statement: 'select * from "users" where age < $1 order by id desc',
     bindParams,
     operations: {} as any,
+    profileName: 'mocked-profile',
   });
   const columns = getColumns();
   const data = await streamToArray(getData());
@@ -99,18 +116,23 @@ it('Should work with persistent database', async () => {
 
 it('Should send correct data with chunks', async () => {
   // Arrange
-  const dataSource = new DuckDBDataSource(
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
     {
-      'persistent-path': testFile,
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
     },
-    'duckdb'
-  );
+  ]);
+  await dataSource.activate();
   const bindParams = new Map<string, any>();
   // Act
   const { getData } = await dataSource.execute({
     statement: 'select * from "users" where age order by id',
     bindParams,
     operations: {} as any,
+    profileName: 'mocked-profile',
   });
   const data = await streamToArray(getData());
   // Assert
@@ -131,7 +153,16 @@ it('Should send correct data with chunks', async () => {
 
 it('Should throw error from upstream', async () => {
   // Arrange
-  const dataSource = new DuckDBDataSource({}, 'duckdb');
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
+    },
+  ]);
+  await dataSource.activate();
   const bindParams = new Map<string, any>();
   // Act, Assert
   await expect(
@@ -139,18 +170,23 @@ it('Should throw error from upstream', async () => {
       statement: 'wrong syntax',
       bindParams,
       operations: {} as any,
+      profileName: 'mocked-profile',
     })
   ).rejects.toThrow(/^Parser Error: syntax error at or near "wrong"/);
 });
 
 it('Should return empty data and column with zero result', async () => {
   // Arrange
-  const dataSource = new DuckDBDataSource(
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
     {
-      'persistent-path': testFile,
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
     },
-    'duckdb'
-  );
+  ]);
+  await dataSource.activate();
   const bindParams = new Map<string, any>();
   bindParams.set('$1', 0);
   // Act
@@ -158,6 +194,7 @@ it('Should return empty data and column with zero result', async () => {
     statement: 'select * from "users" where age < $1',
     bindParams,
     operations: {} as any,
+    profileName: 'mocked-profile',
   });
   const columns = getColumns();
   const data = await streamToArray(getData());
@@ -168,12 +205,16 @@ it('Should return empty data and column with zero result', async () => {
 
 it('Should print queries without binding when log-queries = true', async () => {
   // Arrange
-  const dataSource = new DuckDBDataSource(
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
     {
-      'log-queries': true,
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'log-queries': true,
+      },
     },
-    'duckdb'
-  );
+  ]);
+  await dataSource.activate();
   const bindParams = new Map<string, any>();
   bindParams.set('$1', 1234);
   const logs: any[][] = [];
@@ -195,6 +236,7 @@ it('Should print queries without binding when log-queries = true', async () => {
     statement: 'select $1::INTEGER as test',
     bindParams,
     operations: {} as any,
+    profileName: 'mocked-profile',
   });
   // Assert
   expect(logs[0].length).toBe(1);
@@ -203,13 +245,17 @@ it('Should print queries without binding when log-queries = true', async () => {
 
 it('Should print queries with binding when log-queries = true and log-parameters = true', async () => {
   // Arrange
-  const dataSource = new DuckDBDataSource(
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
     {
-      'log-queries': true,
-      'log-parameters': true,
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'log-queries': true,
+        'log-parameters': true,
+      },
     },
-    'duckdb'
-  );
+  ]);
+  await dataSource.activate();
   const bindParams = new Map<string, any>();
   bindParams.set('$1', 1234);
   const logs: any[][] = [];
@@ -231,6 +277,7 @@ it('Should print queries with binding when log-queries = true and log-parameters
     statement: 'select $1::INTEGER as test',
     bindParams,
     operations: {} as any,
+    profileName: 'mocked-profile',
   });
   // Assert
   expect(logs[0].length).toBe(2);

@@ -1,14 +1,12 @@
 import { Readable } from 'stream';
 import * as duckdb from 'duckdb';
 import {
-  TYPES,
   DataResult,
   DataSource,
   ExecuteOptions,
   RequestParameter,
   VulcanExtensionId,
 } from '@vulcan-sql/core';
-import { inject } from 'inversify';
 import * as path from 'path';
 
 const getType = (value: any) => {
@@ -33,31 +31,48 @@ export interface DuckDBOptions {
 /// It might contain some issues.
 
 @VulcanExtensionId('duckdb')
-export class DuckDBDataSource extends DataSource<DuckDBOptions> {
-  private db: duckdb.Database;
+export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
+  private dbMapping = new Map<
+    string,
+    { db: duckdb.Database; logQueries: boolean; logParameters: boolean }
+  >();
   private logger = this.getLogger();
 
-  constructor(
-    @inject(TYPES.ExtensionConfig) config: DuckDBOptions,
-    @inject(TYPES.ExtensionName) moduleName: string
-  ) {
-    super(config, moduleName);
-    if (!this.getConfig()?.['persistent-path']) {
-      this.db = new duckdb.Database(':memory:');
-    } else {
-      this.db = new duckdb.Database(
-        path.resolve(process.cwd(), this.getConfig()!['persistent-path']!)
-      );
+  public override async onActivate() {
+    const profiles = this.getProfiles().values();
+
+    const dbByPath = new Map<string, duckdb.Database>();
+    this.dbMapping = new Map();
+    for (const profile of profiles) {
+      this.logger.debug(`Create connection for ${profile.name}`);
+      const dbPath = profile.connection?.['persistent-path']
+        ? path.resolve(process.cwd(), profile.connection?.['persistent-path'])
+        : ':memory:';
+      let db = dbByPath.get(dbPath);
+      if (!db) {
+        db = new duckdb.Database(dbPath);
+        dbByPath.set(dbPath, db);
+      }
+      this.dbMapping.set(profile.name, {
+        db,
+        logQueries: profile.connection?.['log-queries'] || false,
+        logParameters: profile.connection?.['log-parameters'] || false,
+      });
     }
   }
 
   public async execute({
     statement: sql,
     bindParams,
+    profileName,
   }: ExecuteOptions): Promise<DataResult> {
-    const statement = this.db.prepare(sql);
+    if (!this.dbMapping.has(profileName)) {
+      throw new Error(`Profile instance ${profileName} not found`);
+    }
+    const { db, ...options } = this.dbMapping.get(profileName)!;
+    const statement = db.prepare(sql);
     const parameters = Array.from(bindParams.values());
-    this.logRequest(sql, parameters);
+    this.logRequest(sql, parameters, options);
 
     const result = await statement.stream(...parameters);
     const firstChunk = await result.nextChunk();
@@ -102,9 +117,16 @@ export class DuckDBDataSource extends DataSource<DuckDBOptions> {
     return `$${parameterIndex}`;
   }
 
-  private logRequest(sql: string, parameters: string[]) {
-    if (this.getConfig()?.['log-queries']) {
-      if (this.getConfig()!['log-parameters']) {
+  private logRequest(
+    sql: string,
+    parameters: string[],
+    options: {
+      logQueries: boolean;
+      logParameters: boolean;
+    }
+  ) {
+    if (options.logQueries) {
+      if (options.logParameters) {
         this.logger.info(sql, parameters);
       } else {
         this.logger.info(sql);
