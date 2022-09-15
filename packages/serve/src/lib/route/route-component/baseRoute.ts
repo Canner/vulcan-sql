@@ -49,10 +49,11 @@ export abstract class BaseRoute implements IRoute {
   protected async handle(user: AuthUserInfo, transformed: TransformedRequest) {
     const { reqParams } = transformed;
     // could template name or template path, use for template engine
-    const { templateSource } = this.apiSchema;
+    const { templateSource, profile } = this.apiSchema;
 
     const result = await this.templateEngine.execute(templateSource, {
       context: { params: reqParams, user },
+      profileName: profile,
     });
     return result;
   }

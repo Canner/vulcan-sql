@@ -49,7 +49,9 @@ describe('Test route generator ', () => {
     container
       .bind(CORE_TYPES.TemplateEngine)
       .toConstantValue(stubTemplateEngine);
-    container.bind(CORE_TYPES.DataSource).toConstantValue(stubDataSource);
+    container
+      .bind(CORE_TYPES.Factory_DataSource)
+      .toConstantValue(() => stubDataSource);
     container.bind(TYPES.RouteGenerator).to(RouteGenerator);
   });
 

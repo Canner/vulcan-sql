@@ -67,7 +67,9 @@ describe('Test vulcan server for practicing middleware', () => {
     container.bind(TYPES.PaginationTransformer).to(PaginationTransformer);
     container.bind(TYPES.RequestTransformer).to(RequestTransformer);
     container.bind(TYPES.RequestValidator).to(RequestValidator);
-    container.bind(CORE_TYPES.DataSource).toConstantValue(stubDataSource);
+    container
+      .bind(CORE_TYPES.Factory_DataSource)
+      .toConstantValue(() => stubDataSource);
     container
       .bind(CORE_TYPES.TemplateEngine)
       .toConstantValue(stubTemplateEngine);
@@ -304,7 +306,9 @@ describe('Test vulcan server for calling restful APIs', () => {
     container.bind(TYPES.PaginationTransformer).to(PaginationTransformer);
     container.bind(TYPES.RequestTransformer).to(RequestTransformer);
     container.bind(TYPES.RequestValidator).to(RequestValidator);
-    container.bind(CORE_TYPES.DataSource).toConstantValue(stubDataSource);
+    container
+      .bind(CORE_TYPES.Factory_DataSource)
+      .toConstantValue(() => stubDataSource);
     container
       .bind(CORE_TYPES.TemplateEngine)
       .toConstantValue(stubTemplateEngine);
