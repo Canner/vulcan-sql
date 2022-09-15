@@ -49,6 +49,17 @@ describe('Test to respond to csv', () => {
   it.each([
     {
       input: {
+        data: arrayToStream([]),
+        columns: [
+          { name: 'name', type: 'varchar' },
+          { name: 'age', type: 'integer' },
+          { name: 'hobby', type: 'array' },
+        ],
+      },
+      expected: `\ufeffname,age,hobby\n`,
+    },
+    {
+      input: {
         data: arrayToStream([
           {
             column1: '5ccbe099-3647-47f6-b16a-847184dc8349',

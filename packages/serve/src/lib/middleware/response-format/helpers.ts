@@ -6,21 +6,6 @@ export type ResponseFormatterMap = {
 };
 
 /**
- * start to formatting if path is end with the format or "Accept" in the header contains the format
- * @param context koa context
- * @param format the formate name
- * @returns boolean, is received
- */
-export const isReceivedFormatRequest = (
-  context: KoaContext,
-  format: string
-) => {
-  if (context.request.path.endsWith(`.${format}`)) return true;
-  if (context.request.accepts(format)) return true;
-  return false;
-};
-
-/**
  *
  * @param context koa context
  * @param formatters the formatters which built-in and loaded extensions.
@@ -28,23 +13,32 @@ export const isReceivedFormatRequest = (
  */
 export const checkUsableFormat = ({
   context,
-  formatters,
   supportedFormats,
   defaultFormat,
 }: {
   context: KoaContext;
-  formatters: ResponseFormatterMap;
   supportedFormats: string[];
   defaultFormat: string;
 }) => {
-  for (const format of supportedFormats) {
-    if (!(format in formatters)) continue;
-    if (!isReceivedFormatRequest(context, format)) continue;
-    return format;
-  }
-  // if not found, use default format
-  if (!(defaultFormat in formatters))
-    throw new Error(`Not find implemented formatters named ${defaultFormat}`);
+  // find last matched value be format
+  const pathFormat = context.path.split('.')[1];
 
-  return defaultFormat;
+  // match result for searching in Accept header.
+  const acceptFormat = context.accepts(supportedFormats);
+
+  // if path ending has no format
+  if (!pathFormat) {
+    // get default when "Accept" header also not matched or "Accept" header not in request (shows by */*)
+    if (!acceptFormat || acceptFormat == '*/*') return defaultFormat;
+    // if accept format existed, use "Accept" first matched format by support format order
+    return acceptFormat;
+  }
+
+  // if path ending has format but not matched
+  if (!supportedFormats.includes(pathFormat)) {
+    // 415 ERROR, Throw error if user request with url ending format, but not matched.
+    throw new Error(`Url ending format not matched in "formats" options`);
+  }
+  // if path ending has format and matched, no matter Accept matched or not, use path ending format
+  return pathFormat;
 };

@@ -28,6 +28,13 @@ describe('Test to respond to json', () => {
   it.each([
     {
       input: {
+        data: arrayToStream([]),
+        columns: [],
+      },
+      expected: [],
+    },
+    {
+      input: {
         data: arrayToStream([
           {
             column1: '5ccbe099-3647-47f6-b16a-847184dc8349',

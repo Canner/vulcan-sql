@@ -48,6 +48,8 @@ class JsonStringTransformer extends Stream.Transform {
     callback(null);
   }
   override _final(callback: (error?: Error | null) => void) {
+    // if first is still true, means no data.
+    if (this.first) this.push(toBuffer('['));
     this.push(toBuffer(']'));
     callback(null);
   }
