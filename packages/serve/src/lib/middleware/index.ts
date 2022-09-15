@@ -19,10 +19,10 @@ import { DocRouterMiddleware } from './docRouterMiddleware';
 
 // The order is the middleware running order
 export const BuiltInRouteMiddlewares: ClassType<ExtensionBase>[] = [
+  AccessLogMiddleware,
   CorsMiddleware,
   EnforceHttpsMiddleware,
   RequestIdMiddleware,
-  AccessLogMiddleware,
   RateLimitMiddleware,
   AuthMiddleware,
   ResponseFormatMiddleware,

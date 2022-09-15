@@ -20,10 +20,6 @@ export class AccessLogMiddleware extends BuiltInMiddleware<LoggerOptions> {
 
     const reqSize = req.length ? bytes(req.length).toLowerCase() : 'none';
     const respSize = resp.length ? bytes(resp.length).toLowerCase() : 'none';
-    /**
-     * TODO: The response body of our API server might be huge.
-     * We can let users to set what data they want to record in config in the future.
-     */
     this.logger.info(
       `--> ${req.ip} -- "${req.method} ${req.path}" -- size: ${reqSize}`
     );
