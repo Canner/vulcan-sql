@@ -33,6 +33,9 @@ export const TYPES = {
   // Document
   DocumentInputOptions: Symbol.for('DocumentInputOptions'),
   DocumentOptions: Symbol.for('DocumentOptions'),
+  // Profiles
+  ProfilesInputOptions: Symbol.for('ProfilesInputOptions'),
+  ProfilesOptions: Symbol.for('ProfilesOptions'),
   // Extensions
   ExtensionConfig: Symbol.for('ExtensionConfig'),
   ExtensionName: Symbol.for('ExtensionName'),

@@ -6,3 +6,4 @@ export * from './templateEngineOptions';
 export * from './extensions';
 export * from './executorOptions';
 export * from './documentOptions';
+export * from './profilesOptions';

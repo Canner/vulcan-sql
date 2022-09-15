@@ -1,6 +1,7 @@
 import { IArtifactBuilderOptions } from './artifactBuilderOptions';
 import { IDocumentOptions } from './documentOptions';
 import { IExecutorOptions } from './executorOptions';
+import { IProfilesOptions } from './profilesOptions';
 import { ITemplateEngineOptions } from './templateEngineOptions';
 
 /**
@@ -23,5 +24,6 @@ export interface ICoreOptions {
   executor?: IExecutorOptions;
   extensions?: ExtensionAliases;
   document?: IDocumentOptions;
+  profiles?: IProfilesOptions;
   [moduleAlias: string]: any;
 }
