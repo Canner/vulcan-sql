@@ -6,3 +6,4 @@ export const REFERENCE_SEARCH_MAX_DEPTH = 100;
 export const SANITIZER_NAME = 'sanitize';
 export const PARAMETERIZER_VAR_NAME = 'parameterizer';
 export const RAW_FILTER_NAME = 'raw';
+export const CURRENT_PROFILE_NAME = 'CURRENT_PROFILE_NAME';

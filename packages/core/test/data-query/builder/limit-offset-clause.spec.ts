@@ -32,6 +32,7 @@ describe('Test data query builder > limit-offset by clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       builder.limit(limit).offset(offset);
 
@@ -76,6 +77,7 @@ describe('Test data query builder > limit-offset by clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       builder
         .limit(first.limit)
@@ -124,6 +126,7 @@ describe('Test data query builder > limit-offset by clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       builder
         .limit(first.limit)

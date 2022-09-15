@@ -1,7 +1,7 @@
 import { SQLClauseOperation } from '@vulcan-sql/core/data-query';
 import { Pagination, Profile } from '@vulcan-sql/core/models';
 import { TYPES } from '@vulcan-sql/core/types';
-import { inject, multiInject } from 'inversify';
+import { inject, multiInject, optional } from 'inversify';
 import { Readable } from 'stream';
 import { ExtensionBase } from './base';
 import { VulcanExtension } from './decorators';
@@ -12,6 +12,7 @@ export interface RequestParameter {
   parameterIndex: number;
   /** The raw value (not name) */
   value: any;
+  profileName: string;
 }
 
 export type BindParameters = Map<string, string>;
@@ -29,6 +30,7 @@ export interface ExecuteOptions {
   /** The parameter bindings, we guarantee the order of the keys in the map is the same as the order when they were used in queries. */
   bindParams: BindParameters;
   pagination?: Pagination;
+  profileName: string;
 }
 
 export type PrepareParameterFunc = {
@@ -36,17 +38,39 @@ export type PrepareParameterFunc = {
 };
 
 @VulcanExtension(TYPES.Extension_DataSource, { enforcedId: true })
-export abstract class DataSource<C = any> extends ExtensionBase<C> {
+export abstract class DataSource<
+  C = any,
+  PROFILE = Record<string, any>
+> extends ExtensionBase<C> {
+  private profiles: Map<string, Profile<PROFILE>>;
+
   constructor(
     @inject(TYPES.ExtensionConfig) config: C,
     @inject(TYPES.ExtensionName) moduleName: string,
-    @multiInject(TYPES.Profile) profiles: Profile[]
+    @multiInject(TYPES.Profile) @optional() profiles: Profile[] = []
   ) {
     super(config, moduleName);
-    console.log(profiles);
+    this.profiles = profiles.reduce(
+      (prev, curr) => prev.set(curr.name, curr),
+      new Map()
+    );
   }
 
   abstract execute(options: ExecuteOptions): Promise<DataResult>;
   // prepare parameterized format for query later
   abstract prepare(param: RequestParameter): Promise<string>;
+
+  /** Get all the profiles which belong to this data source */
+  protected getProfiles() {
+    return this.profiles;
+  }
+
+  protected getProfile(name: string): Profile {
+    const profile = this.profiles.get(name);
+    if (!profile)
+      throw new Error(
+        `Profile name ${name} not found in data source ${this.getExtensionId()}`
+      );
+    return profile;
+  }
 }

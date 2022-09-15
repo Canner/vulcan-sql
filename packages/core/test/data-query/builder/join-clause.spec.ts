@@ -27,6 +27,7 @@ describe('Test data query builder > join clause', () => {
     statement: 'select * from products',
     dataSource: createStub().dataSource,
     bindParams: createStub().bindParams,
+    profileName: '',
   });
   const alias = 'products';
   const joinOnClauseOperations: Array<JoinOnClauseOperation> = [
@@ -125,6 +126,7 @@ describe('Test data query builder > join clause', () => {
         statement,
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       const joinCallMapper = {
         [JoinCommandType.INNER_JOIN]: (builder: IDataQueryBuilder) =>

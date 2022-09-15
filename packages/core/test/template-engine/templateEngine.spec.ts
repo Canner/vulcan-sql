@@ -7,6 +7,7 @@ import {
   TemplateProvider,
   TemplateProviderType,
 } from '@vulcan-sql/core';
+import { CURRENT_PROFILE_NAME } from '@vulcan-sql/core/template-engine/built-in-extensions/query-builder/constants';
 
 let container: Container;
 let stubCompiler: sinon.StubbedInstance<Compiler>;
@@ -79,14 +80,19 @@ it('Template engine render function should forward correct data to compiler', as
   const context = {
     name: 'name',
   };
+  const profileName = 'mocked-profile';
   const expected = {
     context: {
       ...context,
     },
+    [CURRENT_PROFILE_NAME]: profileName,
   };
 
   // Act
-  const result = await templateEngine.execute('template-name', { context });
+  const result = await templateEngine.execute('template-name', {
+    context,
+    profileName,
+  });
 
   // Assert
   expect(stubCompiler.execute.firstCall.args[1]).toEqual(expected);

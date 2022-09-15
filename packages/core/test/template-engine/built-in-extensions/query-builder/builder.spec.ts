@@ -1,4 +1,5 @@
 import { arrayToStream, streamToArray } from '@vulcan-sql/core';
+import { CURRENT_PROFILE_NAME } from '@vulcan-sql/core/template-engine/built-in-extensions/query-builder/constants';
 import { createTestCompiler } from '../../testCompiler';
 
 it('Extension should execute correct query and set/export the variable', async () => {
@@ -17,13 +18,15 @@ select count(*) as count from user where user.id = {{ params.userId }};
   loader.setSource('test', compiledData);
   const result = await compiler.execute('test', {
     params: { userId: 'user-id' },
+    [CURRENT_PROFILE_NAME]: 'mocked-profile',
   });
   const resultData = await streamToArray(result.getData());
   // Assert
-  expect(executor.createBuilder.firstCall.args[0]).toBe(
+  expect(executor.createBuilder.firstCall.args[0]).toBe('mocked-profile');
+  expect(executor.createBuilder.firstCall.args[1]).toBe(
     `select count(*) as count from user where user.id = $1;`
   );
-  expect(executor.createBuilder.firstCall.args[1].get('$1')).toBe(`user-id`);
+  expect(executor.createBuilder.firstCall.args[2].get('$1')).toBe(`user-id`);
   expect(resultData).toEqual([{ count: 1 }]);
 });
 

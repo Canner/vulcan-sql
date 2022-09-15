@@ -1,3 +1,4 @@
+import { CURRENT_PROFILE_NAME } from '@vulcan-sql/core/template-engine/built-in-extensions/query-builder/constants';
 import { createTestCompiler } from './testCompiler';
 
 it('Nunjucks compiler should compile template without error.', async () => {
@@ -19,7 +20,10 @@ it('Nunjucks compiler should load compiled code and execute rendered template wi
 
   // Action
   loader.setSource('test', compiledData);
-  await compiler.execute('test', { name: 'World' });
+  await compiler.execute('test', {
+    name: 'World',
+    [CURRENT_PROFILE_NAME]: 'mocked-profile',
+  });
   const queries = await getCreatedQueries();
   const binding = await getCreatedBinding();
 

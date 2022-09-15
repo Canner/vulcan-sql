@@ -1,4 +1,5 @@
 import { arrayToStream } from '@vulcan-sql/core';
+import { CURRENT_PROFILE_NAME } from '@vulcan-sql/core/template-engine/built-in-extensions/query-builder/constants';
 import { createTestCompiler } from '../../testCompiler';
 
 const queryTest = async (
@@ -10,24 +11,26 @@ const queryTest = async (
   // Arrange
   const { compiler, loader, builder, executor } = await createTestCompiler();
   const { compiledData } = await compiler.compile(template);
-  builder.value
-    .onFirstCall()
-    .resolves({
-      getColumns: () => [],
-      getData: () => arrayToStream([{ id: 1, name: 'freda' }]),
-    });
+  builder.value.onFirstCall().resolves({
+    getColumns: () => [],
+    getData: () => arrayToStream([{ id: 1, name: 'freda' }]),
+  });
   // Action
   loader.setSource('test', compiledData);
   await compiler.execute('test', {
     context: customContext || { params: { id: 1, name: 'freda' } },
+    [CURRENT_PROFILE_NAME]: 'mocked-profile',
   });
   // Assert
+  expectedQueries.forEach((_, index) =>
+    expect(executor.createBuilder.getCall(index).args[0]).toBe('mocked-profile')
+  );
   expectedQueries.forEach((query, index) =>
-    expect(executor.createBuilder.getCall(index).args[0]).toBe(query)
+    expect(executor.createBuilder.getCall(index).args[1]).toBe(query)
   );
   expectedBinding.forEach((binding, index) => {
     expect(
-      Array.from(executor.createBuilder.getCall(index).args[1].values())
+      Array.from(executor.createBuilder.getCall(index).args[2].values())
     ).toEqual(binding);
   });
 };

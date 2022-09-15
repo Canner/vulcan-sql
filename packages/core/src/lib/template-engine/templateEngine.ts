@@ -7,6 +7,7 @@ import {
   Pagination,
   TemplateProvider,
 } from '@vulcan-sql/core/models';
+import { CURRENT_PROFILE_NAME } from './built-in-extensions/query-builder/constants';
 
 export type AllTemplateMetadata = Record<string, TemplateMetadata>;
 
@@ -15,6 +16,11 @@ export type AllTemplates = Record<string, string>;
 export interface PreCompiledResult {
   templates: AllTemplates;
   metadata?: AllTemplateMetadata;
+}
+
+export interface ExecuteContext {
+  context: Record<string, any>;
+  profileName: string;
 }
 
 @injectable()
@@ -60,12 +66,19 @@ export class TemplateEngine {
     };
   }
 
-  public async execute<T extends object>(
+  public async execute(
     templateName: string,
-    data: T,
+    data: ExecuteContext,
     pagination?: Pagination
   ): Promise<DataResult> {
     // wrap to context object
-    return this.compiler.execute(templateName, data, pagination);
+    return this.compiler.execute(
+      templateName,
+      {
+        context: data.context,
+        [CURRENT_PROFILE_NAME]: data.profileName,
+      },
+      pagination
+    );
   }
 }

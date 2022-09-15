@@ -80,7 +80,7 @@ export class ExtensionLoader {
   public bindExtensions(bind: interfaces.Bind) {
     for (const type of this.extensionRegistry.keys()) {
       this.extensionRegistry.get(type)!.forEach(({ name, extension }) => {
-        const extensionBinding = bind(type).to(extension);
+        const extensionBinding = bind(type).to(extension).inSingletonScope();
         const { extensionId } = this.getExtensionMetadata(extension);
         if (extensionId)
           extensionBinding.when((request) => {

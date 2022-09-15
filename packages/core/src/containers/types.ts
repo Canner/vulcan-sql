@@ -26,7 +26,7 @@ export const TYPES = {
   ProfilesLookupOptions: Symbol.for('ProfilesLookupOptions'),
   Executor: Symbol.for('Executor'),
   DataQueryBuilder: Symbol.for('DataQueryBuilder'),
-  DataSource: Symbol.for('DataSource'),
+  /** Get data source by **profile name** */
   Factory_DataSource: Symbol.for('Factory_DataSource'),
   Factory_ProfileReader: Symbol.for('Factory_ProfileReader'),
   ProfileLoader: Symbol.for('ProfileLoader'),

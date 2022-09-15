@@ -40,6 +40,7 @@ describe('Test data query builder > order by clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       builder.orderBy(column, direction);
 
@@ -82,6 +83,7 @@ describe('Test data query builder > order by clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       builder
         .orderBy(first.column, first.direction)

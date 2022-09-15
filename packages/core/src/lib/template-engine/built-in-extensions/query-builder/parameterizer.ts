@@ -1,4 +1,8 @@
-import { PrepareParameterFunc } from '@vulcan-sql/core/models';
+import { RequestParameter } from '@vulcan-sql/core/models';
+
+type PrepareParameterFuncWithoutProfile = {
+  (param: Omit<RequestParameter, 'profileName'>): Promise<string>;
+};
 
 export class Parameterizer {
   private parameterIndex = 1;
@@ -8,9 +12,9 @@ export class Parameterizer {
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#description
   private idToValueMapping = new Map<string, any>();
   private valueToIdMapping = new Map<any, string>();
-  private prepare: PrepareParameterFunc;
+  private prepare: PrepareParameterFuncWithoutProfile;
 
-  constructor(prepare: PrepareParameterFunc) {
+  constructor(prepare: PrepareParameterFuncWithoutProfile) {
     this.prepare = prepare;
   }
 

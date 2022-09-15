@@ -87,6 +87,7 @@ describe('Test data query builder > select clause', () => {
         statement,
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       columns.map((column) => {
         builder = column ? builder.select(column) : builder.select();
@@ -155,6 +156,7 @@ describe('Test data query builder > select clause', () => {
         statement,
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
 
       builder = !isEmpty(selectParam)
@@ -228,6 +230,7 @@ describe('Test data query builder > select clause', () => {
         statement,
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
 
       builder = !isEmpty(selectParam)
@@ -305,6 +308,7 @@ describe('Test data query builder > select clause', () => {
         statement,
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
 
       builder = !isEmpty(selectParam)
@@ -379,6 +383,7 @@ describe('Test data query builder > select clause', () => {
         statement,
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
 
       builder = !isEmpty(selectParam)
@@ -452,6 +457,7 @@ describe('Test data query builder > select clause', () => {
         statement,
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
 
       builder = !isEmpty(selectParam)
@@ -525,6 +531,7 @@ describe('Test data query builder > select clause', () => {
         statement,
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
 
       builder = !isEmpty(selectParam)
@@ -598,6 +605,7 @@ describe('Test data query builder > select clause', () => {
         statement,
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
 
       builder = !isEmpty(selectParam)

@@ -1,5 +1,6 @@
 import { createTestCompiler } from './testCompiler';
 import * as path from 'path';
+import { CURRENT_PROFILE_NAME } from '@vulcan-sql/core/template-engine/built-in-extensions/query-builder/constants';
 
 it('The activate function should be called before executing', async () => {
   // Arrange
@@ -15,7 +16,7 @@ it('The activate function should be called before executing', async () => {
 
   // Action
   loader.setSource('test', compiledData);
-  await compiler.execute('test', {});
+  await compiler.execute('test', { [CURRENT_PROFILE_NAME]: 'mock-profile' });
   const queries = await getCreatedQueries();
   const binding = await getCreatedBinding();
 

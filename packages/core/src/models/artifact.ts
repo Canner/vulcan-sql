@@ -71,7 +71,10 @@ export interface ErrorInfo {
   message: string;
 }
 
-export type ExampleParameter = Record<string, any>;
+export interface Sample {
+  profile: string;
+  parameters: Record<string, any>;
+}
 
 export interface APISchema {
   // graphql operation name
@@ -87,7 +90,8 @@ export interface APISchema {
   // The pagination strategy that do paginate when querying
   // If not set pagination, then API request not provide the field to do it
   pagination?: PaginationSchema;
-  exampleParameter?: ExampleParameter;
+  sample?: Sample;
+  profile: string;
 }
 
 export interface BuiltArtifact {

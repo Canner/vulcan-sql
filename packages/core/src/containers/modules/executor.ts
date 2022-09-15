@@ -18,16 +18,16 @@ export const executorModule = (profiles: Map<string, Profile>) =>
     // For example: we have three profiles p1, p2, and p3. Two data source ds1 and d2s.
     // ds1 has two profiles p1 and p2, ds2 has only one profile p3.
     // factory('p1') -> ds1 / factory('p2') -> ds2 / factory('p3') -> ds2
-    bind<interfaces.Factory<DataSource>>(TYPES.Factory_DataSource).toFactory(
-      (context) => (profileName: string) => {
-        const profile = profiles.get(profileName);
-        if (!profile) throw new Error(`Profile ${profileName} not found`);
-        return context.container.getNamed(
-          TYPES.Extension_DataSource,
-          profile.type
-        );
-      }
-    );
+    bind<interfaces.SimpleFactory<DataSource>>(
+      TYPES.Factory_DataSource
+    ).toFactory((context) => (profileName: string) => {
+      const profile = profiles.get(profileName);
+      if (!profile) throw new Error(`Profile ${profileName} not found`);
+      return context.container.getNamed(
+        TYPES.Extension_DataSource,
+        profile.type
+      );
+    });
 
     // Bind profiles to their data source
     for (const profile of profiles.values()) {

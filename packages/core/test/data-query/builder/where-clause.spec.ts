@@ -34,6 +34,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from products',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
       },
       andNot: {
@@ -50,6 +51,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select avg(*) from users',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
       },
       and: {
@@ -80,6 +82,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (where) builder.where(where.column, where.operator, where.value);
       if (and) builder.andWhere(and.column, and.operator, and.value);
@@ -106,6 +109,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from products',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
       },
       orNot: {
@@ -122,6 +126,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select avg(*) from users',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
       },
       or: {
@@ -153,6 +158,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (whereNot)
         builder.whereNot(whereNot.column, whereNot.operator, whereNot.value);
@@ -199,6 +205,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select type from products',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
       },
       and: {
@@ -215,6 +222,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select age from users',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
       },
     },
@@ -235,6 +243,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (whereIn) builder.whereIn(whereIn.column, whereIn.values);
       if (and) builder.andWhereIn(and.column, and.values);
@@ -280,6 +289,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select type from products',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
       },
       or: {
@@ -296,6 +306,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select age from users',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
       },
     },
@@ -317,6 +328,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (notIn) builder.whereNotIn(notIn.column, notIn.values);
       if (or) builder.orWhereIn(or.column, or.values);
@@ -380,6 +392,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (between)
         builder.whereBetween(between.column, between.min, between.max);
@@ -446,6 +459,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (notBetween)
         builder.whereNotBetween(
@@ -502,6 +516,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (isNull) builder.whereNull(isNull.column);
       if (and) builder.andWhereNull(and.column);
@@ -554,6 +569,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (notNull) builder.whereNotNull(notNull.column);
       if (or) builder.orWhereNull(or.column);
@@ -600,6 +616,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (like) builder.whereLike(like.column, like.searchValue);
       if (and) builder.andWhereLike(and.column, and.searchValue);
@@ -646,6 +663,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (like) builder.whereLike(like.column, like.searchValue);
       if (or) builder.orWhereLike(or.column, or.searchValue);
@@ -664,6 +682,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from products',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -672,6 +691,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from users',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -680,6 +700,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from orders',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -690,6 +711,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from products',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -699,6 +721,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from users',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -708,6 +731,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from orders',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -729,6 +753,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (exists) builder.whereExists(exists);
       if (and) builder.andWhereExists(and);
@@ -747,6 +772,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from products',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -755,6 +781,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from users',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -763,6 +790,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from orders',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -773,6 +801,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from products',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
@@ -781,6 +810,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from users',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
@@ -789,6 +819,7 @@ describe('Test data query builder > where clause', () => {
           statement: 'select * from orders',
           dataSource: createStub().dataSource,
           bindParams: createStub().bindParams,
+          profileName: '',
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -811,6 +842,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (notExists) builder.whereNotExists(notExists);
       if (or) builder.orWhereExists(or);
@@ -848,6 +880,7 @@ describe('Test data query builder > where clause', () => {
               statement: 'select count(*) from tags',
               dataSource: createStub().dataSource,
               bindParams: createStub().bindParams,
+              profileName: '',
             })
           )
           .orWhereNotBetween('price', 1, 1000);
@@ -871,18 +904,21 @@ describe('Test data query builder > where clause', () => {
         statement: '',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       wrapped(wrappedBuilder);
       const andBuilder = new DataQueryBuilder({
         statement: '',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       and(andBuilder);
       const andNotBuilder = new DataQueryBuilder({
         statement: '',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       andNot(andNotBuilder);
 
@@ -905,6 +941,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (wrapped) builder.whereWrapped(wrapped);
       if (and) builder.andWhereWrapped(and);
@@ -942,6 +979,7 @@ describe('Test data query builder > where clause', () => {
               statement: 'select count(*) from tags',
               dataSource: createStub().dataSource,
               bindParams: createStub().bindParams,
+              profileName: '',
             })
           )
           .orWhereNotBetween('price', 1, 1000);
@@ -965,18 +1003,21 @@ describe('Test data query builder > where clause', () => {
         statement: '',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       notWrapped(notWrappedBuilder);
       const orBuilder = new DataQueryBuilder({
         statement: '',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       or(orBuilder);
       const orNotBuilder = new DataQueryBuilder({
         statement: '',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       orNot(orNotBuilder);
 
@@ -1000,6 +1041,7 @@ describe('Test data query builder > where clause', () => {
         statement: 'select * from orders',
         dataSource: createStub().dataSource,
         bindParams: createStub().bindParams,
+        profileName: '',
       });
       if (notWrapped) builder.whereNotWrapped(notWrapped);
       if (or) builder.orWhereWrapped(or);

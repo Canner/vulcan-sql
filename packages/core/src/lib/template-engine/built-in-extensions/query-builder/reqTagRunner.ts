@@ -6,7 +6,11 @@ import {
   TagRunnerOptions,
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
-import { FINIAL_BUILDER_NAME, PARAMETERIZER_VAR_NAME } from './constants';
+import {
+  CURRENT_PROFILE_NAME,
+  FINIAL_BUILDER_NAME,
+  PARAMETERIZER_VAR_NAME,
+} from './constants';
 import { Parameterizer } from './parameterizer';
 
 @VulcanInternalExtension()
@@ -25,9 +29,11 @@ export class ReqTagRunner extends TagRunner {
 
   public async run({ context, args, contentArgs }: TagRunnerOptions) {
     const name = String(args[0]);
+    const profileName = context.lookup(CURRENT_PROFILE_NAME);
+    if (!profileName) throw new Error(`No profile name found`);
 
-    const parameterizer = new Parameterizer(
-      this.executor.prepare.bind(this.executor)
+    const parameterizer = new Parameterizer((param) =>
+      this.executor.prepare({ ...param, profileName })
     );
     // parameterizer from parent, we should set it back after rendered our context.
     const parentParameterizer = context.lookup(PARAMETERIZER_VAR_NAME);
@@ -45,7 +51,12 @@ export class ReqTagRunner extends TagRunner {
       .join('\n');
     // Get bind real parameters and pass to data query builder for data source used.
     const binds = parameterizer.getBinding();
-    const builder = await this.executor.createBuilder(query, binds);
+
+    const builder = await this.executor.createBuilder(
+      profileName,
+      query,
+      binds
+    );
     context.setVariable(name, builder);
 
     if (args[1] === 'true') {

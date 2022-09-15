@@ -1,4 +1,5 @@
 import { arrayToStream } from '@vulcan-sql/core';
+import { CURRENT_PROFILE_NAME } from '@vulcan-sql/core/template-engine/built-in-extensions/query-builder/constants';
 import { Readable } from 'stream';
 import { createTestCompiler } from '../../testCompiler';
 
@@ -21,12 +22,13 @@ select * from group where userId = {{ user.count(3).value()[0].id }};
   });
   // Action
   loader.setSource('test', compiledData);
-  await compiler.execute('test', {});
+  await compiler.execute('test', { [CURRENT_PROFILE_NAME]: 'mocked-profile' });
   // Assert
-  expect(executor.createBuilder.secondCall.args[0]).toBe(
+  expect(executor.createBuilder.firstCall.args[0]).toBe('mocked-profile');
+  expect(executor.createBuilder.secondCall.args[1]).toBe(
     `select * from group where userId = $1;`
   );
-  expect(executor.createBuilder.secondCall.args[1].get('$1')).toBe(`user-id`);
+  expect(executor.createBuilder.secondCall.args[2].get('$1')).toBe(`user-id`);
 });
 
 it('Extension should throw an error if the main builder failed to execute', async () => {
@@ -42,9 +44,9 @@ select * from users;
   builder.value.onFirstCall().rejects(new Error('something went wrong'));
   // Action, Assert
   loader.setSource('test', compiledData);
-  await expect(compiler.execute('test', {})).rejects.toThrow(
-    'something went wrong'
-  );
+  await expect(
+    compiler.execute('test', { [CURRENT_PROFILE_NAME]: 'mocked-profile' })
+  ).rejects.toThrow('something went wrong');
 });
 
 it('Extension should throw an error if one of sub builders failed to execute', async () => {
@@ -61,9 +63,9 @@ select * from group where userId = '{{ user.value()[0].id }}';
   builder.value.onFirstCall().rejects(new Error('something went wrong'));
   // Action, Assert
   loader.setSource('test', compiledData);
-  await expect(compiler.execute('test', {})).rejects.toThrow(
-    'something went wrong'
-  );
+  await expect(
+    compiler.execute('test', { [CURRENT_PROFILE_NAME]: 'mocked-profile' })
+  ).rejects.toThrow('something went wrong');
 });
 
 it('Extension should return the raw value of .value() when input is not a builder', async () => {
@@ -76,10 +78,12 @@ it('Extension should return the raw value of .value() when input is not a builde
   loader.setSource('test', compiledData);
   await compiler.execute('test', {
     context: { params: { someProp: { value: () => `someRawVal` } } },
+    [CURRENT_PROFILE_NAME]: 'mocked-profile',
   });
   // Assert
-  expect(executor.createBuilder.firstCall.args[0]).toBe(`$1`);
-  expect(executor.createBuilder.firstCall.args[1].get('$1')).toBe(`someRawVal`);
+  expect(executor.createBuilder.firstCall.args[0]).toBe('mocked-profile');
+  expect(executor.createBuilder.firstCall.args[1]).toBe(`$1`);
+  expect(executor.createBuilder.firstCall.args[2].get('$1')).toBe(`someRawVal`);
 });
 
 it('Extension should throw an error if the data stream emit an error', async () => {
@@ -104,7 +108,7 @@ select * from group where userId = '{{ user.value()[0].id }}';
 
   // Action, Assert
   loader.setSource('test', compiledData);
-  await expect(compiler.execute('test', {})).rejects.toThrow(
-    'something went wrong'
-  );
+  await expect(
+    compiler.execute('test', { [CURRENT_PROFILE_NAME]: 'mocked-profile' })
+  ).rejects.toThrow('something went wrong');
 });

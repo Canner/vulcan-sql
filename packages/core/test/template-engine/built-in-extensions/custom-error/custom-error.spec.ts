@@ -1,3 +1,4 @@
+import { CURRENT_PROFILE_NAME } from '@vulcan-sql/core/template-engine/built-in-extensions/query-builder/constants';
 import { createTestCompiler } from '../../testCompiler';
 
 it('Extension should throw custom error with error code and the position while executing', async () => {
@@ -9,7 +10,10 @@ it('Extension should throw custom error with error code and the position while e
   // Action, Assert
   loader.setSource('test', compiledData);
   await expect(
-    compiler.execute('test', { name: 'World' })
+    compiler.execute('test', {
+      name: 'World',
+      [CURRENT_PROFILE_NAME]: 'mocked-profile',
+    })
   ).rejects.toThrowError('This is an error at 1:3');
 });
 
