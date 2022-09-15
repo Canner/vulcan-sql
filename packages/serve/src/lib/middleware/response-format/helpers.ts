@@ -36,13 +36,8 @@ export const checkUsableFormat = ({
 
   // if path ending has format but not matched
   if (!supportedFormats.includes(pathFormat)) {
-    // throw error if "Accept" header also not matched or "Accept" header not in request (shows by */*)
-    if (!acceptFormat || acceptFormat == '*/*')
-      throw new Error(
-        `Url ending format and "Accept" header both not matched in "formats" options`
-      );
-    // if accept format existed, use "Accept" first matched format by support format order
-    return acceptFormat;
+    // 415 ERROR, Throw error if user request with url ending format, but not matched.
+    throw new Error(`Url ending format not matched in "formats" options`);
   }
   // if path ending has format and matched, no matter Accept matched or not, use path ending format
   return pathFormat;

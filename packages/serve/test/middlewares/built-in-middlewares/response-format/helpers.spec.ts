@@ -62,16 +62,19 @@ describe('Test to call check usable format function', () => {
     ['json', [], '*/*'],
     ['json', ['csv', 'hyper'], false],
     ['json', ['csv', 'hyper'], '*/*'],
+    ['json', ['csv', 'hyper'], 'csv'],
     ['csv', ['hyper', 'json'], false],
     ['csv', ['hyper', 'json'], '*/*'],
+    ['csv', ['hyper', 'json'], 'hyper'],
     ['hyper', ['csv', 'json'], false],
     ['hyper', ['csv', 'json'], '*/*'],
+    ['hyper', ['csv', 'json'], 'csv'],
   ])(
-    'Test to throw error when context path ending format %p not matched and "Accept" header %p also not matched.',
+    'Test to throw error when context path ending format %p not matched (No matter "Accept" header %p match or not).',
     (format, supportedFormats, acceptFormat) => {
       // Arrange
       const expected = new Error(
-        `Url ending format and "Accept" header both not matched in "formats" options`
+        `Url ending format not matched in "formats" options`
       );
       const context = {
         ...sinon.stubInterface<KoaContext>(),
@@ -93,67 +96,17 @@ describe('Test to call check usable format function', () => {
   );
 
   it.each([
-    ['json', ['csv', 'hyper'], 'csv'],
-    ['csv', ['hyper', 'json'], 'hyper'],
-    ['hyper', ['csv', 'xml'], 'xml'],
-  ])(
-    'Test to get "Accept" format when context path ending format %p not matched but "Accept" header matched.',
-    (format, supportedFormats, acceptFormat) => {
-      // Arrange
-      const expected = acceptFormat;
-      const context = {
-        ...sinon.stubInterface<KoaContext>(),
-        path: `/orders.${format}`,
-        accepts: jest.fn().mockReturnValue(acceptFormat),
-      };
-
-      // Act
-      const result = checkUsableFormat({
-        context,
-        supportedFormats,
-        defaultFormat: 'json',
-      });
-
-      // Assert
-      expect(result).toEqual(expected);
-    }
-  );
-
-  it.each([
     ['json', ['json', 'hyper'], false],
     ['json', ['json', 'hyper'], '*/*'],
+    ['json', ['json', 'hyper'], 'hyper'],
     ['csv', ['json', 'csv'], false],
     ['csv', ['json', 'csv'], '*/*'],
+    ['csv', ['json', 'csv'], 'json'],
     ['hyper', ['csv', 'hyper'], false],
     ['hyper', ['csv', 'hyper'], '*/*'],
-  ])(
-    'Test to get url ending format when context path ending format matched but "Accept" header not matched.',
-    (format, supportedFormats, acceptFormat) => {
-      // Arrange
-      const expected = format;
-      const context = {
-        ...sinon.stubInterface<KoaContext>(),
-        path: `/orders.${format}`,
-        accepts: jest.fn().mockReturnValue(acceptFormat),
-      };
-
-      // Act
-      const result = checkUsableFormat({
-        context,
-        supportedFormats,
-        defaultFormat: 'json',
-      });
-
-      // Assert
-      expect(result).toEqual(expected);
-    }
-  );
-  it.each([
-    ['json', ['json', 'hyper'], 'hyper'],
-    ['csv', ['json', 'csv'], 'json'],
     ['hyper', ['csv', 'hyper'], 'csv'],
   ])(
-    'Test to get url ending format when context path ending format matched and "Accept" header also matched.',
+    'Test to get url ending format when context path ending format match (No matter "Accept" header %p match or not).',
     (format, supportedFormats, acceptFormat) => {
       // Arrange
       const expected = format;
