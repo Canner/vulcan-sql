@@ -78,12 +78,15 @@ export const getTestCompiler = async (config: Partial<ICoreOptions> = {}) => {
       loader.setSource('test', compiledData);
       return { compiledData, metadata };
     },
-    execute: async (data: any) => {
-      return await compiler.execute('test', data);
+    execute: async (parameters: any) => {
+      return await compiler.execute('test', {
+        parameters,
+        profileName: 'mocked-profile',
+      });
     },
     getExecutedQueries: async () => {
       const calls = stubExecutor.createBuilder.getCalls();
-      return calls.map((call) => call.args[0]);
+      return calls.map((call) => call.args[1]);
     },
   };
 };

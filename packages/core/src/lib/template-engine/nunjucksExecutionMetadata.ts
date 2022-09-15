@@ -1,5 +1,5 @@
 import * as nunjucks from 'nunjucks';
-import { ExecuteContext } from './compiler';
+import { ExecuteContext, UserInfo } from './compiler';
 
 export const ReservedContextKeys = {
   CurrentProfileName: 'RESERVED_CURRENT_PROFILE_NAME',
@@ -9,16 +9,19 @@ export const ReservedContextKeys = {
 export class NunjucksExecutionMetadata {
   private profileName: string;
   private parameters: Record<string, any>;
+  private userInfo?: UserInfo;
 
-  constructor({ parameters = {}, profileName }: ExecuteContext) {
+  constructor({ parameters = {}, profileName, user }: ExecuteContext) {
     this.parameters = parameters;
     this.profileName = profileName;
+    this.userInfo = user;
   }
 
   /** Load from nunjucks context */
   static load(context: nunjucks.Context) {
     return new NunjucksExecutionMetadata({
       parameters: context.lookup('context')?.params || {},
+      user: context.lookup('context')?.user || {},
       profileName: context.lookup(ReservedContextKeys.CurrentProfileName)!,
     });
   }
@@ -28,6 +31,7 @@ export class NunjucksExecutionMetadata {
     return {
       context: {
         params: this.parameters,
+        user: this.userInfo,
       },
       [ReservedContextKeys.CurrentProfileName]: this.profileName,
     };
@@ -35,5 +39,9 @@ export class NunjucksExecutionMetadata {
 
   public getProfileName() {
     return this.profileName;
+  }
+
+  public getUserInfo() {
+    return this.userInfo;
   }
 }

@@ -52,7 +52,8 @@ export abstract class BaseRoute implements IRoute {
     const { templateSource, profile } = this.apiSchema;
 
     const result = await this.templateEngine.execute(templateSource, {
-      context: { params: reqParams, user },
+      parameters: reqParams,
+      user,
       profileName: profile,
     });
     return result;

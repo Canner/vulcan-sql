@@ -22,8 +22,14 @@ export interface CompileResult {
   metadata: TemplateMetadata;
 }
 
+export interface UserInfo {
+  name: string;
+  attr: Record<string, any>;
+}
+
 export interface ExecuteContext {
   parameters?: Record<string, any>;
+  user?: UserInfo;
   profileName: string;
 }
 
