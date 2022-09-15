@@ -38,20 +38,20 @@ const defaultMapConfig: LoggerMapConfig = {
   [LoggingScope.CORE]: {
     level: LoggingLevel.DEBUG,
     displayRequestId: false,
-    displayFilePath: 'hideNodeModulesOnly',
-    displayFunctionName: true,
+    displayFilePath: 'hidden',
+    displayFunctionName: false,
   },
   [LoggingScope.BUILD]: {
     level: LoggingLevel.DEBUG,
     displayRequestId: false,
-    displayFilePath: 'hideNodeModulesOnly',
-    displayFunctionName: true,
+    displayFilePath: 'hidden',
+    displayFunctionName: false,
   },
   [LoggingScope.SERVE]: {
     level: LoggingLevel.DEBUG,
     displayRequestId: false,
-    displayFilePath: 'hideNodeModulesOnly',
-    displayFunctionName: true,
+    displayFilePath: 'hidden',
+    displayFunctionName: false,
   },
   [LoggingScope.ACCESS_LOG]: {
     level: LoggingLevel.DEBUG,
