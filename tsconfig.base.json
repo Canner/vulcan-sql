@@ -102,6 +102,8 @@
       "@vulcan-sql/serve/types": ["packages/serve/src/containers/types"],
       "@vulcan-sql/serve/utils": ["packages/serve/src/lib/utils/index"],
       "@vulcan-sql/serve/utils/*": ["packages/serve/src/lib/utils/*"],
+      "@vulcan-sql/serve/evaluator": ["packages/serve/src/lib/evaluator/index"],
+      "@vulcan-sql/serve/evaluator/*": ["packages/serve/src/lib/evaluator/*"],
       "@vulcan-sql/test-utility": ["packages/test-utility/src/index"]
     }
   },

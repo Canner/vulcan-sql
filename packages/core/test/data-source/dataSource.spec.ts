@@ -30,10 +30,12 @@ it(`GetProfiles function should return all profiles which belong to us`, async (
     {
       name: 'profile1',
       type: 'mock',
+      allow: '*',
     },
     {
       name: 'profile2',
       type: 'mock',
+      allow: '*',
     },
   ]);
   // Act
@@ -48,10 +50,12 @@ it(`GetProfile function should correct profile`, async () => {
     {
       name: 'profile1',
       type: 'mock',
+      allow: '*',
     },
     {
       name: 'profile2',
       type: 'mock',
+      allow: '*',
     },
   ]);
   // Act

@@ -50,9 +50,9 @@ it('Executor module should bind correct profiles to data sources and create a fa
     .to(DataSource2)
     .whenTargetNamed('ds2');
   const profiles = new Map<string, Profile>();
-  profiles.set('p1', { name: 'p1', type: 'ds1' });
-  profiles.set('p2', { name: 'p2', type: 'ds1' });
-  profiles.set('p3', { name: 'p3', type: 'ds2' });
+  profiles.set('p1', { name: 'p1', type: 'ds1', allow: '*' });
+  profiles.set('p2', { name: 'p2', type: 'ds1', allow: '*' });
+  profiles.set('p3', { name: 'p3', type: 'ds2', allow: '*' });
   container.bind(TYPES.ExtensionConfig).toConstantValue({});
   container.bind(TYPES.ExtensionName).toConstantValue('');
   await container.loadAsync(executorModule(profiles));
@@ -70,10 +70,12 @@ it('Executor module should bind correct profiles to data sources and create a fa
   expect(dsFromP2 instanceof DataSource1).toBeTruthy();
   expect(dsFromP3 instanceof DataSource2).toBeTruthy();
   expect(dsFromP1.injectedProfiles).toEqual([
-    { name: 'p1', type: 'ds1' },
-    { name: 'p2', type: 'ds1' },
+    { name: 'p1', type: 'ds1', allow: '*' },
+    { name: 'p2', type: 'ds1', allow: '*' },
   ]);
-  expect(dsFromP3.injectedProfiles).toEqual([{ name: 'p3', type: 'ds2' }]);
+  expect(dsFromP3.injectedProfiles).toEqual([
+    { name: 'p3', type: 'ds2', allow: '*' },
+  ]);
 });
 
 it('Data source factory should throw error with invalid profile name', async () => {
@@ -96,9 +98,9 @@ it('When the requestor is not a data source, container should return all profile
   // Arrange
   const container = new Container();
   const profiles = new Map<string, Profile>();
-  profiles.set('p1', { name: 'p1', type: 'ds1' });
-  profiles.set('p2', { name: 'p2', type: 'ds1' });
-  profiles.set('p3', { name: 'p3', type: 'ds2' });
+  profiles.set('p1', { name: 'p1', type: 'ds1', allow: '*' });
+  profiles.set('p2', { name: 'p2', type: 'ds1', allow: '*' });
+  profiles.set('p3', { name: 'p3', type: 'ds2', allow: '*' });
   container.bind(TYPES.Extension_DataSource).to(DataSource3);
   await container.loadAsync(executorModule(profiles));
 

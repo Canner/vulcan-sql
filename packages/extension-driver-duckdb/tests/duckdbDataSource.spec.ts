@@ -44,7 +44,7 @@ afterAll(async () => {
 it('Should work with memory-only database', async () => {
   // Arrange
   const dataSource = new DuckDBDataSource(null as any, 'duckdb', [
-    { name: 'mocked-profile', type: 'duck' },
+    { name: 'mocked-profile', type: 'duck', allow: '*' },
   ]); // set connection to undefined, test the tolerance
   await dataSource.activate();
   const bindParams = new Map<string, any>();
@@ -87,6 +87,7 @@ it('Should work with persistent database', async () => {
       connection: {
         'persistent-path': testFile,
       },
+      allow: '*',
     },
   ]);
   await dataSource.activate();
@@ -126,6 +127,7 @@ it('Should send correct data with chunks', async () => {
       connection: {
         'persistent-path': testFile,
       },
+      allow: '*',
     },
   ]);
   await dataSource.activate();
@@ -163,6 +165,7 @@ it('Should throw error from upstream', async () => {
       connection: {
         'persistent-path': testFile,
       },
+      allow: '*',
     },
   ]);
   await dataSource.activate();
@@ -187,6 +190,7 @@ it('Should return empty data and column with zero result', async () => {
       connection: {
         'persistent-path': testFile,
       },
+      allow: '*',
     },
   ]);
   await dataSource.activate();
@@ -215,6 +219,7 @@ it('Should print queries without binding when log-queries = true', async () => {
       connection: {
         'log-queries': true,
       },
+      allow: '*',
     },
   ]);
   await dataSource.activate();
@@ -256,6 +261,7 @@ it('Should print queries with binding when log-queries = true and log-parameters
         'log-queries': true,
         'log-parameters': true,
       },
+      allow: '*',
     },
   ]);
   await dataSource.activate();
@@ -297,6 +303,7 @@ it('Should share db instances for same path besides in-memory only db', async ()
       connection: {
         'persistent-path': path.resolve(__dirname, 'db1.db'),
       },
+      allow: '*',
     },
     {
       name: 'db2',
@@ -304,6 +311,7 @@ it('Should share db instances for same path besides in-memory only db', async ()
       connection: {
         'persistent-path': path.resolve(__dirname, 'db1.db'),
       },
+      allow: '*',
     },
     {
       name: 'db3',
@@ -311,16 +319,19 @@ it('Should share db instances for same path besides in-memory only db', async ()
       connection: {
         'persistent-path': path.resolve(__dirname, 'db2.db'),
       },
+      allow: '*',
     },
     {
       name: 'db4',
       type: 'duck',
       connection: {},
+      allow: '*',
     },
     {
       name: 'db5',
       type: 'duck',
       connection: {},
+      allow: '*',
     },
   ]);
   await dataSource.activate();
@@ -363,6 +374,7 @@ it('Should throw error when profile instance not found', async () => {
     {
       name: 'mocked-profile',
       type: 'duck',
+      allow: '*',
     },
   ]);
   await dataSource.activate();
