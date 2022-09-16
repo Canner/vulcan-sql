@@ -35,14 +35,17 @@ beforeAll(async () => {
 }, 20000); // Inserting test data might takes some time
 
 afterAll(async () => {
-  if (fs.existsSync(testFile)) fs.unlinkSync(testFile);
+  const dbFiles = fs
+    .readdirSync(__dirname)
+    .filter((fileName) => fileName.endsWith('.db'));
+  for (const dbFile of dbFiles) fs.unlinkSync(path.resolve(__dirname, dbFile));
 });
 
 it('Should work with memory-only database', async () => {
   // Arrange
   const dataSource = new DuckDBDataSource(null as any, 'duckdb', [
-    { name: 'mocked-profile', type: 'duck', connection: {} },
-  ]); // set config to null, test the tolerance
+    { name: 'mocked-profile', type: 'duck' },
+  ]); // set connection to undefined, test the tolerance
   await dataSource.activate();
   const bindParams = new Map<string, any>();
   bindParams.set(
@@ -283,4 +286,95 @@ it('Should print queries with binding when log-queries = true and log-parameters
   expect(logs[0].length).toBe(2);
   expect(logs[0][0]).toBe(`select $1::INTEGER as test`);
   expect(logs[0][1]).toEqual([1234]);
+});
+
+it('Should share db instances for same path besides in-memory only db', async () => {
+  // Arrange
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'db1',
+      type: 'duck',
+      connection: {
+        'persistent-path': path.resolve(__dirname, 'db1.db'),
+      },
+    },
+    {
+      name: 'db2',
+      type: 'duck',
+      connection: {
+        'persistent-path': path.resolve(__dirname, 'db1.db'),
+      },
+    },
+    {
+      name: 'db3',
+      type: 'duck',
+      connection: {
+        'persistent-path': path.resolve(__dirname, 'db2.db'),
+      },
+    },
+    {
+      name: 'db4',
+      type: 'duck',
+      connection: {},
+    },
+    {
+      name: 'db5',
+      type: 'duck',
+      connection: {},
+    },
+  ]);
+  await dataSource.activate();
+  const bindParams = new Map<string, any>();
+  await dataSource.execute({
+    statement: 'create table if not exists users (id INTEGER);',
+    bindParams,
+    operations: {} as any,
+    profileName: 'db1',
+  });
+  await dataSource.execute({
+    statement: 'create table if not exists users (id INTEGER);',
+    bindParams,
+    operations: {} as any,
+    profileName: 'db4',
+  });
+  // Act
+  const allData: Record<string, any> = {};
+  for (const profile of ['db1', 'db2', 'db3', 'db4', 'db5']) {
+    const { getData } = await dataSource.execute({
+      statement: 'show tables;',
+      bindParams,
+      operations: {} as any,
+      profileName: profile,
+    });
+    const data = await streamToArray(getData());
+    allData[profile] = data;
+  }
+  // Assert
+  expect(allData['db1'].length).toBe(1); // Create table
+  expect(allData['db2'].length).toBe(1); // Shared wih db1
+  expect(allData['db3'].length).toBe(0); // Do nothing
+  expect(allData['db4'].length).toBe(1); // Create table
+  expect(allData['db5'].length).toBe(0); // Do nothing
+});
+
+it('Should throw error when profile instance not found', async () => {
+  // Arrange
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+    },
+  ]);
+  await dataSource.activate();
+  const bindParams = new Map<string, any>();
+  bindParams.set('$1', 0);
+  // Act, Assert
+  await expect(
+    dataSource.execute({
+      statement: 'select * from "users" where age < $1',
+      bindParams,
+      operations: {} as any,
+      profileName: 'some-profile',
+    })
+  ).rejects.toThrow(`Profile instance some-profile not found`);
 });

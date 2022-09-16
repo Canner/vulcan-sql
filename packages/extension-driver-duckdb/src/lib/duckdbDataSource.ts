@@ -46,9 +46,10 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     for (const profile of profiles) {
       this.logger.debug(`Create connection for ${profile.name}`);
       const dbPath = profile.connection?.['persistent-path']
-        ? path.resolve(process.cwd(), profile.connection?.['persistent-path'])
+        ? path.resolve(process.cwd(), profile.connection['persistent-path'])
         : ':memory:';
-      let db = dbByPath.get(dbPath);
+      // Only reuse db instance when not using in-memory only db
+      let db = dbPath !== ':memory:' ? dbByPath.get(dbPath) : undefined;
       if (!db) {
         db = new duckdb.Database(dbPath);
         dbByPath.set(dbPath, db);
