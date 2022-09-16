@@ -15,7 +15,7 @@ export interface LocalFileProfileReaderOptions {
 
 @VulcanInternalExtension()
 @VulcanExtensionId(ProfilesLookupType.LocalFile)
-export class LocalFileProfileReader extends ProfileReader<LocalFileProfileReaderOptions> {
+export class LocalFileProfileReader extends ProfileReader {
   public async read(options: LocalFileProfileReaderOptions) {
     if (!options.path)
       throw new Error('LocalFile profile reader needs options.path property');
