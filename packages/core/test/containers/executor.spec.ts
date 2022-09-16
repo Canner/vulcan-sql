@@ -1,4 +1,6 @@
 import {
+  DataResult,
+  DataSource,
   executorModule,
   Profile,
   TYPES,
@@ -6,16 +8,34 @@ import {
 } from '@vulcan-sql/core';
 import { Container, injectable, interfaces, multiInject } from 'inversify';
 
-@injectable()
 @VulcanExtensionId('ds1')
-class DataSource1 {
-  constructor(@multiInject(TYPES.Profile) public profiles: Profile[]) {}
+class DataSource1 extends DataSource {
+  @multiInject(TYPES.Profile) public injectedProfiles!: Profile[];
+  public execute(): Promise<DataResult> {
+    throw new Error('Method not implemented.');
+  }
+
+  public prepare(): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
 }
 
-@injectable()
 @VulcanExtensionId('ds2')
-class DataSource2 {
-  constructor(@multiInject(TYPES.Profile) public profiles: Profile[]) {}
+class DataSource2 extends DataSource {
+  @multiInject(TYPES.Profile) public injectedProfiles!: Profile[];
+  public execute(): Promise<DataResult> {
+    throw new Error('Method not implemented.');
+  }
+
+  public prepare(): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
+}
+
+@VulcanExtensionId('ds3')
+@injectable()
+class DataSource3 {
+  @multiInject(TYPES.Profile) public injectedProfiles!: Profile[];
 }
 
 it('Executor module should bind correct profiles to data sources and create a factory which return proper data sources', async () => {
@@ -33,6 +53,8 @@ it('Executor module should bind correct profiles to data sources and create a fa
   profiles.set('p1', { name: 'p1', type: 'ds1' });
   profiles.set('p2', { name: 'p2', type: 'ds1' });
   profiles.set('p3', { name: 'p3', type: 'ds2' });
+  container.bind(TYPES.ExtensionConfig).toConstantValue({});
+  container.bind(TYPES.ExtensionName).toConstantValue('');
   await container.loadAsync(executorModule(profiles));
   const factory = container.get<interfaces.Factory<any>>(
     TYPES.Factory_DataSource
@@ -47,11 +69,11 @@ it('Executor module should bind correct profiles to data sources and create a fa
   expect(dsFromP1 instanceof DataSource1).toBeTruthy();
   expect(dsFromP2 instanceof DataSource1).toBeTruthy();
   expect(dsFromP3 instanceof DataSource2).toBeTruthy();
-  expect(dsFromP1.profiles).toEqual([
+  expect(dsFromP1.injectedProfiles).toEqual([
     { name: 'p1', type: 'ds1' },
     { name: 'p2', type: 'ds1' },
   ]);
-  expect(dsFromP3.profiles).toEqual([{ name: 'p3', type: 'ds2' }]);
+  expect(dsFromP3.injectedProfiles).toEqual([{ name: 'p3', type: 'ds2' }]);
 });
 
 it('Data source factory should throw error with invalid profile name', async () => {
@@ -59,6 +81,8 @@ it('Data source factory should throw error with invalid profile name', async () 
   const container = new Container();
   const profiles = new Map<string, Profile>();
   await container.loadAsync(executorModule(profiles));
+  container.bind(TYPES.ExtensionConfig).toConstantValue({});
+  container.bind(TYPES.ExtensionName).toConstantValue('');
   const factory = container.get<interfaces.Factory<any>>(
     TYPES.Factory_DataSource
   );
@@ -66,4 +90,22 @@ it('Data source factory should throw error with invalid profile name', async () 
   expect(() => factory('some-invalid-profile')).toThrow(
     `Profile some-invalid-profile not found`
   );
+});
+
+it('When the requestor is not a data source, container should return all profiles', async () => {
+  // Arrange
+  const container = new Container();
+  const profiles = new Map<string, Profile>();
+  profiles.set('p1', { name: 'p1', type: 'ds1' });
+  profiles.set('p2', { name: 'p2', type: 'ds1' });
+  profiles.set('p3', { name: 'p3', type: 'ds2' });
+  container.bind(TYPES.Extension_DataSource).to(DataSource3);
+  await container.loadAsync(executorModule(profiles));
+
+  // Act
+  const ds3 = container.get<DataSource3>(TYPES.Extension_DataSource);
+  const profilesInjected = ds3.injectedProfiles;
+
+  // Assert
+  expect(profilesInjected.length).toEqual(3);
 });
