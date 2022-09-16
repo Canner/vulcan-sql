@@ -26,7 +26,11 @@ export class ResponseSampler extends SchemaParserMiddleware {
     await next();
     const schema = rawSchema as APISchema;
     if (!schema.sample) return;
-
+    if (!schema.sample.profile) {
+      throw new Error(
+        `Schema ${schema.urlPath} misses the required property: sample.profile`
+      );
+    }
     const response = await this.templateEngine.execute(
       schema.templateSource,
       {

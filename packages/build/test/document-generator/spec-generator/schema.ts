@@ -103,6 +103,7 @@ export const getSchemas = async () => {
   const container = new Container();
   container.bind(CORE_TYPES.ValidatorLoader).toConstantValue(loader);
   container.bind(CORE_TYPES.TemplateEngine).toConstantValue(templateEngine);
+  container.bind(CORE_TYPES.Factory_DataSource).toConstantValue(() => ({}));
   SchemaParserMiddlewares.forEach((middleware) => {
     container.bind(TYPES.SchemaParserMiddleware).to(middleware);
   });
