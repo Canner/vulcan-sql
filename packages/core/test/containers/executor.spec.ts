@@ -53,3 +53,17 @@ it('Executor module should bind correct profiles to data sources and create a fa
   ]);
   expect(dsFromP3.profiles).toEqual([{ name: 'p3', type: 'ds2' }]);
 });
+
+it('Data source factory should throw error with invalid profile name', async () => {
+  // Arrange
+  const container = new Container();
+  const profiles = new Map<string, Profile>();
+  await container.loadAsync(executorModule(profiles));
+  const factory = container.get<interfaces.Factory<any>>(
+    TYPES.Factory_DataSource
+  );
+  // Act, Arrange
+  expect(() => factory('some-invalid-profile')).toThrow(
+    `Profile some-invalid-profile not found`
+  );
+});

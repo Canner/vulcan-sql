@@ -110,7 +110,7 @@ it('The main denotation should be parsed into the second args node', async () =>
 it('Extension should throw an error if there are tow main builders', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
-  // Act, Arrange
+  // Act, Assert
   await expect(
     compiler.compile(
       `
@@ -124,7 +124,7 @@ it('Extension should throw an error if there are tow main builders', async () =>
 it('Extension should throw an error if there are multiple builders using same name', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
-  // Act, Arrange
+  // Act, Assert
   await expect(
     compiler.compile(
       `
@@ -145,7 +145,7 @@ it('Extension should reset after compiled each template', async () => {
   {% req user main %} select * from users; {% endreq %}
   `
   );
-  // Act, Arrange
+  // Act, Assert
   await expect(
     compiler.compile(
       `
@@ -153,4 +153,17 @@ it('Extension should reset after compiled each template', async () => {
     `
     )
   ).resolves.not.toThrow();
+});
+
+it('Extension should throw error when no profile defined', async () => {
+  // Arrange
+  const { compiler, loader, executeTemplate } = await createTestCompiler();
+  const { compiledData } = await compiler.compile(
+    `{% req userCount main %}{% endreq %}`
+  );
+  loader.setSource('test', compiledData);
+  // Act, Assert
+  await expect(executeTemplate('test', {}, '')).rejects.toThrow(
+    `No profile name found`
+  );
 });
