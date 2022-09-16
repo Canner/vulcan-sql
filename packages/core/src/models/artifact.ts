@@ -91,7 +91,7 @@ export interface APISchema {
   // If not set pagination, then API request not provide the field to do it
   pagination?: PaginationSchema;
   sample?: Sample;
-  profile: string;
+  profiles: Array<string>;
 }
 
 export interface BuiltArtifact {

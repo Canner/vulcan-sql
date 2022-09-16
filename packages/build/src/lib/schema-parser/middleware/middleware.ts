@@ -24,6 +24,7 @@ export interface RawAPISchema
   request?: DeepPartial<RawRequestParameter[]>;
   response?: DeepPartial<RawResponseProperty[]>;
   metadata?: Record<string, any>;
+  profile?: string;
 }
 
 @injectable()

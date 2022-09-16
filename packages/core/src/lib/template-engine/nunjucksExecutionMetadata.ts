@@ -32,6 +32,7 @@ export class NunjucksExecutionMetadata {
       context: {
         params: this.parameters,
         user: this.userInfo,
+        profile: this.profileName,
       },
       [ReservedContextKeys.CurrentProfileName]: this.profileName,
     };

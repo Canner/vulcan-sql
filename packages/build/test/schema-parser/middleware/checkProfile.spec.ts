@@ -26,7 +26,7 @@ it('Should throw error when the profile is invalid', async () => {
   await expect(
     checkProfile.handle(schema, async () => Promise.resolve())
   ).rejects.toThrow(
-    `The profile of schema /user is invalid: profile not found`
+    `The profile profile1 of schema /user is invalid: profile not found`
   );
 });
 

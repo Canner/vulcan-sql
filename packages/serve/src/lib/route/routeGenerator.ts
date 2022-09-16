@@ -9,6 +9,7 @@ import {
 import { inject, injectable } from 'inversify';
 import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { TYPES } from '../../containers/types';
+import { Evaluator } from '../evaluator';
 
 export enum APIProviderType {
   RESTFUL = 'RESTFUL',
@@ -27,6 +28,7 @@ export class RouteGenerator {
   private reqTransformer: IRequestTransformer;
   private paginationTransformer: IPaginationTransformer;
   private templateEngine: TemplateEngine;
+  private evaluator: Evaluator;
   private apiOptions: APIRouteBuilderOption = {
     [APIProviderType.RESTFUL]: RestfulRoute,
     [APIProviderType.GRAPHQL]: GraphQLRoute,
@@ -37,12 +39,14 @@ export class RouteGenerator {
     @inject(TYPES.RequestValidator) reqValidator: IRequestValidator,
     @inject(TYPES.PaginationTransformer)
     paginationTransformer: IPaginationTransformer,
-    @inject(CORE_TYPES.TemplateEngine) templateEngine: TemplateEngine
+    @inject(CORE_TYPES.TemplateEngine) templateEngine: TemplateEngine,
+    @inject(TYPES.Evaluator) evaluator: Evaluator
   ) {
     this.reqValidator = reqValidator;
     this.reqTransformer = reqTransformer;
     this.paginationTransformer = paginationTransformer;
     this.templateEngine = templateEngine;
+    this.evaluator = evaluator;
   }
 
   public async generate(apiSchema: APISchema, optionType: APIProviderType) {
@@ -55,6 +59,7 @@ export class RouteGenerator {
       reqValidator: this.reqValidator,
       paginationTransformer: this.paginationTransformer,
       templateEngine: this.templateEngine,
+      evaluator: this.evaluator,
     });
   }
 

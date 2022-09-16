@@ -1,9 +1,10 @@
 import {
+  getLogger,
   Profile,
   ProfileAllowConstraints,
   TYPES as CORE_TYPES,
 } from '@vulcan-sql/core';
-import { injectable, multiInject } from 'inversify';
+import { injectable, multiInject, optional } from 'inversify';
 import { isArray } from 'lodash';
 import { AuthUserInfo } from '../../models/extensions';
 import {
@@ -35,12 +36,22 @@ import {
 //        name: group
 //        value: admin
 
+const logger = getLogger({ scopeName: 'SERVE' });
+
 @injectable()
 export class Evaluator {
   private profiles = new Map<string, AuthConstraint[][]>();
 
-  constructor(@multiInject(CORE_TYPES.Profile) profiles: Profile[]) {
+  constructor(
+    @multiInject(CORE_TYPES.Profile) @optional() profiles: Profile[] = []
+  ) {
     for (const profile of profiles) {
+      if (!profile.allow) {
+        logger.warn(
+          `Profile ${profile.name} doesn't have allow property, which means nobody can use it`
+        );
+        continue;
+      }
       this.profiles.set(profile.name, this.getConstraints(profile.allow));
     }
   }
@@ -76,7 +87,7 @@ export class Evaluator {
     andConstraints: AuthConstraint[]
   ): boolean {
     for (const constraint of andConstraints) {
-      if (!constraint.evaluate(user)) return false;
+      if (!constraint.evaluate(user || { name: '', attr: {} })) return false;
     }
     return true;
   }

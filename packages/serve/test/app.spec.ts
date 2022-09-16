@@ -30,15 +30,18 @@ import { KoaContext } from '@vulcan-sql/serve/models';
 import { Container } from 'inversify';
 import { extensionModule } from '../src/containers/modules';
 import { TYPES } from '@vulcan-sql/serve';
+import { Evaluator } from '@vulcan-sql/serve/evaluator';
 
 describe('Test vulcan server for practicing middleware', () => {
   let container: Container;
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
   let stubDataSource: sinon.StubbedInstance<DataSource>;
+  let stubEvaluator: sinon.StubbedInstance<Evaluator>;
   beforeEach(async () => {
     container = new Container();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
     stubDataSource = sinon.stubInterface<DataSource>();
+    stubEvaluator = sinon.stubInterface<Evaluator>();
 
     await container.loadAsync(
       coreExtensionModule({
@@ -82,6 +85,7 @@ describe('Test vulcan server for practicing middleware', () => {
           router: [],
         })
     );
+    container.bind(TYPES.Evaluator).toConstantValue(stubEvaluator);
   });
 
   afterEach(() => {
@@ -122,6 +126,7 @@ describe('Test vulcan server for calling restful APIs', () => {
   let container: Container;
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
   let stubDataSource: sinon.StubbedInstance<DataSource>;
+  let stubEvaluator: sinon.StubbedInstance<Evaluator>;
   let server: http.Server;
   const fakeSchemas: Array<APISchema> = [
     {
@@ -274,6 +279,7 @@ describe('Test vulcan server for calling restful APIs', () => {
     container = new Container();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
     stubDataSource = sinon.stubInterface<DataSource>();
+    stubEvaluator = sinon.stubInterface<Evaluator>();
 
     stubTemplateEngine.execute.callsFake(async (_: string, data: any) => {
       return {
@@ -281,6 +287,8 @@ describe('Test vulcan server for calling restful APIs', () => {
         getColumns: () => [],
       };
     });
+
+    stubEvaluator.evaluateProfile.returns('profile1');
 
     await container.loadAsync(
       coreExtensionModule({
@@ -321,6 +329,7 @@ describe('Test vulcan server for calling restful APIs', () => {
           router: [],
         })
     );
+    container.bind(TYPES.Evaluator).toConstantValue(stubEvaluator);
   });
 
   afterEach(() => {
