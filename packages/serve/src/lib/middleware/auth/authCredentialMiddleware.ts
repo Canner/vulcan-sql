@@ -58,7 +58,7 @@ export class AuthCredentialMiddleware extends BuiltInMiddleware<AuthOptions> {
     const options = this.getOptions() as AuthOptions;
 
     // The /auth endpoint not need contains "Authorization" in header and auth credentials
-    if (context.path === '/auth') return;
+    if (context.path === '/auth/token') return;
 
     // pass current context to auth token for users
     for (const name of Object.keys(this.authenticators)) {

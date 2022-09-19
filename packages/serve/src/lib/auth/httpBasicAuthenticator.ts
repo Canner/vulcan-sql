@@ -87,17 +87,11 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
     }
   }
 
-  public async authIdentity(ctx: KoaContext) {
+  public async getTokenInfo(ctx: KoaContext) {
     const username = ctx.request.query['username'] as string;
     const password = ctx.request.query['password'] as string;
     if (!username || !password)
       throw new Error('please provide "username" and "password".');
-
-    if (
-      !(username in this.usersCredentials) ||
-      !(md5(password) === this.usersCredentials[username].md5Password)
-    )
-      throw new Error('authenticate user identity failed.');
 
     const token = Buffer.from(`${username}:${password}`).toString('base64');
 

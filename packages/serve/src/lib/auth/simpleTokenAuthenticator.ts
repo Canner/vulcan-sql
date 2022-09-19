@@ -43,12 +43,9 @@ export class SimpleTokenAuthenticator extends BaseAuthenticator<SimpleTokenOptio
     }
   }
 
-  public async authIdentity(ctx: KoaContext) {
+  public async getTokenInfo(ctx: KoaContext) {
     const token = ctx.request.query['token'] as string;
     if (!token) throw new Error('please provide "token".');
-
-    if (!(token in this.usersCredentials))
-      throw new Error(`authenticate user identity failed.`);
 
     return {
       token: token,

@@ -16,13 +16,13 @@ const authCredential = async (
   return await authenticator.authCredential(ctx);
 };
 
-const authIdentity = async (
+const getTokenInfo = async (
   ctx: KoaContext,
   options: any
 ): Promise<Record<string, any>> => {
   const authenticator = new PasswordFileAuthenticator({ options }, '');
   await authenticator.activate();
-  return await authenticator.authIdentity(ctx);
+  return await authenticator.getTokenInfo(ctx);
 };
 
 describe('Test password-file authenticator', () => {
@@ -242,7 +242,7 @@ describe('Test password-file authenticator', () => {
     };
 
     // Act
-    const result = await authIdentity(ctx, {
+    const result = await getTokenInfo(ctx, {
       'password-file': {
         path: path.resolve(__dirname, './test-files/password-file'),
       },
@@ -250,32 +250,6 @@ describe('Test password-file authenticator', () => {
 
     // Assert
     expect(result['token']).toEqual(expected);
-  });
-
-  it('Should auth identity failed when request not match in "password-file" path of options', async () => {
-    // Arrange
-    const expected = new Error('authenticate user identity failed.');
-    const ctx = {
-      ...sinon.stubInterface<KoaContext>(),
-      request: {
-        ...sinon.stubInterface<Request>(),
-        query: {
-          ...sinon.stubInterface<ParsedUrlQuery>(),
-          username: 'user1',
-          password: 'test1',
-        },
-      },
-    };
-
-    // Act
-    const action = authIdentity(ctx, {
-      'password-file': {
-        path: path.resolve(__dirname, './test-files/password-file'),
-      },
-    });
-
-    // Assert
-    expect(action).rejects.toThrow(expected);
   });
 
   it.each([['username'], ['password']])(
@@ -294,7 +268,7 @@ describe('Test password-file authenticator', () => {
         },
       };
       // Act
-      const action = authIdentity(ctx, {
+      const action = getTokenInfo(ctx, {
         'password-file': {
           path: path.resolve(__dirname, './test-files/password-file'),
         },

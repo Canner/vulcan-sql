@@ -32,11 +32,11 @@ describe('Test auth route middleware', () => {
   beforeAll(() => {
     const a1 = sinon.stubInterface<BaseAuthenticator<any>>();
     a1.getExtensionId.returns('a1');
-    a1.authIdentity.resolves({ token: 'a1-token' });
+    a1.getTokenInfo.resolves({ token: 'a1-token' });
 
     const a2 = sinon.stubInterface<BaseAuthenticator<any>>();
     a2.getExtensionId.returns('a2');
-    a2.authIdentity.resolves({ token: 'a2-token' });
+    a2.getTokenInfo.resolves({ token: 'a2-token' });
 
     stubAuthenticators = {
       a1: a1,
@@ -106,13 +106,13 @@ describe('Test auth route middleware', () => {
   });
 
   it.each([['a1'], ['a2']])(
-    'Should show status code 404 when call GET /auth',
+    'Should show status code 404 when call GET /auth/token',
     async (name) => {
       // Arrange
       server = await runServer({ enabled: false }, stubAuthenticators);
 
       // Act
-      const request = supertest(server).get(`/auth?type=${name}`);
+      const request = supertest(server).get(`/auth/token?type=${name}`);
       const response = await request;
       // Assert
       expect(response.statusCode).toEqual(404);
@@ -123,7 +123,7 @@ describe('Test auth route middleware', () => {
     ['a1', 'a1-token'],
     ['a2', 'a2-token'],
   ])(
-    'Should get correct result when call GET /auth?type=%p',
+    'Should get correct result when call GET /auth/token?type=%p',
     async (name, expected) => {
       // Arrange
       server = await runServer(
@@ -132,14 +132,14 @@ describe('Test auth route middleware', () => {
       );
 
       // Act
-      const request = supertest(server).get(`/auth?type=${name}`);
+      const request = supertest(server).get(`/auth/token?type=${name}`);
       const response = await request;
       // Assert
       expect(response.body).toEqual({ token: expected });
     }
   );
 
-  it('Should failed when call GET /auth but not include "type" query string', async () => {
+  it('Should failed when call GET /auth/token but not include "type" query string', async () => {
     // Arrange
     const options = { options: { a1: {}, a2: {} } };
     const expected = {
@@ -150,7 +150,7 @@ describe('Test auth route middleware', () => {
     server = await runServer(options, stubAuthenticators);
 
     // Act
-    const request = supertest(server).get(`/auth`);
+    const request = supertest(server).get(`/auth/token`);
     const response = await request;
 
     // Assert
@@ -158,7 +158,7 @@ describe('Test auth route middleware', () => {
     expect(response.body).toEqual(expected);
   });
 
-  it('Should failed when call GET /auth?type=m1 but "m1" not setup in "auth" options', async () => {
+  it('Should failed when call GET /auth/token?type=m1 but "m1" not setup in "auth" options', async () => {
     // Arrange
     const options = { options: { a1: {}, a2: {} } };
     const expected = {
@@ -169,7 +169,7 @@ describe('Test auth route middleware', () => {
     server = await runServer(options, stubAuthenticators);
 
     // Act
-    const request = supertest(server).get(`/auth?type=m1`);
+    const request = supertest(server).get(`/auth/token?type=m1`);
     const response = await request;
 
     // Assert
@@ -177,14 +177,14 @@ describe('Test auth route middleware', () => {
     expect(response.body).toEqual(expected);
   });
 
-  it('Should failed when call GET /auth?type=a3 but auth identity "a3" failed', async () => {
+  it('Should failed when call GET /auth/token?type=a3 but auth identity "a3" failed', async () => {
     // Arrange
     const error = new Error('please provide "token"');
     const expected = {
       message: error.message,
     };
     const stubAuthenticator = sinon.stubInterface<BaseAuthenticator<any>>();
-    stubAuthenticator.authIdentity.rejects(error);
+    stubAuthenticator.getTokenInfo.rejects(error);
     stubAuthenticator.getExtensionId.returns('a3');
     server = await runServer(
       { options: { a3: {} } },
@@ -194,7 +194,7 @@ describe('Test auth route middleware', () => {
     );
 
     // Act
-    const request = supertest(server).get(`/auth?type=a3`);
+    const request = supertest(server).get(`/auth/token?type=a3`);
     const response = await request;
 
     // Assert

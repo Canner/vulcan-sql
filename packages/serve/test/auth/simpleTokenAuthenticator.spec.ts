@@ -18,13 +18,13 @@ const authCredential = async (
   return await authenticator.authCredential(ctx);
 };
 
-const authIdentity = async (
+const getTokenInfo = async (
   ctx: KoaContext,
   options: any
 ): Promise<Record<string, any>> => {
   const authenticator = new SimpleTokenAuthenticator({ options }, '');
   await authenticator.activate();
-  return await authenticator.authIdentity(ctx);
+  return await authenticator.getTokenInfo(ctx);
 };
 
 describe('Test simple-token authenticator', () => {
@@ -186,36 +186,12 @@ describe('Test simple-token authenticator', () => {
     } as KoaContext;
 
     // Act
-    const result = await authIdentity(ctx, {
+    const result = await getTokenInfo(ctx, {
       'simple-token': userLists,
     });
 
     // Assert
     expect(result['token']).toEqual(token);
-  });
-
-  it('Should auth identity failed when request not matched in "simple-token" options', async () => {
-    // Arrange
-    const expected = new Error('authenticate user identity failed.');
-    const token = Buffer.from('user3:test3').toString('base64');
-    const ctx = {
-      ...sinon.stubInterface<KoaContext>(),
-      request: {
-        ...sinon.stubInterface<Request>(),
-        query: {
-          ...sinon.stubInterface<ParsedUrlQuery>(),
-          token: token,
-        },
-      },
-    } as KoaContext;
-
-    // Act
-    const action = authIdentity(ctx, {
-      'simple-token': userLists,
-    });
-
-    // Assert
-    expect(action).rejects.toThrow(expected);
   });
 
   it('Should auth identity failed when miss request field', async () => {
@@ -231,7 +207,7 @@ describe('Test simple-token authenticator', () => {
       },
     };
     // Act
-    const action = authIdentity(ctx, {
+    const action = getTokenInfo(ctx, {
       'simple-token': userLists,
     });
     // Assert

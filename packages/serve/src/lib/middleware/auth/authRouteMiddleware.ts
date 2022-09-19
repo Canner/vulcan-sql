@@ -74,7 +74,7 @@ export class AuthRouteMiddleware extends BuiltInMiddleware<AuthOptions> {
   }
 
   private setAuthRoute() {
-    this.router.get(`/auth`, async (context: KoaContext, next) => {
+    this.router.get(`/auth/token`, async (context: KoaContext, next) => {
       await next();
       // not found type query string
       if (!('type' in context.request.query)) {
@@ -100,7 +100,7 @@ export class AuthRouteMiddleware extends BuiltInMiddleware<AuthOptions> {
       }
       // type does not support
       try {
-        const result = await this.authenticators[type].authIdentity(context);
+        const result = await this.authenticators[type].getTokenInfo(context);
         context.body = result;
       } catch (err) {
         context.status = 400;

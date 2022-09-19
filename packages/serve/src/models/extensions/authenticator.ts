@@ -30,8 +30,8 @@ export interface AuthResult {
 }
 
 export interface IAuthenticator {
-  /** authenticate identity for getting token or redirect url according to auth type */
-  authIdentity(context: KoaContext): Promise<any>;
+  /** get token related information */
+  getTokenInfo(context: KoaContext): Promise<any>;
   /** auth credential (e.g: token) to get user info  */
   authCredential(context: KoaContext): Promise<AuthResult>;
 }
@@ -41,7 +41,7 @@ export abstract class BaseAuthenticator<AuthTypeOption>
   extends ExtensionBase
   implements IAuthenticator
 {
-  public abstract authIdentity(
+  public abstract getTokenInfo(
     context: KoaContext
   ): Promise<Record<string, any>>;
   public abstract authCredential(context: KoaContext): Promise<AuthResult>;

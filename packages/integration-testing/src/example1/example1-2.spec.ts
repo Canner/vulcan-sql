@@ -31,7 +31,7 @@ afterEach(async () => {
   await server.close();
 });
 
-it('Example1-2: authenticate user identity by /auth API', async () => {
+it('Example1-2: authenticate user identity by /auth/token API', async () => {
   const builder = new VulcanBuilder(projectConfig);
   await builder.build();
   server = new VulcanServer(projectConfig);
@@ -39,7 +39,7 @@ it('Example1-2: authenticate user identity by /auth API', async () => {
 
   const agent = supertest(httpServer);
   const result = await agent.get(
-    '/auth?type=basic&username=user1&password=test1'
+    '/auth/token?type=basic&username=user1&password=test1'
   );
   expect(result.body).toEqual({
     token: 'dXNlcjE6dGVzdDE=',
