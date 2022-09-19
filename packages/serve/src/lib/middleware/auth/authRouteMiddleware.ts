@@ -55,18 +55,19 @@ export class AuthRouteMiddleware extends BuiltInMiddleware<AuthOptions> {
       const authenticator = this.authenticators[authId];
       if (authenticator.activate) await authenticator.activate();
     }
-    // setup route
-    this.setAuthRoute();
+
+    if (this.enabled && isEmpty(this.options))
+      if (isEmpty(this.options))
+        throw new Error(
+          'please set at least one auth type and user credential when you enable the "auth" options.'
+        );
+    // setup route when enabled
+    if (this.enabled) this.setAuthRoute();
   }
 
   public async handle(context: KoaContext, next: Next) {
     // return to stop the middleware, if disabled
     if (!this.enabled) return next();
-
-    if (isEmpty(this.options))
-      throw new Error(
-        'please set at least one auth type and user credential when you enable the "auth" options.'
-      );
 
     // run each auth route
     await this.router.routes()(context, next);
