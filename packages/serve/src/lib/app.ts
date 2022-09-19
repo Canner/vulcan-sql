@@ -1,6 +1,7 @@
 import { APISchema } from '@vulcan-sql/core';
 import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
+import * as koaParseBody from 'koa-bodyparser';
 import { uniq } from 'lodash';
 import {
   RestfulRoute,
@@ -32,6 +33,9 @@ export class VulcanApplication {
     this.app = new Koa();
     this.restfulRouter = new KoaRouter();
     this.graphqlRouter = new KoaRouter();
+
+    // add koa parser body for parsing POST json and form data
+    this.app.use(koaParseBody());
   }
 
   /**

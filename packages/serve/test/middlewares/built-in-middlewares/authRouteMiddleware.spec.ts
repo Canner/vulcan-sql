@@ -2,6 +2,7 @@ import * as sinon from 'ts-sinon';
 import * as Koa from 'koa';
 import faker from '@faker-js/faker';
 import * as supertest from 'supertest';
+import * as koaParseBody from 'koa-bodyparser';
 import { AuthRouteMiddleware } from '@vulcan-sql/serve/middleware';
 import { AuthOptions, BaseAuthenticator } from '@vulcan-sql/serve/models';
 import { Server } from 'http';
@@ -16,6 +17,7 @@ const runServer = async (
     '',
     Object.keys(authenticators).map((name) => authenticators[name])
   );
+  app.use(koaParseBody());
   await middleware.activate();
   app.use(middleware.handle.bind(middleware));
   const server = app.listen(faker.datatype.number({ min: 20000, max: 30000 }));
@@ -105,25 +107,23 @@ describe('Test auth route middleware', () => {
     expect(activate).rejects.toThrowError(expected);
   });
 
-  it.each([['a1'], ['a2']])(
-    'Should show status code 404 when call GET /auth/token',
-    async (name) => {
-      // Arrange
-      server = await runServer({ enabled: false }, stubAuthenticators);
+  it('Should show status 404 when request POST /auth/token but disable the auth route middleware', async () => {
+    // Arrange
+    server = await runServer({ enabled: false }, stubAuthenticators);
 
-      // Act
-      const request = supertest(server).get(`/auth/token?type=${name}`);
-      const response = await request;
-      // Assert
-      expect(response.statusCode).toEqual(404);
-    }
-  );
+    // Act
+    const request = supertest(server).post('/auth/token');
+
+    const response = await request;
+    // Assert
+    expect(response.statusCode).toEqual(404);
+  });
 
   it.each([
     ['a1', 'a1-token'],
     ['a2', 'a2-token'],
   ])(
-    'Should get correct result when call GET /auth/token?type=%p',
+    'Should get correct result when request POST /auth/token',
     async (name, expected) => {
       // Arrange
       server = await runServer(
@@ -132,25 +132,26 @@ describe('Test auth route middleware', () => {
       );
 
       // Act
-      const request = supertest(server).get(`/auth/token?type=${name}`);
+      const request = supertest(server)
+        .post('/auth/token')
+        .send({ type: name })
+        .set('Accept', 'application/json');
       const response = await request;
       // Assert
       expect(response.body).toEqual({ token: expected });
     }
   );
 
-  it('Should failed when call GET /auth/token but not include "type" query string', async () => {
+  it('Should failed when request POST /auth/token but not contains any data', async () => {
     // Arrange
     const options = { options: { a1: {}, a2: {} } };
     const expected = {
-      message: `Please indicate auth "type", supported auth types: ${Object.keys(
-        options['options']
-      )}.`,
+      message: `Please provide request parameters.`,
     };
     server = await runServer(options, stubAuthenticators);
 
     // Act
-    const request = supertest(server).get(`/auth/token`);
+    const request = supertest(server).post('/auth/token');
     const response = await request;
 
     // Assert
@@ -158,7 +159,29 @@ describe('Test auth route middleware', () => {
     expect(response.body).toEqual(expected);
   });
 
-  it('Should failed when call GET /auth/token?type=m1 but "m1" not setup in "auth" options', async () => {
+  it('Should failed when request POST /auth/token but not contains "type" field', async () => {
+    // Arrange
+    const options = { options: { a1: {}, a2: {} } };
+    const expected = {
+      message: `Please provide auth "type", supported types: ${Object.keys(
+        options['options']
+      )}.`,
+    };
+    server = await runServer(options, stubAuthenticators);
+
+    // Act
+    const request = supertest(server)
+      .post('/auth/token')
+      .send({ 'other-field': '' })
+      .set('Accept', 'application/json');
+    const response = await request;
+
+    // Assert
+    expect(response.statusCode).toEqual(400);
+    expect(response.body).toEqual(expected);
+  });
+
+  it('Should failed when request POST /auth/token with "m1" type but "m1" not setup in "auth" options', async () => {
     // Arrange
     const options = { options: { a1: {}, a2: {} } };
     const expected = {
@@ -169,7 +192,10 @@ describe('Test auth route middleware', () => {
     server = await runServer(options, stubAuthenticators);
 
     // Act
-    const request = supertest(server).get(`/auth/token?type=m1`);
+    const request = supertest(server)
+      .post('/auth/token')
+      .send({ type: 'm1' })
+      .set('Accept', 'application/json');
     const response = await request;
 
     // Assert
@@ -177,7 +203,7 @@ describe('Test auth route middleware', () => {
     expect(response.body).toEqual(expected);
   });
 
-  it('Should failed when call GET /auth/token?type=a3 but auth identity "a3" failed', async () => {
+  it('Should failed when request POST /auth/token with "a3" type but get token "a3" failed', async () => {
     // Arrange
     const error = new Error('please provide "token"');
     const expected = {
@@ -194,7 +220,10 @@ describe('Test auth route middleware', () => {
     );
 
     // Act
-    const request = supertest(server).get(`/auth/token?type=a3`);
+    const request = supertest(server)
+      .post('/auth/token')
+      .send({ type: 'a3' })
+      .set('Accept', 'application/json');
     const response = await request;
 
     // Assert

@@ -24,8 +24,8 @@ export const BuiltInRouteMiddlewares: ClassType<ExtensionBase>[] = [
   EnforceHttpsMiddleware,
   RequestIdMiddleware,
   RateLimitMiddleware,
-  AuthRouteMiddleware,
   AuthCredentialMiddleware,
+  AuthRouteMiddleware,
   ResponseFormatMiddleware,
   DocRouterMiddleware,
 ];

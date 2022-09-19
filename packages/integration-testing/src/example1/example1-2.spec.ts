@@ -31,16 +31,21 @@ afterEach(async () => {
   await server.close();
 });
 
-it('Example1-2: authenticate user identity by /auth/token API', async () => {
+it('Example1-2: authenticate user identity by POST /auth/token API', async () => {
   const builder = new VulcanBuilder(projectConfig);
   await builder.build();
   server = new VulcanServer(projectConfig);
   const httpServer = (await server.start())['http'];
 
   const agent = supertest(httpServer);
-  const result = await agent.get(
-    '/auth/token?type=basic&username=user1&password=test1'
-  );
+  const result = await agent
+    .post('/auth/token')
+    .send({
+      type: 'basic',
+      username: 'user1',
+      password: 'test1',
+    })
+    .set('Accept', 'application/json');
   expect(result.body).toEqual({
     token: 'dXNlcjE6dGVzdDE=',
   });

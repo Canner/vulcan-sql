@@ -1,13 +1,12 @@
 import * as md5 from 'md5';
 import * as sinon from 'ts-sinon';
 import { IncomingHttpHeaders } from 'http';
-import { Request } from 'koa';
 import {
   SimpleTokenAuthenticator,
   SimpleTokenOptions,
 } from '@vulcan-sql/serve/auth';
 import { AuthResult, AuthStatus, KoaContext } from '@vulcan-sql/serve/models';
-import { ParsedUrlQuery } from 'querystring';
+import { BodyRequest } from './types';
 
 const authCredential = async (
   ctx: KoaContext,
@@ -76,7 +75,7 @@ describe('Test simple-token authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
+        ...sinon.stubInterface<BodyRequest>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
         },
@@ -95,7 +94,7 @@ describe('Test simple-token authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
+        ...sinon.stubInterface<BodyRequest>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: '',
@@ -115,7 +114,7 @@ describe('Test simple-token authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
+        ...sinon.stubInterface<BodyRequest>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: `SIMPLE-TOKEN ${invalidToken}`,
@@ -144,7 +143,7 @@ describe('Test simple-token authenticator', () => {
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
         request: {
-          ...sinon.stubInterface<Request>(),
+          ...sinon.stubInterface<BodyRequest>(),
           headers: {
             ...sinon.stubInterface<IncomingHttpHeaders>(),
             authorization: `${authScheme} ${userData.token}`,
@@ -171,15 +170,14 @@ describe('Test simple-token authenticator', () => {
     }
   );
 
-  it('Should auth identity successful when request matched in "simple-token" options', async () => {
+  it('Should get token successful when request matched in "simple-token" options', async () => {
     // Arrange
     const token = Buffer.from('user1:test1').toString('base64');
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
-        query: {
-          ...sinon.stubInterface<ParsedUrlQuery>(),
+        ...sinon.stubInterface<BodyRequest>(),
+        body: {
           token: token,
         },
       },
@@ -194,16 +192,14 @@ describe('Test simple-token authenticator', () => {
     expect(result['token']).toEqual(token);
   });
 
-  it('Should auth identity failed when miss request field', async () => {
+  it('Should get token failed when miss request field', async () => {
     // Arrange
     const expected = new Error('please provide "token".');
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
-        query: {
-          ...sinon.stubInterface<ParsedUrlQuery>(),
-        },
+        ...sinon.stubInterface<BodyRequest>(),
+        body: {},
       },
     };
     // Act

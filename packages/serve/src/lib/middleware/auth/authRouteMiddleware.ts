@@ -62,7 +62,7 @@ export class AuthRouteMiddleware extends BuiltInMiddleware<AuthOptions> {
           'please set at least one auth type and user credential when you enable the "auth" options.'
         );
     // setup route when enabled
-    if (this.enabled) this.setAuthRoute();
+    if (this.enabled) this.setRoutes();
   }
 
   public async handle(context: KoaContext, next: Next) {
@@ -73,35 +73,43 @@ export class AuthRouteMiddleware extends BuiltInMiddleware<AuthOptions> {
     await this.router.routes()(context, next);
   }
 
-  private setAuthRoute() {
-    this.router.get(`/auth/token`, async (context: KoaContext, next) => {
-      await next();
-      // not found type query string
-      if (!('type' in context.request.query)) {
-        context.status = 400;
-        context.body = {
-          message: `Please indicate auth "type", supported auth types: ${Object.keys(
-            this.options
-          )}.`,
-        };
+  private setRoutes() {
+    // mount post /auth/token info endpoint
+    this.mountTokenEndpoint();
+  }
 
+  /* add Getting auth token info endpoint  */
+  private mountTokenEndpoint() {
+    this.router.post(`/auth/token`, async (context: KoaContext) => {
+      if (isEmpty(context.request.body)) {
+        context.status = 400;
+        context.body = { message: 'Please provide request parameters.' };
+        return;
+      }
+      // Get request payload
+      const type = context.request.body!['type'] as string;
+      if (!type) {
+        const msg = `Please provide auth "type", supported types: ${Object.keys(
+          this.options
+        )}.`;
+        context.status = 400;
+        context.body = { message: msg };
         return;
       }
       // type does not set up in options
-      const type = context.request.query['type'] as string;
       if (!this.options[type]) {
+        const msg = `auth type "${type}" does not support, only supported: ${Object.keys(
+          this.options
+        )}.`;
         context.status = 400;
-        context.body = {
-          message: `auth type "${type}" does not support, only supported: ${Object.keys(
-            this.options
-          )}.`,
-        };
+        context.body = { message: msg };
         return;
       }
-      // type does not support
+
       try {
         const result = await this.authenticators[type].getTokenInfo(context);
         context.body = result;
+        return;
       } catch (err) {
         context.status = 400;
         context.body = {

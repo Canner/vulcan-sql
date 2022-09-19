@@ -88,8 +88,8 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
   }
 
   public async getTokenInfo(ctx: KoaContext) {
-    const username = ctx.request.query['username'] as string;
-    const password = ctx.request.query['password'] as string;
+    const username = ctx.request.body!['username'] as string;
+    const password = ctx.request.body!['password'] as string;
     if (!username || !password)
       throw new Error('please provide "username" and "password".');
 

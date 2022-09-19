@@ -53,6 +53,7 @@
     "@types/jest": "27.4.1",
     "@types/js-yaml": "^4.0.5",
     "@types/koa": "^2.13.4",
+    "@types/koa-bodyparser": "^4.3.8",
     "@types/koa-compose": "^3.2.5",
     "@types/koa-router": "^7.4.4",
     "@types/koa-sslify": "^4.0.3",

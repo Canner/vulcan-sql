@@ -2,15 +2,15 @@ import * as path from 'path';
 import * as md5 from 'md5';
 import * as sinon from 'ts-sinon';
 import { IncomingHttpHeaders } from 'http';
-import { Request, BaseResponse } from 'koa';
+import { BaseResponse } from 'koa';
 import {
   BasicAuthenticator,
   AuthUserListOptions,
   BasicOptions,
 } from '@vulcan-sql/serve/auth';
 import { AuthResult, AuthStatus, KoaContext } from '@vulcan-sql/serve/models';
-import { ParsedUrlQuery } from 'querystring';
 import faker from '@faker-js/faker';
+import { BodyRequest } from './types';
 
 const authCredential = async (
   ctx: KoaContext,
@@ -81,12 +81,12 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
+        ...sinon.stubInterface<BodyRequest>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
         },
       },
-    } as KoaContext;
+    };
 
     // Act
     const result = await authCredential(ctx, { basic: {} });
@@ -100,13 +100,13 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
+        ...sinon.stubInterface<BodyRequest>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: '',
         },
       },
-    } as KoaContext;
+    };
 
     // Act
     const result = await authCredential(ctx, { basic: {} });
@@ -120,7 +120,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
+        ...sinon.stubInterface<BodyRequest>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: `Basic ${invalidToken}`,
@@ -146,13 +146,13 @@ describe('Test http basic authenticator', () => {
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
         request: {
-          ...sinon.stubInterface<Request>(),
+          ...sinon.stubInterface<BodyRequest>(),
           headers: {
             ...sinon.stubInterface<IncomingHttpHeaders>(),
             authorization: `${authScheme} ${userTokenInList}`,
           },
         },
-      } as KoaContext;
+      };
 
       const expected = {
         status: AuthStatus.SUCCESS,
@@ -178,7 +178,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
+        ...sinon.stubInterface<BodyRequest>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: `Basic ${userTokenInList}`,
@@ -204,7 +204,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
+        ...sinon.stubInterface<BodyRequest>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: `Basic ${userTokenInList}`,
@@ -232,7 +232,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
+        ...sinon.stubInterface<BodyRequest>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: `Basic ${invalidToken}`,
@@ -263,7 +263,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
+        ...sinon.stubInterface<BodyRequest>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: `Basic ${userTokenInFile}`,
@@ -295,14 +295,13 @@ describe('Test http basic authenticator', () => {
     expect(result).toEqual(expected);
   });
 
-  it('Should auth identity successfully when request match in "users-list" options', async () => {
+  it('Should get token successfully when request match in "users-list" options', async () => {
     // Arrange
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
-        query: {
-          ...sinon.stubInterface<ParsedUrlQuery>(),
+        ...sinon.stubInterface<BodyRequest>(),
+        body: {
           username: 'user1',
           password: 'test1',
         },
@@ -317,16 +316,15 @@ describe('Test http basic authenticator', () => {
     expect(result['token']).toEqual(expected);
   });
 
-  it('Should auth identity successfully when request match in "htpasswd-file" path of options', async () => {
+  it('Should get token successfully when request match in "htpasswd-file" path of options', async () => {
     // Arrange
     const expected = Buffer.from('user3:test3').toString('base64');
 
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<Request>(),
-        query: {
-          ...sinon.stubInterface<ParsedUrlQuery>(),
+        ...sinon.stubInterface<BodyRequest>(),
+        body: {
           username: 'user3',
           password: 'test3',
         },
@@ -367,16 +365,15 @@ describe('Test http basic authenticator', () => {
       },
     ],
   ])(
-    'Should auth identity failed when miss some of request fields',
+    'Should get token failed when miss some of request fields',
     async (field: string, options: BasicOptions) => {
       // Arrange
       const expected = new Error('please provide "username" and "password".');
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
         request: {
-          ...sinon.stubInterface<Request>(),
-          query: {
-            ...sinon.stubInterface<ParsedUrlQuery>(),
+          ...sinon.stubInterface<BodyRequest>(),
+          body: {
             [field]: faker.word.noun(),
           },
         },
@@ -389,4 +386,25 @@ describe('Test http basic authenticator', () => {
       expect(action).rejects.toThrow(expected);
     }
   );
+  it('Should get token failed when miss request field', async () => {
+    // Arrange
+    const expected = new Error('please provide "username" and "password".');
+    const ctx = {
+      ...sinon.stubInterface<KoaContext>(),
+      request: {
+        ...sinon.stubInterface<BodyRequest>(),
+        body: {},
+      },
+    };
+    // Act
+    const action = getTokenInfo(ctx, {
+      basic: {
+        'htpasswd-file': {
+          path: path.resolve(__dirname, './test-files/basic.htpasswd'),
+        },
+      },
+    });
+    // Assert
+    expect(action).rejects.toThrow(expected);
+  });
 });
