@@ -3,9 +3,18 @@ import * as Koa from 'koa';
 import faker from '@faker-js/faker';
 import * as supertest from 'supertest';
 import * as koaParseBody from 'koa-bodyparser';
-import { AuthRouteMiddleware } from '@vulcan-sql/serve/middleware';
-import { AuthOptions, BaseAuthenticator } from '@vulcan-sql/serve/models';
+import {
+  AuthCredentialMiddleware,
+  AuthRouteMiddleware,
+} from '@vulcan-sql/serve/middleware';
+import {
+  AuthOptions,
+  AuthResult,
+  AuthStatus,
+  BaseAuthenticator,
+} from '@vulcan-sql/serve/models';
 import { Server } from 'http';
+import { BasicAuthenticator } from '@vulcan-sql/serve';
 
 const runServer = async (
   options: { enabled?: boolean; options?: AuthOptions },
@@ -228,6 +237,76 @@ describe('Test auth route middleware', () => {
 
     // Assert
     expect(response.statusCode).toEqual(400);
+    expect(response.body).toEqual(expected);
+  });
+
+  it('Should failed when request GET /auth/user-profile with "basic" token but not authenticate', async () => {
+    // Arrange
+    const expected = 'User profile not found.';
+
+    const stubBasic = sinon.stubInterface<BasicAuthenticator>();
+    stubBasic.getExtensionId.returns('basic');
+
+    server = await runServer(
+      { options: { basic: {} } },
+      {
+        basic: stubBasic,
+      }
+    );
+    // Act
+    const request = supertest(server)
+      .get('/auth/user-profile')
+      .set('Authorization', 'basic dXNlcjE6dGVzdDE=');
+    const response = await request;
+
+    // Assert
+    expect(response.statusCode).toEqual(404);
+    expect(response.body).toEqual({
+      message: expected,
+    });
+  });
+
+  it('Should success when request GET /auth/user-profile with "basic" token and authenticated', async () => {
+    // Arrange
+    const expected = {
+      name: 'user1',
+      attr: {
+        role: 'admin',
+      },
+    };
+
+    const stubBasic = sinon.stubInterface<BasicAuthenticator>();
+    stubBasic.getExtensionId.returns('basic');
+    stubBasic.authCredential.resolves({
+      status: AuthStatus.SUCCESS,
+      type: 'basic',
+      user: expected,
+    } as AuthResult);
+
+    const app = new Koa();
+    const authRoute = new AuthRouteMiddleware({ options: { basic: {} } }, '', [
+      stubBasic,
+    ]);
+    const authCredential = new AuthCredentialMiddleware(
+      { options: { basic: {} } },
+      '',
+      [stubBasic]
+    );
+    app.use(koaParseBody());
+    await authCredential.activate();
+    await authRoute.activate();
+    app.use(authCredential.handle.bind(authCredential));
+    app.use(authRoute.handle.bind(authRoute));
+    server = app.listen(faker.datatype.number({ min: 20000, max: 30000 }));
+
+    // Act
+    const request = supertest(server)
+      .get('/auth/user-profile')
+      .set('Authorization', 'basic dXNlcjE6dGVzdDE=');
+    const response = await request;
+
+    // Assert
+    expect(response.statusCode).toEqual(200);
     expect(response.body).toEqual(expected);
   });
 });

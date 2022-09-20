@@ -20,6 +20,7 @@ type AuthenticatorMap = {
  * */
 @VulcanInternalExtension('auth')
 export class AuthCredentialMiddleware extends BuiltInMiddleware<AuthOptions> {
+  private options = (this.getOptions() as AuthOptions) || {};
   private authenticators: AuthenticatorMap;
 
   constructor(
@@ -39,12 +40,13 @@ export class AuthCredentialMiddleware extends BuiltInMiddleware<AuthOptions> {
     );
   }
   public override async onActivate() {
-    for (const name of Object.keys(this.authenticators)) {
+    const names = Object.keys(this.authenticators);
+    for (const name of names) {
       const authenticator = this.authenticators[name];
       if (authenticator.activate) await authenticator.activate();
     }
 
-    if (this.enabled && isEmpty(this.getOptions())) {
+    if (this.enabled && isEmpty(this.options)) {
       throw new Error(
         'please set at least one auth type and user credential when you enable the "auth" options.'
       );
@@ -55,15 +57,13 @@ export class AuthCredentialMiddleware extends BuiltInMiddleware<AuthOptions> {
     // return to stop the middleware, if disabled
     if (!this.enabled) return next();
 
-    const options = this.getOptions() as AuthOptions;
-
     // The /auth endpoint not need contains "Authorization" in header and auth credentials
     if (context.path === '/auth/token') return next();
 
     // pass current context to auth token for users
     for (const name of Object.keys(this.authenticators)) {
       // skip the disappeared auth type name in options
-      if (!options[name]) continue;
+      if (!this.options[name]) continue;
       // auth token
       const result = await this.authenticators[name].authCredential(context);
       // if state is indeterminate, change to next authentication

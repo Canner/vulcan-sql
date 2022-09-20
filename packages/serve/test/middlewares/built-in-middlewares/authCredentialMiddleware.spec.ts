@@ -20,11 +20,6 @@ describe('Test auth credential middleware', () => {
 
   it('Should return to stop auth middleware when enabled = false', async () => {
     // Arrange
-    const ctx: KoaContext = {
-      ...sinon.stubInterface<KoaContext>(),
-    };
-
-    // Act
     const middleware = new AuthCredentialMiddleware(
       {
         enabled: false,
@@ -34,8 +29,9 @@ describe('Test auth credential middleware', () => {
     );
     // spy the async function to do test
     const spy = jest.spyOn(lodash, 'isEmpty');
+
+    // Act
     await middleware.activate();
-    await middleware.handle(ctx, async () => Promise.resolve());
 
     expect(spy).not.toHaveBeenCalled();
   });

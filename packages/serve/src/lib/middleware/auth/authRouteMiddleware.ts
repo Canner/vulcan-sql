@@ -7,6 +7,7 @@ import {
   BuiltInMiddleware,
   BaseAuthenticator,
   AuthOptions,
+  AuthUserInfo,
 } from '@vulcan-sql/serve/models';
 import { TYPES } from '@vulcan-sql/serve/containers';
 import * as Router from 'koa-router';
@@ -15,7 +16,7 @@ type AuthenticatorMap = {
   [name: string]: BaseAuthenticator<any>;
 };
 
-/** The auth route middleware used to auth identity.
+/** The auth route middleware used to mount endpoint for getting token info and user profile.
  *  It seek the 'auth' module name to match data through built-in and customized authenticator by BaseAuthenticator
  * */
 @VulcanInternalExtension('auth')
@@ -57,10 +58,9 @@ export class AuthRouteMiddleware extends BuiltInMiddleware<AuthOptions> {
     }
 
     if (this.enabled && isEmpty(this.options))
-      if (isEmpty(this.options))
-        throw new Error(
-          'please set at least one auth type and user credential when you enable the "auth" options.'
-        );
+      throw new Error(
+        'please set at least one auth type and user credential when you enable the "auth" options.'
+      );
     // setup route when enabled
     if (this.enabled) this.setRoutes();
   }
@@ -76,6 +76,8 @@ export class AuthRouteMiddleware extends BuiltInMiddleware<AuthOptions> {
   private setRoutes() {
     // mount post /auth/token info endpoint
     this.mountTokenEndpoint();
+    // mount get /auth/user-profile endpoint
+    this.mountUserProfileEndpoint();
   }
 
   /* add Getting auth token info endpoint  */
@@ -116,6 +118,24 @@ export class AuthRouteMiddleware extends BuiltInMiddleware<AuthOptions> {
           message: (err as Error).message,
         };
       }
+    });
+  }
+
+  private mountUserProfileEndpoint() {
+    // The route should work after the token authenticated
+    this.router.get(`/auth/user-profile`, async (context: KoaContext) => {
+      if (!context.state.user) {
+        context.status = 404;
+        context.body = {
+          message: 'User profile not found.',
+        };
+        return;
+      }
+
+      context.body = {
+        ...(context.state.user as AuthUserInfo),
+      };
+      return;
     });
   }
 }
