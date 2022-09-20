@@ -72,6 +72,9 @@
       "@vulcan-sql/extension-driver-duckdb": [
         "packages/extension-driver-duckdb/src/index.ts"
       ],
+      "@vulcan-sql/extension-driver-pg": [
+        "packages/extension-driver-pg/src/index.ts"
+      ],
       "@vulcan-sql/integration-testing": [
         "packages/integration-testing/src/index"
       ],
@@ -80,6 +83,8 @@
       "@vulcan-sql/serve/auth": ["packages/serve/src/lib/auth/index"],
       "@vulcan-sql/serve/auth/*": ["packages/serve/src/lib/auth/*"],
       "@vulcan-sql/serve/containers": ["packages/serve/src/containers/index"],
+      "@vulcan-sql/serve/evaluator": ["packages/serve/src/lib/evaluator/index"],
+      "@vulcan-sql/serve/evaluator/*": ["packages/serve/src/lib/evaluator/*"],
       "@vulcan-sql/serve/loader": ["packages/serve/src/lib/loader"],
       "@vulcan-sql/serve/middleware": [
         "packages/serve/src/lib/middleware/index"
@@ -102,8 +107,6 @@
       "@vulcan-sql/serve/types": ["packages/serve/src/containers/types"],
       "@vulcan-sql/serve/utils": ["packages/serve/src/lib/utils/index"],
       "@vulcan-sql/serve/utils/*": ["packages/serve/src/lib/utils/*"],
-      "@vulcan-sql/serve/evaluator": ["packages/serve/src/lib/evaluator/index"],
-      "@vulcan-sql/serve/evaluator/*": ["packages/serve/src/lib/evaluator/*"],
       "@vulcan-sql/test-utility": ["packages/test-utility/src/index"]
     }
   },
