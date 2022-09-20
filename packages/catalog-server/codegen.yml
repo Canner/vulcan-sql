@@ -1,0 +1,28 @@
+overwrite: true
+schema:
+  [
+    {
+      'http://localhost:4200/api/graphql':
+        {
+          headers:
+            {
+              Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uIjoiNWQ3YWVjZTAtMzRkYy0xMWVkLTkzY2QtNmJiYjZmZmE5YWZkIiwicHJvZmlsZSI6eyJ1c2VybmFtZSI6InRlc3QifSwiaWF0IjoxNjYzMjM1NjU4fQ.1PbU4s3ig8LLQTpFvhZj_cUBQjvlke4p3jl5LwvYOf0',
+            },
+        },
+    },
+  ]
+generates:
+  ./packages/catalog-server/lib/__generated__/types.tsx:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+  ./:
+    preset: near-operation-file
+    presetConfig:
+      extension: .generated.ts
+      baseTypesPath: ./packages/catalog-server/lib/__generated__/types.tsx
+    documents: './packages/catalog-server/**/*.graphql.ts'
+    plugins:
+      - typescript-operations
+      - typescript-react-apollo
