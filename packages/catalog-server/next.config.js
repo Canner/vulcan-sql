@@ -1,5 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const withNx = require('@nrwl/next/plugins/with-nx');
+const withAntdLess = require('next-plugin-antd-less');
+const path = require('path');
+
+const themeVariables = path.resolve(__dirname, './styles/antd-custom.less');
 
 /**
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
@@ -15,6 +19,11 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  reactStrictMode: true,
+  ...withAntdLess({
+    lessVarsFilePath: themeVariables,
+    lessVarsFilePathAppendToEndOfContent: false,
+  }),
 };
 
 module.exports = withNx(nextConfig);
