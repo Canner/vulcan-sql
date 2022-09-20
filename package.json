@@ -49,7 +49,6 @@
     "@types/from2": "^2.3.1",
     "@types/glob": "^7.2.0",
     "@types/inquirer": "^8.0.0",
-    "@types/is-base64": "^1.1.1",
     "@types/jest": "27.4.1",
     "@types/js-yaml": "^4.0.5",
     "@types/koa": "^2.13.4",

@@ -4,8 +4,8 @@ import faker from '@faker-js/faker';
 import * as supertest from 'supertest';
 import * as koaParseBody from 'koa-bodyparser';
 import {
-  AuthCredentialMiddleware,
-  AuthRouteMiddleware,
+  AuthCredentialsMiddleware,
+  AuthRouterMiddleware,
 } from '@vulcan-sql/serve/middleware';
 import {
   AuthOptions,
@@ -21,7 +21,7 @@ const runServer = async (
   authenticators: Record<string, sinon.StubbedInstance<BaseAuthenticator<any>>>
 ) => {
   const app = new Koa();
-  const middleware = new AuthRouteMiddleware(
+  const middleware = new AuthRouterMiddleware(
     options,
     '',
     Object.keys(authenticators).map((name) => authenticators[name])
@@ -33,7 +33,7 @@ const runServer = async (
   return server;
 };
 
-describe('Test auth route middleware', () => {
+describe('Test auth router middleware', () => {
   let stubAuthenticators: Record<
     string,
     sinon.StubbedInstance<BaseAuthenticator<any>>
@@ -68,7 +68,7 @@ describe('Test auth route middleware', () => {
       );
 
       // Act
-      const middleware = new AuthRouteMiddleware({ options: options }, '', []);
+      const middleware = new AuthRouterMiddleware({ options: options }, '', []);
 
       const activateFunc = async () => await middleware.activate();
 
@@ -78,7 +78,7 @@ describe('Test auth route middleware', () => {
 
   it('Should active corresponding authenticator when activate middleware', async () => {
     // Arrange
-    const middleware = new AuthRouteMiddleware(
+    const middleware = new AuthRouterMiddleware(
       {
         options: {
           a1: {},
@@ -105,7 +105,7 @@ describe('Test auth route middleware', () => {
       )}.`
     );
 
-    const middleware = new AuthRouteMiddleware(
+    const middleware = new AuthRouterMiddleware(
       { options: { a1: {}, m1: {} } },
       '',
       Object.keys(stubAuthenticators).map((name) => stubAuthenticators[name])
@@ -284,10 +284,10 @@ describe('Test auth route middleware', () => {
     } as AuthResult);
 
     const app = new Koa();
-    const authRoute = new AuthRouteMiddleware({ options: { basic: {} } }, '', [
+    const authRoute = new AuthRouterMiddleware({ options: { basic: {} } }, '', [
       stubBasic,
     ]);
-    const authCredential = new AuthCredentialMiddleware(
+    const authCredential = new AuthCredentialsMiddleware(
       { options: { basic: {} } },
       '',
       [stubBasic]

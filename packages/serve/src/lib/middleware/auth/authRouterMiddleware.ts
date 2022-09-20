@@ -1,66 +1,20 @@
 import { isEmpty } from 'lodash';
-import { inject, multiInject } from 'inversify';
-import { TYPES as CORE_TYPES, VulcanInternalExtension } from '@vulcan-sql/core';
-import {
-  Next,
-  KoaContext,
-  BuiltInMiddleware,
-  BaseAuthenticator,
-  AuthOptions,
-  AuthUserInfo,
-} from '@vulcan-sql/serve/models';
-import { TYPES } from '@vulcan-sql/serve/containers';
+import { Next, KoaContext, AuthUserInfo } from '@vulcan-sql/serve/models';
+
 import * as Router from 'koa-router';
+import { BaseAuthMiddleware } from './authMiddleware';
+import { VulcanInternalExtension } from '@vulcan-sql/core';
 
-type AuthenticatorMap = {
-  [name: string]: BaseAuthenticator<any>;
-};
-
-/** The auth route middleware used to mount endpoint for getting token info and user profile.
+/** The middleware responsible for mounting endpoint for getting token info or user profile by request.
  *  It seek the 'auth' module name to match data through built-in and customized authenticator by BaseAuthenticator
  * */
 @VulcanInternalExtension('auth')
-export class AuthRouteMiddleware extends BuiltInMiddleware<AuthOptions> {
-  private options = (this.getOptions() as AuthOptions) || {};
-  private authenticators: AuthenticatorMap;
+export class AuthRouterMiddleware extends BaseAuthMiddleware {
   private router = new Router();
 
-  constructor(
-    @inject(CORE_TYPES.ExtensionConfig) config: any,
-    @inject(CORE_TYPES.ExtensionName) name: string,
-    @multiInject(TYPES.Extension_Authenticator)
-    authenticators: BaseAuthenticator<any>[]
-  ) {
-    super(config, name);
-
-    this.authenticators = authenticators.reduce<AuthenticatorMap>(
-      (prev, authenticator) => {
-        prev[authenticator.getExtensionId()!] = authenticator;
-        return prev;
-      },
-      {}
-    );
-  }
   public override async onActivate() {
-    const authIds = Object.keys(this.authenticators);
+    await this.initialize();
 
-    // check setup auth type in options also valid in authenticators
-    Object.keys(this.options).map((type) => {
-      if (!authIds.includes(type))
-        throw new Error(
-          `The auth type "${type}" in options not supported, authenticator only supported ${authIds}.`
-        );
-    });
-
-    for (const authId of authIds) {
-      const authenticator = this.authenticators[authId];
-      if (authenticator.activate) await authenticator.activate();
-    }
-
-    if (this.enabled && isEmpty(this.options))
-      throw new Error(
-        'please set at least one auth type and user credential when you enable the "auth" options.'
-      );
     // setup route when enabled
     if (this.enabled) this.setRoutes();
   }

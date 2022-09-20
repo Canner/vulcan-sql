@@ -60,6 +60,9 @@ describe('Test password-file authenticator', () => {
       // Arrange
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
+        request: {
+          ...sinon.stubInterface<BodyRequest>(),
+        },
       } as KoaContext;
 
       // Act

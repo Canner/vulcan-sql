@@ -1,2 +1,4 @@
-export * from './authRouteMiddleware';
-export * from './authCredentialMiddleware';
+export * from './authRouterMiddleware';
+export * from './authCredentialsMiddleware';
+export * from './authSourceNormalizerMiddleware';
+export * from './authMiddleware';

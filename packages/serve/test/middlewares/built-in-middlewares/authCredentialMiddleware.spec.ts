@@ -1,5 +1,5 @@
 import * as sinon from 'ts-sinon';
-import { AuthCredentialMiddleware } from '@vulcan-sql/serve/middleware';
+import { AuthCredentialsMiddleware } from '@vulcan-sql/serve/middleware';
 import {
   AuthResult,
   AuthStatus,
@@ -20,7 +20,7 @@ describe('Test auth credential middleware', () => {
 
   it('Should return to stop auth middleware when enabled = false', async () => {
     // Arrange
-    const middleware = new AuthCredentialMiddleware(
+    const middleware = new AuthCredentialsMiddleware(
       {
         enabled: false,
       },
@@ -45,7 +45,7 @@ describe('Test auth credential middleware', () => {
       );
 
       // Act
-      const middleware = new AuthCredentialMiddleware(
+      const middleware = new AuthCredentialsMiddleware(
         { options: options },
         '',
         []
@@ -90,7 +90,7 @@ describe('Test auth credential middleware', () => {
       };
 
       // Act
-      const middleware = new AuthCredentialMiddleware(
+      const middleware = new AuthCredentialsMiddleware(
         { options: { [type]: options } },
         '',
         [authenticator]
@@ -132,7 +132,7 @@ describe('Test auth credential middleware', () => {
       };
 
       // Act
-      const middleware = new AuthCredentialMiddleware(
+      const middleware = new AuthCredentialsMiddleware(
         { options: { [type]: options } },
         '',
         [authenticator]
@@ -171,7 +171,7 @@ describe('Test auth credential middleware', () => {
       };
 
       // Act
-      const middleware = new AuthCredentialMiddleware(
+      const middleware = new AuthCredentialsMiddleware(
         { options: { [type]: options } },
         '',
         [authenticator]
