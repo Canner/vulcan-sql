@@ -1,1 +1,3 @@
-export * from './lib/extension-driver-pg';
+export * from './lib/pgDataSource';
+import { PGDataSource } from './lib/pgDataSource';
+export default [PGDataSource];
