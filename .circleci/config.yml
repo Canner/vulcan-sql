@@ -134,6 +134,8 @@ jobs:
             - codecov-0.1.0_4653
       - run: rm -rf ./coverage
         # Clear coverage folder
+      - setup_remote_docker
+        # We need docker to test our drivers
       - run: yarn nx affected --target=test --ci --coverage --maxWorkers=2 --coverageReporters=lcov ${AFFECTED_ARGS}
         # --maxWorkers=2 is required because we'll run virtual machine with 32 cores CPU (with actually 4 CPI), jest spawns lots of workers if we don't fix the worker size.
         # https://support.circleci.com/hc/en-us/articles/360005442714-Your-test-tools-are-smart-and-that-s-a-problem-Learn-about-when-optimization-goes-wrong-

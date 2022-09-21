@@ -9,6 +9,7 @@
   "dependencies": {
     "@koa/cors": "^3.3.0",
     "chokidar": "^3.5.3",
+    "bluebird": "^3.7.2",
     "bcryptjs": "^2.4.3",
     "bytes": "^3.1.2",
     "class-validator": "^0.13.2",
@@ -50,6 +51,7 @@
     "@nrwl/workspace": "14.0.3",
     "@types/bcryptjs": "^2.4.2",
     "@types/bytes": "^3.1.1",
+    "@types/dockerode": "^3.3.9",
     "@types/from2": "^2.3.1",
     "@types/glob": "^7.2.0",
     "@types/inquirer": "^8.0.0",
@@ -74,6 +76,7 @@
     "@typescript-eslint/parser": "~5.18.0",
     "commitizen": "^4.2.5",
     "cz-conventional-changelog": "^3.3.0",
+    "dockerode": "^3.3.4",
     "eslint": "~8.12.0",
     "eslint-config-prettier": "8.1.0",
     "from2": "^2.3.0",

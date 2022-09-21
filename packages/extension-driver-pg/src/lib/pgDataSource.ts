@@ -6,7 +6,6 @@ import {
   VulcanExtensionId,
 } from '@vulcan-sql/core';
 import { Pool, PoolConfig, QueryResult } from 'pg';
-import {} from 'pg-cursor';
 import * as Cursor from 'pg-cursor';
 import { Readable } from 'stream';
 
@@ -26,6 +25,12 @@ export class PGDataSource extends DataSource<any, PGOptions> {
         `Initializing profile: ${profile.name} using pg driver`
       );
       const pool = new Pool(profile.connection);
+      // https://node-postgres.com/api/pool#poolconnect
+      // When a client is sitting idly in the pool it can still emit errors because it is connected to a live backend.
+      // If the backend goes down or a network partition is encountered all the idle, connected clients in your application will emit an error through the pool's error event emitter.
+      pool.on('error', () => {
+        // Ignore the pool client error
+      });
       this.poolMapping.set(profile.name, {
         pool: new Pool(profile.connection),
         options: profile.connection,
@@ -52,15 +57,32 @@ export class PGDataSource extends DataSource<any, PGOptions> {
       const cursor = client.query(
         new Cursor(sql, Array.from(bindParams.values()))
       );
-      return this.getResultFromCursor(cursor, options);
-    } finally {
-      this.logger.debug(`Release connection from ${profileName}`);
+
+      cursor.once('done', () => {
+        this.logger.debug(
+          `Data fetched, release connection from ${profileName}`
+        );
+        client.release();
+      });
+      // All promises MUST fulfilled in this function or we are not able to release the connection when error occurred
+      return await this.getResultFromCursor(cursor, options);
+    } catch (e: any) {
+      this.logger.debug(
+        `Errors occurred, release connection from ${profileName}`
+      );
       client.release();
+      throw e;
     }
   }
 
   public async prepare({ parameterIndex }: RequestParameter) {
     return `$${parameterIndex}`;
+  }
+
+  public async destroy() {
+    for (const { pool } of this.poolMapping.values()) {
+      await pool.end();
+    }
   }
 
   private async getResultFromCursor(
@@ -78,6 +100,8 @@ export class PGDataSource extends DataSource<any, PGOptions> {
           .then(({ rows }) => {
             if (rows.length === 0) {
               this.push(null);
+              // Send done event to notify upstream to release the connection.
+              cursor.emit('done');
             }
             for (const row of rows) {
               this.push(row);
@@ -85,6 +109,8 @@ export class PGDataSource extends DataSource<any, PGOptions> {
           })
           .catch((error) => {
             this.emit('error', error);
+            // Send done event to notify upstream to release the connection.
+            cursor.emit('done');
           });
       },
     });
