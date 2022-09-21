@@ -9,6 +9,7 @@ import {
 } from '@vulcan-sql/serve/models';
 import { VulcanExtensionId, VulcanInternalExtension } from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
+import 'koa-bodyparser';
 
 interface AuthUserOptions {
   /* user name */

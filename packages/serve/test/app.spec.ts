@@ -2,6 +2,7 @@ import * as sinon from 'ts-sinon';
 import * as supertest from 'supertest';
 import * as path from 'path';
 import faker from '@faker-js/faker';
+import { Request } from 'koa';
 import * as KoaRouter from 'koa-router';
 import * as http from 'http';
 import {
@@ -29,7 +30,6 @@ import { KoaContext } from '@vulcan-sql/serve/models';
 import { Container } from 'inversify';
 import { extensionModule } from '../src/containers/modules';
 import { TYPES } from '@vulcan-sql/serve';
-import { BodyRequest } from './auth/types';
 
 describe('Test vulcan server for practicing middleware', () => {
   let container: Container;
@@ -239,7 +239,7 @@ describe('Test vulcan server for calling restful APIs', () => {
         uuid: faker.datatype.uuid(),
       },
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         header: {
           domain: faker.internet.domainName(),
         },
@@ -248,7 +248,7 @@ describe('Test vulcan server for calling restful APIs', () => {
     {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         header: {
           domain: faker.internet.domainName(),
         },
@@ -260,7 +260,7 @@ describe('Test vulcan server for calling restful APIs', () => {
     {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         query: {
           keywords: faker.random.words(),
         },

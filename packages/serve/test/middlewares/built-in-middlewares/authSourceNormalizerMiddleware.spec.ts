@@ -1,9 +1,9 @@
 import * as sinon from 'ts-sinon';
+import { isBase64 } from 'class-validator';
+import { Request } from 'koa';
+import { IncomingHttpHeaders } from 'http';
 import { AuthSourceNormalizerMiddleware } from '@vulcan-sql/serve/middleware';
 import { AuthSourceTypes, KoaContext } from '@vulcan-sql/serve/models';
-import { isBase64 } from 'class-validator';
-import { BodyRequest } from '../../auth/types';
-import { IncomingHttpHeaders } from 'http';
 
 describe('Test auth source normalizer middleware', () => {
   afterEach(() => {
@@ -56,7 +56,7 @@ describe('Test auth source normalizer middleware', () => {
       ...sinon.stubInterface<KoaContext>(),
       path: '/auth/token',
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         query: {},
         body: {},
       },
@@ -84,7 +84,7 @@ describe('Test auth source normalizer middleware', () => {
       ...sinon.stubInterface<KoaContext>(),
       path: '/auth/user-profile',
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         query: {
           auth: authInput,
         },
@@ -116,7 +116,7 @@ describe('Test auth source normalizer middleware', () => {
       ...sinon.stubInterface<KoaContext>(),
       path: '/auth/user-profile',
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         query: {
           ['x-auth']: authInput,
         },
@@ -155,7 +155,7 @@ describe('Test auth source normalizer middleware', () => {
       ...sinon.stubInterface<KoaContext>(),
       path: '/auth/user-profile',
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         query: {},
         body: {
           auth: authInput,

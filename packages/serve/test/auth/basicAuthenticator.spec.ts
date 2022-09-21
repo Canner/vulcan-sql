@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as md5 from 'md5';
 import * as sinon from 'ts-sinon';
 import { IncomingHttpHeaders } from 'http';
-import { BaseResponse } from 'koa';
+import { Request, BaseResponse } from 'koa';
 import {
   BasicAuthenticator,
   AuthUserListOptions,
@@ -10,7 +10,6 @@ import {
 } from '@vulcan-sql/serve/auth';
 import { AuthResult, AuthStatus, KoaContext } from '@vulcan-sql/serve/models';
 import faker from '@faker-js/faker';
-import { BodyRequest } from './types';
 
 const authCredential = async (
   ctx: KoaContext,
@@ -68,7 +67,7 @@ describe('Test http basic authenticator', () => {
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
         request: {
-          ...sinon.stubInterface<BodyRequest>(),
+          ...sinon.stubInterface<Request>(),
         },
       } as KoaContext;
 
@@ -84,7 +83,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
         },
@@ -103,7 +102,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: '',
@@ -123,7 +122,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: `Basic ${invalidToken}`,
@@ -149,7 +148,7 @@ describe('Test http basic authenticator', () => {
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
         request: {
-          ...sinon.stubInterface<BodyRequest>(),
+          ...sinon.stubInterface<Request>(),
           headers: {
             ...sinon.stubInterface<IncomingHttpHeaders>(),
             authorization: `${authScheme} ${userTokenInList}`,
@@ -181,7 +180,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: `Basic ${userTokenInList}`,
@@ -207,7 +206,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: `Basic ${userTokenInList}`,
@@ -235,7 +234,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: `Basic ${invalidToken}`,
@@ -266,7 +265,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: `Basic ${userTokenInFile}`,
@@ -303,7 +302,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         body: {
           username: 'user1',
           password: 'test1',
@@ -326,7 +325,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         body: {
           username: 'user3',
           password: 'test3',
@@ -375,7 +374,7 @@ describe('Test http basic authenticator', () => {
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
         request: {
-          ...sinon.stubInterface<BodyRequest>(),
+          ...sinon.stubInterface<Request>(),
           body: {
             [field]: faker.word.noun(),
           },
@@ -395,7 +394,7 @@ describe('Test http basic authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         body: {},
       },
     };

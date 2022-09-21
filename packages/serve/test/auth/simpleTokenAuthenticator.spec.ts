@@ -1,12 +1,12 @@
 import * as md5 from 'md5';
 import * as sinon from 'ts-sinon';
 import { IncomingHttpHeaders } from 'http';
+import { Request } from 'koa';
 import {
   SimpleTokenAuthenticator,
   SimpleTokenOptions,
 } from '@vulcan-sql/serve/auth';
 import { AuthResult, AuthStatus, KoaContext } from '@vulcan-sql/serve/models';
-import { BodyRequest } from './types';
 
 const authCredential = async (
   ctx: KoaContext,
@@ -62,7 +62,7 @@ describe('Test simple-token authenticator', () => {
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
         request: {
-          ...sinon.stubInterface<BodyRequest>(),
+          ...sinon.stubInterface<Request>(),
         },
       } as KoaContext;
 
@@ -78,7 +78,7 @@ describe('Test simple-token authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
         },
@@ -97,7 +97,7 @@ describe('Test simple-token authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: '',
@@ -117,7 +117,7 @@ describe('Test simple-token authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         headers: {
           ...sinon.stubInterface<IncomingHttpHeaders>(),
           authorization: `SIMPLE-TOKEN ${invalidToken}`,
@@ -146,7 +146,7 @@ describe('Test simple-token authenticator', () => {
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
         request: {
-          ...sinon.stubInterface<BodyRequest>(),
+          ...sinon.stubInterface<Request>(),
           headers: {
             ...sinon.stubInterface<IncomingHttpHeaders>(),
             authorization: `${authScheme} ${userData.token}`,
@@ -179,7 +179,7 @@ describe('Test simple-token authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         body: {
           token: token,
         },
@@ -201,7 +201,7 @@ describe('Test simple-token authenticator', () => {
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
-        ...sinon.stubInterface<BodyRequest>(),
+        ...sinon.stubInterface<Request>(),
         body: {},
       },
     };
