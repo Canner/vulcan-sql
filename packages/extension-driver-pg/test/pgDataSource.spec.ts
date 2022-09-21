@@ -19,7 +19,7 @@ afterEach(async () => {
 
 afterAll(async () => {
   await pg.destroy();
-}, 10000);
+}, 30000);
 
 it('Data source should be activate without any error when all profiles are valid', async () => {
   // Arrange
@@ -100,7 +100,7 @@ it('Data source should return correct rows with 2 chunks', async () => {
   const rows = await streamToArray(getData());
   // Assert
   expect(rows.length).toBe(193);
-}, 10000);
+}, 30000);
 
 it('Data source should return correct rows with 1 chunk', async () => {
   // Arrange
@@ -129,7 +129,7 @@ it('Data source should return correct rows with 1 chunk', async () => {
   const rows = await streamToArray(getData());
   // Assert
   expect(rows.length).toBe(12);
-}, 10000);
+}, 30000);
 
 it('Data source should return empty data with no row', async () => {
   // Arrange
@@ -158,7 +158,7 @@ it('Data source should return empty data with no row', async () => {
   const rows = await streamToArray(getData());
   // Assert
   expect(rows.length).toBe(0);
-}, 10000);
+}, 30000);
 
 it('Data source should release the connection when finished no matter success or not', async () => {
   // Arrange
@@ -224,7 +224,7 @@ it('Data source should release the connection when finished no matter success or
   expect(result[0].length).toBe(1);
   expect(result[1].length).toBe(0);
   expect(result[2].length).toBe(1);
-}, 10000);
+}, 30000);
 
 it('Data source should work with prepare statements', async () => {
   // Arrange
@@ -268,4 +268,37 @@ it('Data source should work with prepare statements', async () => {
   // Assert
   expect(rows[0].v1).toBe('123');
   expect(rows[0].v2).toBe('456');
-}, 10000);
+}, 30000);
+
+it('Data source should return correct column types', async () => {
+  // Arrange
+  dataSource = new PGDataSource({}, '', [
+    {
+      name: 'profile1',
+      type: 'pg',
+      connection: {
+        host: pg.host,
+        user: pg.user,
+        password: pg.password,
+        database: pg.database,
+        port: pg.port,
+      } as PGOptions,
+      allow: '*',
+    },
+  ]);
+  await dataSource.activate();
+  // Act
+  const { getColumns, getData } = await dataSource.execute({
+    statement: 'select * from users limit 0',
+    bindParams: new Map(),
+    profileName: 'profile1',
+    operations: {} as any,
+  });
+  const column = getColumns();
+  // We need to consume the data stream or the driver waits for us
+  await streamToArray(getData());
+  // Assert
+  expect(column[0]).toEqual({ name: 'id', type: 'number' });
+  expect(column[1]).toEqual({ name: 'name', type: 'string' });
+  expect(column[2]).toEqual({ name: 'enabled', type: 'boolean' });
+}, 30000);

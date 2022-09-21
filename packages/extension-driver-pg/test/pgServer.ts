@@ -21,7 +21,9 @@ export class PGServer {
   private container?: Docker.Container;
 
   public async prepare() {
-    await docker.pull(this.image);
+    const pullStream = await docker.pull(this.image);
+    // https://github.com/apocas/dockerode/issues/647
+    await new Promise((res) => docker.modem.followProgress(pullStream, res));
     this.container = await docker.createContainer({
       name: `vulcan-pg-test-${faker.random.word()}`,
       Image: this.image,

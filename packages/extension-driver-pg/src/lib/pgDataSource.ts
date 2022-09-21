@@ -8,6 +8,7 @@ import {
 import { Pool, PoolConfig, QueryResult } from 'pg';
 import * as Cursor from 'pg-cursor';
 import { Readable } from 'stream';
+import { mapFromPGTypeId } from './typeMapper';
 
 export interface PGOptions extends PoolConfig {
   chunkSize?: number;
@@ -57,7 +58,6 @@ export class PGDataSource extends DataSource<any, PGOptions> {
       const cursor = client.query(
         new Cursor(sql, Array.from(bindParams.values()))
       );
-
       cursor.once('done', () => {
         this.logger.debug(
           `Data fetched, release connection from ${profileName}`
@@ -124,7 +124,7 @@ export class PGDataSource extends DataSource<any, PGOptions> {
       getColumns: () =>
         firstChunk.result.fields.map((field) => ({
           name: field.name,
-          type: 'string',
+          type: mapFromPGTypeId(field.dataTypeID),
         })),
       getData: () => stream,
     };
