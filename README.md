@@ -12,7 +12,7 @@
   <a aria-label="License" href="https://github.com/Canner/vulcan-sql/blob/develop/LICENSE">
     <img alt="" src="https://img.shields.io/github/license/canner/vulcan-sql?color=orange&style=for-the-badge">
   </a>
-  <a aria-label="Join the community on GitHub" href="https://join.slack.com/t/vulcan-bhi6765/shared_invite/zt-1dzixpy38-pKrcewZ6eM3wSqAs6~is8Q">
+  <a aria-label="Join the community on GitHub" href="https://discord.gg/ztDz8DCmG4">
     <img alt="" src="https://img.shields.io/badge/-JOIN%20THE%20COMMUNITY-orange?style=for-the-badge&logo=Slack&labelColor=black&logoWidth=20">
   </a>
 </p>
@@ -232,6 +232,5 @@ On API catalog page, you can preview data here and connect from your own framewo
 > 🔌 **Connect**: data consumers will be able to follow the guide and connect from their applications.
 
 ## Community
-* Welcome to our [Slack](https://join.slack.com/t/vulcan-bhi6765/shared_invite/zt-1dzixpy38-pKrcewZ6eM3wSqAs6~is8Q) to give us feedbacks!
+* Welcome to our [Discord](https://discord.gg/ztDz8DCmG4) to give us feedbacks!
 * If any issues, please visit [Github Issues](https://github.com/Canner/vulcan-sql/issues)
-
