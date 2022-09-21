@@ -58,10 +58,12 @@ export class PGDataSource extends DataSource<any, PGOptions> {
       const cursor = client.query(
         new Cursor(sql, Array.from(bindParams.values()))
       );
-      cursor.once('done', () => {
+      cursor.once('done', async () => {
         this.logger.debug(
           `Data fetched, release connection from ${profileName}`
         );
+        // It is important to close the cursor before releasing connection, or the connection might not able to handle next request.
+        await cursor.close();
         client.release();
       });
       // All promises MUST fulfilled in this function or we are not able to release the connection when error occurred
@@ -92,34 +94,35 @@ export class PGDataSource extends DataSource<any, PGOptions> {
     const { chunkSize = 100 } = options;
     const cursorRead = this.cursorRead.bind(this);
     const firstChunk = await cursorRead(cursor, chunkSize);
-
+    // save first chunk in buffer for incoming requests
+    let bufferedRows = [...firstChunk.rows];
+    let bufferReadIndex = 0;
+    const fetchNext = async () => {
+      if (bufferReadIndex >= bufferedRows.length) {
+        bufferedRows = (await cursorRead(cursor, chunkSize)).rows;
+        bufferReadIndex = 0;
+      }
+      return bufferedRows[bufferReadIndex++] || null;
+    };
     const stream = new Readable({
       objectMode: true,
       read() {
-        cursorRead(cursor, chunkSize)
-          .then(({ rows }) => {
-            if (rows.length === 0) {
-              this.push(null);
-              // Send done event to notify upstream to release the connection.
-              cursor.emit('done');
-            }
-            for (const row of rows) {
-              this.push(row);
-            }
+        fetchNext()
+          .then((row) => {
+            this.push(row);
           })
           .catch((error) => {
-            this.emit('error', error);
-            // Send done event to notify upstream to release the connection.
-            cursor.emit('done');
+            this.destroy(error);
           });
       },
+      destroy(error: Error | null, cb: (error: Error | null) => void) {
+        // Send done event to notify upstream to release the connection.
+        cursor.emit('done');
+        cb(error);
+      },
+      // automatically destroy() the stream when it emits 'finish' or errors. Node > 10.16
+      autoDestroy: true,
     });
-
-    // Push the first chunk data.
-    for (const row of firstChunk.rows) {
-      stream.push(row);
-    }
-
     return {
       getColumns: () =>
         firstChunk.result.fields.map((field) => ({

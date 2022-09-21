@@ -25,6 +25,37 @@ describe('Test to respond to json', () => {
     expect(ctx.response.body).toEqual(expected);
   });
 
+  it('Test to destroy the source when downstream is destroyed', (done) => {
+    // Arrange
+    const stubResponse = sinon.stubInterface<Response>();
+    const source = new Stream.Readable({
+      read() {
+        this.push('some-data');
+        // we don't push pull to simulate an endless stream
+      },
+      destroy(err, cb) {
+        done();
+        cb(err);
+      },
+    });
+    stubResponse.body = {
+      data: source,
+      columns: {},
+    };
+    const ctx = {
+      ...sinon.stubInterface<KoaContext>(),
+      url: faker.internet.url(),
+      response: stubResponse,
+    };
+    // Act
+    const formatter = new JsonFormatter({}, '');
+    formatter.formatToResponse(ctx);
+    (ctx.response.body as Stream.Readable).destroy();
+    // Assert
+    expect(true).toEqual(true);
+    // the done function should be call after destroyed.
+  }, 1000);
+
   it.each([
     {
       input: {

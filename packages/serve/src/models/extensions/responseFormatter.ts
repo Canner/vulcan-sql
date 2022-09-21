@@ -37,6 +37,10 @@ export abstract class BaseResponseFormatter
     // if response has data and columns.
     const { data, columns } = ctx.response.body as BodyResponse;
     const formatted = this.format(data, columns);
+    // koa destroy the stream when connection close, we need to destroy our upstream too to notice them to release the resource.
+    formatted.on('close', () => {
+      data.destroy();
+    });
     // set formatted stream to response in context
     this.toResponse(formatted, ctx);
     return;
