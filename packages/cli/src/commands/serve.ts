@@ -23,8 +23,8 @@ export const serveVulcan = async (options: ServeCommandOptions) => {
   // Start server
   logger.info(`Starting server...`);
   const server = new VulcanServer(config);
-  await server.start(options.port);
-  logger.info(`Server is listening at port ${options.port}.`);
+  await server.start();
+  logger.info(`Server is listening at port ${config.port || 3000}.`);
   addShutdownJob(async () => {
     logger.info(`Stopping server...`);
     await server.close();

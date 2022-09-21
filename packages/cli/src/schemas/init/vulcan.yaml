@@ -21,3 +21,5 @@ document-generator:
   folderPath: .
 types:
   - RESTFUL
+enforce-https:
+  enabled: false

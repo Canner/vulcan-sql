@@ -1,6 +1,7 @@
 {
   "name": "@vulcan-sql/test-utility",
-  "version": "0.1.0-alpha.1",
+  "description": "Vulcan package for extension testing",
+  "version": "0.2.0",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"
@@ -22,6 +23,6 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@vulcan-sql/core": "0.1.0-alpha.1"
+    "@vulcan-sql/core": "~0.2.0-0"
   }
 }

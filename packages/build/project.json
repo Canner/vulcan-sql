@@ -49,7 +49,7 @@
     "publish": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "node ../../../tools/scripts/publish.mjs {args.tag}",
+        "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
         "cwd": "dist/packages/build"
       },
       "dependsOn": [

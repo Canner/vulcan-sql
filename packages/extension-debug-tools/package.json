@@ -1,9 +1,28 @@
 {
   "name": "@vulcan-sql/extension-debug-tools",
-  "version": "0.1.0-alpha.1",
+  "description": "A collection of Vulcan extension debug tools",
+  "version": "0.2.0",
   "type": "commonjs",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "vulcan",
+    "vulcan-sql",
+    "data",
+    "sql",
+    "database",
+    "data-warehouse",
+    "data-lake",
+    "api-builder"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Canner/vulcan.git"
+  },
+  "license": "MIT",
   "peerDependencies": {
-    "@vulcan-sql/core": "*"
+    "@vulcan-sql/core": "~0.2.0-0"
   },
   "devDependencies": {
     "@vulcan-sql/test-utility": "0.1.0-alpha.1"
