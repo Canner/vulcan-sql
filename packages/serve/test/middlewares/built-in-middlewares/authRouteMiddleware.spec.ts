@@ -64,7 +64,7 @@ describe('Test auth router middleware', () => {
     async (options) => {
       // Arrange
       const expected = new Error(
-        'please set at least one auth type and user credential when you enable the "auth" options.'
+        'please set at least one auth type and user credential when you enable the "auth" options, currently support types: "".'
       );
 
       // Act

@@ -33,13 +33,12 @@ export abstract class BaseAuthMiddleware extends BuiltInMiddleware<AuthOptions> 
     );
   }
   public async initialize() {
+    const names = Object.keys(this.authenticators);
     if (this.enabled && isEmpty(this.options)) {
       throw new Error(
-        'please set at least one auth type and user credential when you enable the "auth" options.'
+        `please set at least one auth type and user credential when you enable the "auth" options, currently support types: "${names}".`
       );
     }
-
-    const names = Object.keys(this.authenticators);
     // check setup auth type in options also valid in authenticators
     Object.keys(this.options).map((type) => {
       if (!names.includes(type))
