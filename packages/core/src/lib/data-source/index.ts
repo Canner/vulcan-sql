@@ -1,4 +1,4 @@
-import { PGDataSource } from './pg';
-export const builtInDataSource = [PGDataSource];
+import { MockDataSource } from './mock';
+export const builtInDataSource = [MockDataSource];
 
-export * from './pg';
+export * from './mock';
