@@ -17,7 +17,6 @@ it('Builder.build should work', async () => {
     },
     document: {
       specs: [DocumentSpec.oas3],
-      folderPath: path.resolve(__dirname),
     },
     artifact: {
       provider: ArtifactBuilderProviderType.LocalFile,

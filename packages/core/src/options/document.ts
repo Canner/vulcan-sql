@@ -1,5 +1,5 @@
 import { injectable, inject, optional } from 'inversify';
-import { IsOptional, IsArray, validateSync, IsString } from 'class-validator';
+import { IsOptional, IsArray, validateSync } from 'class-validator';
 import { DocumentRouterType, DocumentSpec, IDocumentOptions } from '../models';
 import { TYPES } from '@vulcan-sql/core/types';
 
@@ -8,9 +8,6 @@ export class DocumentOptions implements IDocumentOptions {
   @IsArray()
   @IsOptional()
   public readonly specs: string[] = [DocumentSpec.oas3];
-
-  @IsString()
-  public readonly folderPath: string = '.';
 
   @IsArray()
   public readonly router: string[] = [DocumentRouterType.redoc];

@@ -18,7 +18,6 @@ schema-parser:
 document-generator:
   specs:
     - oas3
-  folderPath: .
 types:
   - RESTFUL
 enforce-https:

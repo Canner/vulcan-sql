@@ -9,6 +9,5 @@ export enum DocumentRouterType {
 export interface IDocumentOptions {
   /** Target specification of our APIs, e.g. OpenAPI, Tinyspec ...etc. */
   specs?: (string | DocumentSpec)[];
-  folderPath?: string;
   router?: (string | DocumentRouterType)[];
 }
