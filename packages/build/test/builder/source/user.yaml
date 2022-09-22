@@ -10,3 +10,4 @@ request:
 error:
   - code: Forbidden
     message: 'You are not allowed to access this resource'
+profile: test

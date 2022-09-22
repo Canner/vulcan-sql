@@ -1,34 +1,40 @@
-import { arrayToStream } from '@vulcan-sql/core';
+import { arrayToStream } from '@vulcan-sql/core/utils';
 import { createTestCompiler } from '../../testCompiler';
 
 const queryTest = async (
   template: string,
   expectedQueries: string[],
-  expectedBinding: any[][],
-  customContext?: Record<string, any>
+  expectedBindings: any[][],
+  customParameters?: Record<string, any>
 ) => {
   // Arrange
-  const { compiler, loader, builder, executor } = await createTestCompiler();
+  const {
+    compiler,
+    loader,
+    builder,
+    executeTemplate,
+    getCreatedBinding,
+    getCreatedProfiles,
+    getCreatedQueries,
+  } = await createTestCompiler();
   const { compiledData } = await compiler.compile(template);
-  builder.value
-    .onFirstCall()
-    .resolves({
-      getColumns: () => [],
-      getData: () => arrayToStream([{ id: 1, name: 'freda' }]),
-    });
+  builder.value.onFirstCall().resolves({
+    getColumns: () => [],
+    getData: () => arrayToStream([{ id: 1, name: 'freda' }]),
+  });
   // Action
   loader.setSource('test', compiledData);
-  await compiler.execute('test', {
-    context: customContext || { params: { id: 1, name: 'freda' } },
-  });
+  await executeTemplate('test', customParameters || { id: 1, name: 'freda' });
+  const profiles = await getCreatedProfiles();
+  const queries = await getCreatedQueries();
+  const binding = await getCreatedBinding();
   // Assert
-  expectedQueries.forEach((query, index) =>
-    expect(executor.createBuilder.getCall(index).args[0]).toBe(query)
+  expectedQueries.forEach((_, index) =>
+    expect(profiles[index]).toBe('mocked-profile')
   );
-  expectedBinding.forEach((binding, index) => {
-    expect(
-      Array.from(executor.createBuilder.getCall(index).args[1].values())
-    ).toEqual(binding);
+  expectedQueries.forEach((query, index) => expect(queries[index]).toBe(query));
+  expectedBindings.forEach((expectedBinding, index) => {
+    expect(Array.from(binding[index].values())).toEqual(expectedBinding);
   });
 };
 
@@ -42,16 +48,16 @@ it('Should parameterize input parameters', async () => {
 
 it('Should parameterize all lookup or function call nodes', async () => {
   await queryTest(
-    `{% set someVar = context.params.id %}
+    `{% set someVar = context.params.simple.id %}
 {{ someVar }}
 {{ someVar + 1 }}
-{{ context.someFunction() }}
-{{ context.someFunction() + '!' }}
-{{ context.complexObj.func()().func2().a.b }}`,
+{{ context.params.someFunction() }}
+{{ context.params.someFunction() + '!' }}
+{{ context.params.complexObj.func()().func2().a.b }}`,
     [`$1\n$11\n$2\n$2!\n$3`],
     [[1, 'functionResult', 'complexResult']],
     {
-      params: { id: 1, name: 'freda' },
+      simple: { id: 1, name: 'freda' },
       someFunction: () => 'functionResult',
       complexObj: {
         func: () => () => ({
@@ -128,7 +134,7 @@ it('Raw value should be wrapped again when accessing its children', async () => 
     `{{ (context.params.data | raw).name }}`,
     [`$1`],
     [['freda']],
-    { params: { data: { id: 1, name: 'freda' } } }
+    { data: { id: 1, name: 'freda' } }
   );
 });
 

@@ -1,12 +1,19 @@
-import { arrayToStream, streamToArray } from '@vulcan-sql/core';
+import { arrayToStream, streamToArray } from '@vulcan-sql/core/utils';
 import { createTestCompiler } from '../../testCompiler';
 
 it('Extension should execute correct query and set/export the variable', async () => {
   // Arrange
-  const { compiler, loader, builder, executor } = await createTestCompiler();
+  const {
+    compiler,
+    loader,
+    builder,
+    executeTemplate,
+    getCreatedQueries,
+    getCreatedBinding,
+  } = await createTestCompiler();
   const { compiledData } = await compiler.compile(`
 {% req userCount main %}
-select count(*) as count from user where user.id = {{ params.userId }};
+select count(*) as count from user where user.id = {{ context.params.userId }};
 {% endreq %}
   `);
   builder.value.onFirstCall().resolves({
@@ -15,15 +22,17 @@ select count(*) as count from user where user.id = {{ params.userId }};
   });
   // Action
   loader.setSource('test', compiledData);
-  const result = await compiler.execute('test', {
-    params: { userId: 'user-id' },
+  const result = await executeTemplate('test', {
+    userId: 'user-id',
   });
   const resultData = await streamToArray(result.getData());
+  const queries = await getCreatedQueries();
+  const binding = await getCreatedBinding();
   // Assert
-  expect(executor.createBuilder.firstCall.args[0]).toBe(
+  expect(queries[0]).toBe(
     `select count(*) as count from user where user.id = $1;`
   );
-  expect(executor.createBuilder.firstCall.args[1].get('$1')).toBe(`user-id`);
+  expect(binding[0].get('$1')).toBe(`user-id`);
   expect(resultData).toEqual([{ count: 1 }]);
 });
 
@@ -101,7 +110,7 @@ it('The main denotation should be parsed into the second args node', async () =>
 it('Extension should throw an error if there are tow main builders', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
-  // Act, Arrange
+  // Act, Assert
   await expect(
     compiler.compile(
       `
@@ -115,7 +124,7 @@ it('Extension should throw an error if there are tow main builders', async () =>
 it('Extension should throw an error if there are multiple builders using same name', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
-  // Act, Arrange
+  // Act, Assert
   await expect(
     compiler.compile(
       `
@@ -136,7 +145,7 @@ it('Extension should reset after compiled each template', async () => {
   {% req user main %} select * from users; {% endreq %}
   `
   );
-  // Act, Arrange
+  // Act, Assert
   await expect(
     compiler.compile(
       `
@@ -144,4 +153,17 @@ it('Extension should reset after compiled each template', async () => {
     `
     )
   ).resolves.not.toThrow();
+});
+
+it('Extension should throw error when no profile defined', async () => {
+  // Arrange
+  const { compiler, loader, executeTemplate } = await createTestCompiler();
+  const { compiledData } = await compiler.compile(
+    `{% req userCount main %}{% endreq %}`
+  );
+  loader.setSource('test', compiledData);
+  // Act, Assert
+  await expect(executeTemplate('test', {}, '')).rejects.toThrow(
+    `No profile name found`
+  );
 });

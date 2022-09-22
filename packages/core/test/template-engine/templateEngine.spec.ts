@@ -76,17 +76,20 @@ it('Template engine compile function should wrap correct result', async () => {
 it('Template engine render function should forward correct data to compiler', async () => {
   // Assert
   const templateEngine = container.get<TemplateEngine>(TYPES.TemplateEngine);
-  const context = {
+  const parameters = {
     name: 'name',
   };
+  const profileName = 'mocked-profile';
   const expected = {
-    context: {
-      ...context,
-    },
+    parameters,
+    profileName,
   };
 
   // Act
-  const result = await templateEngine.execute('template-name', { context });
+  const result = await templateEngine.execute('template-name', {
+    parameters,
+    profileName,
+  });
 
   // Assert
   expect(stubCompiler.execute.firstCall.args[1]).toEqual(expected);

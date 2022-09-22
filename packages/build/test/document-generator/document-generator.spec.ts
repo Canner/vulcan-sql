@@ -7,7 +7,10 @@ import faker from '@faker-js/faker';
 
 it('Document generator should write YAML files while generating documents', async () => {
   // Arrange
-  const mockSpec = { someSpec: faker.datatype.number() };
+  const mockSpec = {
+    someSpec: faker.datatype.number(),
+    profile: faker.name.firstName(),
+  };
   const documentGenerator = new DocumentGenerator(
     (id: string) => {
       const mockSpecGenerator = sinon.stubInterface<SpecGenerator>();
@@ -28,8 +31,8 @@ it('Document generator should write YAML files while generating documents', asyn
   // Arrange
   expect(
     await fs.readFile(path.resolve(__dirname, 'spec-spec1.yaml'), 'utf-8')
-  ).toEqual(`someSpec: ${mockSpec.someSpec}\n`);
+  ).toEqual(`someSpec: ${mockSpec.someSpec}\nprofile: ${mockSpec.profile}\n`);
   expect(
     await fs.readFile(path.resolve(__dirname, 'spec-spec2.yaml'), 'utf-8')
-  ).toEqual(`someSpec: ${mockSpec.someSpec}\n`);
+  ).toEqual(`someSpec: ${mockSpec.someSpec}\nprofile: ${mockSpec.profile}\n`);
 });

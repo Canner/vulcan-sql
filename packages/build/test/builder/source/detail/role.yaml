@@ -7,3 +7,4 @@ request:
     validators:
       - uuid
       - required
+profile: test

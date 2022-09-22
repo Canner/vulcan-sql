@@ -28,7 +28,7 @@ it('Builder.build should work', async () => {
       provider: TemplateProviderType.LocalFile,
       folderPath: path.resolve(__dirname, 'source'),
     },
-    extensions: {},
+    profiles: [path.resolve(__dirname, 'profile.yaml')],
   };
   const builder = new VulcanBuilder(options);
 

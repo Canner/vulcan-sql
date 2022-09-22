@@ -23,11 +23,13 @@ export class ReqTagRunner extends TagRunner {
     this.executor = executor;
   }
 
-  public async run({ context, args, contentArgs }: TagRunnerOptions) {
+  public async run({ context, args, contentArgs, metadata }: TagRunnerOptions) {
     const name = String(args[0]);
+    const profileName = metadata.getProfileName();
+    if (!profileName) throw new Error(`No profile name found`);
 
-    const parameterizer = new Parameterizer(
-      this.executor.prepare.bind(this.executor)
+    const parameterizer = new Parameterizer((param) =>
+      this.executor.prepare({ ...param, profileName })
     );
     // parameterizer from parent, we should set it back after rendered our context.
     const parentParameterizer = context.lookup(PARAMETERIZER_VAR_NAME);
@@ -45,7 +47,12 @@ export class ReqTagRunner extends TagRunner {
       .join('\n');
     // Get bind real parameters and pass to data query builder for data source used.
     const binds = parameterizer.getBinding();
-    const builder = await this.executor.createBuilder(query, binds);
+
+    const builder = await this.executor.createBuilder(
+      profileName,
+      query,
+      binds
+    );
     context.setVariable(name, builder);
 
     if (args[1] === 'true') {

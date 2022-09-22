@@ -59,13 +59,26 @@ export const createTestCompiler = async ({
     executor: stubExecutor,
     compiler: container.get<NunjucksCompiler>(TYPES.Compiler),
     loader: container.get<InMemoryCodeLoader>(TYPES.CompilerLoader),
-    getCreatedQueries: async () => {
+    executeTemplate: async (
+      name: string,
+      parameters: any = {},
+      profileName = 'mocked-profile'
+    ) => {
+      return container
+        .get<NunjucksCompiler>(TYPES.Compiler)
+        .execute(name, { parameters, profileName });
+    },
+    getCreatedProfiles: async () => {
       const calls = stubExecutor.createBuilder.getCalls();
       return calls.map((call) => call.args[0]);
     },
-    getCreatedBinding: async () => {
+    getCreatedQueries: async () => {
       const calls = stubExecutor.createBuilder.getCalls();
       return calls.map((call) => call.args[1]);
+    },
+    getCreatedBinding: async () => {
+      const calls = stubExecutor.createBuilder.getCalls();
+      return calls.map((call) => call.args[2]);
     },
   };
 };

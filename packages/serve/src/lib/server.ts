@@ -6,6 +6,8 @@ import {
   VulcanArtifactBuilder,
   TYPES as CORE_TYPES,
   CodeLoader,
+  DataSource,
+  getLogger,
 } from '@vulcan-sql/core';
 import { Container, TYPES } from '../containers';
 import { ServeConfig, sslFileOptions } from '../models';
@@ -15,6 +17,9 @@ import {
   getEnforceHttpsOptions,
   ResolverType,
 } from './middleware';
+
+const logger = getLogger({ scopeName: 'SERVE' });
+
 export class VulcanServer {
   private config: ServeConfig;
   private container: Container;
@@ -53,6 +58,15 @@ export class VulcanServer {
     );
     for (const templateName in templates) {
       codeLoader.setSource(templateName, templates[templateName]);
+    }
+
+    // Activate data sources
+    const dataSources =
+      this.container.getAll<DataSource>(CORE_TYPES.Extension_DataSource) || [];
+    for (const dataSource of dataSources) {
+      logger.debug(`Initializing data source: ${dataSource.getExtensionId()}`);
+      await dataSource.activate();
+      logger.debug(`Data source ${dataSource.getExtensionId()} initialized`);
     }
 
     // Create application

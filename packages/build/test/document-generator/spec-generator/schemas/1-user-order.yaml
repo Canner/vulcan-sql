@@ -9,3 +9,4 @@ request:
     fieldIn: path
     validators:
       - required
+profile: test

@@ -6,3 +6,4 @@ request:
     validators:
       - uuid
       - required
+profile: pg-mem

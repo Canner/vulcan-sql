@@ -31,9 +31,7 @@ export default {
     folderPath: __dirname,
   },
   types: [APIProviderType.RESTFUL],
-  executor: {
-    type: 'pg-mem',
-  },
+  profiles: [path.resolve(__dirname, 'profile.yaml')],
   extensions: {
     mockEx: path.resolve(__dirname, '..', 'mockExtensions'),
   },

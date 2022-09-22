@@ -5,5 +5,8 @@ request:
     description: constituent id
     validators:
       - required
-exampleParameter:
-  id: '1'
+sample:
+  parameters:
+    id: '1'
+  profile: duck
+profile: duck

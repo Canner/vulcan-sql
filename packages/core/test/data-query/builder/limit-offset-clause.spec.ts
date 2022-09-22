@@ -8,6 +8,15 @@ const createStub = () => {
     bindParams: sinon.stubInterface<BindParameters>(),
   };
 };
+
+const createStubBuilder = ({ statement }: { statement: string }) =>
+  new DataQueryBuilder({
+    statement: statement,
+    dataSource: createStub().dataSource,
+    bindParams: createStub().bindParams,
+    profileName: '',
+  });
+
 describe('Test data query builder > limit-offset by clause', () => {
   it.each([
     {
@@ -28,10 +37,8 @@ describe('Test data query builder > limit-offset by clause', () => {
       };
 
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       builder.limit(limit).offset(offset);
 
@@ -72,10 +79,8 @@ describe('Test data query builder > limit-offset by clause', () => {
       };
 
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       builder
         .limit(first.limit)
@@ -120,10 +125,8 @@ describe('Test data query builder > limit-offset by clause', () => {
       };
 
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       builder
         .limit(first.limit)

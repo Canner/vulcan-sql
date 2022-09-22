@@ -44,6 +44,14 @@ const createStub = () => {
   };
 };
 
+const createStubBuilder = ({ statement }: { statement: string }) =>
+  new DataQueryBuilder({
+    statement: statement,
+    dataSource: createStub().dataSource,
+    bindParams: createStub().bindParams,
+    profileName: '',
+  });
+
 describe('Test data query builder > select clause', () => {
   it.each([
     ['*', '*', '*'],
@@ -83,10 +91,8 @@ describe('Test data query builder > select clause', () => {
         columns
       );
       // Act
-      let builder = new DataQueryBuilder({
+      let builder = createStubBuilder({
         statement,
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       columns.map((column) => {
         builder = column ? builder.select(column) : builder.select();
@@ -151,10 +157,8 @@ describe('Test data query builder > select clause', () => {
       );
 
       // Act
-      let builder = new DataQueryBuilder({
+      let builder = createStubBuilder({
         statement,
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -224,10 +228,8 @@ describe('Test data query builder > select clause', () => {
       );
 
       // Act
-      let builder = new DataQueryBuilder({
+      let builder = createStubBuilder({
         statement,
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -301,10 +303,8 @@ describe('Test data query builder > select clause', () => {
       );
 
       // Act
-      let builder = new DataQueryBuilder({
+      let builder = createStubBuilder({
         statement,
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -375,10 +375,8 @@ describe('Test data query builder > select clause', () => {
       );
 
       // Act
-      let builder = new DataQueryBuilder({
+      let builder = createStubBuilder({
         statement,
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -448,10 +446,8 @@ describe('Test data query builder > select clause', () => {
       );
 
       // Act
-      let builder = new DataQueryBuilder({
+      let builder = createStubBuilder({
         statement,
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -521,10 +517,8 @@ describe('Test data query builder > select clause', () => {
       );
 
       // Act
-      let builder = new DataQueryBuilder({
+      let builder = createStubBuilder({
         statement,
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)
@@ -594,10 +588,8 @@ describe('Test data query builder > select clause', () => {
       );
 
       // Act
-      let builder = new DataQueryBuilder({
+      let builder = createStubBuilder({
         statement,
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
 
       builder = !isEmpty(selectParam)

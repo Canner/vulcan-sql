@@ -11,3 +11,4 @@ export * from './serializer';
 export * from './persistentStore';
 export * from './codeLoader';
 export * from './dataSource';
+export * from './profileReader';

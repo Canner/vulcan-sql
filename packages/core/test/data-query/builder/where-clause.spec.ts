@@ -18,6 +18,14 @@ const createStub = () => {
   };
 };
 
+const createStubBuilder = ({ statement }: { statement: string }) =>
+  new DataQueryBuilder({
+    statement: statement,
+    dataSource: createStub().dataSource,
+    bindParams: createStub().bindParams,
+    profileName: '',
+  });
+
 jest.mock('uuid');
 describe('Test data query builder > where clause', () => {
   it.each([
@@ -30,10 +38,8 @@ describe('Test data query builder > where clause', () => {
       and: {
         column: faker.database.column(),
         operator: '=',
-        value: new DataQueryBuilder({
+        value: createStubBuilder({
           statement: 'select * from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
       },
       andNot: {
@@ -46,10 +52,8 @@ describe('Test data query builder > where clause', () => {
       where: {
         column: faker.database.column(),
         operator: '=',
-        value: new DataQueryBuilder({
+        value: createStubBuilder({
           statement: 'select avg(*) from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
       },
       and: {
@@ -76,10 +80,8 @@ describe('Test data query builder > where clause', () => {
         { command: null, data: andNot },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (where) builder.where(where.column, where.operator, where.value);
       if (and) builder.andWhere(and.column, and.operator, and.value);
@@ -102,10 +104,8 @@ describe('Test data query builder > where clause', () => {
       or: {
         column: faker.database.column(),
         operator: '=',
-        value: new DataQueryBuilder({
+        value: createStubBuilder({
           statement: 'select * from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
       },
       orNot: {
@@ -118,10 +118,8 @@ describe('Test data query builder > where clause', () => {
       whereNot: {
         column: faker.database.column(),
         operator: '=',
-        value: new DataQueryBuilder({
+        value: createStubBuilder({
           statement: 'select avg(*) from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
       },
       or: {
@@ -149,10 +147,8 @@ describe('Test data query builder > where clause', () => {
         { command: null, data: orNot },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (whereNot)
         builder.whereNot(whereNot.column, whereNot.operator, whereNot.value);
@@ -195,10 +191,8 @@ describe('Test data query builder > where clause', () => {
     {
       whereIn: {
         column: faker.database.column(),
-        values: new DataQueryBuilder({
+        values: createStubBuilder({
           statement: 'select type from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
       },
       and: {
@@ -211,10 +205,8 @@ describe('Test data query builder > where clause', () => {
       },
       andNot: {
         column: faker.database.column(),
-        values: new DataQueryBuilder({
+        values: createStubBuilder({
           statement: 'select age from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
       },
     },
@@ -231,10 +223,8 @@ describe('Test data query builder > where clause', () => {
         { command: ComparisonPredicate.IN, data: andNot },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (whereIn) builder.whereIn(whereIn.column, whereIn.values);
       if (and) builder.andWhereIn(and.column, and.values);
@@ -276,10 +266,8 @@ describe('Test data query builder > where clause', () => {
     {
       notIn: {
         column: faker.database.column(),
-        values: new DataQueryBuilder({
+        values: createStubBuilder({
           statement: 'select type from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
       },
       or: {
@@ -292,10 +280,8 @@ describe('Test data query builder > where clause', () => {
       },
       orNot: {
         column: faker.database.column(),
-        values: new DataQueryBuilder({
+        values: createStubBuilder({
           statement: 'select age from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
       },
     },
@@ -313,10 +299,8 @@ describe('Test data query builder > where clause', () => {
         { command: ComparisonPredicate.IN, data: orNot },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (notIn) builder.whereNotIn(notIn.column, notIn.values);
       if (or) builder.orWhereIn(or.column, or.values);
@@ -376,10 +360,8 @@ describe('Test data query builder > where clause', () => {
         { command: ComparisonPredicate.BETWEEN, data: andNot },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (between)
         builder.whereBetween(between.column, between.min, between.max);
@@ -442,10 +424,8 @@ describe('Test data query builder > where clause', () => {
         { command: ComparisonPredicate.BETWEEN, data: orNot },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (notBetween)
         builder.whereNotBetween(
@@ -498,10 +478,8 @@ describe('Test data query builder > where clause', () => {
         { command: ComparisonPredicate.IS_NULL, data: andNot },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (isNull) builder.whereNull(isNull.column);
       if (and) builder.andWhereNull(and.column);
@@ -550,10 +528,8 @@ describe('Test data query builder > where clause', () => {
         { command: ComparisonPredicate.IS_NULL, data: orNot },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (notNull) builder.whereNotNull(notNull.column);
       if (or) builder.orWhereNull(or.column);
@@ -596,10 +572,8 @@ describe('Test data query builder > where clause', () => {
         { command: WherePredicate.LIKE, data: and },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (like) builder.whereLike(like.column, like.searchValue);
       if (and) builder.andWhereLike(and.column, and.searchValue);
@@ -642,10 +616,8 @@ describe('Test data query builder > where clause', () => {
         { command: WherePredicate.LIKE, data: or },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (like) builder.whereLike(like.column, like.searchValue);
       if (or) builder.orWhereLike(or.column, or.searchValue);
@@ -660,54 +632,42 @@ describe('Test data query builder > where clause', () => {
   it.each([
     {
       exists: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       and: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       andNot: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from orders',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
     },
     {
       exists: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
 
       and: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
 
       andNot: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from orders',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -725,10 +685,8 @@ describe('Test data query builder > where clause', () => {
         { command: ComparisonPredicate.EXISTS, data: andNot },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (exists) builder.whereExists(exists);
       if (and) builder.andWhereExists(and);
@@ -743,52 +701,40 @@ describe('Test data query builder > where clause', () => {
   it.each([
     {
       notExists: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       or: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       orNot: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from orders',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
     },
     {
       notExists: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from products',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
         as: 'products',
       } as AliasDataQueryBuilder,
       or: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from users',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
         as: 'users',
       } as AliasDataQueryBuilder,
       orNot: {
-        builder: new DataQueryBuilder({
+        builder: createStubBuilder({
           statement: 'select * from orders',
-          dataSource: createStub().dataSource,
-          bindParams: createStub().bindParams,
         }),
         as: 'orders',
       } as AliasDataQueryBuilder,
@@ -807,10 +753,8 @@ describe('Test data query builder > where clause', () => {
         { command: ComparisonPredicate.EXISTS, data: orNot },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (notExists) builder.whereNotExists(notExists);
       if (or) builder.orWhereExists(or);
@@ -844,10 +788,8 @@ describe('Test data query builder > where clause', () => {
           .whereNot(
             'tags',
             '>',
-            new DataQueryBuilder({
+            createStubBuilder({
               statement: 'select count(*) from tags',
-              dataSource: createStub().dataSource,
-              bindParams: createStub().bindParams,
             })
           )
           .orWhereNotBetween('price', 1, 1000);
@@ -867,22 +809,16 @@ describe('Test data query builder > where clause', () => {
     'Should record successfully when call whereWrapped(...).andWhereWrapped(...).andWhereNotWrapped(...)',
     async ({ wrapped, and, andNot }) => {
       // Arrange
-      const wrappedBuilder = new DataQueryBuilder({
+      const wrappedBuilder = createStubBuilder({
         statement: '',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       wrapped(wrappedBuilder);
-      const andBuilder = new DataQueryBuilder({
+      const andBuilder = createStubBuilder({
         statement: '',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       and(andBuilder);
-      const andNotBuilder = new DataQueryBuilder({
+      const andNotBuilder = createStubBuilder({
         statement: '',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       andNot(andNotBuilder);
 
@@ -901,10 +837,8 @@ describe('Test data query builder > where clause', () => {
         },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (wrapped) builder.whereWrapped(wrapped);
       if (and) builder.andWhereWrapped(and);
@@ -938,10 +872,8 @@ describe('Test data query builder > where clause', () => {
           .whereNot(
             'tags',
             '>',
-            new DataQueryBuilder({
+            createStubBuilder({
               statement: 'select count(*) from tags',
-              dataSource: createStub().dataSource,
-              bindParams: createStub().bindParams,
             })
           )
           .orWhereNotBetween('price', 1, 1000);
@@ -961,22 +893,16 @@ describe('Test data query builder > where clause', () => {
     'Should record successfully when call whereNotWrapped(...).orWhereWrapped(...).orWhereNotWrapped(...)',
     async ({ notWrapped, or, orNot }) => {
       // Arrange
-      const notWrappedBuilder = new DataQueryBuilder({
+      const notWrappedBuilder = createStubBuilder({
         statement: '',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       notWrapped(notWrappedBuilder);
-      const orBuilder = new DataQueryBuilder({
+      const orBuilder = createStubBuilder({
         statement: '',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       or(orBuilder);
-      const orNotBuilder = new DataQueryBuilder({
+      const orNotBuilder = createStubBuilder({
         statement: '',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       orNot(orNotBuilder);
 
@@ -996,10 +922,8 @@ describe('Test data query builder > where clause', () => {
         },
       ];
       // Act
-      const builder = new DataQueryBuilder({
+      const builder = createStubBuilder({
         statement: 'select * from orders',
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       if (notWrapped) builder.whereNotWrapped(notWrapped);
       if (or) builder.orWhereWrapped(or);

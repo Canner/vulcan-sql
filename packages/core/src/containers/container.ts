@@ -1,7 +1,8 @@
 import { ICoreOptions } from '@vulcan-sql/core/models';
 import { Container as InversifyContainer } from 'inversify';
+import { ProfileLoader } from '..';
 import { ProjectOptions } from '../options';
-import { documentModule, extensionModule } from './modules';
+import { documentModule, extensionModule, profilesModule } from './modules';
 import {
   artifactBuilderModule,
   executorModule,
@@ -27,13 +28,19 @@ export class Container {
     await this.inversifyContainer.loadAsync(
       artifactBuilderModule(options.artifact)
     );
-    await this.inversifyContainer.loadAsync(executorModule(options.executor));
+    await this.inversifyContainer.loadAsync(profilesModule(options.profiles));
     await this.inversifyContainer.loadAsync(
       templateEngineModule(options.template)
     );
     await this.inversifyContainer.loadAsync(validatorLoaderModule());
     await this.inversifyContainer.loadAsync(extensionModule(options));
     await this.inversifyContainer.loadAsync(documentModule(options.document));
+    // executor module depends on extensionModule and profileModule.
+    const profileLoader = this.inversifyContainer.get<ProfileLoader>(
+      TYPES.ProfileLoader
+    );
+    const profiles = await profileLoader.getProfiles();
+    await this.inversifyContainer.loadAsync(executorModule(profiles));
   }
 
   public async unload() {

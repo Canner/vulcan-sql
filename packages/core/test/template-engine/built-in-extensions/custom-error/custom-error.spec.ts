@@ -2,14 +2,16 @@ import { createTestCompiler } from '../../testCompiler';
 
 it('Extension should throw custom error with error code and the position while executing', async () => {
   // Arrange
-  const { compiler, loader } = await createTestCompiler();
+  const { compiler, loader, executeTemplate } = await createTestCompiler();
   const { compiledData } = await compiler.compile(`
 {% error "This is an error" %}
   `);
   // Action, Assert
   loader.setSource('test', compiledData);
   await expect(
-    compiler.execute('test', { name: 'World' })
+    executeTemplate('test', {
+      name: 'World',
+    })
   ).rejects.toThrowError('This is an error at 1:3');
 });
 

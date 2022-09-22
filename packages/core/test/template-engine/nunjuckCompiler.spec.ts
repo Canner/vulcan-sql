@@ -13,13 +13,22 @@ it('Nunjucks compiler should compile template without error.', async () => {
 
 it('Nunjucks compiler should load compiled code and execute rendered template with it', async () => {
   // Arrange
-  const { compiler, loader, getCreatedQueries, getCreatedBinding } =
-    await createTestCompiler();
-  const { compiledData } = await compiler.compile('Hello {{ name }}!');
+  const {
+    compiler,
+    loader,
+    getCreatedQueries,
+    getCreatedBinding,
+    executeTemplate,
+  } = await createTestCompiler();
+  const { compiledData } = await compiler.compile(
+    'Hello {{ context.params.name }}!'
+  );
 
   // Action
   loader.setSource('test', compiledData);
-  await compiler.execute('test', { name: 'World' });
+  await executeTemplate('test', {
+    name: 'World',
+  });
   const queries = await getCreatedQueries();
   const binding = await getCreatedBinding();
 

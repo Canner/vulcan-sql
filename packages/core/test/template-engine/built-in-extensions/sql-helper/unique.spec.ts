@@ -2,7 +2,13 @@ import { createTestCompiler } from '../../testCompiler';
 
 it('Extension should return correct values without unique by argument', async () => {
   // Arrange
-  const { compiler, loader, executor } = await createTestCompiler();
+  const {
+    compiler,
+    loader,
+    executeTemplate,
+    getCreatedQueries,
+    getCreatedBinding,
+  } = await createTestCompiler();
   const { compiledData } = await compiler.compile(
     `
 {% set array = [1,2,3,4,4] %}
@@ -13,17 +19,23 @@ it('Extension should return correct values without unique by argument', async ()
   );
   // Action
   loader.setSource('test', compiledData);
-  await compiler.execute('test', {});
+  await executeTemplate('test');
+  const queries = await getCreatedQueries();
+  const binding = await getCreatedBinding();
   // Assert
-  expect(executor.createBuilder.firstCall.args[0]).toBe('$1\n$2\n$3\n$4');
-  expect(Array.from(executor.createBuilder.firstCall.args[1].values())).toEqual(
-    [1, 2, 3, 4]
-  );
+  expect(queries[0]).toBe('$1\n$2\n$3\n$4');
+  expect(Array.from(binding[0].values())).toEqual([1, 2, 3, 4]);
 });
 
 it('Extension should return correct values with unique by keyword argument', async () => {
   // Arrange
-  const { compiler, loader, executor } = await createTestCompiler();
+  const {
+    compiler,
+    loader,
+    executeTemplate,
+    getCreatedQueries,
+    getCreatedBinding,
+  } = await createTestCompiler();
   const { compiledData } = await compiler.compile(
     `
 {% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
@@ -34,17 +46,23 @@ it('Extension should return correct values with unique by keyword argument', asy
   );
   // Action
   loader.setSource('test', compiledData);
-  await compiler.execute('test', {});
+  await executeTemplate('test');
+  const queries = await getCreatedQueries();
+  const binding = await getCreatedBinding();
   // Assert
-  expect(executor.createBuilder.firstCall.args[0]).toBe('$1\n$2');
-  expect(Array.from(executor.createBuilder.firstCall.args[1].values())).toEqual(
-    ['Tom', 'Joy']
-  );
+  expect(queries[0]).toBe('$1\n$2');
+  expect(Array.from(binding[0].values())).toEqual(['Tom', 'Joy']);
 });
 
 it('Extension should return correct values with unique by argument', async () => {
   // Arrange
-  const { compiler, loader, executor } = await createTestCompiler();
+  const {
+    compiler,
+    loader,
+    executeTemplate,
+    getCreatedQueries,
+    getCreatedBinding,
+  } = await createTestCompiler();
   const { compiledData } = await compiler.compile(
     `
 {% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
@@ -55,10 +73,10 @@ it('Extension should return correct values with unique by argument', async () =>
   );
   // Action
   loader.setSource('test', compiledData);
-  await compiler.execute('test', {});
+  await executeTemplate('test');
+  const queries = await getCreatedQueries();
+  const binding = await getCreatedBinding();
   // Assert
-  expect(executor.createBuilder.firstCall.args[0]).toBe('$1\n$2');
-  expect(Array.from(executor.createBuilder.firstCall.args[1].values())).toEqual(
-    ['Tom', 'Joy']
-  );
+  expect(queries[0]).toBe('$1\n$2');
+  expect(Array.from(binding[0].values())).toEqual(['Tom', 'Joy']);
 });

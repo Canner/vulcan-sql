@@ -23,12 +23,8 @@ types:
   - RESTFUL
 extensions:
   duckdb: '@vulcan-sql/extension-driver-duckdb'
-executor:
-  type: 'duckdb'
-duckdb:
-  persistent-path: ./test-data/moma.db
-  log-queries: true
-  log-parameters: true
+profiles:
+  - profile.yaml
 rate-limit:
   options:
     interval:

@@ -1,4 +1,4 @@
-import { Compiler, TemplateMetadata } from './compiler';
+import { Compiler, ExecuteContext, TemplateMetadata } from './compiler';
 import { injectable, inject, optional } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import {
@@ -60,12 +60,11 @@ export class TemplateEngine {
     };
   }
 
-  public async execute<T extends object>(
+  public async execute(
     templateName: string,
-    data: T,
+    data: ExecuteContext,
     pagination?: Pagination
   ): Promise<DataResult> {
-    // wrap to context object
     return this.compiler.execute(templateName, data, pagination);
   }
 }

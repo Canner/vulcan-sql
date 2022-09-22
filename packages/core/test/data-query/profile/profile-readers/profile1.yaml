@@ -1,0 +1,8 @@
+- name: db1
+  type: db1-type
+  connection:
+    foo: bar
+- name: db2
+  type: db2-type
+  connection:
+    foo: bar

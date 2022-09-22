@@ -22,11 +22,17 @@ const createStub = () => {
   };
 };
 
-describe('Test data query builder > join clause', () => {
-  const joinBuilder = new DataQueryBuilder({
-    statement: 'select * from products',
+const createStubBuilder = ({ statement }: { statement: string }) =>
+  new DataQueryBuilder({
+    statement: statement,
     dataSource: createStub().dataSource,
     bindParams: createStub().bindParams,
+    profileName: '',
+  });
+
+describe('Test data query builder > join clause', () => {
+  const joinBuilder = createStubBuilder({
+    statement: 'select * from products',
   });
   const alias = 'products';
   const joinOnClauseOperations: Array<JoinOnClauseOperation> = [
@@ -121,10 +127,8 @@ describe('Test data query builder > join clause', () => {
       };
 
       // Act
-      const queryBuilder = new DataQueryBuilder({
+      const queryBuilder = createStubBuilder({
         statement,
-        dataSource: createStub().dataSource,
-        bindParams: createStub().bindParams,
       });
       const joinCallMapper = {
         [JoinCommandType.INNER_JOIN]: (builder: IDataQueryBuilder) =>

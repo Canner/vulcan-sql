@@ -22,12 +22,15 @@ export const TYPES = {
   TemplateEngineOptions: Symbol.for('TemplateEngineOptions'),
   TemplateEngineInputOptions: Symbol.for('TemplateEngineInputOptions'),
   // Executor
+  ProfilesLookupInputOptions: Symbol.for('ProfilesLookupInputOptions'),
+  ProfilesLookupOptions: Symbol.for('ProfilesLookupOptions'),
   Executor: Symbol.for('Executor'),
-  ExecutorOptions: Symbol.for('ExecutorOptions'),
-  ExecutorInputOptions: Symbol.for('ExecutorInputOptions'),
   DataQueryBuilder: Symbol.for('DataQueryBuilder'),
-  DataSource: Symbol.for('DataSource'),
+  /** Get data source by **profile name** */
   Factory_DataSource: Symbol.for('Factory_DataSource'),
+  Factory_ProfileReader: Symbol.for('Factory_ProfileReader'),
+  ProfileLoader: Symbol.for('ProfileLoader'),
+  Profile: Symbol.for('Profile'),
   // Validator
   ValidatorLoader: Symbol.for('ValidatorLoader'),
   // Document
@@ -43,4 +46,5 @@ export const TYPES = {
   Extension_PersistentStore: Symbol.for('Extension_PersistentStore'),
   Extension_CompilerLoader: Symbol.for('Extension_CompilerLoader'),
   Extension_DataSource: Symbol.for('Extension_DataSource'),
+  Extension_ProfileReader: Symbol.for('ProfileReader'),
 };

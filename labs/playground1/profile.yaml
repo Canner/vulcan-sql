@@ -1,0 +1,6 @@
+- name: duck
+  type: duckdb
+  connection:
+    persistent-path: ./test-data/moma.db
+    log-queries: true
+    log-parameters: true

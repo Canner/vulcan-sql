@@ -416,16 +416,20 @@ export class DataQueryBuilder implements IDataQueryBuilder {
   public readonly bindParams: BindParameters;
   public pagination?: Pagination;
   public readonly identifier: string;
+  private profileName: string;
+
   constructor({
     statement,
     operations,
     bindParams,
     dataSource,
+    profileName,
   }: {
     statement: string;
     operations?: SQLClauseOperation;
     bindParams: BindParameters;
     dataSource: DataSource;
+    profileName: string;
   }) {
     this.identifier = uuid.v4();
     this.statement = statement;
@@ -441,6 +445,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
       limit: null,
       offset: null,
     };
+    this.profileName = profileName;
   }
 
   // Select clause methods
@@ -633,6 +638,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
       statement: '',
       dataSource: this.dataSource,
       bindParams: this.bindParams,
+      profileName: this.profileName,
     });
     builderCallback(wrappedBuilder);
     this.recordWhere({
@@ -1081,6 +1087,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
       dataSource: this.dataSource,
       operations: this.operations,
       bindParams: this.bindParams,
+      profileName: this.profileName,
     });
   }
 
@@ -1096,6 +1103,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
       operations: this.operations,
       bindParams: this.bindParams,
       pagination: this.pagination,
+      profileName: this.profileName,
     });
 
     // Reset operations

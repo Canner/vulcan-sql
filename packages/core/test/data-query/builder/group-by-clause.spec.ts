@@ -33,6 +33,7 @@ describe('Test data query builder > group by clause', () => {
         statement: 'select * from orders',
         dataSource: stubDataSource,
         bindParams: stubBindParameters,
+        profileName: '',
       });
       columns.map((column) => {
         builder = builder.groupBy(column);
@@ -59,6 +60,7 @@ describe('Test data query builder > group by clause', () => {
         statement: 'select * from orders',
         dataSource: stubDataSource,
         bindParams: stubBindParameters,
+        profileName: '',
       });
       builder.groupBy(first, second, third);
 

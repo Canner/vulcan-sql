@@ -18,6 +18,11 @@ export class Container {
     return instance;
   }
 
+  public getAll<T>(type: symbol) {
+    const instances = this.inversifyContainer?.getAll<T>(type);
+    return instances;
+  }
+
   public async load(options: IBuildOptions) {
     this.coreContainer = new CoreContainer();
     await this.coreContainer.load(options);
