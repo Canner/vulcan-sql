@@ -14,19 +14,25 @@ export class CheckProfile extends SchemaParserMiddleware {
   }
 
   public async handle(schemas: RawAPISchema, next: () => Promise<void>) {
+    if (!schemas.profiles && schemas.profile) {
+      schemas.profiles = [schemas.profile];
+    }
+
     await next();
     const transformedSchemas = schemas as APISchema;
-    if (!transformedSchemas.profile)
+    if (!transformedSchemas.profiles)
       throw new Error(
         `The profile of schema ${transformedSchemas.urlPath} is not defined`
       );
 
-    try {
-      this.dataSourceFactory(transformedSchemas.profile);
-    } catch (e: any) {
-      throw new Error(
-        `The profile of schema ${transformedSchemas.urlPath} is invalid: ${e?.message}`
-      );
+    for (const profile of transformedSchemas.profiles) {
+      try {
+        this.dataSourceFactory(profile);
+      } catch (e: any) {
+        throw new Error(
+          `The profile ${profile} of schema ${transformedSchemas.urlPath} is invalid: ${e?.message}`
+        );
+      }
     }
   }
 }

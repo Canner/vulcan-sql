@@ -4,3 +4,4 @@
     persistent-path: ./test-data/moma.db
     log-queries: true
     log-parameters: true
+  allow: '*'

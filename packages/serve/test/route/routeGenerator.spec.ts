@@ -17,6 +17,7 @@ import {
 } from '@vulcan-sql/serve/route';
 import { Container } from 'inversify';
 import { TYPES } from '@vulcan-sql/serve/containers';
+import { Evaluator } from '@vulcan-sql/serve/evaluator';
 
 describe('Test route generator ', () => {
   let container: Container;
@@ -25,6 +26,7 @@ describe('Test route generator ', () => {
   let stubPaginationTransformer: sinon.StubbedInstance<IPaginationTransformer>;
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
   let stubDataSource: sinon.StubbedInstance<DataSource>;
+  let stubEvaluator: sinon.StubbedInstance<Evaluator>;
   const fakeSchemas: Array<APISchema> = Array(
     faker.datatype.number({ min: 2, max: 4 })
   ).fill(sinon.stubInterface<APISchema>());
@@ -38,6 +40,7 @@ describe('Test route generator ', () => {
     stubPaginationTransformer = sinon.stubInterface<IPaginationTransformer>();
     stubDataSource = sinon.stubInterface<DataSource>();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
+    stubEvaluator = sinon.stubInterface<Evaluator>();
 
     container
       .bind(TYPES.PaginationTransformer)
@@ -53,6 +56,7 @@ describe('Test route generator ', () => {
       .bind(CORE_TYPES.Factory_DataSource)
       .toConstantValue(() => stubDataSource);
     container.bind(TYPES.RouteGenerator).to(RouteGenerator);
+    container.bind(TYPES.Evaluator).toConstantValue(stubEvaluator);
   });
 
   afterEach(() => {
@@ -76,6 +80,7 @@ describe('Test route generator ', () => {
         templateEngine: container.get<TemplateEngine>(
           CORE_TYPES.TemplateEngine
         ),
+        evaluator: container.get<Evaluator>(TYPES.Evaluator),
       });
 
       // Act
@@ -111,6 +116,7 @@ describe('Test route generator ', () => {
         templateEngine: container.get<TemplateEngine>(
           CORE_TYPES.TemplateEngine
         ),
+        evaluator: container.get<Evaluator>(TYPES.Evaluator),
       });
 
       // Act

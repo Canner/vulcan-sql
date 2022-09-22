@@ -4,6 +4,7 @@ import { TYPES } from '../types';
 import {
   DataSource,
   EXTENSION_IDENTIFIER_METADATA_KEY,
+  EXTENSION_TYPE_METADATA_KEY,
 } from '../../models/extensions';
 import { Profile } from '../../models/profile';
 import 'reflect-metadata';
@@ -38,6 +39,13 @@ export const executorModule = (profiles: Map<string, Profile>) =>
           // See https://github.com/inversify/InversifyJS/blob/master/src/syntax/constraint_helpers.ts#L32
           const constructor = request.parentRequest?.bindings[0]
             .implementationType as ClassType<DataSource>;
+          const parentType = Reflect.getMetadata(
+            EXTENSION_TYPE_METADATA_KEY,
+            constructor
+          );
+          // Always fulfill the request while the injector isn't a data source
+          if (parentType !== TYPES.Extension_DataSource) return true;
+
           const dataSourceId = Reflect.getMetadata(
             EXTENSION_IDENTIFIER_METADATA_KEY,
             constructor
