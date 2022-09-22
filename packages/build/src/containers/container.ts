@@ -4,6 +4,7 @@ import { IBuildOptions } from '@vulcan-sql/build/models';
 import {
   documentGeneratorModule,
   extensionModule,
+  packagerModule,
   schemaParserModule,
 } from './modules';
 
@@ -32,6 +33,7 @@ export class Container {
     );
     await this.inversifyContainer.loadAsync(extensionModule(options));
     await this.inversifyContainer.loadAsync(documentGeneratorModule());
+    await this.inversifyContainer.loadAsync(packagerModule());
   }
 
   public async unload() {

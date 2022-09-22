@@ -21,7 +21,10 @@
         "outputPath": "dist/packages/build",
         "main": "packages/build/src/index.ts",
         "tsConfig": "packages/build/tsconfig.lib.json",
-        "assets": ["packages/build/*.md"],
+        "assets": [
+          "packages/build/*.md",
+          "packages/build/src/models/extensions/packager/assets/**/*"
+        ],
         "buildableProjectDepsInPackageJsonType": "dependencies"
       },
       "dependsOn": [
