@@ -30,7 +30,10 @@ export interface AuthResult {
 }
 
 export interface IAuthenticator {
-  authenticate(context: KoaContext): Promise<AuthResult>;
+  /** get token related information */
+  getTokenInfo(context: KoaContext): Promise<any>;
+  /** auth credential (e.g: token) to get user info  */
+  authCredential(context: KoaContext): Promise<AuthResult>;
 }
 
 @VulcanExtension(TYPES.Extension_Authenticator, { enforcedId: true })
@@ -38,7 +41,10 @@ export abstract class BaseAuthenticator<AuthTypeOption>
   extends ExtensionBase
   implements IAuthenticator
 {
-  public abstract authenticate(context: KoaContext): Promise<AuthResult>;
+  public abstract getTokenInfo(
+    context: KoaContext
+  ): Promise<Record<string, any>>;
+  public abstract authCredential(context: KoaContext): Promise<AuthResult>;
 
   protected getOptions(): AuthTypeOption | undefined {
     if (!this.getConfig()) return undefined;

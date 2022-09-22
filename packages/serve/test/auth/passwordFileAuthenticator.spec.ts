@@ -4,14 +4,24 @@ import { IncomingHttpHeaders } from 'http';
 import { Request, BaseResponse } from 'koa';
 import { PasswordFileAuthenticator } from '@vulcan-sql/serve/auth';
 import { AuthResult, AuthStatus, KoaContext } from '@vulcan-sql/serve/models';
+import faker from '@faker-js/faker';
 
-const authenticate = async (
+const authCredential = async (
   ctx: KoaContext,
   options: any
 ): Promise<AuthResult> => {
   const authenticator = new PasswordFileAuthenticator({ options }, '');
   await authenticator.activate();
-  return await authenticator.authenticate(ctx);
+  return await authenticator.authCredential(ctx);
+};
+
+const getTokenInfo = async (
+  ctx: KoaContext,
+  options: any
+): Promise<Record<string, any>> => {
+  const authenticator = new PasswordFileAuthenticator({ options }, '');
+  await authenticator.activate();
+  return await authenticator.getTokenInfo(ctx);
 };
 
 describe('Test password-file authenticator', () => {
@@ -49,16 +59,19 @@ describe('Test password-file authenticator', () => {
       // Arrange
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
+        request: {
+          ...sinon.stubInterface<Request>(),
+        },
       } as KoaContext;
 
       // Act
-      const result = await authenticate(ctx, options);
+      const result = await authCredential(ctx, options);
 
       // Assert
       expect(result).toEqual(expectIncorrect);
     }
   );
-  it('Test to auth failed when request header not exist "authorization" key', async () => {
+  it('Test to auth credential failed when request header not exist "authorization" key', async () => {
     // Arrange
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
@@ -71,7 +84,7 @@ describe('Test password-file authenticator', () => {
     } as KoaContext;
 
     // Act
-    const result = await authenticate(ctx, {
+    const result = await authCredential(ctx, {
       'password-file': { path: '', users: [] },
     });
 
@@ -79,7 +92,7 @@ describe('Test password-file authenticator', () => {
     expect(result).toEqual(expectIncorrect);
   });
 
-  it('Should auth failed when request header "authorization" not start with "password-file"', async () => {
+  it('Should auth credential failed when request header "authorization" not start with "password-file"', async () => {
     // Arrange
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
@@ -93,7 +106,7 @@ describe('Test password-file authenticator', () => {
     } as KoaContext;
 
     // Act
-    const result = await authenticate(ctx, {
+    const result = await authCredential(ctx, {
       'password-file': { path: '', users: [] },
     });
 
@@ -101,7 +114,7 @@ describe('Test password-file authenticator', () => {
     expect(result).toEqual(expectIncorrect);
   });
 
-  it('Should auth failed when "path" is empty in "password-file" options', async () => {
+  it('Should auth credential failed when "path" is empty in "password-file" options', async () => {
     // Arrange
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
@@ -115,14 +128,14 @@ describe('Test password-file authenticator', () => {
     };
 
     // Act
-    const result = await authenticate(ctx, {
+    const result = await authCredential(ctx, {
       'password-file': { path: '', users: [] },
     });
 
     // Assert
     expect(result).toEqual(expectFailed);
   });
-  it('Should auth failed when "path" is not file in "password-file" options', async () => {
+  it('Should auth credential failed when "path" is not file in "password-file" options', async () => {
     // Arrange
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
@@ -136,7 +149,7 @@ describe('Test password-file authenticator', () => {
       set: sinon.stubInterface<BaseResponse>().set,
     };
     // Act
-    const result = await authenticate(ctx, {
+    const result = await authCredential(ctx, {
       'password-file': { path: path.resolve(__dirname, './test-files') },
     });
 
@@ -144,7 +157,7 @@ describe('Test password-file authenticator', () => {
     expect(result).toEqual(expectFailed);
   });
 
-  it('Should auth failed when request header "authorization" not match in "password-file" path of options', async () => {
+  it('Should auth credential failed when request header "authorization" not match in "password-file" path of options', async () => {
     // Arrange
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
@@ -158,7 +171,7 @@ describe('Test password-file authenticator', () => {
     };
 
     // Act
-    const result = await authenticate(ctx, {
+    const result = await authCredential(ctx, {
       'password-file': {
         path: path.resolve(__dirname, './password-file'),
       },
@@ -176,7 +189,7 @@ describe('Test password-file authenticator', () => {
     ['password-file', userLists[0]],
     ['password-file', userLists[1]],
   ])(
-    'Should auth successful when request header "authorization" matched in "password-file" options',
+    'Should auth credential successful when request header "authorization" matched in "password-file" options',
     async (authScheme, userData) => {
       // Arrange
       const { name, password } = userData;
@@ -202,7 +215,7 @@ describe('Test password-file authenticator', () => {
       } as AuthResult;
 
       // Act
-      const result = await authenticate(ctx, {
+      const result = await authCredential(ctx, {
         'password-file': {
           path: path.resolve(__dirname, './test-files/password-file'),
           users: userLists,
@@ -213,4 +226,75 @@ describe('Test password-file authenticator', () => {
       expect(result).toEqual(expected);
     }
   );
+
+  it('Should get token successfully when request match in "password-file" path of options', async () => {
+    // Arrange
+    const expected = Buffer.from('user3:test3').toString('base64');
+
+    const ctx = {
+      ...sinon.stubInterface<KoaContext>(),
+      request: {
+        ...sinon.stubInterface<Request>(),
+        body: {
+          username: 'user3',
+          password: 'test3',
+        },
+      },
+    };
+
+    // Act
+    const result = await getTokenInfo(ctx, {
+      'password-file': {
+        path: path.resolve(__dirname, './test-files/password-file'),
+      },
+    });
+
+    // Assert
+    expect(result['token']).toEqual(expected);
+  });
+
+  it.each([['username'], ['password']])(
+    'Should get token failed when miss some of request fields',
+    async (field: string) => {
+      // Arrange
+      const expected = new Error('please provide "username" and "password".');
+      const ctx = {
+        ...sinon.stubInterface<KoaContext>(),
+        request: {
+          ...sinon.stubInterface<Request>(),
+          body: {
+            [field]: faker.word.noun(),
+          },
+        },
+      };
+      // Act
+      const action = getTokenInfo(ctx, {
+        'password-file': {
+          path: path.resolve(__dirname, './test-files/password-file'),
+        },
+      });
+      // Assert
+      expect(action).rejects.toThrow(expected);
+    }
+  );
+
+  it('Should get token failed when miss request field', async () => {
+    // Arrange
+    const expected = new Error('please provide "username" and "password".');
+    const ctx = {
+      ...sinon.stubInterface<KoaContext>(),
+      request: {
+        ...sinon.stubInterface<Request>(),
+        body: {},
+      },
+    };
+    // Act
+    const action = getTokenInfo(ctx, {
+      'password-file': {
+        path: path.resolve(__dirname, './test-files/password-file'),
+      },
+    });
+    // Assert
+    expect(action).rejects.toThrow(expected);
+  });
 });

@@ -33,7 +33,7 @@ describe('Test rate limit middlewares', () => {
   });
 
   afterAll(() => {
-    server.close();
+    server?.close();
   });
 
   it.each([

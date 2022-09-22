@@ -26,7 +26,7 @@ describe('Test cors middlewares', () => {
   });
 
   afterAll(() => {
-    server.close();
+    server?.close();
   });
   it('Should validate successfully when pass correct origin domain', async () => {
     // Arrange

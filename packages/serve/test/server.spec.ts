@@ -27,6 +27,9 @@ it('Vulcan server should work with built artifacts', async () => {
     'enforce-https': {
       enabled: false,
     },
+    auth: {
+      enabled: false,
+    },
   });
 
   // Act, Assert

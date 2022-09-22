@@ -36,3 +36,5 @@ rate-limit:
     max: 10000
 enforce-https:
   enabled: false
+auth:
+  enabled: false

@@ -6,6 +6,7 @@ import {
 } from '@vulcan-sql/serve/models';
 import { VulcanExtensionId, VulcanInternalExtension } from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
+import 'koa-bodyparser';
 
 export type SimpleTokenOptions = Array<{
   /* user name */
@@ -25,7 +26,7 @@ type UserCredentialsMap = {
   };
 };
 
-/** The simple-token authenticator. setting the token and authenticate by token directly.
+/** The simple-token authenticator. setting the token and auth token directly to authorization.
  *
  * Token could be any format e.g: md5, base64 encode, sha..., but must set it in the token field of "simple-token" list too.
  *  */
@@ -43,23 +44,32 @@ export class SimpleTokenAuthenticator extends BaseAuthenticator<SimpleTokenOptio
     }
   }
 
-  public async authenticate(context: KoaContext) {
+  public async getTokenInfo(ctx: KoaContext) {
+    const token = ctx.request.body!['token'] as string;
+    if (!token) throw new Error('please provide "token".');
+
+    return {
+      token: token,
+    };
+  }
+
+  public async authCredential(context: KoaContext) {
     const incorrect = {
       status: AuthStatus.INDETERMINATE,
       type: this.getExtensionId()!,
     };
     if (isEmpty(this.options)) return incorrect;
 
-    const authRequest = context.request.headers['authorization'];
+    const authorize = context.request.headers['authorization'];
     if (
-      !authRequest ||
-      !authRequest.toLowerCase().startsWith(this.getExtensionId()!)
+      !authorize ||
+      !authorize.toLowerCase().startsWith(this.getExtensionId()!)
     )
       return incorrect;
     // validate request auth token
-    const token = authRequest.trim().split(' ')[1];
+    const token = authorize.trim().split(' ')[1];
     try {
-      return await this.verify(token);
+      return await this.validate(token);
     } catch (err) {
       // if not found matched user credential, return failed
       return {
@@ -69,7 +79,7 @@ export class SimpleTokenAuthenticator extends BaseAuthenticator<SimpleTokenOptio
       };
     }
   }
-  private async verify(token: string) {
+  private async validate(token: string) {
     // if authenticated
     if (!(token in this.usersCredentials))
       throw new Error(

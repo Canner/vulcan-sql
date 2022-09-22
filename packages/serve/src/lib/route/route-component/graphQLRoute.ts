@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { BaseRoute, RouteOptions } from './baseRoute';
 import { KoaContext } from '@vulcan-sql/serve/models';
 

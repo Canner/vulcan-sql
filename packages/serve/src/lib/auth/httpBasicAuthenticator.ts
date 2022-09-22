@@ -9,6 +9,7 @@ import {
 } from '@vulcan-sql/serve/models';
 import { VulcanExtensionId, VulcanInternalExtension } from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
+import 'koa-bodyparser';
 
 interface AuthUserOptions {
   /* user name */
@@ -21,7 +22,7 @@ interface HTPasswdFileOptions {
   /** password file path */
   ['path']: string;
   /** each user information */
-  ['users']: Array<AuthUserOptions>;
+  ['users']?: Array<AuthUserOptions>;
 }
 
 export interface AuthUserListOptions {
@@ -87,26 +88,39 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
     }
   }
 
-  public async authenticate(context: KoaContext) {
+  public async getTokenInfo(ctx: KoaContext) {
+    const username = ctx.request.body!['username'] as string;
+    const password = ctx.request.body!['password'] as string;
+    if (!username || !password)
+      throw new Error('please provide "username" and "password".');
+
+    const token = Buffer.from(`${username}:${password}`).toString('base64');
+
+    return {
+      token: token,
+    };
+  }
+
+  public async authCredential(context: KoaContext) {
     const incorrect = {
       status: AuthStatus.INDETERMINATE,
       type: this.getExtensionId()!,
     };
     if (isEmpty(this.options)) return incorrect;
 
-    const authRequest = context.request.headers['authorization'];
+    const authorize = context.request.headers['authorization'];
     if (
-      !authRequest ||
-      !authRequest.toLowerCase().startsWith(this.getExtensionId()!)
+      !authorize ||
+      !authorize.toLowerCase().startsWith(this.getExtensionId()!)
     )
       return incorrect;
 
     // validate request auth token
-    const token = authRequest.trim().split(' ')[1];
+    const token = authorize.trim().split(' ')[1];
     const bareToken = Buffer.from(token, 'base64').toString();
 
     try {
-      return await this.verify(bareToken);
+      return await this.validate(bareToken);
     } catch (err) {
       // if not found matched user credential, add WWW-Authenticate and return failed
       context.set('WWW-Authenticate', this.getExtensionId()!);
@@ -118,7 +132,7 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
     }
   }
 
-  private async verify(baredToken: string) {
+  private async validate(baredToken: string) {
     const username = baredToken.split(':')[0] || '';
     // bare password from Basic specification
     const password = baredToken.split(':')[1] || '';
