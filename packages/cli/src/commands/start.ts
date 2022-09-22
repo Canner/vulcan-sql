@@ -12,7 +12,7 @@ import * as chokidar from 'chokidar';
 import * as jsYAML from 'js-yaml';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { logger } from '../utils';
+import { addShutdownJob, logger } from '../utils';
 
 const callAfterFulfilled = (func: () => Promise<void>) => {
   let busy = false;
@@ -70,8 +70,13 @@ export const handleStart = async (
 
   const restartServer = async () => {
     if (stopServer) await stopServer();
-    await buildVulcan(buildOptions);
-    stopServer = (await serveVulcan(serveOptions)).stopServer;
+    try {
+      await buildVulcan(buildOptions);
+      stopServer = (await serveVulcan(serveOptions)).stopServer;
+    } catch (e) {
+      // Ignore the error to keep watch process works
+      if (!startOptions.watch) throw e;
+    }
   };
 
   await restartServer();
@@ -110,10 +115,13 @@ export const handleStart = async (
     }
 
     const restartWhenFulfilled = callAfterFulfilled(restartServer);
-    chokidar
+    const watcher = chokidar
       .watch(pathsToWatch, { ignoreInitial: true })
       .on('all', () => restartWhenFulfilled());
-
+    addShutdownJob(async () => {
+      logger.info(`Stop watching changes...`);
+      await watcher.close();
+    });
     logger.info(`Start watching changes...`);
   }
 };

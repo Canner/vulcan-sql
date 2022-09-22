@@ -37,7 +37,7 @@ beforeAll(async () => {
 }, 30000);
 
 afterAll(async () => {
-  await fs.rm(projectRoot, { recursive: true, force: true });
+  await fs.rm(projectRoot, { recursive: true, force: true, maxRetries: 5 });
 });
 
 afterEach(async () => {
@@ -82,6 +82,28 @@ it('Start command should build the project and start Vulcan server', async () =>
   expect(result.statusCode).toBe(200);
   await runShutdownJobs();
 });
+
+it('Start command with watch option should watch the file changes', (done) => {
+  // Arrange
+  const agent = supertest(`http://localhost:${testingServerPort}`);
+  const testYamlPath = path.resolve(projectRoot, 'sqls', 'test.yaml');
+
+  // Act
+  program
+    .parseAsync(['node', 'vulcan', 'start', '-w'])
+    // Wait for server start
+    .then(() => new Promise((resolve) => setTimeout(resolve, 1000)))
+    // Write some invalid configs, let server fail to start
+    .then(() => fs.writeFile(testYamlPath, 'url: /user/:id\ns', 'utf-8'))
+    // Wait for serer restart
+    .then(() => new Promise((resolve) => setTimeout(resolve, 1000)))
+    .then(() => expect(agent.get('/doc')).rejects.toThrow())
+    .finally(() => {
+      runShutdownJobs()
+        .then(() => fs.rm(testYamlPath))
+        .then(() => done());
+    });
+}, 5000);
 
 it('Version command should execute without error', async () => {
   // Action, Assert
