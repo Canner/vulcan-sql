@@ -35,7 +35,7 @@ it('Container should load options and resolve all dependencies', async () => {
   const templateEngine = container.get<TemplateEngine>(TYPES.TemplateEngine);
   const artifactBuilder = container.get<ArtifactBuilder>(TYPES.ArtifactBuilder);
   const { templates } = await templateEngine.compile();
-  artifactBuilder.addArtifact(BuiltInArtifactKeys.templates, templates);
+  artifactBuilder.addArtifact(BuiltInArtifactKeys.Templates, templates);
   await artifactBuilder.build();
   await container.unload();
   // Assert

@@ -45,13 +45,11 @@ export class VulcanBuilder {
     const { metadata, templates } = await templateEngine.compile();
     const { schemas } = await schemaParser.parse({ metadata });
 
-    artifactBuilder.addArtifact(BuiltInArtifactKeys.templates, templates);
-    artifactBuilder.addArtifact(BuiltInArtifactKeys.schemas, schemas);
-
-    await artifactBuilder.build();
+    artifactBuilder.addArtifact(BuiltInArtifactKeys.Templates, templates);
+    artifactBuilder.addArtifact(BuiltInArtifactKeys.Schemas, schemas);
 
     await documentGenerator.generateDocuments(schemas);
-
+    await artifactBuilder.build();
     await container.unload();
   }
 }

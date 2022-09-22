@@ -54,10 +54,10 @@ export class VulcanServer {
     // Obtain schema and template
     await artifactBuilder.load();
     const templates = artifactBuilder.getArtifact(
-      BuiltInArtifactKeys.templates
+      BuiltInArtifactKeys.Templates
     );
     const schemas = artifactBuilder.getArtifact<APISchema[]>(
-      BuiltInArtifactKeys.schemas
+      BuiltInArtifactKeys.Schemas
     );
 
     // Initialized template engine

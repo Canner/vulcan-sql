@@ -12,8 +12,8 @@ let container: Container;
 let mockPersistentStore: sinon.StubbedInstance<LocalFilePersistentStore>;
 
 const mockArtifact = {
-  [BuiltInArtifactKeys.schemas]: [],
-  [BuiltInArtifactKeys.templates]: {},
+  [BuiltInArtifactKeys.Schemas]: [],
+  [BuiltInArtifactKeys.Templates]: {},
 };
 
 beforeEach(() => {
@@ -45,10 +45,10 @@ it('Should load deserialized data while loading', async () => {
 
   // Act
   await builder.load();
-  const template = builder.getArtifact(BuiltInArtifactKeys.templates);
-  const schemas = builder.getArtifact(BuiltInArtifactKeys.schemas);
+  const template = builder.getArtifact(BuiltInArtifactKeys.Templates);
+  const schemas = builder.getArtifact(BuiltInArtifactKeys.Schemas);
 
   // Assert
-  expect(template).toEqual(mockArtifact[BuiltInArtifactKeys.templates]);
-  expect(schemas).toEqual(mockArtifact[BuiltInArtifactKeys.schemas]);
+  expect(template).toEqual(mockArtifact[BuiltInArtifactKeys.Templates]);
+  expect(schemas).toEqual(mockArtifact[BuiltInArtifactKeys.Schemas]);
 });

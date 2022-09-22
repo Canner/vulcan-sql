@@ -1,6 +1,7 @@
 export const BuiltInArtifactKeys = {
-  templates: 'templates',
-  schemas: 'schemas',
+  Templates: 'templates',
+  Schemas: 'schemas',
+  Specs: 'specs',
 };
 
 export interface ArtifactBuilder {
