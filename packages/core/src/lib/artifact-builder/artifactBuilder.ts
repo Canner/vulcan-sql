@@ -1,11 +1,11 @@
-import { APISchema } from '../../models';
-
-export interface Artifact {
-  schemas: APISchema[];
-  templates: Record<string, string>;
-}
+export const BuiltInArtifactKeys = {
+  templates: 'templates',
+  schemas: 'schemas',
+};
 
 export interface ArtifactBuilder {
-  build(artifact: Artifact): Promise<void>;
-  load(): Promise<Artifact>;
+  build(): Promise<void>;
+  load(): Promise<void>;
+  addArtifact(key: string, data: any): void;
+  getArtifact<T = any>(key: string): T;
 }

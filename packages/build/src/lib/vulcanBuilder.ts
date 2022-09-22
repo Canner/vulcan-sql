@@ -3,6 +3,7 @@ import { Container, TYPES } from '@vulcan-sql/build/containers';
 import { SchemaParser } from '@vulcan-sql/build/schema-parser';
 import {
   DataSource,
+  BuiltInArtifactKeys,
   TemplateEngine,
   TYPES as CORE_TYPES,
   VulcanArtifactBuilder,
@@ -44,7 +45,10 @@ export class VulcanBuilder {
     const { metadata, templates } = await templateEngine.compile();
     const { schemas } = await schemaParser.parse({ metadata });
 
-    await artifactBuilder.build({ schemas, templates });
+    artifactBuilder.addArtifact(BuiltInArtifactKeys.templates, templates);
+    artifactBuilder.addArtifact(BuiltInArtifactKeys.schemas, schemas);
+
+    await artifactBuilder.build();
 
     await documentGenerator.generateDocuments(schemas);
 

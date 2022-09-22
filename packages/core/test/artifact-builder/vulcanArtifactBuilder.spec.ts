@@ -1,5 +1,5 @@
 import {
-  Artifact,
+  BuiltInArtifactKeys,
   JSONSerializer,
   LocalFilePersistentStore,
   VulcanArtifactBuilder,
@@ -11,9 +11,9 @@ import * as sinon from 'ts-sinon';
 let container: Container;
 let mockPersistentStore: sinon.StubbedInstance<LocalFilePersistentStore>;
 
-const mockArtifact: Artifact = {
-  schemas: [],
-  templates: {},
+const mockArtifact = {
+  [BuiltInArtifactKeys.schemas]: [],
+  [BuiltInArtifactKeys.templates]: {},
 };
 
 beforeEach(() => {
@@ -32,7 +32,7 @@ it('Should pass serialized data to store while building', async () => {
   const builder = container.get<VulcanArtifactBuilder>(TYPES.ArtifactBuilder);
 
   // Act
-  await builder.build(mockArtifact);
+  await builder.build();
 
   // Assert
   expect(mockPersistentStore.save.calledOnce).toBe(true);
@@ -44,8 +44,11 @@ it('Should load deserialized data while loading', async () => {
   mockPersistentStore.load.resolves(Buffer.from(JSON.stringify(mockArtifact)));
 
   // Act
-  const artifact = await builder.load();
+  await builder.load();
+  const template = builder.getArtifact(BuiltInArtifactKeys.templates);
+  const schemas = builder.getArtifact(BuiltInArtifactKeys.schemas);
 
   // Assert
-  expect(artifact).toEqual(mockArtifact);
+  expect(template).toEqual(mockArtifact[BuiltInArtifactKeys.templates]);
+  expect(schemas).toEqual(mockArtifact[BuiltInArtifactKeys.schemas]);
 });
