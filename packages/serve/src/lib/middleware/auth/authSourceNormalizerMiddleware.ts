@@ -64,14 +64,12 @@ export class AuthSourceNormalizerMiddleware extends BuiltInMiddleware<AuthSource
         if (found && !context.request.headers['authorization'])
           context.request.headers.authorization = credentials['Authorization'];
       }
-      await next();
-      return;
     } catch (error) {
       logger.debug(
         'normalize auth payload source failed, reason =>',
         (error as Error).message
       );
-      return next();
     }
+    await next();
   }
 }
