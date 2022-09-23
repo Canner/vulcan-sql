@@ -3,18 +3,18 @@ import {
   VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
-import { IBuildOptions } from '../../models/buildOptions';
-import { Packager, PackagerType } from '../../models/extensions';
+import { IBuildOptions } from '../../../models/buildOptions';
+import { Packager, PackagerType } from '../../../models/extensions';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 
-export interface NodePackagerConfig {
+export interface DockerPackagerConfig {
   folderPath?: string;
 }
 
-@VulcanExtensionId(PackagerType.Node)
-@VulcanInternalExtension('node-packager')
-export class NodePackager extends Packager<NodePackagerConfig> {
+@VulcanExtensionId(PackagerType.Docker)
+@VulcanInternalExtension('docker-packager')
+export class DockerPackager extends Packager<DockerPackagerConfig> {
   private logger = this.getLogger();
 
   public async package(option: IBuildOptions): Promise<void> {
@@ -50,8 +50,13 @@ export class NodePackager extends Packager<NodePackagerConfig> {
         path.resolve(distFolder, option.artifact.filePath)
       );
     }
+    // Dockerfile
+    await fs.copyFile(
+      path.resolve(__dirname, 'assets', 'Dockerfile'),
+      path.resolve(distFolder, 'Dockerfile')
+    );
     this.logger.info(
-      `Package successfully, you can go to "${folderPath}" folder and run "npm install && node index.js" to start the server`
+      `Package successfully, you can go to "${folderPath}" folder and run "docker build ." to build the image.`
     );
   }
 }

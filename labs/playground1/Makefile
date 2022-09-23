@@ -2,12 +2,8 @@
 .PHONY: install build start pkg-core pkg-build pkg-serve pkg-cli clean pkg-extension-driver-duckdb
 
 # start vulcan server (default goal)
-start: install build test-data/moma.db ../../node_modules
+start: build test-data/moma.db ../../node_modules
 	@vulcan start
-
-# install node modules and like playground extensions
-install:
-	@yarn;
 
 # build the required packages
 build: pkg-core pkg-build pkg-serve pkg-cli pkg-extension-driver-duckdb

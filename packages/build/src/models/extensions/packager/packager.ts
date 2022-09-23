@@ -6,6 +6,7 @@ import { IBuildOptions } from '../../buildOptions';
 
 export enum PackagerType {
   Node = 'node',
+  Docker = 'docker',
 }
 
 @VulcanExtension(TYPES.Extension_Packager, { enforcedId: true })

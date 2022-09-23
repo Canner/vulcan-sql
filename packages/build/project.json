@@ -23,7 +23,8 @@
         "tsConfig": "packages/build/tsconfig.lib.json",
         "assets": [
           "packages/build/*.md",
-          "packages/build/src/models/extensions/packager/assets/**/*"
+          "packages/build/src/models/extensions/packager/assets/**/*",
+          "packages/build/src/lib/packager/dockerPackager/assets/**/*"
         ],
         "buildableProjectDepsInPackageJsonType": "dependencies"
       },
