@@ -3,7 +3,7 @@ import { GenerateUrl } from './generateUrl';
 import { CheckValidator } from './checkValidator';
 import { TransformValidator } from './transformValidator';
 import { GenerateTemplateSource } from './generateTemplateSource';
-import { CheckParameter } from './checkParameter';
+import { AddParameter } from './addParameter';
 import { AddMissingErrors } from './addMissingErrors';
 import { FallbackErrors } from './fallbackErrors';
 import { NormalizeFieldIn } from './normalizeFieldIn';
@@ -24,7 +24,7 @@ export const SchemaParserMiddlewares: ClassType<SchemaParserMiddleware>[] = [
   CheckValidator,
   TransformValidator,
   GenerateTemplateSource,
-  CheckParameter,
+  AddParameter,
   AddMissingErrors,
   FallbackErrors,
   NormalizeFieldIn,
