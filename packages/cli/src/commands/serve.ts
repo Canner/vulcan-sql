@@ -1,7 +1,12 @@
 import * as jsYAML from 'js-yaml';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { addShutdownJob, localModulePath, logger } from '../utils';
+import {
+  addShutdownJob,
+  localModulePath,
+  logger,
+  removeShutdownJob,
+} from '../utils';
 
 export interface ServeCommandOptions {
   config: string;
@@ -11,6 +16,15 @@ export interface ServeCommandOptions {
 const defaultOptions: ServeCommandOptions = {
   config: './vulcan.yaml',
   port: 3000,
+};
+
+export const mergeServeDefaultOption = (
+  options: Partial<ServeCommandOptions>
+) => {
+  return {
+    ...defaultOptions,
+    ...options,
+  } as ServeCommandOptions;
 };
 
 export const serveVulcan = async (options: ServeCommandOptions) => {
@@ -25,19 +39,24 @@ export const serveVulcan = async (options: ServeCommandOptions) => {
   const server = new VulcanServer(config);
   await server.start();
   logger.info(`Server is listening at port ${config.port || 3000}.`);
-  addShutdownJob(async () => {
+
+  const closeServerJob = async () => {
     logger.info(`Stopping server...`);
     await server.close();
     logger.info(`Server stopped`);
-  });
+  };
+  addShutdownJob(closeServerJob);
+
+  return {
+    stopServer: async () => {
+      removeShutdownJob(closeServerJob);
+      await closeServerJob();
+    },
+  };
 };
 
 export const handleServe = async (
   options: Partial<ServeCommandOptions>
 ): Promise<void> => {
-  options = {
-    ...defaultOptions,
-    ...options,
-  };
-  await serveVulcan(options as ServeCommandOptions);
+  await serveVulcan(mergeServeDefaultOption(options));
 };
