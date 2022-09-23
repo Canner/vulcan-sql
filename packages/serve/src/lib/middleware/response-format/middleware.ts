@@ -58,6 +58,9 @@ export class ResponseFormatMiddleware extends BuiltInMiddleware<ResponseFormatOp
   public async handle(context: KoaContext, next: Next) {
     // return to skip the middleware, if disabled
     if (!this.enabled) return next();
+    // TODO: replace the hardcoded api with configurable prefix
+    // Only handle the path for Vulcan API
+    if (!context.request.path.startsWith('/api')) return next();
 
     // get supported and request format to use.
     const format = checkUsableFormat({

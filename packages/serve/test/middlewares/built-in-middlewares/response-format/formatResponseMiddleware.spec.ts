@@ -1,6 +1,6 @@
 import * as sinon from 'ts-sinon';
 import { ResponseFormatMiddleware } from '@vulcan-sql/serve/middleware';
-import { BaseResponseFormatter } from '@vulcan-sql/serve';
+import { BaseResponseFormatter, KoaContext } from '@vulcan-sql/serve';
 
 describe('Test format response middleware', () => {
   afterEach(() => {
@@ -218,4 +218,17 @@ describe('Test format response middleware', () => {
   });
 
   // TODO: test handle to get context response
+
+  it('Test to do nothing with paths which are not start in /api', async () => {
+    // Arrange
+    const middleware = new ResponseFormatMiddleware({}, '', []);
+    const mockContext = sinon.stubInterface<KoaContext>();
+    mockContext.request.path = '/favicon.ico';
+    mockContext.response.body = '123';
+    // Act
+    await middleware.handle(mockContext, async () => null);
+
+    // Assert
+    expect(mockContext.response.body).toBe('123');
+  });
 });
