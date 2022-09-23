@@ -39,7 +39,10 @@ export class NodePackager extends Packager<NodePackagerConfig> {
       'utf-8'
     );
     // result.json
-    if (option.artifact.provider === ArtifactBuilderProviderType.LocalFile) {
+    if (
+      option.artifact.provider === ArtifactBuilderProviderType.LocalFile &&
+      option.artifact.filePath
+    ) {
       await fs.copyFile(
         path.resolve(process.cwd(), option.artifact.filePath),
         path.resolve(distFolder, option.artifact.filePath)

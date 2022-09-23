@@ -2,7 +2,7 @@ import { builtInSchemaReader } from '@vulcan-sql/build/schema-parser';
 import { ExtensionLoader } from '@vulcan-sql/core';
 import { AsyncContainerModule } from 'inversify';
 import { builtInSpecGenerator } from '../../lib/document-generator';
-import { builtInPackager } from '../../lib/packagers';
+import { builtInPackager } from '../../lib/packager';
 import { IBuildOptions } from '../../models/buildOptions';
 
 export const extensionModule = (options: IBuildOptions) =>
