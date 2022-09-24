@@ -3,10 +3,12 @@ version: 2.1
 executors:
   node-executor:
     working_directory: ~/repo
-    docker:
-      # Jest has issues with node > 16.11.0, please stick node version until the issues are resolved
-      # https://github.com/facebook/jest/issues/11956
-      - image: cimg/node:16.10.0
+    machine:
+      # What software on the machine https://discuss.circleci.com/t/linux-machine-executor-update-2022-july-q3-update/44873
+      image: ubuntu-2204:2022.07.1
+      # About DLC https://circleci.com/docs/docker-layer-caching
+      docker_layer_caching: true
+    resource_class: large
 
 parameters:
   workflow_name:
@@ -134,9 +136,7 @@ jobs:
             - codecov-0.1.0_4653
       - run: rm -rf ./coverage
         # Clear coverage folder
-      - run: yarn nx affected --target=test --ci --coverage --maxWorkers=2 --coverageReporters=lcov ${AFFECTED_ARGS}
-        # --maxWorkers=2 is required because we'll run virtual machine with 32 cores CPU (with actually 4 CPI), jest spawns lots of workers if we don't fix the worker size.
-        # https://support.circleci.com/hc/en-us/articles/360005442714-Your-test-tools-are-smart-and-that-s-a-problem-Learn-about-when-optimization-goes-wrong-
+      - run: yarn nx affected --target=test --ci --coverage --coverageReporters=lcov ${AFFECTED_ARGS}
       - run:
           name: upload reports with flags
           command: |
@@ -163,9 +163,6 @@ jobs:
           <<: *set_env
       - restore_cache:
           <<: *yarn_cache
-      # Setup remote docker to build image
-      # https://circleci.com/docs/building-docker-images
-      - setup_remote_docker
       - run:
           name: NPM publish
           # running with yarn nx causes npm config issues

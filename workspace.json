@@ -7,6 +7,7 @@
     "extension-dbt": "packages/extension-dbt",
     "extension-debug-tools": "packages/extension-debug-tools",
     "extension-driver-duckdb": "packages/extension-driver-duckdb",
+    "extension-driver-pg": "packages/extension-driver-pg",
     "integration-testing": "packages/integration-testing",
     "serve": "packages/serve",
     "test-utility": "packages/test-utility"

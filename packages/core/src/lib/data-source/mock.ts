@@ -9,8 +9,8 @@ import {
 } from '../../models/extensions';
 
 @VulcanInternalExtension()
-@VulcanExtensionId('pg')
-export class PGDataSource extends DataSource {
+@VulcanExtensionId('mock')
+export class MockDataSource extends DataSource {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async execute(options: ExecuteOptions): Promise<DataResult> {
     return {

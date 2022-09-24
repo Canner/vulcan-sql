@@ -1,11 +1,11 @@
 {
-  "root": "packages/extension-driver-duckdb",
-  "sourceRoot": "packages/extension-driver-duckdb/src",
+  "root": "packages/extension-driver-pg",
+  "sourceRoot": "packages/extension-driver-pg/src",
   "targets": {
     "build": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts extension-driver-duckdb"
+        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts extension-driver-pg"
       },
       "dependsOn": [
         {
@@ -18,10 +18,10 @@
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/extension-driver-duckdb",
-        "main": "packages/extension-driver-duckdb/src/index.ts",
-        "tsConfig": "packages/extension-driver-duckdb/tsconfig.lib.json",
-        "assets": ["packages/extension-driver-duckdb/*.md"],
+        "outputPath": "dist/packages/extension-driver-pg",
+        "main": "packages/extension-driver-pg/src/index.ts",
+        "tsConfig": "packages/extension-driver-pg/tsconfig.lib.json",
+        "assets": ["packages/extension-driver-pg/*.md"],
         "buildableProjectDepsInPackageJsonType": "dependencies"
       },
       "dependsOn": [
@@ -35,14 +35,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/extension-driver-duckdb/**/*.ts"]
+        "lintFilePatterns": ["packages/extension-driver-pg/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/extension-driver-duckdb"],
+      "outputs": ["coverage/packages/extension-driver-pg"],
       "options": {
-        "jestConfig": "packages/extension-driver-duckdb/jest.config.ts",
+        "jestConfig": "packages/extension-driver-pg/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -50,7 +50,7 @@
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
-        "cwd": "dist/packages/extension-driver-duckdb"
+        "cwd": "dist/packages/extension-driver-pg"
       },
       "dependsOn": [
         {
