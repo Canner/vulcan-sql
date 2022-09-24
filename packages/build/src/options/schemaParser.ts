@@ -5,6 +5,7 @@ import {
   SchemaReaderType,
 } from '@vulcan-sql/build/models';
 import { IsOptional, IsString, validateSync } from 'class-validator';
+import { ConfigurationError } from '@vulcan-sql/core';
 
 @injectable()
 export class SchemaParserOptions implements ISchemaParserOptions {
@@ -23,7 +24,9 @@ export class SchemaParserOptions implements ISchemaParserOptions {
     Object.assign(this, options);
     const errors = validateSync(this);
     if (errors.length > 0) {
-      throw new Error('Invalid schema parser options: ' + errors.join(', '));
+      throw new ConfigurationError(
+        'Invalid schema parser options: ' + errors.join(', ')
+      );
     }
   }
 }

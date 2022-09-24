@@ -1,3 +1,5 @@
+import { UserError } from './errors';
+
 export const canBeNormalized = (type: string) => {
   return (
     ['number', 'boolean', 'string', 'date'].indexOf(type.toLowerCase()) !== -1
@@ -12,11 +14,11 @@ export const normalizeStringValue = (
   switch (dataType.toLowerCase()) {
     case 'number': {
       if (value === '') {
-        throw new Error(`${dataName} must be number`);
+        throw new UserError(`${dataName} must be number`);
       }
       const valueNumber = +value;
       if (isNaN(valueNumber)) {
-        throw new Error(`${dataName} must be number`);
+        throw new UserError(`${dataName} must be number`);
       }
       return valueNumber;
     }
@@ -27,14 +29,14 @@ export const normalizeStringValue = (
       } else if (value === 'false' || value === '0') {
         return false;
       } else {
-        throw new Error(`${dataName} must be boolean`);
+        throw new UserError(`${dataName} must be boolean`);
       }
     }
 
     case 'date': {
       const parsedDate = new Date(value);
       if (Number.isNaN(parsedDate.getTime())) {
-        throw new Error(`${dataName} must be date`);
+        throw new UserError(`${dataName} must be date`);
       }
       return parsedDate;
     }

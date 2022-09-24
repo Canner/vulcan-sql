@@ -1,4 +1,5 @@
 import { intersection } from 'lodash';
+import { InternalError } from '../utils';
 
 export abstract class Constraint {
   static Required() {
@@ -113,7 +114,9 @@ export class RegexConstraint extends Constraint {
   }
 
   public compose(): RegexConstraint {
-    throw new Error(`Can use multiple RegexConstraint at the same time.`);
+    throw new InternalError(
+      `Can use multiple RegexConstraint at the same time.`
+    );
   }
 }
 

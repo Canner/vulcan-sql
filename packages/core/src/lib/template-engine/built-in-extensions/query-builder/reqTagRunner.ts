@@ -8,6 +8,7 @@ import {
 } from '@vulcan-sql/core/models';
 import { FINIAL_BUILDER_NAME, PARAMETERIZER_VAR_NAME } from './constants';
 import { Parameterizer } from './parameterizer';
+import { InternalError } from '../../../utils/errors';
 
 @VulcanInternalExtension()
 export class ReqTagRunner extends TagRunner {
@@ -26,7 +27,7 @@ export class ReqTagRunner extends TagRunner {
   public async run({ context, args, contentArgs, metadata }: TagRunnerOptions) {
     const name = String(args[0]);
     const profileName = metadata.getProfileName();
-    if (!profileName) throw new Error(`No profile name found`);
+    if (!profileName) throw new InternalError(`No profile name found`);
 
     const parameterizer = new Parameterizer((param) =>
       this.executor.prepare({ ...param, profileName })

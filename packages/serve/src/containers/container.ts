@@ -1,5 +1,5 @@
 import { Container as InversifyContainer } from 'inversify';
-import { Container as CoreContainer } from '@vulcan-sql/core';
+import { Container as CoreContainer, InternalError } from '@vulcan-sql/core';
 import {
   applicationModule,
   documentRouterModule,
@@ -16,7 +16,7 @@ export class Container {
   public get<T>(type: symbol) {
     const instance = this.inversifyContainer?.get<T>(type);
     if (!instance)
-      throw new Error(`Cannot resolve ${type.toString()} in container`);
+      throw new InternalError(`Cannot resolve ${type.toString()} in container`);
     return instance;
   }
 

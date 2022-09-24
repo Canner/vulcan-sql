@@ -3,6 +3,7 @@ import { Pagination, Profile } from '@vulcan-sql/core/models';
 import { TYPES } from '@vulcan-sql/core/types';
 import { inject, multiInject, optional } from 'inversify';
 import { Readable } from 'stream';
+import { InternalError } from '../../lib/utils/errors';
 import { ExtensionBase } from './base';
 import { VulcanExtension } from './decorators';
 
@@ -68,7 +69,7 @@ export abstract class DataSource<
   protected getProfile(name: string): Profile {
     const profile = this.profiles.get(name);
     if (!profile)
-      throw new Error(
+      throw new InternalError(
         `Profile name ${name} not found in data source ${this.getExtensionId()}`
       );
     return profile;

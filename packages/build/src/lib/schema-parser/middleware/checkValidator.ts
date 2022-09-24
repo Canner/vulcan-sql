@@ -2,6 +2,7 @@ import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 import { chain } from 'lodash';
 import {
   APISchema,
+  ConfigurationError,
   IValidatorLoader,
   TYPES as CORE_TYPES,
 } from '@vulcan-sql/core';
@@ -26,7 +27,7 @@ export class CheckValidator extends SchemaParserMiddleware {
 
     for (const validatorRequest of validators) {
       if (!validatorRequest.name) {
-        throw new Error('Validator name is required');
+        throw new ConfigurationError('Validator name is required');
       }
 
       const validator = this.validatorLoader.getValidator(

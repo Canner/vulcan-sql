@@ -6,6 +6,7 @@ import {
   IArtifactBuilderOptions,
 } from '@vulcan-sql/core/models';
 import { IsString, validateSync, IsOptional } from 'class-validator';
+import { ConfigurationError } from '../lib/utils/errors';
 
 @injectable()
 export class ArtifactBuilderOptions implements IArtifactBuilderOptions {
@@ -27,7 +28,9 @@ export class ArtifactBuilderOptions implements IArtifactBuilderOptions {
     Object.assign(this, options);
     const errors = validateSync(this);
     if (errors.length > 0) {
-      throw new Error('Invalid artifact builder options: ' + errors.join(', '));
+      throw new ConfigurationError(
+        'Invalid artifact builder options: ' + errors.join(', ')
+      );
     }
   }
 }

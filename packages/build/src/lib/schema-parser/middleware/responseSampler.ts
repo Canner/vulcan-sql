@@ -2,6 +2,7 @@ import { inject } from 'inversify';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 import {
   APISchema,
+  ConfigurationError,
   FieldDataType,
   ResponseProperty,
   TemplateEngine,
@@ -27,7 +28,7 @@ export class ResponseSampler extends SchemaParserMiddleware {
     const schema = rawSchema as APISchema;
     if (!schema.sample) return;
     if (!schema.sample.profile) {
-      throw new Error(
+      throw new ConfigurationError(
         `Schema ${schema.urlPath} misses the required property: sample.profile`
       );
     }

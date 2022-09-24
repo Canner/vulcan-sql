@@ -3,6 +3,7 @@ import {
   normalizeStringValue,
   PaginationMode,
   OffsetPagination,
+  UserError,
 } from '@vulcan-sql/core';
 import { PaginationStrategy } from './strategy';
 
@@ -12,7 +13,7 @@ export class OffsetBasedStrategy extends PaginationStrategy<OffsetPagination> {
       Object.keys(ctx.request.query).includes(field)
     );
     if (!checkFelidInQueryString)
-      throw new Error(
+      throw new UserError(
         `The ${PaginationMode.OFFSET} must provide limit and offset in query string.`
       );
     const limitVal = ctx.request.query['limit'] as string;

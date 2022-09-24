@@ -7,6 +7,7 @@ import {
   VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
+import { ConfigurationError, UserError } from '../../utils/errors';
 
 // Support custom date format -> dayjs.format(...)
 dayjs.extend(customParseFormat);
@@ -30,7 +31,7 @@ export class DateTypeValidator extends InputValidator {
       // validate arguments schema
       Joi.assert(args, this.argsValidator);
     } catch {
-      throw new Error(
+      throw new ConfigurationError(
         'The arguments schema for "date" type validator is incorrect'
       );
     }
@@ -44,6 +45,8 @@ export class DateTypeValidator extends InputValidator {
       valid = args.format ? dayjs(value, args.format, true).isValid() : valid;
     }
     if (!valid)
-      throw new Error('The input parameter is invalid, it should be date type');
+      throw new UserError(
+        'The input parameter is invalid, it should be date type'
+      );
   }
 }

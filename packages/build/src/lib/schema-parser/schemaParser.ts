@@ -1,4 +1,8 @@
-import { APISchema, AllTemplateMetadata } from '@vulcan-sql/core';
+import {
+  APISchema,
+  AllTemplateMetadata,
+  InternalError,
+} from '@vulcan-sql/core';
 import {
   SchemaData,
   SchemaFormat,
@@ -61,7 +65,7 @@ export class SchemaParser {
           ...(yaml.load(schemaData.content) as object),
         } as RawAPISchema;
       default:
-        throw new Error(`Unsupported schema type: ${schemaData.type}`);
+        throw new InternalError(`Unsupported schema type: ${schemaData.type}`);
     }
   }
 }

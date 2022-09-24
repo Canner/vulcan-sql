@@ -9,7 +9,7 @@ import { program } from './cli';
   } catch (e: any) {
     // Ignore error with exit code = 0, e.g. commander.helpDisplayed error
     if (e?.exitCode === 0) return;
-    logger.prettyError(e, true, false, false);
+    logger.prettyError(e, true, false, true);
     process.exit(e?.exitCode ?? 1);
   }
 })();

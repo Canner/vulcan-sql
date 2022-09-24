@@ -4,6 +4,7 @@ import {
 } from '@vulcan-sql/core/models';
 import { chain } from 'lodash';
 import * as nunjucks from 'nunjucks';
+import { InternalError } from '@vulcan-sql/core/utils';
 import {
   LOOK_UP_PARAMETER,
   PARAMETER_METADATA_NAME,
@@ -29,7 +30,7 @@ export class ParametersChecker extends CompileTimeExtension {
       while (parent) {
         depth++;
         if (depth > REFERENCE_SEARCH_MAX_DEPTH) {
-          throw new Error('Max depth reached');
+          throw new InternalError('Max depth reached');
         }
         if (parent instanceof nunjucks.nodes.LookupVal) {
           name = parent.val.value + '.' + name;

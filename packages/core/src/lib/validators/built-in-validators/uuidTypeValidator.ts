@@ -6,6 +6,7 @@ import {
 import * as Joi from 'joi';
 import { GuidVersions } from 'joi';
 import { isUndefined } from 'lodash';
+import { ConfigurationError, UserError } from '../../utils/errors';
 
 type UUIDVersion = 'uuid_v1' | 'uuid_v4' | 'uuid_v5';
 
@@ -27,7 +28,7 @@ export class UUIDTypeValidator extends InputValidator {
       // validate arguments schema
       Joi.assert(args, this.argsValidator);
     } catch {
-      throw new Error(
+      throw new ConfigurationError(
         'The arguments schema for "uuid" type validator is incorrect'
       );
     }
@@ -51,7 +52,9 @@ export class UUIDTypeValidator extends InputValidator {
       // validate data value
       Joi.assert(value, schema);
     } catch {
-      throw new Error('The input parameter is invalid, it should be uuid type');
+      throw new UserError(
+        'The input parameter is invalid, it should be uuid type'
+      );
     }
   }
 }

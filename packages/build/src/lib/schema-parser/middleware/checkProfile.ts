@@ -1,5 +1,10 @@
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
-import { APISchema, DataSource, TYPES as CORE_TYPES } from '@vulcan-sql/core';
+import {
+  APISchema,
+  ConfigurationError,
+  DataSource,
+  TYPES as CORE_TYPES,
+} from '@vulcan-sql/core';
 import { inject, interfaces } from 'inversify';
 
 export class CheckProfile extends SchemaParserMiddleware {
@@ -21,7 +26,7 @@ export class CheckProfile extends SchemaParserMiddleware {
     await next();
     const transformedSchemas = schemas as APISchema;
     if (!transformedSchemas.profiles)
-      throw new Error(
+      throw new ConfigurationError(
         `The profile of schema ${transformedSchemas.urlPath} is not defined`
       );
 
@@ -29,7 +34,7 @@ export class CheckProfile extends SchemaParserMiddleware {
       try {
         this.dataSourceFactory(profile);
       } catch (e: any) {
-        throw new Error(
+        throw new ConfigurationError(
           `The profile ${profile} of schema ${transformedSchemas.urlPath} is invalid: ${e?.message}`
         );
       }

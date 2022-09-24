@@ -7,6 +7,7 @@ import {
   Pagination,
   TemplateProvider,
 } from '@vulcan-sql/core/models';
+import { InternalError } from '../utils';
 
 export type AllTemplateMetadata = Record<string, TemplateMetadata>;
 
@@ -37,7 +38,7 @@ export class TemplateEngine {
 
   public async compile(): Promise<Required<PreCompiledResult>> {
     if (!this.templateProvider)
-      throw new Error('Template provider has not been initialized.');
+      throw new InternalError('Template provider has not been initialized.');
 
     await this.templateProvider!.activate?.();
 

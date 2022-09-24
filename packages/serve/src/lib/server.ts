@@ -10,6 +10,8 @@ import {
   BuiltInArtifactKeys,
   APISchema,
   ArtifactBuilder,
+  InternalError,
+  ConfigurationError,
 } from '@vulcan-sql/core';
 import { Container, TYPES } from '../containers';
 import { ServeConfig, sslFileOptions } from '../models';
@@ -42,7 +44,7 @@ export class VulcanServer {
    */
   public async start() {
     if (!isEmpty(this.servers))
-      throw new Error('Server has created, please close it first.');
+      throw new InternalError('Server has created, please close it first.');
 
     // Load container
     await this.container.load(this.config);
@@ -125,7 +127,7 @@ export class VulcanServer {
   ) {
     // check ssl file
     if (!fs.existsSync(ssl.key) || !fs.existsSync(ssl.cert))
-      throw new Error(
+      throw new ConfigurationError(
         'Must need key and cert file at least when open https server.'
       );
 

@@ -1,6 +1,7 @@
 import { IsOptional, IsString, validateSync } from 'class-validator';
 import { inject, injectable, optional } from 'inversify';
 import { TYPES } from '../containers';
+import { ConfigurationError } from '../lib/utils/errors';
 import { ICoreOptions } from '../models';
 
 /** Root level options */
@@ -26,7 +27,9 @@ export class ProjectOptions implements Partial<ICoreOptions> {
     Object.assign(this, options);
     const errors = validateSync(this);
     if (errors.length > 0) {
-      throw new Error('Invalid root options: ' + errors.join(', '));
+      throw new ConfigurationError(
+        'Invalid root options: ' + errors.join(', ')
+      );
     }
   }
 }

@@ -12,7 +12,7 @@ it('Extension should throw custom error with error code and the position while e
     executeTemplate('test', {
       name: 'World',
     })
-  ).rejects.toThrowError('This is an error at 1:3');
+  ).rejects.toThrowError('This is an error');
 });
 
 it('Extension should provide a correct error list', async () => {

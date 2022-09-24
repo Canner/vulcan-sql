@@ -1,6 +1,7 @@
 import * as nunjucks from 'nunjucks';
 import { FINIAL_BUILDER_NAME, METADATA_NAME } from './constants';
 import { TagBuilder, VulcanInternalExtension } from '@vulcan-sql/core/models';
+import { TemplateError } from '../../../utils/errors';
 
 interface DeclarationLocation {
   lineNo: number;
@@ -113,7 +114,7 @@ export class ReqTagBuilder extends TagBuilder {
     const variable = node.args.children[0] as nunjucks.nodes.Literal;
     if (this.variableList.has(variable.value)) {
       const previousDeclaration = this.variableList.get(variable.value);
-      throw new Error(
+      throw new TemplateError(
         `We can't declare multiple builder with same name. Duplicated name: ${variable.value} (declared at ${previousDeclaration?.lineNo}:${previousDeclaration?.colNo} and ${variable.lineno}:${variable.colno})`
       );
     }
@@ -130,14 +131,14 @@ export class ReqTagBuilder extends TagBuilder {
     if (!isMainBuilder) return;
 
     if (this.hasMainBuilder) {
-      throw new Error(`Only one main builder is allowed.`);
+      throw new TemplateError(`Only one main builder is allowed.`);
     }
     this.hasMainBuilder = true;
   }
 
   private wrapOutputWithBuilder() {
     if (!this.root) {
-      throw new Error('No root node found.');
+      throw new TemplateError('No root node found.');
     }
     const originalChildren = this.root.children;
     const args = new nunjucks.nodes.NodeList(0, 0);

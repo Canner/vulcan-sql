@@ -1,3 +1,4 @@
+import { TemplateError } from '../../utils/errors';
 import {
   ComparisonPredicate,
   ComparisonOperator,
@@ -68,7 +69,7 @@ export class JoinOnClause implements IJoinOnClause {
 
   public on(leftColumn: string, operator: string, rightColumn: string) {
     if (!isOfComparisonOperator(operator))
-      throw new Error(`'There is no ${operator} operator.`);
+      throw new TemplateError(`'There is no ${operator} operator.`);
 
     this.recordOn({
       command: null,
@@ -79,7 +80,9 @@ export class JoinOnClause implements IJoinOnClause {
 
   public onBetween(column: string, min: number, max: number) {
     if (min > max)
-      throw new Error(`min value ${min} not smaller than max value ${max}.`);
+      throw new TemplateError(
+        `min value ${min} not smaller than max value ${max}.`
+      );
 
     this.recordOn({
       command: ComparisonPredicate.BETWEEN,

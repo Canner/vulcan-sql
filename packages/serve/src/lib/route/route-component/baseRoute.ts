@@ -1,5 +1,10 @@
 import { AuthUserInfo, KoaContext } from '@vulcan-sql/serve/models';
-import { APISchema, TemplateEngine, Pagination } from '@vulcan-sql/core';
+import {
+  APISchema,
+  TemplateEngine,
+  Pagination,
+  UserError,
+} from '@vulcan-sql/core';
 import { IRequestValidator } from './requestValidator';
 import { IRequestTransformer, RequestParameters } from './requestTransformer';
 import { IPaginationTransformer } from './paginationTransformer';
@@ -59,8 +64,10 @@ export abstract class BaseRoute implements IRoute {
 
     const profile = this.evaluator.evaluateProfile(user, profiles);
     if (!profile)
-      // Should be 403
-      throw new Error(`Forbidden`);
+      throw new UserError(`No profile found`, {
+        httpCode: 403,
+        code: 'vulcan.forbidden',
+      });
 
     const result = await this.templateEngine.execute(templateSource, {
       parameters: reqParams,

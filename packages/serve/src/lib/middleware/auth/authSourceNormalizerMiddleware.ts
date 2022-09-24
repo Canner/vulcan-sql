@@ -1,4 +1,8 @@
-import { getLogger, VulcanInternalExtension } from '@vulcan-sql/core';
+import {
+  ConfigurationError,
+  getLogger,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core';
 import {
   AuthSourceOptions,
   AuthSourceTypes,
@@ -24,7 +28,7 @@ export class AuthSourceNormalizerMiddleware extends BuiltInMiddleware<AuthSource
       this.options.in = this.options.in || AuthSourceTypes.QUERY;
 
       if (!Object.keys(AuthSourceTypes).includes(this.options.in.toUpperCase()))
-        throw new Error(
+        throw new ConfigurationError(
           `The "${this.options.in}" not support, only supported: ${Object.keys(
             AuthSourceTypes
           )}`

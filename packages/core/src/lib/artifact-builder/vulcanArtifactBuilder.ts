@@ -3,6 +3,7 @@ import { PersistentStore } from '@vulcan-sql/core/models';
 import { Serializer } from '@vulcan-sql/core/models';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
+import { InternalError } from '../utils';
 
 @injectable()
 export class VulcanArtifactBuilder implements ArtifactBuilder {
@@ -32,7 +33,7 @@ export class VulcanArtifactBuilder implements ArtifactBuilder {
 
   public getArtifact<T = any>(key: string): T {
     const target = this.artifact[key];
-    if (!target) throw new Error(`Artifact ${key} not found`);
+    if (!target) throw new InternalError(`Artifact ${key} not found`);
     return target as T;
   }
 

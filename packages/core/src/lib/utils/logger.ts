@@ -1,5 +1,6 @@
 import { Logger } from 'tslog';
 import { AsyncLocalStorage } from 'async_hooks';
+import { InternalError } from './errors';
 export { Logger as ILogger };
 // The category according to package name
 export enum LoggingScope {
@@ -63,7 +64,7 @@ class LoggerFactory {
     options?: LoggerOptions;
   }) {
     if (!(scopeName in LoggingScope))
-      throw new Error(
+      throw new InternalError(
         `The ${scopeName} does not belong to ${Object.keys(LoggingScope)}`
       );
     // if scope name exist in mapper and not update config
