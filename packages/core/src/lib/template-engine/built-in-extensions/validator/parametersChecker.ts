@@ -37,9 +37,11 @@ export class ParametersChecker extends CompileTimeExtension {
         } else if (parent instanceof nunjucks.nodes.FunCall) {
           parent = parent.name;
         } else {
-          if (parent.value === LOOK_UP_PARAMETER) {
+          name = parent.value + '.' + name;
+          const lookUp = LOOK_UP_PARAMETER + '.';
+          if (name.startsWith(lookUp)) {
             this.parameters.push({
-              name,
+              name: name.replace(lookUp, ''),
               lineNo: node.lineno,
               columnNo: node.colno,
             });
