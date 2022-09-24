@@ -1,4 +1,4 @@
-url: /user/:id
+urlPath: /user/:id
 request:
   - fieldName: id
     fieldIn: path
@@ -6,3 +6,5 @@ request:
     validators:
       - uuid
       - required
+profiles:
+  - pg # replace this with your profile name

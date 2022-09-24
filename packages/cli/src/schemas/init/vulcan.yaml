@@ -1,6 +1,6 @@
 name: '{{ options.projectName }}'
 description: A starter Vulcan project
-version: 0.1.0-alpha.1
+version: 0.2.0
 template:
   provider: LocalFile
   # Path to .sql files
@@ -20,5 +20,14 @@ document-generator:
     - oas3
 types:
   - RESTFUL
+auth:
+  enabled: false
 enforce-https:
   enabled: false
+response-format:
+  enabled: true
+  options:
+    default: json
+    formats:
+      - json
+      - csv
