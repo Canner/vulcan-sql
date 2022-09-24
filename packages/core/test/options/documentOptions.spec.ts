@@ -18,7 +18,6 @@ it('Should provide correct default option values', async () => {
   // Action
   const options = container.get<DocumentOptions>(TYPES.DocumentOptions);
   // Assert
-  expect(options.folderPath).toBe('.');
   expect(options.specs).toEqual([DocumentSpec.oas3]);
   expect(options.router).toEqual([DocumentRouterType.redoc]);
 });
@@ -28,19 +27,18 @@ it('Can override some option properties', async () => {
   container
     .bind<Partial<IDocumentOptions>>(TYPES.DocumentInputOptions)
     .toConstantValue({
-      folderPath: './some/folder',
+      specs: ['oas4'],
     });
   const options = container.get<DocumentOptions>(TYPES.DocumentOptions);
   // Assert
-  expect(options.folderPath).toBe('./some/folder');
-  expect(options.specs).toEqual([DocumentSpec.oas3]);
+  expect(options.specs).toEqual(['oas4']);
   expect(options.router).toEqual([DocumentRouterType.redoc]);
 });
 
 it('Schema validation should work', async () => {
   // Arrange
   container.bind(TYPES.DocumentInputOptions).toConstantValue({
-    folderPath: true,
+    specs: true,
   });
   // Act. Assert
   expect(() => container.get<DocumentOptions>(TYPES.DocumentOptions)).toThrow();

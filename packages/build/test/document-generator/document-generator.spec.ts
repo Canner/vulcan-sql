@@ -1,9 +1,8 @@
 import { SpecGenerator } from '@vulcan-sql/build';
 import { DocumentGenerator } from '@vulcan-sql/build/doc-generator';
 import * as sinon from 'ts-sinon';
-import * as path from 'path';
-import { promises as fs } from 'fs';
 import faker from '@faker-js/faker';
+import { ArtifactBuilder } from '@vulcan-sql/core';
 
 it('Document generator should write YAML files while generating documents', async () => {
   // Arrange
@@ -11,6 +10,7 @@ it('Document generator should write YAML files while generating documents', asyn
     someSpec: faker.datatype.number(),
     profile: faker.name.firstName(),
   };
+  const mockArtifactBuilder = sinon.stubInterface<ArtifactBuilder>();
   const documentGenerator = new DocumentGenerator(
     (id: string) => {
       const mockSpecGenerator = sinon.stubInterface<SpecGenerator>();
@@ -20,19 +20,17 @@ it('Document generator should write YAML files while generating documents', asyn
     },
     {
       specs: ['spec1', 'spec2'],
-      folderPath: __dirname,
       router: [],
-    }
+    },
+    mockArtifactBuilder
   );
 
   // Act
   await documentGenerator.generateDocuments([]);
 
   // Arrange
-  expect(
-    await fs.readFile(path.resolve(__dirname, 'spec-spec1.yaml'), 'utf-8')
-  ).toEqual(`someSpec: ${mockSpec.someSpec}\nprofile: ${mockSpec.profile}\n`);
-  expect(
-    await fs.readFile(path.resolve(__dirname, 'spec-spec2.yaml'), 'utf-8')
-  ).toEqual(`someSpec: ${mockSpec.someSpec}\nprofile: ${mockSpec.profile}\n`);
+  expect(mockArtifactBuilder.addArtifact.firstCall.args[1]).toEqual({
+    spec1: mockSpec,
+    spec2: mockSpec,
+  });
 });

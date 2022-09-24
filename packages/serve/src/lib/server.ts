@@ -3,11 +3,13 @@ import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
 import {
-  VulcanArtifactBuilder,
   TYPES as CORE_TYPES,
   CodeLoader,
   DataSource,
   getLogger,
+  BuiltInArtifactKeys,
+  APISchema,
+  ArtifactBuilder,
 } from '@vulcan-sql/core';
 import { Container, TYPES } from '../containers';
 import { ServeConfig, sslFileOptions } from '../models';
@@ -45,12 +47,18 @@ export class VulcanServer {
     // Load container
     await this.container.load(this.config);
 
-    const artifactBuilder = this.container.get<VulcanArtifactBuilder>(
+    const artifactBuilder = this.container.get<ArtifactBuilder>(
       CORE_TYPES.ArtifactBuilder
     );
 
     // Obtain schema and template
-    const { schemas, templates } = await artifactBuilder.load();
+    await artifactBuilder.load();
+    const templates = artifactBuilder.getArtifact(
+      BuiltInArtifactKeys.Templates
+    );
+    const schemas = artifactBuilder.getArtifact<APISchema[]>(
+      BuiltInArtifactKeys.Schemas
+    );
 
     // Initialized template engine
     const codeLoader = this.container.get<CodeLoader>(

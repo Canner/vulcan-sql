@@ -28,7 +28,6 @@ export default {
   },
   document: {
     specs: [DocumentSpec.oas3],
-    folderPath: __dirname,
   },
   types: [APIProviderType.RESTFUL],
   profiles: [path.resolve(__dirname, 'profile.yaml')],

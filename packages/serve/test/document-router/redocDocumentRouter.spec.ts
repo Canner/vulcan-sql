@@ -1,9 +1,10 @@
-import { DocumentOptions, ProjectOptions } from '@vulcan-sql/core';
+import { ArtifactBuilder, ProjectOptions } from '@vulcan-sql/core';
 import { RedocDocumentRouters } from '../../src/lib/document-router';
 import * as Koa from 'koa';
 import * as supertest from 'supertest';
 import faker from '@faker-js/faker';
 import { Server } from 'http';
+import * as sinon from 'ts-sinon';
 
 let http: Server;
 
@@ -13,12 +14,12 @@ afterEach(() => {
 
 it('Should serve redoc server with all the required contents', async () => {
   // Arrange
+  const mockArtifactBuilder = sinon.stubInterface<ArtifactBuilder>();
+  mockArtifactBuilder.getArtifact.returns({ oas3: { name: 123 } });
   const server = new RedocDocumentRouters(
     {},
     '',
-    new DocumentOptions({
-      folderPath: __dirname,
-    }),
+    mockArtifactBuilder,
     new ProjectOptions()
   );
   await server.activate();
@@ -39,17 +40,19 @@ it('Should serve redoc server with all the required contents', async () => {
       `/*! For license information please see redoc.standalone.js.LICENSE.txt */`
     )
   ).toBeTruthy();
-  expect(spec.body.toString()).toEqual(`name: "123"`);
+  expect(spec.body).toEqual({ name: 123 });
 });
 
 it('Should follow the url path we set', async () => {
   // Arrange
+  const mockArtifactBuilder = sinon.stubInterface<ArtifactBuilder>();
+  mockArtifactBuilder.getArtifact.returns({ oas3: { name: 123 } });
   const server = new RedocDocumentRouters(
     {
       url: 'some-path-other-than-doc',
     },
     '',
-    new DocumentOptions(),
+    mockArtifactBuilder,
     new ProjectOptions()
   );
   await server.activate();

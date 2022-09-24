@@ -111,3 +111,13 @@ it('Version command should execute without error', async () => {
     program.parseAsync(['node', 'vulcan', 'version'])
   ).resolves.not.toThrow();
 });
+
+// TODO: We can't test package result until the new version of build package release
+it('Package command should make result.json', async () => {
+  // Action
+  await program.parseAsync(['node', 'vulcan', 'package']);
+  // Assert
+  expect(
+    fs.readFile(path.resolve(projectRoot, 'result.json'), 'utf-8')
+  ).resolves.not.toThrow();
+});

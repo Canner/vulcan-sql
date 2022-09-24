@@ -18,7 +18,6 @@ schema-parser:
 document-generator:
   specs:
     - oas3
-  folderPath: .
 types:
   - RESTFUL
 extensions:
@@ -34,3 +33,10 @@ enforce-https:
   enabled: false
 auth:
   enabled: false
+response-format:
+  enabled: true
+  options:
+    default: json
+    formats:
+      - json
+      - csv

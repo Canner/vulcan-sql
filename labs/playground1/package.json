@@ -1,7 +1,11 @@
 {
   "name": "my-first-vulcan-project",
   "dependencies": {
-    "lodash": "^4.17.21",
-    "redoc": "^2.0.0-rc.76"
+    "@vulcan-sql/core": "0.2.0-dev.20220922.0",
+    "@vulcan-sql/extension-driver-duckdb": "0.2.0-dev.20220919.0",
+    "@vulcan-sql/serve": "0.2.0-dev.20220922.0"
+  },
+  "devDependencies": {
+    "@vulcan-sql/build": "0.2.0-dev.20220922.0"
   }
 }

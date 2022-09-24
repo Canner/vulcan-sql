@@ -1,14 +1,20 @@
-import { IBuildOptions } from '@vulcan-sql/build/models';
+import {
+  IBuildOptions,
+  Packager,
+  PackagerType,
+} from '@vulcan-sql/build/models';
 import { Container, TYPES } from '@vulcan-sql/build/containers';
 import { SchemaParser } from '@vulcan-sql/build/schema-parser';
 import {
   DataSource,
+  BuiltInArtifactKeys,
   TemplateEngine,
   TYPES as CORE_TYPES,
   VulcanArtifactBuilder,
   getLogger,
 } from '@vulcan-sql/core';
 import { DocumentGenerator } from './document-generator';
+import { interfaces } from 'inversify';
 
 const logger = getLogger({ scopeName: 'BUILD' });
 
@@ -18,7 +24,7 @@ export class VulcanBuilder {
     this.options = options;
   }
 
-  public async build() {
+  public async build(packagerName?: PackagerType | string) {
     const container = new Container();
     await container.load(this.options);
     const schemaParser = container.get<SchemaParser>(TYPES.SchemaParser);
@@ -44,9 +50,21 @@ export class VulcanBuilder {
     const { metadata, templates } = await templateEngine.compile();
     const { schemas } = await schemaParser.parse({ metadata });
 
-    await artifactBuilder.build({ schemas, templates });
+    artifactBuilder.addArtifact(BuiltInArtifactKeys.Templates, templates);
+    artifactBuilder.addArtifact(BuiltInArtifactKeys.Schemas, schemas);
 
     await documentGenerator.generateDocuments(schemas);
+    await artifactBuilder.build();
+
+    // Package
+    if (packagerName) {
+      const packagerFactory = container.get<
+        interfaces.AutoNamedFactory<Packager>
+      >(TYPES.Factory_Packager);
+      const packager = packagerFactory(packagerName);
+      await packager.activate();
+      await packager.package(this.options);
+    }
 
     await container.unload();
   }

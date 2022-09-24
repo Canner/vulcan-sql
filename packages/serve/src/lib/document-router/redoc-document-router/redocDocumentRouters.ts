@@ -1,5 +1,5 @@
 import {
-  DocumentOptions,
+  ArtifactBuilder,
   DocumentRouterType,
   DocumentSpec,
   ProjectOptions,
@@ -28,10 +28,10 @@ export class RedocDocumentRouters extends DocumentRouter {
   constructor(
     @inject(CORE_TYPES.ExtensionConfig) config: any,
     @inject(CORE_TYPES.ExtensionName) moduleName: string,
-    @inject(CORE_TYPES.DocumentOptions) documentOptions: DocumentOptions,
+    @inject(CORE_TYPES.ArtifactBuilder) artifactBuilder: ArtifactBuilder,
     @inject(CORE_TYPES.ProjectOptions) projectOption: ProjectOptions
   ) {
-    super(config, moduleName, documentOptions);
+    super(config, moduleName, artifactBuilder);
     this.projectOption = projectOption;
   }
 
@@ -43,7 +43,7 @@ export class RedocDocumentRouters extends DocumentRouter {
       ctx.response.body = this.docContent;
     });
     // spec file
-    // TODO: it should be spec.yaml but extension will be removed by response-format/middleware, wait for fixing
+    // TODO: it should be spec.json but extension will be removed by response-format/middleware, wait for fixing
     const specUrl = `/${this.urlPrefix}/spec`;
     this.router.get(specUrl, async (ctx, next) => {
       await next();
