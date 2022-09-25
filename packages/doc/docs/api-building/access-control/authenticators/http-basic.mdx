@@ -1,0 +1,96 @@
+# HTTP basic authenticator
+
+:::caution
+Hardcoded passwords in config files are not recommended for production environments, please use this authenticator only for development usage.
+
+:::
+
+Authenticate users via [HTTP basic auth](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
+
+## Configuration
+
+```yaml
+auth:
+  enabled: true
+  options:
+    basic:
+      # Read users and passwords from a text file.
+      htpasswd-file:
+        path: passwd.txt # Path to the password file.
+        users: # (Optional) Add attributes for users
+          - name: jax
+            attr:
+              department: engineer
+      # Config users and their passwords in config (not recommended)
+      users-list:
+        - name: william
+          md5Password: 202cb962ac59075b964b07152d234b70
+          attr:
+            department: finance
+        - name: freda
+          md5Password: 202cb962ac59075b964b07152d234b70
+          attr:
+            department: engineer
+```
+
+### Password file
+
+You need to create a password file in format `<username>:<md5-password>`, one user per line. For example:
+
+```
+jax:202cb962ac59075b964b07152d234b70
+ivan:202cb962ac59075b964b07152d234b70
+```
+
+This file provides two users "jax" and "ivan" with password "123".
+
+If you want to add some attributes for these users, you can set them in the config file, for example,
+
+```yaml
+auth:
+  enabled: true
+  options:
+    basic:
+      htpasswd-file:
+        path: passwd.txt
+        users:
+          - name: jax
+            attr:
+              department: engineer
+```
+
+This config adds department=engineer for user "jax", but adds no attribute to user "ivan".
+
+### User list
+
+In the development environment, you can also hardcoded some users in the config file:
+
+```yaml
+auth:
+  enabled: true
+  options:
+    users-list:
+      - name: william
+        md5Password: 202cb962ac59075b964b07152d234b70
+        attr:
+          department: finance
+      - name: freda
+        md5Password: 202cb962ac59075b964b07152d234b70
+        attr:
+          department: engineer
+```
+
+This config adds two users "william" and "freda", along with corresponding attributes.
+
+:::info
+You can add both users-list and htpasswd-file at the same time, htpasswd-file has the higher priority.
+
+:::
+
+## Provide credentials
+
+You need to add a header `Authorization: basic base64(<username>:<password>)` when sending requests, for example, sending requests with username "ivan" and password "123".
+
+```yaml
+curl -H "Authorization: basic aXZhbjoxMjM=" http://localhost:3000/api/customer
+```

@@ -10,6 +10,7 @@
     "extension-driver-pg": "packages/extension-driver-pg",
     "integration-testing": "packages/integration-testing",
     "serve": "packages/serve",
-    "test-utility": "packages/test-utility"
+    "test-utility": "packages/test-utility",
+    "doc": "packages/doc"
   }
 }

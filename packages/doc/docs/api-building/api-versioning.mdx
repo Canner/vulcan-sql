@@ -1,0 +1,44 @@
+# API Versioning
+
+Sometimes you may have some reason to modify your API endpoints ( e.g: reducing / extending request parameters or change your original SQL Query business logistics ), but you still keep original API because some users still needed, then you could solve the scenario through API Versioning.
+
+# Add prefix in API url
+
+Currently, you could define the versioning prefix in the head of `urlPath` in each Data API Schema.
+
+```yaml
+# v1_user.yaml
+urlPath: /v1/users
+request:
+  - fieldName: gender
+    filedIn: query
+--------
+
+# v2_user.yaml
+urlPath: /v2/users
+request:
+  - fieldName: gender
+    filedIn: query
+    ...
+  - fieldName: level
+    fieldIn: query
+```
+
+When you send request to different versioning users API:
+
+```bash
+# send to v1:
+GET<endpoint>/api/v1/users?gender=female
+> query by using the v1_users.sql
+
+----
+# send to v2:
+GET<endpoint>/api/v2/users?gender=female&level=vip
+> query by using the v2_users.sql
+```
+
+# Has a smarter way of handling API versioning?
+
+You may think why you should create the new version with a new API schema too.
+
+Actually VulcanSQL had the plan to make it smarter and will provide the smarter solution which possibly don‘t change the API endpoint `urlPath` but also could routing to the correct new version SQL file for querying data result, please wait for our next VulcanSQL version 😃

@@ -1,0 +1,158 @@
+# Data API Schema
+
+Data API Schema ( aka API Schema ) is a definition file for creating each Data API endpoint. When using VulcanSQL, you
+
+not only write SQL Query files to get results from the data source, but also need to write the Data API Schema, or no API created.
+
+# API Schema Structure
+
+Below is a Data API schema structure sample, the Data API schema uses YAML format to define it:
+
+```yaml
+urlPath: /users/:id
+request:
+  - fieldName: id
+    fieldIn: path
+    description: user id
+    validators:
+      - uuid
+      - required
+profiles:
+  - pg # replace this with your profile name
+```
+
+VulcanSQL will read the Data API Schema and know what the SQL files mapping it, then auto-generated APIs that map to the user-written SQL files.
+
+Below is the introduction of each field in the structure.
+
+# API Schema Fields
+
+### `urlPath` Field
+
+This is the Data API endpoint URL path. you could add the path parameter hereby `:[param-name]`, format, but when you add the path parameter, the `feildName` should also have the path parameter, and `fieldIn` should be `path`, if you forgot, VulcanSQL will auto-generated it to make it work.
+
+```yaml
+urlPath: /users/:id
+request:
+  - fieldName: id
+    fieldIn: path
+    ....
+```
+
+After API generated, VulcanSQL will add a prefix `/api` to distinguish Data API endpoints and other Non-Data API endpoints. For the above sample, the request url actually should be `/api/users/:id`.
+
+Otherwise, if you not set `urlPath`, VulcanSQL will use your API Schema filename to be url, e.g: API schema filename is `user.yaml` , then the `urlPath` will be `/user` .
+
+### `templateSource` Field
+
+The`templateSource` field could let VulcanSQL know what the SQL file this API will like to map for querying it and response data. It should be SQL filename ( not need file extension ).
+
+```yaml
+- sqls
+  - user.yaml
+  - user.sql
+
+# user.yaml
+urlPath: /users/:id
+templateSource: user
+...
+```
+
+### `request` Fields
+
+The `request` define what the request parameters would like to send with the API request, if you would like to have parameters to send the request, you should define the parameter with at least `fieldName`, `fieldIn` two fields.
+
+- `fieldName` - The field name of the parameter of the API request, but the parameter field is optional, so you could send the request with the parameter optional. However, if your parameter is a path parameter e.g: `/users/:id`, then VulcanSQL will make the path parameter **required**.
+- `fieldIn` - Where the parameter field is put in with the API request. It could be `path`, `query`, and `header`. If the `fieldIn` is the `path`, then you should also define the path parameter in `urlPath` . below is the sample:
+
+  ```yaml
+  urlPath: users
+  request:
+    - fieldName: gender
+      fieldIn: query
+      ...
+    - fieldName: age
+      fieldIn: query
+  ```
+
+  The request could be below 4 cases:
+
+  ```bash
+  /api/users
+  /api/users?gender=male
+  /api/users?age=18
+  /api/users?gender=male&age=18
+
+  ```
+
+- `type` : The `type` could let VulcanSQL know the data is what type for handing it. The type could be `string`, `number`, and `boolean`.
+  If not set the field, the default is `string` type. Otherwise, sometimes if your SQL query should use the correct data type to do the filter condition, e.g: `where age > 18` , then if you don't set the `type` to be a `number` for `age`, then the query filter may get an incorrect result.
+- `description` - The `description` field is an optional value too, but if you add the `description`, then it could make the API document could display the description to make the users know what the request field is.
+- `validators` - The `validators` field is an array type to make the request parameter field have some validator to check the value format. E.g If your parameter field should be required, then set the `requried` in validators could make VulcanSQL check the parameter must be required. VulcanSQL provides some built-in validators for you, you could see the [API Validation](../api-validation) to know the detail.
+
+### `sample` fields
+
+The `sample` fields are optional fields, if you don't set them, then the API document will show the response fields in the API endpoint introduction. VulcanSQL will use `sample` fields to send a query for sampling and get the result column with the field type for generating the information in the API documentation.
+
+If you would like to set it, you should provide these fields:
+
+- `parameters` - The `parameters` could let you set the sampling data for the SQL query needed, for example, if your API needs to send the request with `gender` and `age`, then you should send the field in the `sample` fields:
+
+  ```yaml
+  urlPath: users/:id
+  request:
+    - fieldName: id
+      fieldIn: path
+      type: string
+      ...
+
+  parameters:
+      id: '1234'
+  ```
+
+  :::info
+  For the more detail of using `sample` field, please see [API Document](../api-document#set-sampler).
+
+  :::
+
+- `profiles`: The `profiles` indicate the data source you would like to use for querying the sample data result.
+
+### `profiles` field / `profile` field
+
+The `profiles` / `profile` indicated which data sources the API will use to query the data result.
+
+The `profiles` field take precedence over the `profile` field when both existed.
+
+When you use the `profile`, it means the API endpoint will query the data from the data source, and each data source could set the [Authorization](../access-control/authorization) to specify who ( users ) have permission to send the query by the Data API.
+
+```yaml
+urlPath: user/:id
+request: ...
+
+# only user1, and user2 have the pg permission to send the API for querying.
+profile: pg
+```
+
+Like the above example, if today user3 would like to query the API, it has no authorization to the get result.
+
+When using the `profiles`, it could support multiple data sources like the below examples:
+
+```yaml
+urlPath: user/:id
+request: ...
+
+profile:
+  # only user1, and user2 have the pg permission to send the API for querying.
+  - pg
+  # only user1, and user3 have the duckdb permission to send the API for querying.
+  - duckdb
+```
+
+But when the above example, if user3 would like to send the query, it could send the query to get the data from `duckdb`.
+
+This feature could make the user could use the sample SQL query but control the permission to make different use querying the data from different data sources.
+
+:::caution
+you should make sure the `pg` and `duckdb` have been installed from the remote packages, have the declaration under the `extensions` of the project config, and set the connection information in the [Data Source Profile](./data-source-profile).
+
+:::

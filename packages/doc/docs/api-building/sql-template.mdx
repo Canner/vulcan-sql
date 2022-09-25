@@ -1,0 +1,413 @@
+# SQL Template
+
+VulcanSQL could make you build the API with your written SQL File.
+
+However, **it not only supports basic SQL syntax, but also provides SQL template syntax to make you could write SQL flexibly.**
+
+We start the basic SQL syntax for the sample.
+
+# Basic SQL Syntax
+
+You could use basic SQL Syntax to create an SQL file and define Data API by defining [Data API Schema](./configuration/data-api-schema) to let create the API endpoint and send the request to run your SQL file for querying data.
+
+First You could write your SQL logistic in the file and put the file in a place e.g: create the SQL file named `youth_users.sql` and put it in `/sqls` folder:
+
+```sql
+SELECT * FROM public.users WHERE age >= 10 AND age <= 19;
+```
+
+Second, define your `youth_users.sql` API entry point by [Data API Schema](./configuration/data-api-schema) for creating the API:
+
+```yaml
+urlPath: /youth_users
+# use the "pg" (postgres) data source
+profile: pg
+```
+
+This API Schema also named `youth_users` with YAML format and but under the `/sqls` too.
+
+Finally, set the `folderPath` in `template` options and `folderPath` of `schema-parser` in the project config, see the [Configuration](./configuration) :
+
+```yaml
+---
+template:
+  provider: LocalFile
+  folderPath: sqls
+  codeLoader: InMemory
+---
+schema-parser:
+  reader: LocalFile
+  folderPath: sqls
+```
+
+Otherwise, if you have not specified what is your data source when you query the data from the SQL file, you could see the [Data source profiles](./configuration/data-source-profile) to set.
+
+Then after you could use `vulcan start` to create the VulcanSQL server with the API endpoints.
+
+```yaml
+> [GET] <endpoint>/api/youth_users -> return the result
+```
+
+# Templating Syntax and Feature
+
+VulcanSQL provides an SQL template feature and defines the templating syntax for you could make your SQL File more possible.
+
+VulcanSQL use the [Nunjucks](https://mozilla.github.io/nunjucks/templating.html#filter) be our core templating engine but modify and extend the original [Nunjucks](https://mozilla.github.io/nunjucks/templating.html#filter) feature. VulcanSQL use the `{{ ... }}` and `{% ... }%` format to create our templating feature. Below is the `{{ ... }}` and `{% ... }%` syntax different.
+
+- `{{ ... }}` - The syntax could let you write a statement, and it could make VulcanSQL can do some features. Some features are [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) built-in features, and some are our VulcanSQL custom features:
+  - [Nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) built-in features
+    - Filters the variable by `|`.
+    - Use defined macro function.
+    - Display the variable value.
+  - VulcanSQL Custom feature:
+    - Use the dynamic parameter.
+    - Filters the dynamic parameter by `|`.
+    - Use the [SQL Builder](./sql-builder) function.
+- `{% ... %}` - The syntax could make you write an expression and it should cooperate with **tag** components. Some features are [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) built-in features, and some are our VulcanSQL custom features:
+  - [Nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) built-in features
+    - If condition by `if` tag.
+    - For loop feature by `for` tag.
+    - Set variable by `set` tag.
+    - Define Marcos by `macro` tag.
+  - VulcanSQL Custom feature:
+    - Show [Error Response](./error-response) .
+    - Set the dynamic parameter to the variable by `set`.
+    - Define a [SQL Builder](./sql-builder) feature.
+    - Define the Main builder.
+
+In the `{% ... %}`, you could write **Python language syntax** code, because the [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) is based on [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) and it is a Python package.
+
+## Dynamic Parameter
+
+The dynamic parameter is first important feature, which could let you use the request parameter in SQL file for making your Query result could change follow by your API request parameter.
+
+You could use `{{ context.params.[request-parameter] }}` to get the request parameter you defined it in [Data API Schema ](./configuration/data-api-schema), the `[request-parameter]` should replace to your request parameter which is the same as the `fieldName` under the `request` of API schema , we use the basic SQL syntax sample:
+
+```sql
+SELECT * FROM public.users
+WHERE age >= {{ context.params.age }} AND {{ context.params.age }} <= 19;
+```
+
+Change the API Schema for setting the request parameter:
+
+```yaml
+urlPath: /youth_users
+request:
+	- fieldName: age
+		fieldIn: query
+		type: number
+		validators:
+			- integer
+			- requried
+
+# use the "pg" (postgres) data source
+profile: pg
+```
+
+Then you could make your SQL file could get different results according to your API request.
+
+## Use Marco in the SQL file
+
+You could also define some macros to make you could reuse SQL code in the different places of the same SQL file, to prevent writing the same partly SQL again.
+
+The is the [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) feature by using the `macro` tag with `{% ... %}`to begin to define the macro SQL and end macro function scope by `endmacro` tag with `{% ... %}`, like below:
+
+```sql
+# Define the macro function
+{% macro cents_to_dollars(column_name, precision=2) %}
+    ({{ column_name }} / 100)
+{% endmacro %}
+
+```
+
+However, **the macro function only supports defined at the top place in the SQL Query file.**
+
+It means you could not only define the macro function file and use it in your SQL Query file by importing the macro function because [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) have not yet supported the defined macro function and import it to the SQL file currently.
+
+```sql
+
+# Define the macro function
+{% macro cents_to_dollars(column_name, precision=2) %}
+    ({{ column_name }} / 100)
+{% endmacro %}
+
+# Use macro function
+select
+  id as payment_id,
+  {{ cents_to_dollars('amount') }} as amount_usd,
+  ...
+from app_data.payments
+
+```
+
+VulcanSQL will provide the feature by enhancing the [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) macro function by importing a macro function from other files in the next version 😃
+
+## Set variable
+
+You could set the variable not only primitive value e.g: integer, string, array. But also VulcanSQL support declares a variable by assigning the dynamic parameter to it. Use the `set` tag and `{% ... %}` to declare the variable and set:
+
+```sql
+ {% set [variable-name] = [value or dynamic parameter] %}
+```
+
+Below are some examples:
+
+```sql
+# Sample 1: original set variables
+{% set myArray = [1,2,3,4,4] %}
+{% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
+---
+# Sample 2: set dynamic parameter
+`{% set someVar = context.params.age %}
+```
+
+## Display the variable / dynamic parameter
+
+You could print the variable in the terminal for viewing, uses the `set` tag:
+
+```sql
+# Display the variable value
+{% set myArray = [1,2,3,4,4] %}
+{{ myArray }}
+```
+
+![screenshot of failed query](./img/failed-query.png)
+
+You will see the value displayed in the terminal, but seems the Query is failed, if you would like to solve the error, you could use `SELECT` to select the variable:
+
+```sql
+# Display the variable value
+{% set myArray = [1,2,3,4,4] %}
+SELECT {{ myArray }}
+
+------
+# The response by sending the request which used curl command
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ...
+[{"$1":"1,2,3,4,4"}]%
+```
+
+The API sends the response and value because it’s a SQL File, so when you use `SELECT` clause, it could get the result.
+
+But you will see the field is `$1` in the response, if you would like to define the key, you can use `AS` (alias) for giving the column name, and it will become the field name.
+
+```sql
+# Display the variable value
+{% set myArray = [1,2,3,4,4] %}
+SELECT {{ myArray }} as arr
+
+------
+# The response by sending the request which used curl command
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ...
+[{"arr":"1,2,3,4,4"}]%
+```
+
+Otherwise, you will see the above example always print the value to `$[number]` e.g: `$1` and then print the value in the terminal and display the `$1` as key and then shows the value.
+
+The reason is that VulcanSQL **_uses the placeholder_** and query by **_parameterized statement for preventing SQL injection._**
+
+You could also print the dynamic parameter in the terminal too ( If you would like to get a response, still add the `SELECT` in the head:
+
+```sql
+
+# Display the dynamic parameter value
+# context.params.age = 18
+{% set myAge = context.params.age %}
+{{ myAge }} # -> $1 -> 18
+---
+# Display the dynamic parameter value which added primitive integer
+# context.params.age = 18
+{% set myAge = (context.params.age + 1) %}
+{{ myAge }} # -> $1 -> 19
+
+```
+
+## Filters
+
+Filters are one of the [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) features which can apply the function to variables by pipe operator (`|`) and can take arguments, shown below:
+
+```sql
+# context.params.name is 'canner'
+{{ context.params.name | upper }} # -> $1 -> 'CANNER'
+```
+
+Of course, you could use the `SELECT` to see the response:
+
+```sql
+# context.params.name is 'canner'
+SELECT {{ context.params.name | upper }} # -> $1 -> 'CANNER'
+
+----
+# The response by sending the request which used curl command
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ...
+[{"$1":"CANNER"}]%
+```
+
+You could also use multiple filters:
+
+```sql
+{% set items = ['foo', 'bar', 'bear'] %}
+SELECT {{ items | join(",") | upper }} # -> $1 -> 'FOO,BAR,BEAR'
+```
+
+You could also use the [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) built-in Filters functions, please see the [nunjucks filters](https://mozilla.github.io/nunjucks/templating.html#builtin-filters).
+
+### Raw Filter
+
+The `raw` filter is the VulcanSQL custom filer function, which could make your defined variable or dynamic parameter output value directly, it will transform `$[number]` to the value first and if you still have a pipe function after the `raw` , then it will use the output value to do the filter.
+
+Below is `SELECT` samples, you could see the comment to explain:
+
+```sql
+# context.params.name is 'canner'
+SELECT {{ context.params.name | raw | upper }} # -> $1 -> 'canner' -> 'CANNER'
+
+----
+# The response by sending the request which used curl command
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ...
+[{"$1":"CANNER"}]%
+```
+
+But you may think it seems not to be different, right?
+
+Well, The benefit of `raw` filter is that could assist you to decide when getting the variable / dynamic parameter value for operating logistic calculation or checking conditions, please see the sample:
+
+```sql
+{% set gender = (context.params.gender | upper | raw) %}
+{% if gender in ['MALE', 'FEMALE'] %}
+    SELECT concat('Yes,', {{ context.params.name }}, 'is', {{ gender }}) as message;
+{% endif %}
+
+----
+# The response by sending the request which used CURL
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ...
+[{"msg":"Yes, user1 is MALE"}]%
+```
+
+You could see the above, when we need to check the condition by `if` tag ( we talk it below ), we could use raw to get the value and set to the variable first, then do the condition checking.
+
+### Unique Filter
+
+The `unique` filter is the VulcanSQL custom filter which assists to make getting the unique values in the list from a variable, below is a sample:
+
+```sql
+{% set array = [1,2,3,4,4] %}
+SELECT {{ array | unique }} # result is 1,2,3,4
+----------
+# The response by sending the request which used curl command
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ...
+[{"$1":"1,2,3,4"}]%
+```
+
+You could also provide an argument `by` for deciding which field/column will operate the unique filter in the list from a variable, you could see the below for-loop expression sample.
+
+## Use If-else / for-loop
+
+You could also use the [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) built-in `for` tag and `if` tag to make your SQL more flexible:
+
+### for-loop expression
+
+If you would like to loop your variable, you can use the `for` tag with `{% ... %}` and end loop with `{% endfor %}`, below is the sample
+
+```sql
+{% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
+# provide by argument to unique
+{% for item in array | unique(by="name") %}
+{{ item.name }} # result is 'Tom', 'Joy'
+{% endfor %}
+```
+
+The above sample shows `for` tag could let you traverse each value. If you would like to use `SELECT` to display the result, you could write like this way because of **only one SELECT clause** for getting the result in each SQL file
+
+```sql
+{% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
+# Use the loop to select multiple item's name and be an multiple columns
+SELECT {% for item in array | unique(by="name") %} {{ item.name }}, {% endfor %}
+----
+# The response by sending the request which used curl command
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ...
+{"$1":"Tom","$2":"Joy"}]%
+```
+
+### if-else expression
+
+If you would like to check the condition, you can use the `if` tag with `{% ... %}` and end loop with `{% endif %}`, you could also use **else if** by \*\*\*\*`{% elif %}` and else by `{% else %}` , below is a sample:
+
+```sql
+{% set gender = (context.params.gender | upper | raw) %}
+{% if gender == 'MALE' %}
+    SELECT concat({{ context.params.name }}, ' is male.') as msg;
+{% elif gender == 'FEMALE' %}
+    SELECT concat({{ context.params.name }}, ' is female.') as msg;
+{% else %}
+    SELECT concat({{ context.params.name }}, ' unkown gender.') as msg;
+{% endif %}
+```
+
+# Comment in SQL File
+
+When writing the SQL file and use for VulcanSQL, you could use the general `--` sign to add the comment:
+
+```sql
+-- This is an array sample and use uqniue filter
+{% set array = [1,2,3,4,4] %}
+SELECT {{ array | unique }}
+```
+
+But your comment contains some slice templating syntax code and it syntax is incorrect:
+
+```sql
+-- This is an array sample and use {% set %} filter
+{% set array = [1,2,3,4,4] %}
+SELECT {{ array | unique }}
+
+------------------------
+$> ✖ Building project...
+```
+
+it will show building error when you run `vulcan start` again, or it will get the internal error after sending a request when your comment has non-exist dynamic parameter:
+
+```sql
+-- {{ context.params.value }}
+{% set array = [1,2,3,4,4] %}
+SELECT {{ array | unique }}
+
+-------
+# The response by sending the request which used curl command
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ....
+* Connection #0 to host localhost left intact
+{"message":"An internal error occurred","requestId":"ad395ba9-3296-44ee-920a-ac7b562d62db"}%
+```
+
+The reason is that VulcanSQL correctly will treat the comment as a statement and compile it, so if your comment has any templating syntax or some non-exist dynamic parameter, it will fail
+
+However, you can solve the issue by using the [nunjucks comment](https://mozilla.github.io/nunjucks/templating.html#comments), because the templating engine is based on [nunjucks](https://mozilla.github.io/nunjucks/), so you could use the **nunjucks comment** to make you still comment on the code:
+
+```sql
+{# {{ context.params.value }} #}
+{% set array = [1,2,3,4,4] %}
+SELECT {{ array | unique }}
+
+-----
+# The response by sending the request which used curl command
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ...
+[{"$1":"1,2,3,4"}]%
+
+```

@@ -1,0 +1,21 @@
+# Authenticators
+
+To enable authenticators, you need to set `auth.enabled` to true in `vulcan.yaml`.
+
+```yaml
+auth:
+  enabled: true
+```
+
+The following is the list of built-in authenticators, please check their documentation to learn how to enable and configure them.
+
+:::info
+You can enable multiple authenticators if they check different credentials.
+
+:::
+
+| Authenticator                                   | Description                                          |
+| ----------------------------------------------- | ---------------------------------------------------- |
+| [HTTP Basic](./authenticators/http-basic)       | Authenticate via HTTP basic auth.                    |
+| [Password File](./authenticators/password-file) | Using a password file to validate username/password. |
+| [Simple Token](./authenticators/simple-token)   | Using a static token to validate users.              |

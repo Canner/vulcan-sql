@@ -1,0 +1,35 @@
+# Simple token authenticator
+
+Using a static token to validate users.
+
+## Configuration
+
+```yaml
+auth:
+  enabled: true
+  options:
+    simple-token:
+      - name: jax # User name
+        token: some-secret # Token to authenticate
+        attr: # (optional) attributes for this user
+          department: engineer
+      - name: ivan
+        token: another-secret
+        attr:
+          department: intern
+```
+
+Simple token authenticator requires a user list to authenticate. You must set the name and token for each user, and give them some optional attributes.
+
+:::caution
+The tokens for every user should be different, otherwise, the last configured user overrides all the previous.
+
+:::
+
+## Provide credentials
+
+You need to add a header `Authorization: sample-token <token>` when sending requests, for example, sending requests with the token “another-secret”.
+
+```yaml
+curl -H "Authorization: simple-token another-secret" http://localhost:3000/api/customer
+```

@@ -1,0 +1,58 @@
+# PostgreSQL
+
+Connect with your PostgreSQL servers via [node-postgres](https://node-postgres.com/).
+
+## Installation
+
+1. Install package
+
+   ```bash
+   npm i @vulcan-sql/extension-driver-pg
+   ```
+
+   :::info
+   If you run Vulcan with Docker, you should use the command `vulcan-install @vulcan-sql/extension-driver-pg` instead.
+
+   :::
+
+2. Update `vulcan.yaml`, and enable the extension.
+
+   ```yaml
+   extensions:
+     ...
+     pg: '@vulcan-sql/extension-driver-pg' # Add this line
+   ```
+
+3. Create a new profile in `profiles.yaml` or in your profile files. For example:
+
+   ```yaml
+   - name: pg # profile name
+     type: pg
+     connection:
+       host: example.com
+       port: 5432
+       user: postgres
+       password: some-secret
+       database: postgres
+   ```
+
+## Configuration
+
+| Name                                | Required | Default | Description                                                                                                                                    |
+| ----------------------------------- | -------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| chunkSize                           | N        | 100     | The max rows we should fetch once.                                                                                                             |
+| max                                 | N        | 10      | The maximum number of clients the pool should contain.                                                                                         |
+| idleTimeoutMillis                   | N        | 10000   | The number of milliseconds a client must sit idle in the pool and not be checked out before it is disconnected from the backend and discarded. |
+| connectionTimeoutMillis             | N        | 0       | The number of milliseconds to wait before timing out when connecting a new client by default this is 0 which means no timeout.                 |
+| user                                | N        |         | The user to connect to the database. Default env.PGUSER or env.USER                                                                            |
+| password                            | N        |         | Password to connect to database. default env.PGPASSWORD                                                                                        |
+| host                                | N        |         | Server host. default env.PGHOS                                                                                                                 |
+| database                            | N        |         | Name of database. default env.PGDATABASE or user                                                                                               |
+| port                                | N        |         | Server port. default env.PGPORT                                                                                                                |
+| connectionString                    | N        |         | Connection string. e.g. postgres://user:password@host:5432/database                                                                            |
+| ssl                                 | N        | false   | Passed directly to node.TLSSocket, supports all tls.connect options                                                                            |
+| statement_timeout                   | N        | 0       | Number of milliseconds before a statement in query will time out, default is no timeout                                                        |
+| query_timeout                       | N        | 0       | The number of milliseconds before a query call will timeout, the default is no timeout                                                         |
+| application_name                    | N        |         | The name of the application that created this Client instance                                                                                  |
+| connectionTimeoutMillis             | N        | 0       | Number of milliseconds to wait for connection, default is no timeout                                                                           |
+| idle_in_transaction_session_timeout | N        | 0       | Number of milliseconds before terminating any session with an open idle transaction, default is no timeout                                     |

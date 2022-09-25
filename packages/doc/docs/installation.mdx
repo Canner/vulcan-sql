@@ -1,0 +1,90 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Installation
+
+## Install Vulcan CLI
+
+<Tabs groupId="install-method">
+<TabItem value="nodejs" label="With Node JS">
+
+If you have NodeJS (≥ 16) installed, you can simply install Vulcan CLI globally via NPM.
+
+```bash
+npm i -g @vulcan-sql/cli
+```
+
+</TabItem>
+
+<TabItem value="docker" label="With Docker">
+
+If you have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed, you can run Vulcan CLI directly.
+
+```bash
+docker pull ghcr.io/canner/vulcan-sql/cli
+alias vulcan="docker run -it --rm -p 3000:3000 -v ${PWD}:/usr/app ghcr.io/canner/vulcan-sql/cli"
+alias "vulcan-install"="docker run -it --rm -p 3000:3000 -v ${PWD}:/usr/app --entrypoint npm ghcr.io/canner/vulcan-sql/cli install"
+```
+
+</TabItem>
+</Tabs>
+
+## Initialize your first project
+
+1. Initialize a Vulcan project. In an empty folder, run the following command:
+
+   ```bash
+   vulcan init .
+   ```
+
+2. Check the installation.
+
+   ```bash
+   vulcan version
+   ```
+
+## Install desired connector(s)
+
+You need to install corresponding connectors in order to connect with your data warehouses. Please check [Connectors](./connectors) to install these connectors.
+
+For example, to use Postgres connector:
+
+1. Install connector
+
+   ```bash
+   npm i @vulcan-sql/extension-driver-pg
+   ```
+
+2. Enable it by updating `vulcan.yaml`.
+
+   ```yaml
+   extensions:
+     pg: '@vulcan-sql/extension-driver-pg'
+   ```
+
+## Set proper profiles
+
+We need some credentials to connect to your data warehouses, which we call “profiles”. You need to set up at least one profile to let Vulcan work. Please check [Access Control](./api-building/access-control) for further information.
+
+For example, to set up a profile for PostgreSQL connector, you can add the following content to `profiles.yaml` at your project root.
+
+```yaml
+- name: pg
+  type: pg
+  allow: '*'
+  connection:
+    host: 'host-of-the-server'
+    user: 'postgres'
+    password: 'postgres'
+    database: 'postgres'
+```
+
+## Start your API server
+
+Start your local API server:
+
+```yaml
+vulcan start --watch
+```
+
+You can develop your API server with SQL files now!

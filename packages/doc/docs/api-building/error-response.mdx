@@ -1,0 +1,21 @@
+# Error Response
+
+Like most programming languages, Vulcan SQL Template supports throwing errors. In your SQL templates, you can use `{% error "ERROR_CODE" %}` to define an exception. When an attempt is made to execute it, it causes an error. Vulcan stops to execute anything when an error is detected, and it’ll respond error code to the clients instead of returning query results.
+
+For example, you can do a sample check before executing the main query:
+
+```sql
+{% req user %}
+SELECT COUNT(*) AS count FROM customers WHERE name = {{ context.params.name }}
+{% endreq %}
+
+{% if user.value()[0].count == 0 %}
+  {% error "CUSTOMER_NOT_FOUND" %}
+{% endif %}
+
+SELECT * FROM customers
+WHERE name = {{ context.params.name }}
+LIMIT 1
+```
+
+Clients who send API requests with an invalid name will get 400 error with error code `CUSTOMER_NOT_FOUND` instead of an empty array now.
