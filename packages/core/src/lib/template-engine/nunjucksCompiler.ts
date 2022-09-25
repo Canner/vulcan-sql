@@ -24,6 +24,7 @@ import {
   DataResult,
 } from '@vulcan-sql/core/models';
 import { NunjucksExecutionMetadata } from './nunjucksExecutionMetadata';
+import { InternalError } from '../utils';
 
 @injectable()
 export class NunjucksCompiler implements Compiler {
@@ -97,7 +98,7 @@ export class NunjucksCompiler implements Compiler {
     } else if (extension instanceof CompileTimeExtension) {
       this.loadCompileTimeExtensions(extension);
     } else {
-      throw new Error(
+      throw new InternalError(
         `Extension must be of type RuntimeExtension or CompileTimeExtension`
       );
     }

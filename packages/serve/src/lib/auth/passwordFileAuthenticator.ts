@@ -7,7 +7,12 @@ import {
   AuthStatus,
   AuthResult,
 } from '@vulcan-sql/serve/models';
-import { VulcanExtensionId, VulcanInternalExtension } from '@vulcan-sql/core';
+import {
+  ConfigurationError,
+  UserError,
+  VulcanExtensionId,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
 import 'koa-bodyparser';
 export interface PasswordFileUserOptions {
@@ -56,7 +61,9 @@ export class PasswordFileAuthenticator extends BaseAuthenticator<PasswordFileOpt
       const name = line.split(':')[0] || '';
       const bcryptPassword = line.split(':')[1] || '';
       if (!isEmpty(bcryptPassword) && !bcryptPassword.startsWith('$2y$'))
-        throw new Error(`"${this.getExtensionId()}" type must bcrypt in file.`);
+        throw new ConfigurationError(
+          `"${this.getExtensionId()}" type must bcrypt in file.`
+        );
 
       // if users exist the same name, add attr to here, or as empty
       this.usersCredentials[name] = {
@@ -70,7 +77,7 @@ export class PasswordFileAuthenticator extends BaseAuthenticator<PasswordFileOpt
     const username = ctx.request.body!['username'] as string;
     const password = ctx.request.body!['password'] as string;
     if (!username || !password)
-      throw new Error('please provide "username" and "password".');
+      throw new UserError('please provide "username" and "password".');
 
     const token = Buffer.from(`${username}:${password}`).toString('base64');
 
@@ -119,7 +126,7 @@ export class PasswordFileAuthenticator extends BaseAuthenticator<PasswordFileOpt
         this.usersCredentials[username].bcryptPassword
       )
     )
-      throw new Error(
+      throw new UserError(
         `authenticate user by "${this.getExtensionId()}" type failed.`
       );
 

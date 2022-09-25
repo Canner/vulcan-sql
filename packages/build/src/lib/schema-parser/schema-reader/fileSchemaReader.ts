@@ -12,6 +12,7 @@ import {
   VulcanExtensionId,
   VulcanInternalExtension,
   TYPES as CORE_TYPES,
+  ConfigurationError,
 } from '@vulcan-sql/core';
 import { inject } from 'inversify';
 import { TYPES } from '@vulcan-sql/build/containers';
@@ -36,7 +37,9 @@ export class FileSchemaReader extends SchemaReader {
 
   public async *readSchema(): AsyncGenerator<SchemaData> {
     if (!this.options?.folderPath)
-      throw new Error(`Config schema-parser.folderPath must be defined`);
+      throw new ConfigurationError(
+        `Config schema-parser.folderPath must be defined`
+      );
     const files = await this.getSchemaFilePaths();
 
     for (const file of files) {

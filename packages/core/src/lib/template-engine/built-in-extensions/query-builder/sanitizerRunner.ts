@@ -3,6 +3,7 @@ import {
   FilterRunnerTransformOptions,
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
+import { InternalError } from '../../../utils/errors';
 import { PARAMETERIZER_VAR_NAME, SANITIZER_NAME } from './constants';
 import { Parameterizer } from './parameterizer';
 import { TemplateInput } from './templateInput';
@@ -23,7 +24,7 @@ export class SanitizerRunner extends FilterRunner {
     }
     // Parameterizer should be set by req tag runner
     const parameterizer = context.lookup<Parameterizer>(PARAMETERIZER_VAR_NAME);
-    if (!parameterizer) throw new Error(`No parameterizer found`);
+    if (!parameterizer) throw new InternalError(`No parameterizer found`);
     return await input.parameterize(parameterizer);
   }
 }

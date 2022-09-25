@@ -1,4 +1,4 @@
-import { VulcanInternalExtension } from '@vulcan-sql/core';
+import { UserError, VulcanInternalExtension } from '@vulcan-sql/core';
 import { Next, KoaContext, AuthStatus } from '@vulcan-sql/serve/models';
 import { BaseAuthMiddleware } from './authMiddleware';
 
@@ -41,6 +41,9 @@ export class AuthCredentialsMiddleware extends BaseAuthMiddleware {
       return;
     }
 
-    throw new Error('all types of authenticator failed.');
+    throw new UserError('All types of authenticator failed.', {
+      httpCode: 401,
+      code: 'vulcan.unauthorized',
+    });
   }
 }

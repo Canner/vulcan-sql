@@ -4,7 +4,11 @@ import {
   AuthResult,
   AuthStatus,
 } from '@vulcan-sql/serve/models';
-import { VulcanExtensionId, VulcanInternalExtension } from '@vulcan-sql/core';
+import {
+  UserError,
+  VulcanExtensionId,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
 import 'koa-bodyparser';
 
@@ -46,7 +50,7 @@ export class SimpleTokenAuthenticator extends BaseAuthenticator<SimpleTokenOptio
 
   public async getTokenInfo(ctx: KoaContext) {
     const token = ctx.request.body!['token'] as string;
-    if (!token) throw new Error('please provide "token".');
+    if (!token) throw new UserError('please provide "token".');
 
     return {
       token: token,
@@ -82,7 +86,7 @@ export class SimpleTokenAuthenticator extends BaseAuthenticator<SimpleTokenOptio
   private async validate(token: string) {
     // if authenticated
     if (!(token in this.usersCredentials))
-      throw new Error(
+      throw new UserError(
         `authenticate user by "${this.getExtensionId()}" type failed.`
       );
 

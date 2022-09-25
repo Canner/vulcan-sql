@@ -4,6 +4,7 @@ import {
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
 import * as Joi from 'joi';
+import { ConfigurationError, UserError } from '../../utils/errors';
 
 export interface RequiredInputArgs {
   /**
@@ -27,7 +28,7 @@ export class RequiredValidator extends InputValidator {
       // validate arguments schema
       Joi.assert(args, this.argsValidator);
     } catch {
-      throw new Error(
+      throw new ConfigurationError(
         'The arguments schema for "required" type validator is incorrect'
       );
     }
@@ -46,7 +47,9 @@ export class RequiredValidator extends InputValidator {
       }
       Joi.assert(value, schema);
     } catch {
-      throw new Error('The input parameter is invalid, it should be required');
+      throw new UserError(
+        'The input parameter is invalid, it should be required'
+      );
     }
   }
 }

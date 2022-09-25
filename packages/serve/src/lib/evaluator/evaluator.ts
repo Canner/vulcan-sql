@@ -1,5 +1,6 @@
 import {
   getLogger,
+  InternalError,
   Profile,
   ProfileAllowConstraints,
   TYPES as CORE_TYPES,
@@ -63,7 +64,7 @@ export class Evaluator {
     for (const candidate of candidates) {
       const orConstraints = this.profiles.get(candidate);
       if (!orConstraints)
-        throw new Error(
+        throw new InternalError(
           `Profile candidate ${candidate} doesn't have any rule.`
         );
       const isQualified = this.evaluateOrConstraints(user, orConstraints);

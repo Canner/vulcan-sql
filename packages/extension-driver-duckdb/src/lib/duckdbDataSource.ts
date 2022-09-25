@@ -4,6 +4,7 @@ import {
   DataResult,
   DataSource,
   ExecuteOptions,
+  InternalError,
   RequestParameter,
   VulcanExtensionId,
 } from '@vulcan-sql/core';
@@ -68,7 +69,7 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     profileName,
   }: ExecuteOptions): Promise<DataResult> {
     if (!this.dbMapping.has(profileName)) {
-      throw new Error(`Profile instance ${profileName} not found`);
+      throw new InternalError(`Profile instance ${profileName} not found`);
     }
     const { db, ...options } = this.dbMapping.get(profileName)!;
     const statement = db.prepare(sql);

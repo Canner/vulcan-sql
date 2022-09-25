@@ -1,6 +1,6 @@
 import { ExtensionBase, ICoreOptions } from '@vulcan-sql/core/models';
 import { interfaces } from 'inversify';
-import { ClassType, defaultImport } from '../utils';
+import { ClassType, defaultImport, InternalError } from '../utils';
 import {
   EXTENSION_ENFORCED_ID_METADATA_KEY,
   EXTENSION_IDENTIFIER_METADATA_KEY,
@@ -30,7 +30,7 @@ export class ExtensionLoader {
   /** Load external extensions (should be called by core package) */
   public async loadExternalExtensionModules() {
     if (this.bound)
-      throw new Error(
+      throw new InternalError(
         `We must load all extensions before call bindExtension function`
       );
 
@@ -61,7 +61,7 @@ export class ExtensionLoader {
 
   public loadInternalExtensionModule(moduleEntry: ExtensionModuleEntry) {
     if (this.bound)
-      throw new Error(
+      throw new InternalError(
         `We must load all extensions before call bindExtension function`
       );
 
@@ -70,7 +70,7 @@ export class ExtensionLoader {
     for (const extension of extensions) {
       const name = Reflect.getMetadata(EXTENSION_NAME_METADATA_KEY, extension);
       if (name === undefined)
-        throw new Error(
+        throw new InternalError(
           `Internal extension must have @VulcanInternalExtension decorator`
         );
       this.loadExtension(name, extension);
@@ -113,7 +113,7 @@ export class ExtensionLoader {
       extension
     );
     if (enforcedId && !extensionId)
-      throw new Error(
+      throw new InternalError(
         `Extension ${extension.name} needed an extension id but was not found, please use the decorator @VulcanExtensionId to set the id.`
       );
 
@@ -128,7 +128,7 @@ export class ExtensionLoader {
       extension
     );
     if (!extensionType)
-      throw new Error(
+      throw new InternalError(
         `Extension must have @VulcanExtension decorator, have you use extend the correct super class?`
       );
     if (!this.extensionRegistry.has(extensionType))

@@ -1,5 +1,6 @@
 import {
   APISchema,
+  ConfigurationError,
   FieldDataType,
   FieldInType,
   normalizeStringValue,
@@ -74,7 +75,9 @@ export class RequestTransformer implements IRequestTransformer {
     type: FieldDataType
   ) {
     if (!Object.values(FieldDataType).includes(type))
-      throw new Error(`The ${type} type not been implemented now.`);
+      throw new ConfigurationError(
+        `The ${type} type not been implemented now.`
+      );
 
     return RequestTransformer.convertTypeMapper[type](value, name);
   }

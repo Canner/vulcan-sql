@@ -14,6 +14,7 @@ import {
 import { inject } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import { TemplateEngineOptions } from '@vulcan-sql/core/options';
+import { ConfigurationError } from '../../utils/errors';
 
 @VulcanInternalExtension()
 @VulcanExtensionId(TemplateProviderType.LocalFile)
@@ -31,7 +32,7 @@ export class FileTemplateProvider extends TemplateProvider {
 
   public async *getTemplates(): AsyncGenerator<Template> {
     if (!this.options?.folderPath)
-      throw new Error(`Config template.folderPath is required`);
+      throw new ConfigurationError(`Config template.folderPath is required`);
 
     const files = await this.getTemplateFilePaths();
 

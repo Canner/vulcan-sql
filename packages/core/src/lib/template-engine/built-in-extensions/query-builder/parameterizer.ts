@@ -1,4 +1,5 @@
 import { RequestParameter } from '@vulcan-sql/core/models';
+import { InternalError } from '../../../utils/errors';
 
 type PrepareParameterFuncWithoutProfile = {
   (param: Omit<RequestParameter, 'profileName'>): Promise<string>;
@@ -20,7 +21,7 @@ export class Parameterizer {
 
   public async generateIdentifier(value: any): Promise<string> {
     if (this.sealed)
-      throw new Error(
+      throw new InternalError(
         `This parameterizer has been sealed, we might use the parameterizer from a wrong request scope.`
       );
     if (this.valueToIdMapping.has(value))

@@ -1,5 +1,9 @@
 import { IPaginationTransformer } from '@vulcan-sql/serve/route';
-import { APISchema, TemplateEngine } from '@vulcan-sql/core';
+import {
+  APISchema,
+  ConfigurationError,
+  TemplateEngine,
+} from '@vulcan-sql/core';
 import {
   RestfulRoute,
   GraphQLRoute,
@@ -51,7 +55,9 @@ export class RouteGenerator {
 
   public async generate(apiSchema: APISchema, optionType: APIProviderType) {
     if (!(optionType in this.apiOptions))
-      throw new Error(`The API type: ${optionType} currently not provided now`);
+      throw new ConfigurationError(
+        `The API type: ${optionType} currently not provided now`
+      );
 
     return new this.apiOptions[optionType]({
       apiSchema,

@@ -3,6 +3,7 @@ import {
   normalizeStringValue,
   PaginationMode,
   CursorPagination,
+  UserError,
 } from '@vulcan-sql/core';
 import { PaginationStrategy } from './strategy';
 
@@ -12,7 +13,7 @@ export class CursorBasedStrategy extends PaginationStrategy<CursorPagination> {
       Object.keys(ctx.request.query).includes(field)
     );
     if (!checkFelidInQueryString)
-      throw new Error(
+      throw new UserError(
         `The ${PaginationMode.CURSOR} must provide limit and cursor in query string.`
       );
     const limitVal = ctx.request.query['limit'] as string;

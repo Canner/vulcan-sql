@@ -7,7 +7,11 @@ import {
   AuthStatus,
   AuthResult,
 } from '@vulcan-sql/serve/models';
-import { VulcanExtensionId, VulcanInternalExtension } from '@vulcan-sql/core';
+import {
+  UserError,
+  VulcanExtensionId,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
 import 'koa-bodyparser';
 
@@ -92,7 +96,7 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
     const username = ctx.request.body!['username'] as string;
     const password = ctx.request.body!['password'] as string;
     if (!username || !password)
-      throw new Error('please provide "username" and "password".');
+      throw new UserError('please provide "username" and "password".');
 
     const token = Buffer.from(`${username}:${password}`).toString('base64');
 
@@ -141,7 +145,7 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
       !(username in this.usersCredentials) ||
       !(md5(password) === this.usersCredentials[username].md5Password)
     )
-      throw new Error(
+      throw new UserError(
         `authenticate user by "${this.getExtensionId()}" type failed.`
       );
 

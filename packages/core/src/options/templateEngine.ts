@@ -2,6 +2,7 @@ import { injectable, inject, optional } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import { ITemplateEngineOptions } from '@vulcan-sql/core/models';
 import { IsOptional, IsString, validateSync } from 'class-validator';
+import { ConfigurationError } from '../lib/utils/errors';
 
 @injectable()
 export class TemplateEngineOptions implements ITemplateEngineOptions {
@@ -25,7 +26,9 @@ export class TemplateEngineOptions implements ITemplateEngineOptions {
     Object.assign(this, options);
     const errors = validateSync(this);
     if (errors.length > 0) {
-      throw new Error('Invalid template engine options: ' + errors.join(', '));
+      throw new ConfigurationError(
+        'Invalid template engine options: ' + errors.join(', ')
+      );
     }
   }
 }

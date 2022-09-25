@@ -1,6 +1,7 @@
 import { injectable, multiInject, optional } from 'inversify';
 import { TYPES } from '../../containers/types';
 import { InputValidator } from '@vulcan-sql/core/models';
+import { ConfigurationError } from '../utils';
 
 export interface IValidatorLoader {
   getValidator(validatorName: string): InputValidator;
@@ -21,7 +22,7 @@ export class ValidatorLoader implements IValidatorLoader {
   public getValidator(validatorName: string) {
     if (!this.extensions.has(validatorName))
       // throw error if not found
-      throw new Error(
+      throw new ConfigurationError(
         `The identifier name "${validatorName}" of validator is not defined in built-in validators or extensions configuration`
       );
 
@@ -32,7 +33,7 @@ export class ValidatorLoader implements IValidatorLoader {
     for (const validator of validators) {
       const validatorName = validator.getExtensionId()!;
       if (this.extensions.has(validatorName)) {
-        throw new Error(
+        throw new ConfigurationError(
           `The identifier name "${validatorName}" of validator has been defined in other extensions`
         );
       }

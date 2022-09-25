@@ -5,6 +5,7 @@ import {
 } from '@vulcan-sql/core/models';
 import * as Joi from 'joi';
 import { isUndefined } from 'lodash';
+import { ConfigurationError, UserError } from '../../utils/errors';
 
 export interface IntInputArgs {
   // The integer minimum value
@@ -33,7 +34,7 @@ export class IntegerTypeValidator extends InputValidator {
       // validate arguments schema
       Joi.assert(args, this.argsValidator);
     } catch {
-      throw new Error(
+      throw new ConfigurationError(
         'The arguments schema for "integer" type validator is incorrect'
       );
     }
@@ -56,7 +57,7 @@ export class IntegerTypeValidator extends InputValidator {
     try {
       Joi.assert(value, schema);
     } catch {
-      throw new Error(
+      throw new UserError(
         'The input parameter is invalid, it should be integer type'
       );
     }

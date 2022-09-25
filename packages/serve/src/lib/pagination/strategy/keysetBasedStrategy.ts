@@ -2,6 +2,7 @@ import {
   normalizeStringValue,
   PaginationMode,
   KeysetPagination,
+  UserError,
 } from '@vulcan-sql/core';
 import { KoaContext } from '@vulcan-sql/serve/models';
 import { PaginationStrategy } from './strategy';
@@ -14,14 +15,14 @@ export class KeysetBasedStrategy extends PaginationStrategy<KeysetPagination> {
   }
   public async transform(ctx: KoaContext) {
     if (!this.keyName)
-      throw new Error(
+      throw new UserError(
         `The keyset pagination need to set "keyName" in schema for indicate what key need to do filter.`
       );
     const checkFelidInQueryString = ['limit', this.keyName].every((field) =>
       Object.keys(ctx.request.query).includes(field)
     );
     if (!checkFelidInQueryString)
-      throw new Error(
+      throw new UserError(
         `The ${PaginationMode.KEYSET} must provide limit and key name in query string.`
       );
     const limitVal = ctx.request.query['limit'] as string;

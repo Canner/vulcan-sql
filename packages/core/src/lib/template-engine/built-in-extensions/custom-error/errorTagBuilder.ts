@@ -2,6 +2,7 @@ import * as nunjucks from 'nunjucks';
 import { chain } from 'lodash';
 import { METADATA_NAME } from './constants';
 import { TagBuilder, VulcanInternalExtension } from '@vulcan-sql/core/models';
+import { TemplateError } from '../../../utils/errors';
 
 interface ErrorCode {
   code: string;
@@ -39,7 +40,9 @@ export class ErrorTagBuilder extends TagBuilder {
 
       const errorCodeNode = node.args.children[0];
       if (!(errorCodeNode instanceof nunjucks.nodes.Literal))
-        throw new Error(`Expected literal, got ${errorCodeNode.typename}`);
+        throw new TemplateError(
+          `Expected literal, got ${errorCodeNode.typename}`
+        );
 
       this.errorCodes.push({
         code: errorCodeNode.value,

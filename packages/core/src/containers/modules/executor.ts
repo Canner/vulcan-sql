@@ -9,6 +9,7 @@ import {
 import { Profile } from '../../models/profile';
 import 'reflect-metadata';
 import { ClassType } from '../../lib/utils/module';
+import { ConfigurationError } from '@vulcan-sql/core/utils';
 
 export const executorModule = (profiles: Map<string, Profile>) =>
   new AsyncContainerModule(async (bind) => {
@@ -23,7 +24,8 @@ export const executorModule = (profiles: Map<string, Profile>) =>
       TYPES.Factory_DataSource
     ).toFactory((context) => (profileName: string) => {
       const profile = profiles.get(profileName);
-      if (!profile) throw new Error(`Profile ${profileName} not found`);
+      if (!profile)
+        throw new ConfigurationError(`Profile ${profileName} not found`);
       return context.container.getNamed(
         TYPES.Extension_DataSource,
         profile.type

@@ -1,6 +1,7 @@
 import * as Stream from 'stream';
 import {
   getLogger,
+  InternalError,
   VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
@@ -65,7 +66,7 @@ export class JsonFormatter extends BaseResponseFormatter {
       .pipe(jsonStream)
       .on('error', (err: Error) => {
         logger.warn(`read stream failed, detail error ${err}`);
-        throw new Error(
+        throw new InternalError(
           `read data in the stream for formatting to json failed.`
         );
       })

@@ -2,6 +2,7 @@ import { injectable, inject, optional } from 'inversify';
 import { IsOptional, IsArray, validateSync } from 'class-validator';
 import { DocumentRouterType, DocumentSpec, IDocumentOptions } from '../models';
 import { TYPES } from '@vulcan-sql/core/types';
+import { ConfigurationError } from '../lib/utils/errors';
 
 @injectable()
 export class DocumentOptions implements IDocumentOptions {
@@ -20,7 +21,7 @@ export class DocumentOptions implements IDocumentOptions {
     Object.assign(this, options);
     const errors = validateSync(this);
     if (errors.length > 0) {
-      throw new Error(
+      throw new ConfigurationError(
         'Invalid document generator options: ' + errors.join(', ')
       );
     }

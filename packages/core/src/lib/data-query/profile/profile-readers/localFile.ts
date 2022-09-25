@@ -8,6 +8,7 @@ import {
 import * as path from 'path';
 import * as fs from 'fs';
 import * as jsYAML from 'js-yaml';
+import { ConfigurationError } from '@vulcan-sql/core/utils';
 
 export interface LocalFileProfileReaderOptions {
   path: string;
@@ -18,7 +19,9 @@ export interface LocalFileProfileReaderOptions {
 export class LocalFileProfileReader extends ProfileReader {
   public async read(options: LocalFileProfileReaderOptions) {
     if (!options.path)
-      throw new Error('LocalFile profile reader needs options.path property');
+      throw new ConfigurationError(
+        'LocalFile profile reader needs options.path property'
+      );
 
     const profilePath = path.resolve(process.cwd(), options.path);
     if (!fs.existsSync(profilePath)) return [];
@@ -30,7 +33,7 @@ export class LocalFileProfileReader extends ProfileReader {
     // validate profiles
     for (const profile of profiles) {
       if (!profile.name || !profile.type)
-        throw new Error(
+        throw new ConfigurationError(
           `Invalid profile in ${profilePath}. Profile name and type are required.`
         );
     }

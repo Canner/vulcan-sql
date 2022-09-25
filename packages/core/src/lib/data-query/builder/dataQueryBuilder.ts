@@ -21,6 +21,7 @@ import {
   JoinOnClause,
   JoinOnClauseOperation,
 } from './joinOnClause';
+import { TemplateError } from '../../utils/errors';
 
 export enum SelectCommandType {
   SELECT = 'SELECT',
@@ -612,7 +613,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
     value: string | number | boolean | IDataQueryBuilder
   ) {
     if (!isOfComparisonOperator(operator))
-      throw new Error(`'There is no ${operator}  operator.`);
+      throw new TemplateError(`'There is no ${operator}  operator.`);
 
     this.recordWhere({
       command: null,
@@ -860,7 +861,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
   ) {
     const normalized = typeof column === 'string' ? { name: column } : column;
     if (!isOfComparisonOperator(operator))
-      throw new Error(`'There is no ${operator}  operator.`);
+      throw new TemplateError(`'There is no ${operator}  operator.`);
 
     this.recordHaving({
       command: null,

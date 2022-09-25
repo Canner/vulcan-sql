@@ -153,7 +153,7 @@ describe('Test auth credential middleware', () => {
     'Should auth successful when request match  authorization',
     async (type, authenticator) => {
       // Arrange
-      const expected = new Error('all types of authenticator failed.');
+      const expected = new Error('All types of authenticator failed.');
 
       const options = {};
 

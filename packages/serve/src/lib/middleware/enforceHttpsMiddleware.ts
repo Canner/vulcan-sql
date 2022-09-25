@@ -1,6 +1,6 @@
 import { isUndefined, omit } from 'lodash';
 import { inject } from 'inversify';
-import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
+import { ConfigurationError, TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { VulcanInternalExtension } from '@vulcan-sql/core';
 import { BuiltInMiddleware } from '@vulcan-sql/serve/models';
 import { KoaContext, Next } from '@vulcan-sql/serve/models';
@@ -92,7 +92,7 @@ export class EnforceHttpsMiddleware extends BuiltInMiddleware<EnforceHttpsOption
     // if type is CUSTOM
     if (type === ResolverType.CUSTOM) {
       if (!rawOptions.proto)
-        throw new Error(
+        throw new ConfigurationError(
           'The "CUSTOM" type need also provide "proto" in options.'
         );
 
@@ -111,7 +111,7 @@ export class EnforceHttpsMiddleware extends BuiltInMiddleware<EnforceHttpsOption
   private checkResolverType(type: string) {
     // check incorrect type
     if (!(type.toUpperCase() in ResolverType))
-      throw new Error(
+      throw new ConfigurationError(
         `The type is incorrect, only support type in ${JSON.stringify(
           Object.keys(ResolverType)
         )}.`

@@ -1,3 +1,4 @@
+import { UserError } from '@vulcan-sql/core';
 import { KoaContext } from '@vulcan-sql/serve/models';
 import { BaseResponseFormatter } from '@vulcan-sql/serve/models';
 
@@ -36,8 +37,10 @@ export const checkUsableFormat = ({
 
   // if path ending has format but not matched
   if (!supportedFormats.includes(pathFormat)) {
-    // 415 ERROR, Throw error if user request with url ending format, but not matched.
-    throw new Error(`Url ending format not matched in "formats" options`);
+    // Throw error if user request with url ending format, but not matched.
+    throw new UserError(`Url ending format not matched in "formats" options`, {
+      httpCode: 415,
+    });
   }
   // if path ending has format and matched, no matter Accept matched or not, use path ending format
   return pathFormat;

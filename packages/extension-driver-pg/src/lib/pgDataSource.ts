@@ -2,6 +2,7 @@ import {
   DataResult,
   DataSource,
   ExecuteOptions,
+  InternalError,
   RequestParameter,
   VulcanExtensionId,
 } from '@vulcan-sql/core';
@@ -48,7 +49,7 @@ export class PGDataSource extends DataSource<any, PGOptions> {
     profileName,
   }: ExecuteOptions): Promise<DataResult> {
     if (!this.poolMapping.has(profileName)) {
-      throw new Error(`Profile instance ${profileName} not found`);
+      throw new InternalError(`Profile instance ${profileName} not found`);
     }
     const { pool, options } = this.poolMapping.get(profileName)!;
     this.logger.debug(`Acquiring connection from ${profileName}`);

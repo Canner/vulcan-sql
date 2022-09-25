@@ -1,5 +1,10 @@
 import { KoaContext } from '@vulcan-sql/serve/models';
-import { APISchema, PaginationMode, Pagination } from '@vulcan-sql/core';
+import {
+  APISchema,
+  PaginationMode,
+  Pagination,
+  ConfigurationError,
+} from '@vulcan-sql/core';
 import {
   CursorBasedStrategy,
   OffsetBasedStrategy,
@@ -21,7 +26,7 @@ export class PaginationTransformer {
 
     if (pagination) {
       if (!Object.values(PaginationMode).includes(pagination.mode))
-        throw new Error(
+        throw new ConfigurationError(
           `The pagination only support ${Object.keys(PaginationMode)}`
         );
 

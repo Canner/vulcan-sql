@@ -2,6 +2,7 @@ import * as Stream from 'stream';
 import {
   DataColumn,
   getLogger,
+  InternalError,
   VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
@@ -86,7 +87,7 @@ class CsvTransformer extends Stream.Transform {
 @VulcanExtensionId('csv')
 export class CsvFormatter extends BaseResponseFormatter {
   public format(data: Stream.Readable, columns?: DataColumn[]) {
-    if (!columns) throw new Error('must provide columns');
+    if (!columns) throw new InternalError('must provide columns');
     // create csv transform stream and define transform to csv way.
     const csvStream = new CsvTransformer({
       columns: columns.map((column) => column.name),
@@ -96,7 +97,7 @@ export class CsvFormatter extends BaseResponseFormatter {
       .pipe(csvStream)
       .on('error', (err) => {
         logger.warn(`read stream failed, detail error ${err}`);
-        throw new Error(
+        throw new InternalError(
           `read data in the stream for formatting to csv failed.`
         );
       })

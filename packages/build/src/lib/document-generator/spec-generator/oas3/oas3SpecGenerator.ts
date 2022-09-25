@@ -17,6 +17,7 @@ import {
   VulcanExtensionId,
   VulcanInternalExtension,
   DocumentSpec,
+  ConfigurationError,
 } from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
 
@@ -104,7 +105,9 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
       case FieldInType.QUERY:
         return 'query';
       default:
-        throw new Error(`FieldInType ${fieldInType} is not supported`);
+        throw new ConfigurationError(
+          `FieldInType ${fieldInType} is not supported`
+        );
     }
   }
 
@@ -145,7 +148,9 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
       case FieldDataType.STRING:
         return 'string';
       default:
-        throw new Error(`FieldDataType ${fieldDataType} is not supported`);
+        throw new ConfigurationError(
+          `FieldDataType ${fieldDataType} is not supported`
+        );
     }
   }
 

@@ -8,6 +8,7 @@ import {
 import * as os from 'os';
 import * as path from 'path';
 import { chain } from 'lodash';
+import { ConfigurationError } from '../lib/utils/errors';
 
 @injectable()
 export class ProfilesLookupOptions {
@@ -40,7 +41,7 @@ export class ProfilesLookupOptions {
       .uniqBy(JSON.stringify)
       .forEach((profile) => {
         if (!profile.type)
-          throw new Error(
+          throw new ConfigurationError(
             `Profile config is invalid: ${JSON.stringify(
               profile
             )}, "type" is required`

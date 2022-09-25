@@ -4,7 +4,7 @@ import {
   BuiltInMiddleware,
 } from '@vulcan-sql/serve/models';
 import { checkUsableFormat, ResponseFormatterMap } from './helpers';
-import { VulcanInternalExtension } from '@vulcan-sql/core';
+import { InternalError, VulcanInternalExtension } from '@vulcan-sql/core';
 import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { inject, multiInject } from 'inversify';
 import { TYPES } from '@vulcan-sql/serve/containers';
@@ -43,12 +43,12 @@ export class ResponseFormatMiddleware extends BuiltInMiddleware<ResponseFormatOp
   public override async onActivate() {
     if (this.enabled) {
       if (!Object.keys(this.formatters).includes(this.defaultFormat))
-        throw new Error(
+        throw new InternalError(
           `The type "${this.defaultFormat}" in "default" not implement extension`
         );
       this.supportedFormats.map((format) => {
         if (!Object.keys(this.formatters).includes(format))
-          throw new Error(
+          throw new InternalError(
             `The type "${format}" in "formats" not implement extension`
           );
       });
