@@ -64,5 +64,6 @@
       ]
     }
   },
-  "tags": []
+  "tags": [],
+  "implicitDependencies": ["!serve"]
 }
