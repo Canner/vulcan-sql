@@ -3,12 +3,12 @@ import TabItem from '@theme/TabItem';
 
 # Installation
 
-## Install Vulcan CLI
+## Install VulcanSQL CLI
 
 <Tabs groupId="install-method">
 <TabItem value="nodejs" label="With Node JS">
 
-If you have NodeJS (≥ 16) installed, you can simply install Vulcan CLI globally via NPM.
+If you have NodeJS (≥ 16) installed, you can simply install VulcanSQL CLI globally via NPM.
 
 ```bash
 npm i -g @vulcan-sql/cli
@@ -18,7 +18,7 @@ npm i -g @vulcan-sql/cli
 
 <TabItem value="docker" label="With Docker">
 
-If you have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed, you can run Vulcan CLI directly.
+If you have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed, you can run VulcanSQL CLI directly.
 
 ```bash
 docker pull ghcr.io/canner/vulcan-sql/cli
@@ -31,7 +31,7 @@ alias "vulcan-install"="docker run -it --rm -p 3000:3000 -v ${PWD}:/usr/app --en
 
 ## Initialize your first project
 
-1. Initialize a Vulcan project. In an empty folder, run the following command:
+1. Initialize a VulcanSQL project. In an empty folder, run the following command:
 
    ```bash
    vulcan init .
@@ -64,7 +64,7 @@ For example, to use Postgres connector:
 
 ## Set proper profiles
 
-We need some credentials to connect to your data warehouses, which we call “profiles”. You need to set up at least one profile to let Vulcan work. Please check [Access Control](./api-building/access-control) for further information.
+We need some credentials to connect to your data warehouses, which we call “profiles”. You need to set up at least one profile to let VulcanSQL work. Please check [Access Control](./api-building/access-control) for further information.
 
 For example, to set up a profile for PostgreSQL connector, you can add the following content to `profiles.yaml` at your project root.
 

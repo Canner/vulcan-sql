@@ -16,7 +16,7 @@ Ensure you have installed one of the following:
 - [Node.js](https://nodejs.org/) 16+. You can install multiple node versions via [NVM](https://github.com/nvm-sh/nvm).
 - Docker.
 
-## Install Vulcan SQL CLI
+## Install VulcanSQL CLI
 
 <Tabs groupId="install-method">
 <TabItem value="nodejs" label="With Node JS">
@@ -101,7 +101,7 @@ Ensure you have installed one of the following:
 
 4.  Open the API document with URL: [http://localhost:3000/doc](http://localhost:3000/doc)
 
-    ![the screenshot of Vulcan API document](./img/doc-screenshot.png)
+    ![the screenshot of VulcanSQL API document](./img/doc-screenshot.png)
 
 ## Know your data
 
@@ -183,7 +183,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
     LIMIT 1
     ```
 
-    The block `{% req user %} ... {% endreq %}` is a [query block](./api-building/sql-builder) which tells Vulcan that we want to save the query result to `user` variable instead of outputting as responses.
+    The block `{% req user %} ... {% endreq %}` is a [query block](./api-building/sql-builder) which tells VulcanSQL that we want to save the query result to `user` variable instead of outputting as responses.
 
     Now we can get the result of this query and throw an error when the result equals `0`.
 
@@ -202,7 +202,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
     LIMIT 1
     ```
 
-    We used the if expression to throw an error when the result equals `0`, Vulcan server will stop executing and respond immediately when meeting a {% error %} tag, `"CUSTOMER_NOT_FOUND"` is the error code we want to throw.
+    We used the if expression to throw an error when the result equals `0`, VulcanSQL server will stop executing and respond immediately when meeting a {% error %} tag, `"CUSTOMER_NOT_FOUND"` is the error code we want to throw.
 
     :::info
     You can add more information about your errors, e.g. description, HTTP code …etc. Please check [Error response](./api-building/error-response)
@@ -236,7 +236,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
     {% set %} tag saved the result from the right side like most programming languages: `var someVar = someVal`, in this example, we saved the query result into `userCount` variable.
 
     :::info
-    Please save only the data you need in template logic, these data will be stored in Vulcan server memory and only exist while the template is executing.
+    Please save only the data you need in template logic, these data will be stored in VulcanSQL server memory and only exist while the template is executing.
     Please check [Set tag](./api-building/sql-template#set-variable) for more information.
 
     :::
@@ -268,7 +268,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
 
     - [http://localhost:3000/api/customer?name=Hayden](http://localhost:3000/api/customer?name=Hayden)
 
-5.  The last step: add a [sample request](./api-building/api-document#set-sampler). Vulcan is unable to describe our API responses until we give it a sample request. When you open the [API document](http://localhost:3000/doc#/paths/~1customer/get), you'll see nothing has been described yet.
+5.  The last step: add a [sample request](./api-building/api-document#set-sampler). VulcanSQL is unable to describe our API responses until we give it a sample request. When you open the [API document](http://localhost:3000/doc#/paths/~1customer/get), you'll see nothing has been described yet.
 
     ![api document with empty response](./img/doc-empty-response.png)
 

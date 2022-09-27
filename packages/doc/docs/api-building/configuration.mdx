@@ -22,7 +22,7 @@ It's a default project config when you run `vulcan init` , you will see some con
 ```yaml
 # The project name, description version
 name: my-first-vulcan-project
-description: A starter Vulcan project
+description: A starter VulcanSQL project
 version: 0.2.0
 
 # The config options of core feature
@@ -42,7 +42,7 @@ document-generator:
     - oas3
 types:
   - RESTFUL
-# The external extension modules you wouldl like to use in your Vulcan project
+# The external extension modules you wouldl like to use in your VulcanSQL project
 extensions:
   duckdb: '@vulcan-sql/extension-driver-duckdb'
 
@@ -75,7 +75,7 @@ In the VulcanSQL project config, we will provide a section for you to define the
 
 ```yaml
 name: my-first-vulcan-project
-description: A starter Vulcan project
+description: A starter VulcanSQL project
 version: 0.2.0
 ```
 
@@ -224,7 +224,7 @@ Otherwise, VulcanSQL also has some external extensions which we have prepared, s
 ```yaml
 # Declare you would like to used-external module and give a module name
 extensions:
-  ext-module-name1: @vulcan-sql/xxx-module # installed Vulcan module
+  ext-module-name1: @vulcan-sql/xxx-module # installed VulcanSQL module
   ext-module-name2: path/to/folder/of/package # path
 
 ext-module-name1:
@@ -250,7 +250,7 @@ you could use `npm` or `yarn` to install a 3rd-party source or VulcanSQL-provide
 
 ```yaml
 extensions:
-  ext-module-name1: @vulcan-sql/xxx-module # installed Vulcan module
+  ext-module-name1: @vulcan-sql/xxx-module # installed VulcanSQL module
 ```
 
 For example, if you would like to use `@vulcan-sql/dbt` it looks like the below:
