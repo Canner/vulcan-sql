@@ -48,8 +48,8 @@ Ensure you have installed one of the following:
 2. Set the alias for `vulcan`.
 
    ```bash
-   alias vulcan="docker run -it --rm -p 3000:3000 -v ${PWD}:/usr/app ghcr.io/canner/vulcan-sql/cli:dev"
-   alias "vulcan-install"="vulcan-install"="docker run -it --rm -p 3000:3000 -v ${PWD}:/usr/app --entrypoint npm ghcr.io/canner/vulcan-sql/cli:dev install"
+   alias vulcan="docker run -it --rm -p 3000:3000 -v ${PWD}:/usr/app ghcr.io/canner/vulcan-sql/cli"
+   alias "vulcan-install"="vulcan-install"="docker run -it --rm -p 3000:3000 -v ${PWD}:/usr/app --entrypoint npm ghcr.io/canner/vulcan-sql/cli install"
    ```
 
 3. To ensure installation, print the version information.
@@ -174,7 +174,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
 
     ```sql
     {% req user %}
-    SELECT COUNT(\*) AS count FROM customers
+    SELECT COUNT(*) AS count FROM customers
     WHERE UPPER(first_name) = {{ context.params.name | upper }}
     {% endreq %}
 
@@ -202,7 +202,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
     LIMIT 1
     ```
 
-    We used the if expression to throw an error when the result equals `0`, VulcanSQL server will stop executing and respond immediately when meeting a {% error %} tag, `"CUSTOMER_NOT_FOUND"` is the error code we want to throw.
+    We used the if expression to throw an error when the result equals `0`, VulcanSQL server will stop executing and respond immediately when meeting a `{% error %}` tag, `"CUSTOMER_NOT_FOUND"` is the error code we want to throw.
 
     :::info
     You can add more information about your errors, e.g. description, HTTP code …etc. Please check [Error response](./api-building/error-response)
@@ -218,7 +218,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
 
     ```sql
     {% req user %}
-    SELECT COUNT(\*) AS count FROM customers
+    SELECT COUNT(*) AS count FROM customers
     WHERE UPPER(first_name) = {{ context.params.name | upper }}
     {% endreq %}
 
@@ -233,7 +233,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
     LIMIT 1
     ```
 
-    {% set %} tag saved the result from the right side like most programming languages: `var someVar = someVal`, in this example, we saved the query result into `userCount` variable.
+    `{% set %}` tag saved the result from the right side like most programming languages: `var someVar = someVal`, in this example, we saved the query result into `userCount` variable.
 
     :::info
     Please save only the data you need in template logic, these data will be stored in VulcanSQL server memory and only exist while the template is executing.
@@ -376,7 +376,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
 
     We use `default` filter here to set the fallback value. When users don't send the parameter, we use a default value.
 
-    Unlike the last API, we use {% if %} expression the determine whether render the SQL or not, the queries in if blocks are only sent when the condition is satisfied.
+    Unlike the last API, we use `{% if %}` expression the determine whether render the SQL or not, the queries in if blocks are only sent when the condition is satisfied.
 
     You can try this API with different parameters to see the queries changed:
 

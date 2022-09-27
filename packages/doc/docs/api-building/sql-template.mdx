@@ -205,7 +205,7 @@ SELECT {{ myArray }} as arr
 [{"arr":"1,2,3,4,4"}]%
 ```
 
-Otherwise, you will see the above example always print the value to `$[number]` e.g: `$1` and then print the value in the terminal and display the `$1` as key and then shows the value.
+Otherwise, you will see the above example always print the value to `$<number>` e.g: `$1` and then print the value in the terminal and display the `$1` as key and then shows the value.
 
 The reason is that VulcanSQL **_uses the placeholder_** and query by **_parameterized statement for preventing SQL injection._**
 
@@ -259,7 +259,7 @@ You could also use the [nunjucks](https://mozilla.github.io/nunjucks/templating.
 
 ### Raw Filter
 
-The `raw` filter is the VulcanSQL custom filer function, which could make your defined variable or dynamic parameter output value directly, it will transform `$[number]` to the value first and if you still have a pipe function after the `raw` , then it will use the output value to do the filter.
+The `raw` filter is the VulcanSQL custom filer function, which could make your defined variable or dynamic parameter output value directly, it will transform `$<number>` to the value first and if you still have a pipe function after the `raw` , then it will use the output value to do the filter.
 
 Below is `SELECT` samples, you could see the comment to explain:
 
