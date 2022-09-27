@@ -38,7 +38,7 @@ const sidebars = {
               type: 'doc',
               id: 'api-building/configuration/data-source-profile',
             },
-          ]
+          ],
         },
         {
           type: 'doc',
@@ -90,6 +90,22 @@ const sidebars = {
           type: 'doc',
           id: 'api-building/api-versioning',
         },
+        {
+          type: 'doc',
+          id: 'api-building/access-log',
+        },
+        {
+          type: 'doc',
+          id: 'api-building/cors',
+        },
+        {
+          type: 'doc',
+          id: 'api-building/response-format',
+        },
+        {
+          type: 'doc',
+          id: 'api-building/rate-limit',
+        },
       ],
     },
     {
@@ -100,18 +116,17 @@ const sidebars = {
         {
           type: 'doc',
           id: 'connectors/postgresql',
-          label: 'PostgreSQL'
+          label: 'PostgreSQL',
         },
         {
           type: 'doc',
           id: 'connectors/duckdb',
-          label: 'DuckDB'
+          label: 'DuckDB',
         },
-      ]
+      ],
     },
     'deployment',
   ],
-
 };
 
 module.exports = sidebars;

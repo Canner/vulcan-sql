@@ -1,0 +1,37 @@
+# Middleware CORS
+
+We use [`@koa/cors`](https://github.com/koajs/cors) to solve [CORS](https://developer.mozilla.org/zh-TW/docs/Web/HTTP/CORS), although it has reasonable default settings, but you can still use project config (default is `vulcan.yaml`) to change some settings to suit your own needs.
+
+like so:
+
+```yaml
+cors:
+  enabled: true
+  options:
+    origin: 'http://google.com'
+    allowMethods: 'GET,HEAD,PUT'
+```
+
+### settings
+
+`enabled`
+
+- `default: true`
+- `typt: boolean`
+- Whether to enable the `cors` service, you can set it to `false` to stop the `cors` service.
+
+### options
+
+We support all options of `@koa/cors`, You can see all the options available to `@koa/cors` [here](https://github.com/koajs/cors#corsoptions).
+
+`origin`
+
+- `default: {request Origin header}`
+- `typt: string | Function(ctx)` - origin `Access-Control-Allow-Origin`, default is request Origin header
+
+`allowMethods`
+
+- `default: 'GET,HEAD,PUT,POST,DELETE,PATCH'`
+- `typt: string` - only `GET`, `HEAD`, `PUT`, `POST`, `DELETE` and `PATCH` are allowed in the string.
+
+For more detailed settings and instructions, you can refer to [here](https://github.com/koajs/cors#corsoptions).
