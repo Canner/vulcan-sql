@@ -2,9 +2,9 @@
 
 Data API Schema ( aka API Schema ) is a definition file for creating each Data API endpoint. When using VulcanSQL, you not only write SQL Query files to get results from the data source, but also need to write the Data API Schema, or no API created.
 
-# API Schema Structure
+## API Schema Structure
 
-Below is a Data API schema structure sample, the Data API schema uses YAML format to define it:
+Below is a Data API schema structure example, the Data API schema uses YAML format to define it:
 
 ```yaml
 urlPath: /users/:id
@@ -23,7 +23,7 @@ VulcanSQL will read the Data API Schema and know what the SQL files mapping it, 
 
 Below is the introduction of each field in the structure.
 
-# API Schema Fields
+## API Schema Fields
 
 ### `urlPath` Field
 
@@ -37,9 +37,9 @@ request:
     ....
 ```
 
-After API generated, VulcanSQL will add a prefix `/api` to distinguish Data API endpoints and other Non-Data API endpoints. For the above sample, the request url actually should be `/api/users/:id`.
+After API is generated, VulcanSQL will add a prefix `/api` to distinguish Data API endpoints and other Non-Data API endpoints. For the above sample, the request url eventually should be `/api/users/:id`.
 
-Otherwise, if you not set `urlPath`, VulcanSQL will use your API Schema filename to be url, e.g: API schema filename is `user.yaml` , then the `urlPath` will be `/user` .
+If you don't set urlPath, VulcanSQL uses your API Schema filename as the url, e.g. API schema filename is `user.yaml`, then the urlPath will be `/user`.
 
 ### `templateSource` Field
 
@@ -83,8 +83,8 @@ The `request` define what the request parameters would like to send with the API
 
   ```
 
-- `type` : The `type` could let VulcanSQL know the data is what type for handing it. The type could be `string`, `number`, and `boolean`.
-  If not set the field, the default is `string` type. Otherwise, sometimes if your SQL query should use the correct data type to do the filter condition, e.g: `where age > 18` , then if you don't set the `type` to be a `number` for `age`, then the query filter may get an incorrect result.
+- `type` - The `type` could let VulcanSQL know the data is what type for handing it. The type could be `string`, `number`, and `boolean`.
+  If not set the field, the default is `string` type. But don't worry, in most time, the driver is smart enough to handle parameter types, so it might take more effect on validators.
 - `description` - The `description` field is an optional value too, but if you add the `description`, then it could make the API document could display the description to make the users know what the request field is.
 - `validators` - The `validators` field is an array type to make the request parameter field have some validator to check the value format. E.g If your parameter field should be required, then set the `requried` in validators could make VulcanSQL check the parameter must be required. VulcanSQL provides some built-in validators for you, you could see the [API Validation](../api-validation) to know the detail.
 
@@ -96,24 +96,27 @@ If you would like to set it, you should provide these fields:
 
 - `parameters` - The `parameters` could let you set the sampling data for the SQL query needed, for example, if your API needs to send the request with `gender` and `age`, then you should send the field in the `sample` fields:
 
-  ```yaml
-  urlPath: users/:id
-  request:
-    - fieldName: id
-      fieldIn: path
-      type: string
-      ...
-
-  parameters:
-      id: '1234'
-  ```
-
-  :::info
-  For the more detail of using `sample` field, please see [API Document](../api-document#set-sampler).
-
-  :::
-
 - `profiles`: The `profiles` indicate the data source you would like to use for querying the sample data result.
+
+```yaml
+urlPath: users/:id
+request:
+  - fieldName: id
+    fieldIn: path
+    type: string
+    ...
+sample:
+  profile: pg
+  parameters:
+    id: '1234'
+profiles:
+  - pg
+```
+
+:::info
+For the more detail of using `sample` field, please see [API Document](../api-document#set-sampler).
+
+:::
 
 ### `profiles` field / `profile` field
 
@@ -146,11 +149,11 @@ profile:
   - duckdb
 ```
 
-But when the above example, if user3 would like to send the query, it could send the query to get the data from `duckdb`.
+With the above example, user3 can use only `duckdb` profile to send queries.
 
 This feature could make the user could use the sample SQL query but control the permission to make different use querying the data from different data sources.
 
 :::caution
-you should make sure the `pg` and `duckdb` have been installed from the remote packages, have the declaration under the `extensions` of the project config, and set the connection information in the [Data Source Profile](./data-source-profile).
+You should make sure the `pg` and `duckdb` profiles have been properly configured for your project, please check [Data Source Profile](./data-source-profile) for further information.
 
 :::
