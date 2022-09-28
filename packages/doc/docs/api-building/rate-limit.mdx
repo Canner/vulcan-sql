@@ -1,4 +1,4 @@
-# Middleware Rate-limit
+# Rate-limit
 
 This module is based on [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) and it has reasonable default settings, but you can still use project config (default is `vulcan.yaml`) to change some settings to suit your own needs.
 
@@ -18,7 +18,7 @@ rate-limit:
 `enabled`
 
 - `default: true`
-- `typt: boolean`
+- `type: boolean`
 - Whether to enable the `cors` service, you can set it to `false` to stop the `cors` service.
 
 ### options
@@ -28,13 +28,13 @@ We support all options of `koa2-ratelimit`, You can see all the options availabl
 `interval`
 
 - `default: null`
-- `typt: time` - Format refer to [here](https://github.com/ysocorp/koa2-ratelimit#time-type)
+- `type: time` - Format refer to [here](https://github.com/ysocorp/koa2-ratelimit#time-type)
 - how long should records of requests be kept in memory. Defaults to 60000 (1 minute).
 
 `max`
 
 - `default: 60`
-- `typt: number`
+- `type: number`
 - max number of connections during `interval` milliseconds before sending a `429` response code.
 
 For more detailed settings and instructions, you can refer to [here](https://github.com/ysocorp/koa2-ratelimit#configuration).

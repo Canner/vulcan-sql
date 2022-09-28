@@ -1,4 +1,4 @@
-# Middleware Access-log
+# Access-log
 
 We use [`tslog`](https://tslog.js.org/) for logging, although it has reasonable default settings, but you can still use project config (default is `vulcan.yaml`) to change some settings to suit your own needs.
 
@@ -18,7 +18,7 @@ Then the `access-log` output will be as follows:
 
 ```
 2022-09-26 08:04:08.307  INFO  [ACCESS_LOG packages/serve/src/lib/middleware/accessLogMiddleware.ts:23 AccessLogMiddleware.<anonymous>] --> ::1 -- "GET /api/artist/1" -- size: none
-2022-09-26 08:04:08.308  INFO  [ACCESS_LOG packages/serve/src/lib/middleware/accessLogMiddleware.ts:26 AccessLogMiddleware.<anonymous>]  -> header: {"host":"localhost:3000","connection":"keep-alive","sec-ch-ua":"\"Google Chrome\";v=\"105\", \"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"105\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"macOS\"","upgrade-insecure-requests":"1","user-agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36","accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","sec-fetch-site":"none","sec-fetch-mode":"navigate","sec-fetch-user":"?1","sec-fetch-dest":"document","accept-encoding":"gzip, deflate, br","accept-language":"zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7","cookie":"apollo-server-landing-page-redirect-to-studio-local=true; Authorization=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uIjoiODRjOGMxYTAtMzQwYS0xMWVkLTgxMWUtODdlNjc5ZDdmMjdhIiwicHJvZmlsZSI6eyJ1c2VybmFtZSI6InRlc3QifSwiaWF0IjoxNjYzMTQ1NTMwfQ.j9iRYDcNyYktigVeUfQyNUAqvdZETXFkhljt5kN7OQM; user=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSWQiOiJhMTY2OWM2MC0zYjEyLTExZWQtOGRkNC05MTVkNjY5MjA1NmYiLCJ1c2VybmFtZSI6InN0YXIiLCJ1c2VySWQiOiJiYzRmOTk1OC1hMGJmLTQ0ZDgtOTkxMi04ZWIyMjY5MDA4ZjMiLCJpYXQiOjE2NjM5MTg2NzJ9.PDcJZHgxdleCKADxZoe0mT2D3EnW3C1jDs5ge1mOquQ"}
+2022-09-26 08:04:08.308  INFO  [ACCESS_LOG packages/serve/src/lib/middleware/accessLogMiddleware.ts:26 AccessLogMiddleware.<anonymous>]  -> header: {"xxxxxxxxxxxx"}
 2022-09-26 08:04:08.308  INFO  [ACCESS_LOG packages/serve/src/lib/middleware/accessLogMiddleware.ts:27 AccessLogMiddleware.<anonymous>]  -> query: {}
 2022-09-26 08:04:08.310  INFO  [ACCESS_LOG packages/serve/src/lib/middleware/accessLogMiddleware.ts:28 AccessLogMiddleware.<anonymous>]  -> params: undefined
 ```
@@ -28,7 +28,7 @@ Then the `access-log` output will be as follows:
 `enabled`
 
 - `default: true`
-- `typt: boolean`
+- `type: boolean`
 - Whether to enable the `access-log` service, you can set it to `false` to stop `access-log` service.
 
 ### options
@@ -39,23 +39,23 @@ options in `tslog`.
 `level`
 
 - `default: debug`
-- `typt: string` - must be either `silly`, `trace`, `debug`, `info`, `warn`, `error` or `fatal`.
+- `type: string` - must be either `silly`, `trace`, `debug`, `info`, `warn`, `error` or `fatal`.
 - For more detailed settings and instructions, you can refer to [here](https://tslog.js.org/#/?id=log-level).
 
 `displayRequestId`
 
 - `default: false`
-- `typt: boolean`
+- `type: boolean`
 - For more detailed settings and instructions, you can refer to [here](https://tslog.js.org/#/?id=displayrequestid).
 
 `displayFunctionName`
 
 - `default: false`
-- `typt: boolean`
+- `type: boolean`
 - For more detailed settings and instructions, you can refer to [here](https://tslog.js.org/#/?id=displayfunctionname).
 
 `displayFilePath`
 
 - `default: hidden`
-- `typt: string` - must be either `hidden`, `displayAll` or `hideNodeModulesOnly`.
+- `type: string` - must be either `hidden`, `displayAll` or `hideNodeModulesOnly`.
 - For more detailed settings and instructions, you can refer to [here](https://tslog.js.org/#/?id=displayfilepath).

@@ -1,4 +1,4 @@
-# Middleware Response-format
+# Response-format
 
 This module allows you to set the supported format of the api and the preferred return format (with [HTTP Header Accepts](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept) first), you can use the project config (default is `vulcan.yaml`) to change some settings to suit your own needs.
 
@@ -19,7 +19,7 @@ response-format:
 `enabled`
 
 - `default: true`
-- `typt: boolean`
+- `type: boolean`
 - Whether to enable the `response-format` service, you can set it to `false` to stop the `response-format` service.
 
 ### options
@@ -27,7 +27,7 @@ response-format:
 `default`
 
 - `default: json`
-- `typt: string` - must be either `json` or `csv`.
+- `type: string` - must be either `json` or `csv`.
 
 > When the request path has a format type(e.g. `./api/data.csv`),
 > the `default` type does not work.
@@ -36,7 +36,7 @@ response-format:
 
 `formats`
 
-- `typt: list`
+- `type: list`
 - The format type supported by the response, if you need to use a path with a format type(e.g. `./api/data.csv`), `formats` must contain the format type.
 
 #### reference situation
