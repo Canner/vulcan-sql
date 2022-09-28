@@ -32,9 +32,8 @@
 }
 
 .feature {
-  max-width: 339px;
-  min-width: 300px;
-  margin: 40px 10px;
+  min-width: 360px;
+  margin: 40px 0px;
 }
 
 .feature > h3 {

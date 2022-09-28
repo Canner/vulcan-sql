@@ -9,19 +9,20 @@
 }
 
 .diveInAction {
-  margin-top: 20px;
-  max-width: 525px;
+  width: 525px;
   border-radius: 10px;
   background: var(--ifm-color-primary-contrast-background);
   padding: 54px 32px;
+  position: relative;
 }
 
 .diveInActionContainer {
-  justify-content: space-around;
+  justify-content: center;
+  gap: 48px;
 }
 
 .actionTitle {
-  margin-top: 24px;
+  margin-top: 70px;
   font-size: 28px;
   color: var(--ifm-color-emphasis-900);
 }
@@ -30,11 +31,14 @@
   font-size: 25px;
   line-height: 40px;
   color: var(--ifm-color-emphasis-700);
+  margin-bottom: 60px;
 }
 
 .actionLinks {
   margin-top: 29px;
   color: var(--ifm-color-primary);
+  position: absolute;
+  bottom: 60px;
 }
 
 .actionLinks > a {
@@ -48,8 +52,15 @@
   padding-top: 10px;
   font-size: 18px;
   color: var(--ifm-color-white);
+  position: absolute;
+  bottom: 35px;
 }
 
 .actionIcon {
   width: 60px;
+  position: absolute;
+}
+
+.vulcanIcon {
+  margin-top: -20px;
 }
