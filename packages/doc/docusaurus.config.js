@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'VulcanSQL',
   tagline: 'Instant API on your data warehouse and data lake',
-  url: 'https://vulcansql.com',
+  url: 'https://docs.vulcansql.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -32,14 +32,14 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/Canner/vulcan-sql/tree/main/packages/doc/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          // editUrl:
+          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -54,7 +54,7 @@ const config = {
       navbar: {
         title: 'VulcanSQL',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'VulcanSQL logo',
           src: 'img/logo.svg',
         },
         items: [
@@ -80,6 +80,14 @@ const config = {
               {
                 label: 'Quickstart',
                 to: '/docs/quickstart',
+              },
+              {
+                label: 'Installation',
+                to: '/docs/installation',
+              },
+              {
+                label: 'Connectors',
+                to: '/docs/connectors',
               },
             ],
           },
