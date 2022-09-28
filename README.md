@@ -17,8 +17,6 @@
   </a>
 </p>
 
-> 🚀 Release in Sep 2022.
-
 ## Why VulcanSQL
 > ⚡️ Data analyst / analytical engineers’ time should focus on important matters like data transformation and communicating with data consumers on high level.
 
@@ -55,7 +53,7 @@ Building API with just SQL. No complex web framework and business logic.
 **Example: passing parameters from url**
 
 ```sql
-select * from public.users where id = '{{ params.userId }}'
+select * from public.users where id = {{ context.params.userId }}
 ```
 
 You can build an API endpoint `users` with `userId` as input.
@@ -81,14 +79,14 @@ Response
   
   ```sql
   {% req user %}
-  select * from public.users where userName = '{{ parames.userName }}';
+  select * from public.users where userName = {{ context.parames.userName }} limit 1;
   {% endreq %}
   
-  {% if user.count().value() == 0 %}
+  {% if user.value().length == 0 %}
     {% error "user not found" %}
   {% endif %}
   
-  select * from public.groups where userId = '{{ user.value()[0].id }}';
+  select * from public.groups where userId = {{ user.value()[0].id }};
   ```
 </details>
 
@@ -100,7 +98,7 @@ Response
   ```sql
   select
     --- masking address if query user is not admin
-    {% if context.user == 'ADMIN' %}
+    {% if context.user.name == 'ADMIN' %}
       {% "address" %}
     {% elif %}
       {% "masking(address)" %}
@@ -111,7 +109,7 @@ Response
   from orders
 
   --- limit the data to the store user belongs to.
-  where store = {{ context.user.store }}
+  where store = {{ context.user.attr.store }}
   ```
 </details>
 
@@ -122,7 +120,7 @@ Response
 
   - SQL
       ```sql
-      select * from public.users where id = '{{ params.userId }}'
+      select * from public.users where id = {{ context.params.userId }}
       ```
       
   - Schema
@@ -175,36 +173,7 @@ On API catalog page, you can preview data here and connect from your own framewo
 
 ## Installation
 
-- npm / yarn
-    ```bash
-    npm install @vulcan-sql/cli
-    yarn add @vulcan-sql/cli
-    ```
-    
-- brew
-    ```sql
-    brew install vulcan-sql
-    ```
-    
-
-## Quickstart
-
-1. Initialize a VulcanSQL project
-    ```bash
-    vulcan init --name my-first-vulcan-project && cd my-first-vulcan-project
-    ```
-    
-2. Start VulcanSQL server.
-    ```bash
-    vulcan start --watch
-    ```
-    
-3. Visit API & Catalog
-    ```bash
-    Vulcan started...
-    Visit API document at http://localhost:8080/doc
-    Visit Catalog at http://localhost:8080/catalog
-    ```
+Visit [the document](https://docs.vulcansql.com/docs/installation) for installation guide.
 
 ## Demo Screenshot
 <p align="center">
