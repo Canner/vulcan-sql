@@ -66,28 +66,30 @@ const FeatureList: FeatureData[] = [
   {
     title: 'Provide API best practices',
     schematic: (
-      <Tabs
-        defaultValue="dynamicParameters"
-        values={[
-          { label: 'Dynamic parameters', value: 'dynamicParameters' },
-          { label: 'Validation', value: 'validation' },
-          { label: 'Error response', value: 'errorResponse' },
-          { label: 'Response format', value: 'responseFormat' },
-        ]}
-      >
-        <TabItem value="dynamicParameters">
-          <CodeBlock language="sql">{dynamicParametersCode}</CodeBlock>
-        </TabItem>
-        <TabItem value="validation">
-          <CodeBlock language="yaml">{validationCode}</CodeBlock>
-        </TabItem>
-        <TabItem value="errorResponse">
-          <CodeBlock language="sql">{errorResponseCode}</CodeBlock>
-        </TabItem>
-        <TabItem value="responseFormat">
-          <CodeBlock language="yaml">{ResponseFormatCode}</CodeBlock>
-        </TabItem>
-      </Tabs>
+      <div className={styles.bestPracticesCodeContainer}>
+        <Tabs
+          defaultValue="dynamicParameters"
+          values={[
+            { label: 'Dynamic parameters', value: 'dynamicParameters' },
+            { label: 'Validation', value: 'validation' },
+            { label: 'Error response', value: 'errorResponse' },
+            { label: 'Response format', value: 'responseFormat' },
+          ]}
+        >
+          <TabItem value="dynamicParameters">
+            <CodeBlock language="sql">{dynamicParametersCode}</CodeBlock>
+          </TabItem>
+          <TabItem value="validation">
+            <CodeBlock language="yaml">{validationCode}</CodeBlock>
+          </TabItem>
+          <TabItem value="errorResponse">
+            <CodeBlock language="sql">{errorResponseCode}</CodeBlock>
+          </TabItem>
+          <TabItem value="responseFormat">
+            <CodeBlock language="yaml">{ResponseFormatCode}</CodeBlock>
+          </TabItem>
+        </Tabs>
+      </div>
     ),
     description: (
       <span className={styles.cardDescription}>

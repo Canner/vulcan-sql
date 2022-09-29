@@ -11,7 +11,7 @@ const diveInActions = [
     icon: <Discord className={`${styles.actionIcon} `} role="img" />,
     title: 'Join our developer community',
     description:
-      'Join the discord group to chat with the developers and connect directly with the VulcanSQL Team',
+      'Join the discord group to chat with the developers and connect directly with the VulcanSQL team.',
     takeActions: (
       <div className={styles.actionLinks}>
         <Link to="https://github.com/Canner/vulcan-sql">Go to Github &gt;</Link>

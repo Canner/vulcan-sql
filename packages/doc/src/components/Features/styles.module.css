@@ -69,6 +69,10 @@
   filter: drop-shadow(12px 12px 7px rgba(0, 0, 0, 0.5));
 }
 
+.bestPracticesCodeContainer {
+  height: 366px;
+}
+
 /* table */
 @media screen and (min-width: 997px) {
   .card:nth-child(2n + 0) .cardSchematicBlock {
