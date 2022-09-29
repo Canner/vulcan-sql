@@ -55,7 +55,7 @@ options:
 const FeatureList: FeatureData[] = [
   {
     title: 'Build API instantly with just SQL',
-    schematic: <img src={'./img/buildAPIwithSQL.png'} />,
+    schematic: <img src={'./img/build-api-with-sql.png'} />,
     description: (
       <span className={styles.cardDescription}>
         No complex web framework and business logic. Learn about{' '}
@@ -116,7 +116,7 @@ const FeatureList: FeatureData[] = [
   },
   {
     title: 'Self-serve documentation and catalog',
-    schematic: <img src={'./img/catalog_api_list.png'} />,
+    schematic: <img src={'./img/catalog-api-list.png'} />,
     description: (
       <span className={styles.cardDescription}>
         Automatically build API documentation (OpenAPI) and catalog for data
@@ -127,7 +127,7 @@ const FeatureList: FeatureData[] = [
   },
   {
     title: 'Connect from framework & applications',
-    schematic: <img src={'./img/catalog_connect_page.png'} />,
+    schematic: <img src={'./img/catalog-connect-page.png'} />,
     description: (
       <span className={styles.cardDescription}>
         Preview data and connect from your own framework and applications.
