@@ -1,0 +1,116 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 41px;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 38px;
+  line-height: 46px;
+  margin-bottom: 48px;
+  color: var(--ifm-color-emphasis-900);
+}
+
+.card {
+  display: flex;
+  width: 100vw;
+  padding: 88px;
+  margin: 0;
+  min-height: 600px;
+  justify-content: center;
+}
+
+.card:nth-child(2n + 0) {
+  background: var(--ifm-color-emphasis-200);
+}
+
+.cardContent {
+  padding: 0;
+  margin: 0;
+  align-items: center;
+  max-width: 1440px;
+}
+
+.card:nth-child(2n + 0) > .cardContent {
+  flex-direction: row-reverse;
+}
+
+.cardTextBlock {
+  padding: 0;
+  margin: 0;
+}
+
+.cardTitle {
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 46px;
+  margin-bottom: 16px;
+  color: var(--ifm-color-emphasis-900);
+}
+
+.cardDescription {
+  font-weight: 400;
+  font-size: 25px;
+  line-height: 40px;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.cardSchematicBlock {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: auto;
+}
+
+.cardSchematicBlock > img {
+  -webkit-filter: drop-shadow(12px 12px 7px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(12px 12px 7px rgba(0, 0, 0, 0.5));
+}
+
+.bestPracticesCodeContainer {
+  height: 366px;
+}
+
+/* table */
+@media screen and (min-width: 997px) {
+  .card:nth-child(2n + 0) .cardSchematicBlock {
+    padding-right: 40px;
+  }
+  .card:nth-child(2n + 0) .cardTextBlock {
+    padding-left: 40px;
+  }
+
+  .card:nth-child(2n + 1) .cardSchematicBlock {
+    padding-left: 40px;
+  }
+  .card:nth-child(2n + 1) .cardTextBlock {
+    padding-right: 40px;
+  }
+}
+
+/* pad */
+@media screen and (max-width: 996px) {
+  .title {
+    margin-bottom: 40px;
+  }
+  .card {
+    padding: 88px 60px;
+  }
+
+  .cardTitle {
+    margin-bottom: 24px;
+  }
+
+  .cardTextBlock {
+    margin-bottom: 24px;
+  }
+}
+
+/* phone */
+@media screen and (max-width: 390px) {
+  .card {
+    padding: 88px 16px;
+  }
+}

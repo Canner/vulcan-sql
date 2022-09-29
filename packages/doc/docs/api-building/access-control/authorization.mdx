@@ -1,0 +1,95 @@
+# Authorization
+
+Authorization in VulcanSQL means picking the proper profile for each request.
+
+## Set the policy of profiles
+
+We use [attribute-based access control](https://en.wikipedia.org/wiki/Attribute-based_access_control?oldformat=true) (ABAC) to guard our profiles, so you need to tell VulcanSQL the policy of each profile, that is, to set the `allow` property for each profile. This property should be string, an array of string, or an array of constraints.
+This is the structure of a constraint:
+
+| property   | type             | description                                                                                                          |
+| ---------- | ---------------- | -------------------------------------------------------------------------------------------------------------------- |
+| name       | string           | Set a name constraint, wildcard supported. e.g. “admin”, “admin\*” …etc.                                             |
+| attributes | Map<string, any> | Set an attributes constraint, wildcard supported on both keys and values. e.g. {”group”: “admin\*”, “enabled”: true} |
+
+Here are some examples of policies:
+
+1. Allow every to access.
+
+   ```yaml
+   - name: pg
+     type: pg
+     allow: '*'
+   ```
+
+2. Allow the user whose name fits the pattern `admin*`. e.g. admin, admin-1, admin-boss …etc.
+
+   ```yaml
+   - name: pg
+     type: pg
+     allow: 'admin*'
+   ```
+
+3. Allow the user whose name fits the pattern `admin*` OR fits the pattern `super*`. e.g. admin-boss, super-star …etc.
+
+   ```yaml
+   - name: pg
+     type: pg
+     allow:
+       - 'admin*'
+       - 'super*'
+   ```
+
+4. Allow the user who has attribute “group” and its value fits the pattern `admin*`.
+
+   ```yaml
+   - name: pg
+     type: pg
+     allow:
+       - attributes:
+           group: 'admin*'
+   ```
+
+5. Allow the user
+
+   - who has an attribute “group” and its value fits the pattern `admin*`. AND
+   - who has an attribute “enabled” and its value is “true”.
+
+   ```yaml
+   - name: pg
+     type: pg
+     allow:
+       - attributes:
+           group: 'admin*'
+           enabled: 'true'
+   ```
+
+6. Allow the user who
+   - whose name fits the pattern `admin*`, AND
+   - who has an attribute “group” and its value fits the pattern `admin*`. AND
+   - who has an attribute “enabled” and its value is “true”.
+     ```yaml
+     - name: pg
+       type: pg
+       allow:
+         - name: 'admin*'
+           attributes:
+             group: 'admin*'
+             enabled: 'true'
+     ```
+
+:::info
+If you forget to set the “allow” property for some profiles, nobody can use them and you'll see a warning when started the server.
+
+:::
+
+## Set the allowed profiles of each template
+
+For every template, we need to tell VulcanSQL what profiles they could use by adding `profiles` property on the schema. From top to bottom, users use the first qualified profile. If users can't use any of them, `403`error will be thrown.
+
+```yaml
+urlPath: /customer
+profiles:
+  - pg-admin
+  - pg-non-admin
+```

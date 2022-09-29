@@ -1,0 +1,61 @@
+# Access Log
+
+We use [`tslog`](https://tslog.js.org/) for logging, although it has reasonable default settings, but you can still use project config (default is `vulcan.yaml`) to change some settings to suit your own needs.
+
+like so:
+
+```yaml
+access-log:
+  enabled: true
+  options:
+    level: info
+    displayRequestId: true
+    displayFunctionName: true
+    displayFilePath: hideNodeModulesOnly
+```
+
+Then the `access-log` output will be as follows:
+
+```
+2022-09-26 08:04:08.307  INFO  [ACCESS_LOG packages/serve/src/lib/middleware/accessLogMiddleware.ts:23 AccessLogMiddleware.<anonymous>] --> ::1 -- "GET /api/artist/1" -- size: none
+2022-09-26 08:04:08.308  INFO  [ACCESS_LOG packages/serve/src/lib/middleware/accessLogMiddleware.ts:26 AccessLogMiddleware.<anonymous>]  -> header: {"xxxxxxxxxxxx"}
+2022-09-26 08:04:08.308  INFO  [ACCESS_LOG packages/serve/src/lib/middleware/accessLogMiddleware.ts:27 AccessLogMiddleware.<anonymous>]  -> query: {}
+2022-09-26 08:04:08.310  INFO  [ACCESS_LOG packages/serve/src/lib/middleware/accessLogMiddleware.ts:28 AccessLogMiddleware.<anonymous>]  -> params: undefined
+```
+
+### settings
+
+`enabled`
+
+- `default: true`
+- `type: boolean`
+- Whether to enable the `access-log` service, you can set it to `false` to stop `access-log` service.
+
+### options
+
+We support the `level`, `displayRequestId`, `displayFunctionName` and `displayFilePath`
+options in `tslog`.
+
+`level`
+
+- `default: debug`
+- `type: string` - must be either `silly`, `trace`, `debug`, `info`, `warn`, `error` or `fatal`.
+- For more detailed settings and instructions, you can refer to [here](https://tslog.js.org/#/?id=log-level).
+
+`displayRequestId`
+
+- `default: false`
+- `type: boolean`
+- For more detailed settings and instructions, you can refer to [here](https://tslog.js.org/#/?id=displayrequestid).
+
+`displayFunctionName`
+
+- `default: false`
+- `type: boolean`
+- For more detailed settings and instructions, you can refer to [here](https://tslog.js.org/#/?id=displayfunctionname).
+
+`displayFilePath`
+
+- `default: hidden`
+- `type: string` - must be either `hidden`, `displayAll` or `hideNodeModulesOnly`.
+- For more detailed settings and instructions, you can refer to [here](https://tslog.js.org/#/?id=displayfilepath).

@@ -1,0 +1,66 @@
+.diveIn {
+  padding-top: 160px;
+  padding-bottom: 200px;
+}
+
+.title {
+  margin-bottom: 44px;
+  color: var(--ifm-color-emphasis-900);
+}
+
+.diveInAction {
+  width: 525px;
+  border-radius: 10px;
+  background: var(--ifm-color-primary-contrast-background);
+  padding: 54px 32px;
+  position: relative;
+}
+
+.diveInActionContainer {
+  justify-content: center;
+  gap: 48px;
+}
+
+.actionTitle {
+  margin-top: 70px;
+  font-size: 28px;
+  color: var(--ifm-color-emphasis-900);
+}
+
+.actionDescription {
+  font-size: 25px;
+  line-height: 40px;
+  color: var(--ifm-color-emphasis-700);
+  margin-bottom: 60px;
+}
+
+.actionLinks {
+  margin-top: 29px;
+  color: var(--ifm-color-primary);
+  position: absolute;
+  bottom: 60px;
+}
+
+.actionLinks > a {
+  margin-right: 25px;
+}
+
+.actionButton {
+  margin-top: 24px;
+  height: 50px;
+  background-color: var(--ifm-color-primary);
+  padding-top: 10px;
+  font-size: 18px;
+  color: var(--ifm-color-white);
+  position: absolute;
+  bottom: 35px;
+}
+
+.actionIcon {
+  width: 60px;
+  position: absolute;
+}
+
+.vulcanIcon {
+  margin-top: -20px;
+}

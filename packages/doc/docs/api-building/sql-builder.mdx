@@ -1,0 +1,275 @@
+# SQL Builder
+
+In the [SQL Template](./sql-template), We talked about the VucanSQL provide SQL Template syntax for making the SQL logistic could more flexible.
+
+But it’s not all, VulcanSQL also provides SQL Builder to make you do more complex Query conditions in the SQL File.
+
+# Create SQL Builder
+
+You could create a SQL Builder ( aka. query builder or builder ) by giving a variable name to keep a SQL Query statement to make you reuse or be the next SQL filter condition source.
+
+## Create SQL Builder Syntax
+
+You should use `req` tag with `{% ... %}` , the syntax like the below:
+
+```sql
+-- <variable-name> is a query builder name
+{% req <variable-name> %}
+	-- your Query SQL statement
+{% endreq %}:
+```
+
+Below is the create SQL Builder examples:
+
+```sql
+-- sample 1: keep the statement 'select * from users' to a variable 'user'
+{% req user %}
+select * from users;
+{% endreq %}
+
+select * from group
+where gender = {{ user.value()[0].gender }} and blacklist = {{ user.value()[0].blacklist }}
+```
+
+We keep the `select * from users;` statement to the variable `user` and use the `user` in the below SQL statement. When you call the `value()` the method of `user` builder will send the query request to the data source for getting the result of `select * from users`, and that is why it is called the `req` ( **request** ) tag.
+
+## Keep builder results for reuse
+
+However, it’s seems to waste performance for sending same request multiple times, if you would hope to send only once, you could call `.value()` when creating the builder `user`:
+
+```sql
+{% req user %}
+select * from users;
+{% endreq %}
+
+{% set userData = user.value() %}
+
+select * from group
+where gender = {{ userData[0].gender }} and blacklist = {{ userData[0].blacklist }}
+```
+
+## Use the SQL Builder and SQL Template
+
+You could use SQL Template and SQL Builder to write SQL Query:
+
+```sql
+{% req artist %}
+  select count(*) as count from "artists" where ConstituentID = {{ context.params.id }}
+{% endreq %}
+
+{% if artist.value()[0].count == 0 %}
+  {% error "Artist not found" %}
+{% endif %}
+
+select * from "artworks"
+where concat(', ' , ConstituentID , ',') like concat('%, ', {{ context.params.id }} , ',%');
+```
+
+In the above sample, you could see we use the `{% req artist %}` to create an `artist` query builder which counts all artist's numbers from the dynamic parameter `id` got in the request.
+
+Then use the `if` tag to check the count number of the `artist`, and use the [Error Response](./error-response) to throw an error if it is true.
+
+If the `artist` is not 0, then select all these `artworks` that matched the condition.
+
+## Incorrect Usage for `req` tag
+
+When using the `req` tag to create SQL builder, some syntax is incorrect:
+
+### 🚫 Create the same name builders
+
+You could not create the same variable name builder, it will make the VulcanSQL build fail, below is the sample:
+
+```sql
+-- CAN NOT CREATE THE SAME NAME QUERY BUILDERS
+{% req user %}
+	select * from users;
+{% endreq %}
+{% req user %}
+	select * from users where id = {{ context.params.id }};
+{% endreq %}
+
+```
+
+### 🚫 Create the string format name builder
+
+You could not create a builder by string format variable name, it could not recognize the variable name and make the VulcanSQL build fail, sample:
+
+```sql
+-- CAN NOT CREATE MAIN QUERY BUILDER BY STRING FORMAT
+{% req 'user' %}
+	select * from users;
+{% endreq %}
+
+```
+
+in the above, the variable name is `'user'` and it’s string format, could not recognize it, the `"user"` is the same.
+
+### 🚫 Only use `req` builder to get result
+
+You could not get the query result when only using `req` tag, it will be failed:
+
+```sql
+--- It's incorrect usage for querying the data
+{% req artists %}
+select * from "artists";
+{% endreq %}
+```
+
+Even if you use the below syntax, it still does not get the result value:
+
+```sql
+--- Syntax Sample 1: It's incorrect usage for querying the data
+{% req artists %}
+select * from "artists";
+{% endreq %}
+
+{{ artists }}
+
+--- Syntax Sample 2: return the result but is an Object
+{% req artists %}
+select * from "artists";
+{% endreq %}
+
+SELECT {{ artists }}
+
+--- Syntax Sample 3: It's incorrect usage for querying the data
+{% req artists %}
+select * from "artists";
+{% endreq %}
+
+{{ artists.value() }}
+
+--- Syntax Sample 4: return the result but is multiple Objects result
+{% req artists %}
+select * from "artists";
+{% endreq %}
+
+SELECT {{ artists.value() }}
+
+--- Syntax Sample 5: It's incorrect usage for querying the data
+{% req artists %}
+select * from "artists";
+{% endreq %}
+
+{% set result = artists.value() %}
+{{ result }}
+
+--- Sample 6: Same as Sample 4,get multiple Objects result
+{% req artists %}
+select * from "artists";
+{% endreq %}
+
+{% set result = artists.value() %}
+SELECT {{ result }}
+```
+
+# Main SQL Builder
+
+Main builder could let VulcanSQL know which builder is the final statement and get the main builder result directly.
+
+## Declare Main Builder Syntax
+
+For declaring the main builder, you should add the `main` in the behind of `req` tag variable, below is the syntax:
+
+```sql
+-- Declare the SQL builder is Main builder
+{% req <variable-name> main %}
+		-- your Query SQL statement
+{% endreg %}
+```
+
+When you declare the SQL builder is the main builder, **VulcanSQL will use the main builder be the final statement to get the builder query result automated**:
+
+```sql
+-- As the final statement and get results directly to return
+{% req artists main %}
+select * from "artists";
+{% endreq %}
+```
+
+In the above example, we modify the sample in the “🚫 Only use `req` builder to get result”, and when you add the `main`, VulcanSQL could work to get the query result in the SQL file.
+
+## Get the result from Main Builder
+
+Even when you still have other SQL clauses after the Main builder, it still treats as the final statement to get the result, not the last SQL clauses, below is the sample:
+
+```sql
+-- Output the main builder query results
+{% req artists main %}
+select * from "artists";
+{% endreq %}
+
+-- The SQL clauses work to get the query results because it's not the final statement.
+select * from "artists" where ConstituentID = 2
+```
+
+## Incorrect Usage for declaring the main builder
+
+### 🚫 Create the same name builders
+
+You could not create the same variable name builder, even another is the main builder:
+
+```sql
+-- CAN NOT CREATE THE SAME NAME QUERY BUILDERS EVEN ANOTHER is MAIN BUILDER
+{% req artists %}
+select * from "artists" where ConstituentID = 2;
+{% endreq %}
+
+{% req artists main %}
+select * from "artists";
+{% endreq %}
+```
+
+### 🚫 Create the string format name builder
+
+You could not create the main builder by string format variable name:
+
+```sql
+-- CAN NOT CREATE MAIN QUERY BUILDER BY STRING FORMAT
+{% req 'user' main %}
+	select * from users;
+{% endreq %}
+```
+
+in the above, the variable name is `'user'` and it is string format, could not recognize it, the `"user"` is the same.
+
+### 🚫 Create multiple main builders in one SQL file
+
+You could not create multiple main builders in the file:
+
+```sql
+-- CAN NOT CREATE MULTIPLE MAIN QUERY BUILDERS IN THE FILE
+{% req artists main %}
+select * from "artists";
+{% endreq %}
+
+{% req artist2 main %}
+select * from "artists" where ConstituentID = 2;
+{% endreq %}
+```
+
+# More powerful SQL Builder
+
+Actually, SQL Builder not only have this feature, in our plain, but SQL builder could also provide multiple methods to simplify your SQL clauses. it’s could combine the SQL Query by connecting each builder’s methods, below is the sample:
+
+```sql
+{% req user %}
+	select * from public.users where name = '{{ context.params.id }}'
+{% endreq %}
+
+{% req orders %}
+  select * from public.orders
+{% endreq }
+
+{% req result main %}
+    orders
+        .where('userId', user.value().id )
+        .andWhere('price','>', '10000')
+        .select()
+				.orderBy('price', 'desc')
+				.limit(10)
+{% endreq %}
+
+```
+
+But it’s still working, and if you’re excited in this feature for SQL Builder, please look forward to our next version 😉

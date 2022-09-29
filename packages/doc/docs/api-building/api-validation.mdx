@@ -1,0 +1,181 @@
+# API Validation
+
+In the [Data API Schema](./configuration/data-api-schema), we talked about how to define the API Schema, and also mentioned the `validators` field feature could assist each request parameter to check the format. In the chapter we will talk more about the validator's usage and currently how many validators VulcanSQL supports.
+
+# Parameter Validators
+
+The `validators` field in the API Schema is an array type, also you could use the multiple validators to check the format like below example:
+
+```yaml
+urlPath: /orders/order_id
+request:
+  - fieldName: orders_id
+    fieldIn: path
+    validators:
+      - required
+      - uuid
+```
+
+In the above example, because our request path parameter `order_id` is UUID format, and we require users to provide the path parameter when sending a request, so we could combine `uuid` validator and `required` validators ( but if you don’t set `required`, the VulcanSQL will make it be **required default.**
+
+## Set the args in the validator
+
+Some validators could set the `args` field to give some extra restrict, e.g: `number` and `date` validators:
+
+```yaml
+urlPath: /orders
+request:
+  - fieldName: create_date
+    fieldIn: query
+    validators:
+      - name: date
+        args:
+          format: 'YYYY-MM-DD'
+  - fieldName: price
+    fieldIn: query
+    validators:
+      - name: number
+        args:
+          min: 0
+          max: 1000000
+```
+
+As you see, the `args` will have different fields by each validator, and when setting the `args`, we should use the `name` field to set the validator name to make the YAML format correct.
+
+## Error Response when sending request
+
+When the validator check the format and it's failed, it will return the error response, below is the example:
+
+```yaml
+# order.yaml
+urlPath: /orders
+request:
+  - fieldName: price
+    fieldIn: query
+    validators:
+      - name: number
+        args:
+          min: 0
+          max: 1000000
+```
+
+Then when you sent the request with GET`<endpoint>/api/orders?price=1000001`, it will return an HTTP status code with **400** and the below message:
+
+```yaml
+{
+  code: 'vulcan.userError',
+  message: 'The input parameter is invalid, it should be integer type',
+}
+```
+
+## Current support validators
+
+### `required` validator
+
+Make the request parameter field the **required** parameter, use the [**Joi to check required**](https://joi.dev/api/?v=17.6.1#anyrequired---aliases-exist). The `args` field:
+
+- `disallow` - Array type. Specifies what input values are also not as required and if the parameter value appeared in the `disallow` value, send the response with the error message.
+
+```yaml
+# dep_users.yaml
+urlPath: /dep_users
+request:
+  - fieldName: department
+    fieldIn: query
+    validators:
+      - name: required
+        args:
+          disallow:
+            - ''
+            - ' '
+            - 'null'
+```
+
+Then when you sent the request with GET`<endpoint>/api/dep_users?department=null`, it will return an HTTP status code with **400** and the below message:
+
+```yaml
+{
+  code: 'vulcan.userError',
+  message: 'The input parameter is invalid, it should be required',
+}
+```
+
+### `uuid` validator
+
+Validate the UUID format for the request parameter, use the [\*\*Joi to check UUID](https://joi.dev/api/?v=17.6.1#stringguid---aliases-uuid).\*\* The `args` field:
+
+- `version` - String type. Specifies the UUID version. the option could be `uuidv1`, `uuidv4` or `uuidv5`
+
+```yaml
+# order.yaml
+urlPath: /orders/:id
+request:
+  - fieldName: id
+    fieldIn: path
+    validators:
+      - name: uuid
+        args:
+          version: uuidv5
+```
+
+### `date` validator
+
+Validate whether the request parameter is Date Format type or not, use the [**dayjs package**](https://day.js.org/docs/en/parse/string) to be the format source. The `args` field:
+
+- `format` - String type. Specifies the date needed format, supported [ISO_8601](https://www.w3.org/TR/NOTE-datetime) token, e.g: `'YYYYMMDD'`, `'YYYY-MM-DD'`, `'YYYY-MM-DD HH:mm'`.
+
+```yaml
+# order.yaml
+urlPath: /orders
+request:
+  - fieldName: create_date
+    fieldIn: query
+    validators:
+      - name: date
+        args:
+          format: 'YYYY-MM-DD' # make the date only support 'YYYY-MM-DD' format
+```
+
+### `string` validator
+
+Validate whether the request parameter is a String type, use the [Joi to check String](https://joi.dev/api/?v=17.6.1#string) ( including the `args` field ). The `args` field:
+
+- `format` - String type. Specifies the string format, and supports regular expression. Use the [Joi pattern](https://joi.dev/api/?v=17.6.1#objectpatternpattern-schema-options) to check.
+- `length` - Number type. Specifies the String's exact length.
+- `max` - Number type. Specifies the minimum number of string characters.
+- `min` - Number type. Specifies the maximum number of string characters.
+
+```yaml
+# bank_account.yaml
+urlPath: /bank_account/id
+request:
+  - fieldName: id
+    fieldIn: path
+    validators:
+      - name: string
+        args:
+          format: '^09[0-9]{8}$'
+          length: 10
+```
+
+### `integer` validator
+
+Validate whether the request parameter is an Integer type, use the [Joi to check Integer](https://joi.dev/api/?v=17.6.1#numberinteger). ( including the `args` field ). The `args` field:
+
+- `max` - Number type. Specifies the maximum integer value.
+- `min` - Number type. Specifies the minimum integer value.
+- `greater` - Number type. Specifies that the integer value must be greater than the limit.
+- `less` - Number type. Specifies that the value must be less than the limit.
+
+```yaml
+# bank_account.yaml
+urlPath: /youth_users
+request:
+  - fieldName: age
+    fieldIn: query
+    validators:
+      - name: integer
+        args:
+          - greater: 10
+          - less: 19
+```

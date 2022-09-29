@@ -1,0 +1,85 @@
+# API Document
+
+VulcanSQL builds and serves the API documentation automatically, all you have to do is to choose the desired document [format](./configuration#document-generator-options).
+
+After VulcanSQL server starts, visit `<vulcan-endpoint>/doc` to view the document. You can also download the specification from that page.
+
+![api document screenshot, which has a button to download api specification](./img/api-doc-screenshot.png)
+
+## Make your document better
+
+Although we'll generate all the required fields of API specification for you, you can make your document better by adding more detailed API descriptions:
+
+### Set sampler
+
+VulcanSQL has the ability to “guess” the response format by sending a sample query to your warehouse. To enable this feature, you need to set the [sample](./configuration/data-api-schema#sample-fields) property of each API schema.
+
+For example:
+
+```yaml
+urlPath: /artist/:id
+request:
+  - fieldName: id
+    fieldIn: path
+    description: constituent id
+    validators:
+      - required
+sample:
+  parameters:
+    id: '1'
+  profile: duck
+profiles:
+  - duck
+```
+
+This field has two properties:
+
+| Property name | Required | Description                                              |
+| ------------- | -------- | -------------------------------------------------------- |
+| parameters    | N        | The parameters we should use to send sampling queries.   |
+| profile       | Y        | The profile name we should use to send sampling queries. |
+
+### Add validators for the requesters
+
+Adding more validators and setting the proper arguments can let your API more stable, and we can also tell users more about your API.
+
+```yaml
+fieldName: age
+fieldIn: query
+type: number
+validators:
+  - required
+  - name: integer
+    args:
+      min: 18
+```
+
+![api request with constraint age > 18](./img/api-req-constraint.png)
+
+### Add descriptions about the requests and the responses
+
+You can add descriptions for both requests and responses:
+
+```yaml
+request:
+  - fieldName: age
+    fieldIn: query
+    type: number
+    description: Filter the age of artists
+    validators:
+      - required
+      - name: integer
+        args:
+          min: 18
+response:
+  - name: ArtistBio
+    description: The url to artist's bio
+    required: true
+```
+
+![api request and response with description](./img/api-doc-description.png)
+
+:::info
+You can list the response properties partially, we'll merge the result from [Sampler](./api-document#set-sampler)
+
+:::

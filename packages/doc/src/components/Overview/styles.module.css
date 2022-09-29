@@ -1,0 +1,49 @@
+.overview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 41px;
+}
+
+.title {
+  margin-top: 17px;
+  font-size: 38px;
+  color: var(--ifm-color-emphasis-900);
+}
+
+.getStartButton {
+  width: fit-content;
+  height: 50px;
+  border-radius: 4px;
+  font-size: 18px;
+  padding-top: 10px;
+  text-align: center;
+  background-color: var(--ifm-color-primary);
+  box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.043);
+  color: var(--ifm-color-white);
+  margin-bottom: 23px;
+}
+
+.featureContainer {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 60px;
+  margin-bottom: 84px;
+}
+
+.feature {
+  min-width: 360px;
+  margin: 40px 0px;
+}
+
+.feature > h3 {
+  font-size: 28px;
+  line-height: 40px;
+}
+
+.feature > div {
+  font-size: 25px;
+  line-height: 40px;
+  font-weight: 400;
+  color: var(--ifm-color-emphasis-700);
+}

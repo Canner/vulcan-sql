@@ -1,0 +1,37 @@
+# Deployment
+
+After development and testing, time to ship our code to production servers. VulcanSQL server only needs a few resources to run, to generate these resources, use `vulcan package` command.
+
+## Run production servers with Node JS
+
+If your production servers have Node JS ( ≥ 16 ) installed, you can use the following command to generate resources:
+
+```bash
+vulcan package --output node
+```
+
+After a successful build, you can copy the files in `./dist` folder to production servers. Then run `npm install && node index.js` to start the server.
+
+:::info
+To keep the server online 24/7, you can use [PM2](https://pm2.keymetrics.io/) to manage the process.
+
+:::
+
+:::info
+External resources and configurations like `profile.yaml` are not copied to the dist folder. You'll need to copy them manually. It's strongly recommended that use a separate profile instead of the profile which was used for development.
+
+:::
+
+## Run production server with Docker (or other [container runtimes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/))
+
+If you'd like to run servers with Docker, Kubernetes, or other container platforms …, you can build an image for them by the following command:
+
+```bash
+vulcan package --output docker
+docker build -t <tag> ./dist
+```
+
+:::info
+External resources and configurations like `profile.yaml` are not wrapped into images, you should mount these resources at runtime.
+
+:::

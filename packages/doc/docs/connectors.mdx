@@ -1,0 +1,14 @@
+# Connectors
+
+We support the following data warehouses to connect with, you can choose multiple connectors in a single project, please check the connectors’ document for the installation guide.
+
+| Warehouse                             | Query  | Streaming\* | Query Builder\*\* |
+| ------------------------------------- | ------ | ----------- | ----------------- |
+| [PostgreSQL](./connectors/postgresql) | ✅ Yes | ✅ Yes      | ❌ No             |
+| [DuckDB](./connectors/duckdb)         | ✅ Yes | ✅ Yes      | ❌ No             |
+| Snowflake                             |        |             |                   |
+| BigQuery                              |        |             |                   |
+
+\* Fetching rows only when we need them, it has better performance with large query results.
+
+\*\* Support building queries via the builder. e.g. `user.where('name', 'tom').limit(1)`
