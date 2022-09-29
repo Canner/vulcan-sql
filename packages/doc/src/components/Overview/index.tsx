@@ -48,7 +48,10 @@ export default function Overview(): JSX.Element {
         <img src={OverviewImageUrl} />
         <div className={`row ${styles.featureContainer}`}>
           {featureList.map((feature) => (
-            <div className={`col col--4 text--center ${styles.feature}`}>
+            <div
+              className={`col col--4 text--center ${styles.feature}`}
+              key={feature.title}
+            >
               {feature.icon && <feature.icon />}
               <h3>{feature.title}</h3>
               <div>{feature.description}</div>

@@ -46,7 +46,10 @@ export default function DiveIn(): JSX.Element {
       <div className="container">
         <div className={`row ${styles.diveInActionContainer}`}>
           {diveInActions.map((action) => (
-            <div className={`${clsx('col col--5')} ${styles.diveInAction}`}>
+            <div
+              className={`${clsx('col col--5')} ${styles.diveInAction}`}
+              key={action.title}
+            >
               {action.icon}
               <h3 className={styles.actionTitle}>{action.title}</h3>
               <div className={styles.actionDescription}>

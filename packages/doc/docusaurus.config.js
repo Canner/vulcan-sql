@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'VulcanSQL',
   tagline: 'Instant API on your data warehouse and data lake',
-  url: 'https://docs.vulcansql.com',
+  url: 'https://vulcansql.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
