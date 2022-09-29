@@ -76,7 +76,7 @@ export const createProject = async (
     installSpinner.succeed('Initial done.');
 
     logger.info(
-      `Project has been initialized. Run "cd ${projectPath} && vulcan start" to start the server.`
+      `Project has been initialized. Set the profiles and run "cd ${projectPath} && vulcan start" to start the server.`
     );
   } catch (e) {
     installSpinner.fail();
