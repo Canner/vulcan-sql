@@ -18,7 +18,7 @@ Please check [Authorization](./access-control/authorization) for who to set the 
 
 ## Admission Control
 
-This step is optional, you may need some complex logic to decide the legality of the request, in these cases, you can check the request in [SQL Templates](./sql-template). For example, assume that we want to limit the size of the result for the requests from interns, we can add the following SQL at the top of our templates:
+This step is optional, you may need some complex logic to decide the legality of the request, in these cases, you can check the request in [SQL Templates](./sql-syntax). For example, assume that we want to limit the size of the result for the requests from interns, we can add the following SQL at the top of our templates:
 
 ```sql
 {% if context.user.attr.department = 'intern' and context.params.limit > 1000 %}

@@ -1,10 +1,14 @@
-# SQL Template
+---
+id: sql-syntax
+---
 
-VulcanSQL could make you build the API with your written SQL File.
+# SQL Syntax
 
-However, **it not only supports basic SQL syntax, but also provides SQL template syntax to make you could write SQL flexibly.**
+With VulcanSQL, you can build the APIs with SQL written in your `.sql` files.
 
-We start the basic SQL syntax for the sample.
+However, **not only we support basic SQL syntax, but also provide SQL template syntax to make you could write SQL flexibly.**
+
+Let's start from basic SQL syntax.
 
 # Basic SQL Syntax
 
@@ -62,7 +66,7 @@ VulcanSQL use the [Nunjucks](https://mozilla.github.io/nunjucks/templating.html#
   - VulcanSQL Custom feature:
     - Use the dynamic parameter.
     - Filters the dynamic parameter by `|`.
-    - Use the [SQL Builder](./sql-builder) function.
+    - Use the [SQL Builder](./predefined-queries) function.
 - `{% ... %}` - The syntax could make you write an expression and it should cooperate with **tag** components. Some features are [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) built-in features, and some are our VulcanSQL custom features:
   - [Nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) built-in features
     - If condition by `if` tag.
@@ -72,7 +76,7 @@ VulcanSQL use the [Nunjucks](https://mozilla.github.io/nunjucks/templating.html#
   - VulcanSQL Custom feature:
     - Show [Error Response](./error-response) .
     - Set the dynamic parameter to the variable by `set`.
-    - Define a [SQL Builder](./sql-builder) feature.
+    - Define a [SQL Builder](./predefined-queries) feature.
     - Define the Main builder.
 
 In the `{% ... %}`, you could write **Python language syntax** code, because the [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) is based on [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) and it is a Python package.

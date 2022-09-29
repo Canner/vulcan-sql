@@ -1,0 +1,87 @@
+# Introduction
+
+## Why VulcanSQL
+> ⚡️ Data analyst / analytical engineers’ time should focus on important matters like data transformation and communicating with data consumers on high level.
+![before](./img/before.png)
+
+Data analysts and analytical engineers often take lots of time helping data consumers.
+* Backend engineers who build internal dashboards will ask about data catalog, documentations and if there are any APIs they can directly use.
+* Business users will ask what data they can use to achieve their goals, and how to get data to their spreadsheet or excel.
+
+![after](./img/after.png)
+
+With VulcanSQL, we prepare what data consumers need for you. Imagine you can **unify the data access by building APIs instantly with just SQL. Authorization, validation, pagination features work out of the box.**
+
+VulcanSQL also builds documentations and a self-serve catalog, so **data consumers can understand the data and get data from the tools they’re using all by themselves without using any SQL**.
+
+## Get Started
+* [Quickstart](./quickstart): This section explains how to quickstart with an example repository, which hosted at [Canner/vulcan-demo](https://github.com/Canner/vulcan-demo).
+* [Installation](./installation): This section shows how to install VulcanSQL with `NPM` (NodeJS Package Manager), or `Docker`.
+
+## How to build APIs with VulcanSQL
+### Step 1: Instant API with just SQL.
+
+![instant-api](./img/instant-api.png)
+
+Building API with just SQL. No complex web framework and business logic.
+
+**Example: passing parameters from url**
+
+```sql
+select * from public.users where id = {{ context.params.userId }}
+```
+
+You can build an API endpoint `users` with `userId` as input.
+
+API users will be able to get data like
+
+```js
+GET /users?userId=1
+
+Response
+[{
+  "name": "wwwy3y3",
+  "age": 30
+}]
+```
+
+:::info More on SQL Syntax
+
+Follow instruction at [`SQL Template`](./api-building/sql-syntax) to learn more about building APIs with SQL.
+
+:::
+
+### Step 2: Build self-serve documentation and catalog
+
+VulcanSQL will automatically build documentation and catalog.
+
+- **API Documentation**: VulcanSQL will build a swagger page for backend engineers.
+
+  ![api-doc](./img/api-doc.png)
+
+  > Follow instruction at [`API Documentation`](./api-building/api-document) to learn more about the automatically built API documentation.
+
+
+- **Catalog**: VulcanSQL will build a catalog page for data consumers. This page will consist of more clear information on data that is exposed as APIs. Description, Column information are all included.
+  > ⚠️ Check [`Catalog`](./catalog/catalog-intro) for more information. This feature is still under development.
+
+  ![catalog-api-list](./img/catalog-api-list.png)
+  ![catalog-connect-page](./img/catalog-connect-page.png)
+
+### Step 3: Connect from framework & applications
+> ⚠️ Check [`Catalog`](./catalog/catalog-intro) for more information. This feature is still under development.
+
+On API catalog page, you can preview data here and connect from your own framework and applications.
+
+- You can `Copy API URL` to use it at frontend / backend.
+- You can download the selected data as CSV or JSON.
+- You can follow the steps to connect from Excel / Google Spreadsheet / Zapier / Retools.
+
+![catalog-connect-page](./img/catalog-connect-page.png)
+![connect-from-spreadsheet](./img/connect-from-spreadsheet.png)
+
+
+## How to navigate the document
+* Learn from example in [Quickstart](./quickstart)
+* Learn how to install VulcanSQL in [Installation](./installation)
+* In `Build APIs` section, you'll learn how to build APIs from sections like [configuration](./api-building/configuration), [Writing SQL](./api-building/writing-sql) and others.

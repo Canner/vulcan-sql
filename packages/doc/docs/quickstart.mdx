@@ -133,7 +133,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
     LIMIT 1
     ```
 
-    We'd like to use the name of the user's input `name` to replace the static string “LIUKA”, so please update the SQL using the [template variable](./api-building/sql-template#dynamic-parameter) `{{ context.params.name }}`.
+    We'd like to use the name of the user's input `name` to replace the static string “LIUKA”, so please update the SQL using the [template variable](./api-building/sql-syntax#dynamic-parameter) `{{ context.params.name }}`.
 
     ```sql
     SELECT * FROM customers
@@ -154,10 +154,10 @@ At any time you get lost, or you want to see the final result, feel free to chec
     Yes, we'll parameterize all the user input like the below to prevent SQL injections.
     ![screenshot of parameterd queries](./img/parametered-queries.png)
 
-    Check [Display the variable](./api-building/sql-template#display-the-variable--dynamic-parameter) for more information.
+    Check [Display the variable](./api-building/sql-syntax#display-the-variable--dynamic-parameter) for more information.
     :::
 
-2.  Apply a [filter](./api-building/sql-template#filters) to the input, we can to `upper` filter to let our input be case-insensitive.
+2.  Apply a [filter](./api-building/sql-syntax#filters) to the input, we can to `upper` filter to let our input be case-insensitive.
 
     ```sql
     SELECT * FROM customers
@@ -183,7 +183,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
     LIMIT 1
     ```
 
-    The block `{% req user %} ... {% endreq %}` is a [query block](./api-building/sql-builder) which tells VulcanSQL that we want to save the query result to `user` variable instead of outputting as responses.
+    The block `{% req user %} ... {% endreq %}` is a [query block](./api-building/predefined-queries) which tells VulcanSQL that we want to save the query result to `user` variable instead of outputting as responses.
 
     Now we can get the result of this query and throw an error when the result equals `0`.
 
@@ -237,7 +237,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
 
     :::info
     Please save only the data you need in template logic, these data will be stored in VulcanSQL server memory and only exist while the template is executing.
-    Please check [Set tag](./api-building/sql-template#set-variable) for more information.
+    Please check [Set tag](./api-building/sql-syntax#set-variable) for more information.
 
     :::
 

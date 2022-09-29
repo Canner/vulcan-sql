@@ -94,7 +94,7 @@ const FeatureList: FeatureData[] = [
     description: (
       <span className={styles.cardDescription}>
         Included{' '}
-        <Link to="docs/api-building/sql-template#dynamic-parameter">
+        <Link to="docs/api-building/sql-syntax#dynamic-parameter">
           dynamic parameters
         </Link>
         , <Link to="docs/api-building/api-validation">validation</Link>,{' '}
@@ -121,7 +121,7 @@ const FeatureList: FeatureData[] = [
       <span className={styles.cardDescription}>
         Automatically build API documentation (OpenAPI) and catalog for data
         consumers and web engineer. Learn about{' '}
-        <Link to="docs/api-building/access-control">API documentation</Link> .
+        <Link to="docs/api-building/api-document">API documentation</Link>.
       </span>
     ),
   },
