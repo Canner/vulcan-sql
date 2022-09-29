@@ -1,28 +1,28 @@
-# SQL Builder
+---
+id: predefined-queries
+---
 
-In the [SQL Template](./sql-template), We talked about the VucanSQL provide SQL Template syntax for making the SQL logistic could more flexible.
+# Predefined Queries
 
-But it’s not all, VulcanSQL also provides SQL Builder to make you do more complex Query conditions in the SQL File.
+In the [SQL Syntax](./sql-syntax), We talked about the VucanSQL provide SQL syntax with templating for making the SQL logistic more flexible.
 
-# Create SQL Builder
+But it’s not all of it, VulcanSQL also provides `req` tag that you can predefine query, retrieve results and use them in your SQL.
 
-You could create a SQL Builder ( aka. query builder or builder ) by giving a variable name to keep a SQL Query statement to make you reuse or be the next SQL filter condition source.
-
-## Create SQL Builder Syntax
+## Using `req` tag
 
 You should use `req` tag with `{% ... %}` , the syntax like the below:
 
 ```sql
--- <variable-name> is a query builder name
+-- <variable-name> is the name of your predefined query
 {% req <variable-name> %}
 	-- your Query SQL statement
 {% endreq %}:
 ```
 
-Below is the create SQL Builder examples:
+Let's see an example:
 
 ```sql
--- sample 1: keep the statement 'select * from users' to a variable 'user'
+-- example 1: keep the statement 'select * from users' to a variable 'user'
 {% req user %}
 select * from users;
 {% endreq %}
@@ -31,26 +31,29 @@ select * from group
 where gender = {{ user.value()[0].gender }} and blacklist = {{ user.value()[0].blacklist }}
 ```
 
-We keep the `select * from users;` statement to the variable `user` and use the `user` in the below SQL statement. When you call the `value()` the method of `user` builder will send the query request to the data source for getting the result of `select * from users`, and that is why it is called the `req` ( **request** ) tag.
+We keep the `select * from users;` statement to the variable `user` and use the `user` in the below SQL statement. When you call the `value()` method, it will send a query request to the data source for getting the result of `select * from users`, and that is why it is called the `req` ( **request** ) tag.
 
-## Keep builder results for reuse
+## Avoid duplicated query execution
 
-However, it’s seems to waste performance for sending same request multiple times, if you would hope to send only once, you could call `.value()` when creating the builder `user`:
+However, it seems that we waste time sending same request two times in the above example. If you would like to send only once, you can `set` the predefined query results:
 
 ```sql
 {% req user %}
 select * from users;
 {% endreq %}
 
+// highlight-start
+-- `set` the predefined query results
 {% set userData = user.value() %}
+// highlight-end
 
 select * from group
 where gender = {{ userData[0].gender }} and blacklist = {{ userData[0].blacklist }}
 ```
 
-## Use the SQL Builder and SQL Template
+## Using with templating language
 
-You could use SQL Template and SQL Builder to write SQL Query:
+You can combine templating and `req` tag together:
 
 ```sql
 {% req artist %}
@@ -65,7 +68,7 @@ select * from "artworks"
 where concat(', ' , ConstituentID , ',') like concat('%, ', {{ context.params.id }} , ',%');
 ```
 
-In the above sample, you could see we use the `{% req artist %}` to create an `artist` query builder which counts all artist's numbers from the dynamic parameter `id` got in the request.
+In the above sample, you could see we use the `{% req artist %}` to create an `artist` predefined query, which counts all artist's numbers from the dynamic parameter `id` got in the request.
 
 Then use the `if` tag to check the count number of the `artist`, and use the [Error Response](./error-response) to throw an error if it is true.
 
@@ -73,14 +76,14 @@ If the `artist` is not 0, then select all these `artworks` that matched the cond
 
 ## Incorrect Usage for `req` tag
 
-When using the `req` tag to create SQL builder, some syntax is incorrect:
+When using the `req` tag to create predefined queries, some syntax is incorrect:
 
-### 🚫 Create the same name builders
+### 🚫 Duplicated names
 
-You could not create the same variable name builder, it will make the VulcanSQL build fail, below is the sample:
+You could not create predefined queries with same names, it will make the VulcanSQL build fail, below is the sample:
 
 ```sql
--- CAN NOT CREATE THE SAME NAME QUERY BUILDERS
+-- CAN NOT CREATE WITH THE SAME NAMES
 {% req user %}
 	select * from users;
 {% endreq %}
@@ -90,12 +93,12 @@ You could not create the same variable name builder, it will make the VulcanSQL 
 
 ```
 
-### 🚫 Create the string format name builder
+### 🚫 Names with string format (single-quoted)
 
-You could not create a builder by string format variable name, it could not recognize the variable name and make the VulcanSQL build fail, sample:
+You could not create the name with string format, it could not recognize the variable name and make the VulcanSQL build fail, sample:
 
 ```sql
--- CAN NOT CREATE MAIN QUERY BUILDER BY STRING FORMAT
+-- CAN NOT CREATE WITH STRING FORMAT
 {% req 'user' %}
 	select * from users;
 {% endreq %}
@@ -104,7 +107,7 @@ You could not create a builder by string format variable name, it could not reco
 
 in the above, the variable name is `'user'` and it’s string format, could not recognize it, the `"user"` is the same.
 
-### 🚫 Only use `req` builder to get result
+### 🚫 Only use `req` tag to get result
 
 You could not get the query result when only using `req` tag, it will be failed:
 
@@ -163,22 +166,22 @@ select * from "artists";
 SELECT {{ result }}
 ```
 
-# Main SQL Builder
+# Main Query Request
 
-Main builder could let VulcanSQL know which builder is the final statement and get the main builder result directly.
+`Main Query Request` could let VulcanSQL know which `req` is the final statement and get the result directly.
 
-## Declare Main Builder Syntax
+## Declare `Main Query Request` Syntax
 
-For declaring the main builder, you should add the `main` in the behind of `req` tag variable, below is the syntax:
+For declaring the `Main Query Request`, you should add the `main` in the behind of `req` tag variable, below is the syntax:
 
 ```sql
--- Declare the SQL builder is Main builder
+-- Declare the `Main Query Request`
 {% req <variable-name> main %}
 		-- your Query SQL statement
 {% endreg %}
 ```
 
-When you declare the SQL builder is the main builder, **VulcanSQL will use the main builder be the final statement to get the builder query result automated**:
+When you declare the SQL query is the main query, **VulcanSQL will use the main query be the final statement to get the query result automatically**:
 
 ```sql
 -- As the final statement and get results directly to return
@@ -187,14 +190,14 @@ select * from "artists";
 {% endreq %}
 ```
 
-In the above example, we modify the sample in the “🚫 Only use `req` builder to get result”, and when you add the `main`, VulcanSQL could work to get the query result in the SQL file.
+In the above example, we modify the example from the “🚫 Only use `req` tag to get result”, and when you add the `main` keyword, VulcanSQL will work correctly.
 
-## Get the result from Main Builder
+## Get the result from the `Main Query Request`
 
-Even when you still have other SQL clauses after the Main builder, it still treats as the final statement to get the result, not the last SQL clauses, below is the sample:
+Even when you still have other SQL clauses after the `Main Query Request`, it still treats the one you labeled with `main` as the final statement to get the result, not the last SQL clauses, below is the an example:
 
 ```sql
--- Output the main builder query results
+-- Output query results from the `Main Query Request`
 {% req artists main %}
 select * from "artists";
 {% endreq %}
@@ -203,11 +206,11 @@ select * from "artists";
 select * from "artists" where ConstituentID = 2
 ```
 
-## Incorrect Usage for declaring the main builder
+## Incorrect Usage of `Main Query Request`
 
-### 🚫 Create the same name builders
+### 🚫 Duplicated names
 
-You could not create the same variable name builder, even another is the main builder:
+You could not create the same variable names on `req` tags, even if one of them is the main builder:
 
 ```sql
 -- CAN NOT CREATE THE SAME NAME QUERY BUILDERS EVEN ANOTHER is MAIN BUILDER
@@ -220,12 +223,12 @@ select * from "artists";
 {% endreq %}
 ```
 
-### 🚫 Create the string format name builder
+### 🚫 Names with string format (single-quoted)
 
-You could not create the main builder by string format variable name:
+You could not create the `Main Query Request` with string format:
 
 ```sql
--- CAN NOT CREATE MAIN QUERY BUILDER BY STRING FORMAT
+-- CAN NOT CREATE MAIN QUERY REQUEST BY STRING FORMAT
 {% req 'user' main %}
 	select * from users;
 {% endreq %}
@@ -233,12 +236,12 @@ You could not create the main builder by string format variable name:
 
 in the above, the variable name is `'user'` and it is string format, could not recognize it, the `"user"` is the same.
 
-### 🚫 Create multiple main builders in one SQL file
+### 🚫 Create multiple `Main Query Requests` in one SQL file
 
-You could not create multiple main builders in the file:
+You could not create multiple main query requests in the file:
 
 ```sql
--- CAN NOT CREATE MULTIPLE MAIN QUERY BUILDERS IN THE FILE
+-- CAN NOT CREATE MULTIPLE MAIN QUERY REQUESTS IN THE FILE
 {% req artists main %}
 select * from "artists";
 {% endreq %}
@@ -248,9 +251,13 @@ select * from "artists" where ConstituentID = 2;
 {% endreq %}
 ```
 
-# More powerful SQL Builder
+## Introduing SQL Builder
 
-Actually, SQL Builder not only have this feature, in our plain, but SQL builder could also provide multiple methods to simplify your SQL clauses. it’s could combine the SQL Query by connecting each builder’s methods, below is the sample:
+Besides predefining queries with plain statements, you can also use `SQL Builder`, which will be released in following releases.
+
+`SQL builder` is a fluent API, that provides you multiple methods to build a SQL with a more readable way.
+
+Let's see an example:
 
 ```sql
 {% req user %}
@@ -261,6 +268,8 @@ Actually, SQL Builder not only have this feature, in our plain, but SQL builder 
   select * from public.orders
 {% endreq }
 
+// highlight-start
+-- constructing sql statement with a fluent API
 {% req result main %}
     orders
         .where('userId', user.value().id )
@@ -269,7 +278,8 @@ Actually, SQL Builder not only have this feature, in our plain, but SQL builder 
 				.orderBy('price', 'desc')
 				.limit(10)
 {% endreq %}
+// highlight-end
 
 ```
 
-But it’s still working, and if you’re excited in this feature for SQL Builder, please look forward to our next version 😉
+We're still working on it, and if you’re excited for `SQL Builder`, please be looking forward to our next version 😉

@@ -19,11 +19,12 @@ const sidebars = {
   // But you can create a sidebar manually
 
   tutorialSidebar: [
+    'intro',
     'quickstart',
     'installation',
     {
       type: 'category',
-      label: 'API Building',
+      label: 'Building APIs',
       items: [
         {
           type: 'category',
@@ -41,12 +42,19 @@ const sidebars = {
           ],
         },
         {
-          type: 'doc',
-          id: 'api-building/sql-template',
-        },
-        {
-          type: 'doc',
-          id: 'api-building/sql-builder',
+          type: 'category',
+          label: 'Writing SQL',
+          link: { type: 'doc', id: 'api-building/writing-sql' },
+          items: [
+            {
+              type: 'doc',
+              id: 'api-building/sql-syntax',
+            },
+            {
+              type: 'doc',
+              id: 'api-building/predefined-queries',
+            },
+          ],
         },
         {
           type: 'doc',
@@ -105,6 +113,17 @@ const sidebars = {
         {
           type: 'doc',
           id: 'api-building/rate-limit',
+        },
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Catalog',
+      link: { type: 'doc', id: 'catalog/catalog-intro' },
+      items: [
+        {
+          type: 'doc',
+          id: 'catalog/catalog-intro',
         },
       ],
     },

@@ -94,7 +94,7 @@ const FeatureList: FeatureData[] = [
     description: (
       <span className={styles.cardDescription}>
         Included{' '}
-        <Link to="docs/api-building/sql-template#dynamic-parameter">
+        <Link to="docs/api-building/sql-syntax#dynamic-parameter">
           dynamic parameters
         </Link>
         , <Link to="docs/api-building/api-validation">validation</Link>,{' '}
