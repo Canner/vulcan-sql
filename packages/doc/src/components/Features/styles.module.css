@@ -65,8 +65,8 @@
 }
 
 .cardSchematicBlock > img {
-  -webkit-filter: drop-shadow(12px 12px 7px rgba(0, 0, 0, 0.5));
-  filter: drop-shadow(12px 12px 7px rgba(0, 0, 0, 0.5));
+  -webkit-filter: drop-shadow(6px 6px 7px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(6px 6px 7px rgba(0, 0, 0, 0.1));
 }
 
 .bestPracticesCodeContainer {
