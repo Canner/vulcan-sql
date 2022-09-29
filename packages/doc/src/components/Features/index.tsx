@@ -1,17 +1,21 @@
 import React from 'react';
-import clsx from 'clsx';
 import styles from './styles.module.css';
 import CodeBlock from '@theme/CodeBlock';
 import Link from '@docusaurus/Link';
-import FeatureCard, { FratureData } from './FeatureCards';
+import FeatureCard, { FeatureData } from './FeatureCards';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-const dynamicParemetersCode = `SELECT * FROM public.users
+const dynamicParametersCode = `SELECT * FROM public.users
 WHERE age >= {{ context.params.age }} AND {{ context.params.age }} <= 19;`;
 
-const validationCode = `SELECT * FROM public.users
-WHERE id =  {{ context.params.userID }}`;
+const validationCode = `urlPath: /orders/order_id
+request:
+  - fieldName: orders_id
+    fieldIn: path
+    validators:
+      - required
+      - uuid`;
 
 const errorResponseCode = `{% req user %}
 SELECT COUNT(*) AS count FROM customers WHERE name = {{ context.params.name }}
@@ -28,9 +32,9 @@ LIMIT 1`;
 const AccessControlCode = `SELECT
 --- masking address if query user is not admin
 {% if context.user.attr.role == 'ADMIN' %}
-  {% "address" %}
+  address
 {% elif %}
-  {% "masking(address)" %}
+  {{ masking('address') }}
 {% endif %},
 
 orderId,
@@ -38,9 +42,17 @@ amount
 FROM orders
 
 --- limit the data to the store user belongs to.
-WHERE store = {{ context.user.store }}`;
+WHERE store = {{ context.user.attr.store }}`;
 
-const FeatureList: FratureData[] = [
+const ResponseFormatCode = `response-format:
+enabled: true
+options:
+  default: json
+  formats:
+    - json
+    - csv`;
+
+const FeatureList: FeatureData[] = [
   {
     title: 'Build API instantly with just SQL',
     schematic: <img src={'./img/buildAPIwithSQL.png'} />,
@@ -55,21 +67,25 @@ const FeatureList: FratureData[] = [
     title: 'Provide API best practices',
     schematic: (
       <Tabs
-        defaultValue="dynamicParemeters"
+        defaultValue="dynamicParameters"
         values={[
-          { label: 'Dynamic paremeters', value: 'dynamicParemeters' },
+          { label: 'Dynamic parameters', value: 'dynamicParameters' },
           { label: 'Validation', value: 'validation' },
           { label: 'Error response', value: 'errorResponse' },
+          { label: 'Response format', value: 'responseFormat' },
         ]}
       >
-        <TabItem value="dynamicParemeters">
-          <CodeBlock language="sql">{dynamicParemetersCode}</CodeBlock>
+        <TabItem value="dynamicParameters">
+          <CodeBlock language="sql">{dynamicParametersCode}</CodeBlock>
         </TabItem>
         <TabItem value="validation">
-          <CodeBlock language="sql">{validationCode}</CodeBlock>
+          <CodeBlock language="yaml">{validationCode}</CodeBlock>
         </TabItem>
         <TabItem value="errorResponse">
           <CodeBlock language="sql">{errorResponseCode}</CodeBlock>
+        </TabItem>
+        <TabItem value="responseFormat">
+          <CodeBlock language="yaml">{ResponseFormatCode}</CodeBlock>
         </TabItem>
       </Tabs>
     ),
@@ -77,10 +93,12 @@ const FeatureList: FratureData[] = [
       <span className={styles.cardDescription}>
         Included{' '}
         <Link to="docs/api-building/sql-template#dynamic-parameter">
-          dynamic paremeters
+          dynamic parameters
         </Link>
         , <Link to="docs/api-building/api-validation">validation</Link>,{' '}
-        <Link to="docs/api-building/error-response">error response</Link>, etc..
+        <Link to="docs/api-building/error-response">error response</Link>,{' '}
+        <Link to="docs/api-building/response-format">response format</Link>,
+        etc.
       </span>
     ),
   },
@@ -99,7 +117,7 @@ const FeatureList: FratureData[] = [
     schematic: <img src={'./img/catalog_api_list.png'} />,
     description: (
       <span className={styles.cardDescription}>
-        Automatically build API documentation (Swagger) and catalog for data
+        Automatically build API documentation (OpenAPI) and catalog for data
         consumers and web engineer. Learn about{' '}
         <Link to="docs/api-building/access-control">API documentation</Link> .
       </span>

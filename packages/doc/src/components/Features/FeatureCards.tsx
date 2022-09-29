@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './styles.module.css';
 import clsx from 'clsx';
 
-export interface FratureData {
+export interface FeatureData {
   title: string | JSX.Element;
   description: string | JSX.Element;
   schematic: JSX.Element;
@@ -26,7 +26,7 @@ const CardDescription: React.FC<{ content: string | JSX.Element }> = ({
   return content;
 };
 
-const FeatureCard: React.FC<{ featureList: FratureData[] }> = (props) => {
+const FeatureCard: React.FC<{ featureList: FeatureData[] }> = (props) => {
   const { featureList } = props;
   return (
     <>
