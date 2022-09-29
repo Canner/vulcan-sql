@@ -173,7 +173,7 @@ On API catalog page, you can preview data here and connect from your own framewo
 
 ## Installation
 
-Visit [the document](https://docs.vulcansql.com/docs/installation) for installation guide.
+Visit [the document](https://vulcansql.com/docs/installation) for installation guide.
 
 ## Demo Screenshot
 <p align="center">
