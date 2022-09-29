@@ -121,7 +121,7 @@ const FeatureList: FeatureData[] = [
       <span className={styles.cardDescription}>
         Automatically build API documentation (OpenAPI) and catalog for data
         consumers and web engineer. Learn about{' '}
-        <Link to="docs/api-building/access-control">API documentation</Link> .
+        <Link to="docs/api-building/api-document">API documentation</Link>.
       </span>
     ),
   },
