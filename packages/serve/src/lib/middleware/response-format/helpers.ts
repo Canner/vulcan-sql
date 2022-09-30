@@ -29,8 +29,8 @@ export const checkUsableFormat = ({
 
   // if path ending has no format
   if (!pathFormat) {
-    // Use the default when "acceptFormat" us array type, because array type only happened when "supportedFormats" is [] and "Accept" header has multiple
-    if (Array.isArray(acceptFormat)) return defaultFormat;
+    // Use the default format when "supportedFormats" is [].
+    if (supportedFormats.length === 0) return defaultFormat;
     // get default when "Accept" header also not matched or "Accept" header not in request (shows by */*)
     if (!acceptFormat || acceptFormat == '*/*') return defaultFormat;
     // if accept format existed, use "Accept" first matched format by support format order
