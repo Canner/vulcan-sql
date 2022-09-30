@@ -348,7 +348,7 @@ SELECT {% for item in array | unique(by="name") %} {{ item.name }}, {% endfor %}
 
 ### if-else expression
 
-If you would like to check the condition, you can use the `if` tag with `{% ... %}` and end loop with `{% endif %}`, you could also use **else if** by \*\*\*\*`{% elif %}` and else by `{% else %}` , below is a sample:
+If you would like to check the condition, you can use the `if` tag with `{% ... %}` and end loop with `{% endif %}`, you could also use **else if** by `{% elif %}` and else by `{% else %}` , below is a sample:
 
 ```sql
 {% set gender = (context.params.gender | upper | raw) %}
