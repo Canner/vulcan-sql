@@ -47,12 +47,12 @@ describe('Test to call check usable format function', () => {
   );
 
   it.each([
-    ['json', [], 'json'],
-    ['csv', [], 'csv'],
-    ['hyper', [], 'hyper'],
+    [['json'], 'json'],
+    [['csv'], 'csv'],
+    [['hyper'], 'hyper'],
   ])(
     'Test to get "Accept" format %p when context path no ending format but "Accept" header matched.',
-    (format, supportedFormats, acceptFormat) => {
+    (formats, acceptFormat) => {
       // Arrange
       const expected = acceptFormat;
       const context = {
@@ -64,7 +64,7 @@ describe('Test to call check usable format function', () => {
       // Act
       const result = checkUsableFormat({
         context,
-        supportedFormats,
+        supportedFormats: formats,
         defaultFormat: 'json',
       });
 
