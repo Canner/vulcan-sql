@@ -7,15 +7,31 @@ describe('Test to call check usable format function', () => {
     sinon.default.restore();
   });
 
-  it.each([['json'], ['csv'], ['hyper']])(
+  it.each([
+    ['json', false],
+    ['csv', false],
+    ['hyper', false],
+    ['json', '*/*'],
+    ['csv', '*/*'],
+    ['hyper', '*/*'],
+    ['json', []],
+    ['csv', []],
+    ['hyper', []],
+    ['json', ['*/*']],
+    ['csv', ['*/*']],
+    ['hyper', ['*/*']],
+    ['json', ['text/html', 'application/json']],
+    ['csv', ['text/html', 'application/json']],
+    ['hyper', ['text/html', 'application/json']],
+  ])(
     'Test to get default format %p when context path no ending format and "Accept" header not matched.',
-    (format) => {
+    (format, acceptsResult) => {
       // Arrange
       const expected = format;
       const context = {
         ...sinon.stubInterface<KoaContext>(),
         path: '/orders',
-        accepts: jest.fn().mockReturnValue(false),
+        accepts: jest.fn().mockReturnValue(acceptsResult),
       };
 
       // Act
@@ -60,14 +76,18 @@ describe('Test to call check usable format function', () => {
   it.each([
     ['json', [], false],
     ['json', [], '*/*'],
+    ['json', [], ['text/html', 'application/json']],
     ['json', ['csv', 'hyper'], false],
     ['json', ['csv', 'hyper'], '*/*'],
+    ['json', ['csv', 'hyper'], ['text/html', 'application/json']],
     ['json', ['csv', 'hyper'], 'csv'],
     ['csv', ['hyper', 'json'], false],
     ['csv', ['hyper', 'json'], '*/*'],
+    ['csv', ['hyper', 'json'], ['text/html', 'application/json']],
     ['csv', ['hyper', 'json'], 'hyper'],
     ['hyper', ['csv', 'json'], false],
     ['hyper', ['csv', 'json'], '*/*'],
+    ['hyper', ['csv', 'json'], ['text/html', 'application/json']],
     ['hyper', ['csv', 'json'], 'csv'],
   ])(
     'Test to throw error when context path ending format %p not matched (No matter "Accept" header %p match or not).',
@@ -98,12 +118,15 @@ describe('Test to call check usable format function', () => {
   it.each([
     ['json', ['json', 'hyper'], false],
     ['json', ['json', 'hyper'], '*/*'],
+    ['json', ['json', 'hyper'], ['text/html', 'application/json']],
     ['json', ['json', 'hyper'], 'hyper'],
     ['csv', ['json', 'csv'], false],
     ['csv', ['json', 'csv'], '*/*'],
+    ['csv', ['json', 'csv'], ['text/html', 'application/json']],
     ['csv', ['json', 'csv'], 'json'],
     ['hyper', ['csv', 'hyper'], false],
     ['hyper', ['csv', 'hyper'], '*/*'],
+    ['hyper', ['csv', 'hyper'], ['text/html', 'application/json']],
     ['hyper', ['csv', 'hyper'], 'csv'],
   ])(
     'Test to get url ending format when context path ending format match (No matter "Accept" header %p match or not).',
