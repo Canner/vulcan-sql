@@ -152,8 +152,7 @@ export class VulcanServer {
 // Listen the all uncaught errors (including event emitter errors) to prevent server stop.
 process.on('uncaughtException', async (err) => {
   // Display non vulcan error
-  if (!(err instanceof VulcanError)) {
+  if (!(err instanceof VulcanError))
     logger.warn('Unexpected error happened', err);
-    logger.debug('Make server keep listening');
-  }
+  logger.debug('Make server keep listening');
 });
