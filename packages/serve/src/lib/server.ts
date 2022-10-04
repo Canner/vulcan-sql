@@ -12,6 +12,7 @@ import {
   ArtifactBuilder,
   InternalError,
   ConfigurationError,
+  VulcanError,
 } from '@vulcan-sql/core';
 import { Container, TYPES } from '../containers';
 import { ServeConfig, sslFileOptions } from '../models';
@@ -87,6 +88,7 @@ export class VulcanServer {
     this.servers = this.runServer(app);
     return this.servers;
   }
+
   public async close() {
     if (this.servers) {
       if (this.servers['http']) this.servers['http'].close();
@@ -146,3 +148,12 @@ export class VulcanServer {
       .listen(httpsPort);
   }
 }
+
+// Listen the all uncaught errors (including event emitter errors) to prevent server stop.
+process.on('uncaughtException', async (err) => {
+  // Display non vulcan error
+  if (!(err instanceof VulcanError)) {
+    logger.warn('Unexpected error happened', err);
+    logger.debug('Make server keep listening');
+  }
+});
