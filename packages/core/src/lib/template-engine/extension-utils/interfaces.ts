@@ -1,4 +1,5 @@
 import * as nunjucks from 'nunjucks';
+import { BaseCompilerEnvironment } from '../compiler-environment';
 
 export const implementedOnAstVisit = (source: any): source is OnAstVisit => {
   return !!source.onVisit;
@@ -8,7 +9,7 @@ export const implementedOnAstVisit = (source: any): source is OnAstVisit => {
  * Visit every nodes after compiling, you can extract metadata from them, or even modify some nodes.
  */
 export interface OnAstVisit {
-  onVisit(node: nunjucks.nodes.Node): void;
+  onVisit(node: nunjucks.nodes.Node, env: BaseCompilerEnvironment): void;
   finish?: () => void;
 }
 

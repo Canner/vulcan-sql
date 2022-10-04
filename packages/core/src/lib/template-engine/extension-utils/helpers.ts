@@ -1,5 +1,5 @@
 import * as nunjucks from 'nunjucks';
-import { OnAstVisit, ProvideMetadata } from './interfaces';
+import { ProvideMetadata } from './interfaces';
 
 export const generateMetadata = (providers: ProvideMetadata[]) => {
   const metadata = providers.reduce((currentMetadata, provider) => {
@@ -11,13 +11,10 @@ export const generateMetadata = (providers: ProvideMetadata[]) => {
 
 export const walkAst = (
   root: nunjucks.nodes.Node,
-  visitors: OnAstVisit[]
+  visitors: ((node: nunjucks.nodes.Node) => void)[]
 ): void => {
-  visitors.forEach((visitor) => visitor.onVisit(root));
+  visitors.forEach((visitor) => visitor(root));
   visitChildren(root, (node) => walkAst(node, visitors));
-  if (root instanceof nunjucks.nodes.Root) {
-    visitors.forEach((visitor) => visitor.finish?.());
-  }
 };
 
 export type VisitChildCallback = (
