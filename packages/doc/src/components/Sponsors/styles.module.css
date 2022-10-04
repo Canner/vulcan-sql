@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.vercel {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+
+.vercel > a {
+  display: flex;
+}
+
+.vercelLogo {
+  height: 1.2em;
+  margin: 0px 5px;
+}
