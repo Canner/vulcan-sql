@@ -5,6 +5,7 @@ import { ConfigurationError } from '../utils';
 
 export interface IValidatorLoader {
   getValidator(validatorName: string): InputValidator;
+  getValidators(): InputValidator[];
 }
 
 @injectable()
@@ -27,6 +28,10 @@ export class ValidatorLoader implements IValidatorLoader {
       );
 
     return this.extensions.get(validatorName)!;
+  }
+
+  public getValidators() {
+    return Array.from(this.extensions.values());
   }
 
   private loadValidators(validators: InputValidator[]) {

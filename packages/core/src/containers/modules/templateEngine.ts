@@ -56,7 +56,8 @@ export const templateEngineModule = (options: ITemplateEngineOptions = {}) =>
     bind<BaseCompilerEnvironment>(TYPES.CompilerEnvironment)
       .toDynamicValue((context) => {
         return new BuildTimeCompilerEnvironment(
-          context.container.getAll(TYPES.Extension_TemplateEngine)
+          context.container.getAll(TYPES.Extension_TemplateEngine),
+          context.container.get(TYPES.ValidatorLoader)
         );
       })
       .inSingletonScope()

@@ -9,7 +9,10 @@ import {
 import { Container } from 'inversify';
 import * as sinon from 'ts-sinon';
 import { IDataQueryBuilder, IExecutor } from '@vulcan-sql/core/data-query';
-import { extensionModule } from '../../src/containers/modules';
+import {
+  extensionModule,
+  validatorLoaderModule,
+} from '../../src/containers/modules';
 import { ICoreOptions } from '@vulcan-sql/core';
 import { DeepPartial } from 'ts-essentials';
 
@@ -35,6 +38,7 @@ export const createTestCompiler = async ({
   container.bind(TYPES.Compiler).to(NunjucksCompiler).inSingletonScope();
 
   await container.loadAsync(extensionModule(options as any));
+  await container.loadAsync(validatorLoaderModule());
 
   // Compiler environment
   container
@@ -52,7 +56,8 @@ export const createTestCompiler = async ({
     .bind<BaseCompilerEnvironment>(TYPES.CompilerEnvironment)
     .toDynamicValue((context) => {
       return new BuildTimeCompilerEnvironment(
-        context.container.getAll(TYPES.Extension_TemplateEngine)
+        context.container.getAll(TYPES.Extension_TemplateEngine),
+        context.container.get(TYPES.ValidatorLoader)
       );
     })
     .inSingletonScope()
