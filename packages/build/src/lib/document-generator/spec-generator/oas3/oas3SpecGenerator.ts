@@ -18,6 +18,7 @@ import {
   VulcanInternalExtension,
   DocumentSpec,
   ConfigurationError,
+  TypeConstraint,
 } from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
 
@@ -121,8 +122,10 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
     for (const constraint of parameter.constraints) {
       if (constraint instanceof MinValueConstraint) {
         schema.minimum = constraint.getMinValue();
+        schema.exclusiveMinimum = constraint.isExclusive();
       } else if (constraint instanceof MaxValueConstraint) {
         schema.maximum = constraint.getMaxValue();
+        schema.exclusiveMaximum = constraint.isExclusive();
       } else if (constraint instanceof MinLengthConstraint) {
         schema.minLength = constraint.getMinLength();
       } else if (constraint instanceof MaxLengthConstraint) {
@@ -131,6 +134,8 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
         schema.pattern = constraint.getRegex();
       } else if (constraint instanceof EnumConstraint) {
         schema.enum = constraint.getList();
+      } else if (constraint instanceof TypeConstraint) {
+        schema.type = constraint.getType();
       }
     }
 

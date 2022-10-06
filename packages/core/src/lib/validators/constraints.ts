@@ -6,12 +6,12 @@ export abstract class Constraint {
     return new RequiredConstraint();
   }
 
-  static MinValue(minValue: number) {
-    return new MinValueConstraint(minValue);
+  static MinValue(minValue: number, exclusive?: boolean) {
+    return new MinValueConstraint(minValue, exclusive);
   }
 
-  static MaxValue(maxValue: number) {
-    return new MaxValueConstraint(maxValue);
+  static MaxValue(maxValue: number, exclusive?: boolean) {
+    return new MaxValueConstraint(maxValue, exclusive);
   }
 
   static MinLength(minLength: number) {
@@ -30,6 +30,10 @@ export abstract class Constraint {
     return new EnumConstraint(list);
   }
 
+  static Type(type: TypeConstraintType) {
+    return new TypeConstraint(type);
+  }
+
   abstract compose(constraint: Constraint): Constraint;
 }
 
@@ -41,7 +45,7 @@ export class RequiredConstraint extends Constraint {
 }
 
 export class MinValueConstraint extends Constraint {
-  constructor(private minValue: number) {
+  constructor(private minValue: number, private exclusive = false) {
     super();
   }
 
@@ -49,15 +53,26 @@ export class MinValueConstraint extends Constraint {
     return this.minValue;
   }
 
+  public isExclusive() {
+    return this.exclusive;
+  }
+
   public compose(constraint: MinValueConstraint): MinValueConstraint {
-    return new MinValueConstraint(
-      Math.max(this.minValue, constraint.getMinValue())
-    );
+    if (constraint.getMinValue() === this.getMinValue()) {
+      return new MinValueConstraint(
+        this.getMinValue(),
+        constraint.isExclusive() || this.isExclusive()
+      );
+    }
+    if (constraint.getMinValue() > this.getMinValue()) {
+      return constraint;
+    }
+    return this;
   }
 }
 
 export class MaxValueConstraint extends Constraint {
-  constructor(private maxValue: number) {
+  constructor(private maxValue: number, private exclusive = false) {
     super();
   }
 
@@ -65,10 +80,21 @@ export class MaxValueConstraint extends Constraint {
     return this.maxValue;
   }
 
+  public isExclusive() {
+    return this.exclusive;
+  }
+
   public compose(constraint: MaxValueConstraint): MaxValueConstraint {
-    return new MaxValueConstraint(
-      Math.min(this.maxValue, constraint.getMaxValue())
-    );
+    if (constraint.getMaxValue() === this.getMaxValue()) {
+      return new MaxValueConstraint(
+        this.getMaxValue(),
+        constraint.isExclusive() || this.isExclusive()
+      );
+    }
+    if (constraint.getMaxValue() < this.getMaxValue()) {
+      return constraint;
+    }
+    return this;
   }
 }
 
@@ -115,7 +141,7 @@ export class RegexConstraint extends Constraint {
 
   public compose(): RegexConstraint {
     throw new InternalError(
-      `Can use multiple RegexConstraint at the same time.`
+      `Cannot use multiple RegexConstraint at the same time.`
     );
   }
 }
@@ -132,6 +158,30 @@ export class EnumConstraint<T = string> extends Constraint {
   public compose(constraint: EnumConstraint<any>): EnumConstraint {
     return new EnumConstraint<any>(
       intersection(this.getList(), constraint.getList())
+    );
+  }
+}
+
+export type TypeConstraintType =
+  | 'string'
+  | 'number'
+  | 'integer'
+  | 'boolean'
+  | 'array'
+  | 'object';
+
+export class TypeConstraint extends Constraint {
+  constructor(private type: TypeConstraintType) {
+    super();
+  }
+
+  public getType() {
+    return this.type;
+  }
+
+  public compose(): TypeConstraint {
+    throw new InternalError(
+      `Cannot use multiple TypeConstraint at the same time.`
     );
   }
 }

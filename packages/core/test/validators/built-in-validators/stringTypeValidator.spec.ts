@@ -1,5 +1,5 @@
 import faker from '@faker-js/faker';
-import { StringTypeValidator } from '@vulcan-sql/core/validators';
+import { Constraint, StringTypeValidator } from '@vulcan-sql/core/validators';
 
 describe('Test "string" type validator', () => {
   it.each([
@@ -78,4 +78,24 @@ describe('Test "string" type validator', () => {
       expect(() => validator.validateData(data, args)).toThrow();
     }
   );
+
+  it('Should return TypeConstraint, MaxLengthConstraint, and MinLengthConstraint', async () => {
+    // Arrange
+    const validator = new StringTypeValidator({}, '');
+    // Act
+    const constraints = validator.getConstraints({
+      min: 3,
+      max: 5,
+      length: 10,
+      format: '.+',
+    });
+    // Assert
+    expect(constraints.length).toBe(6);
+    expect(constraints).toContainEqual(Constraint.Type('string'));
+    expect(constraints).toContainEqual(Constraint.MinLength(3));
+    expect(constraints).toContainEqual(Constraint.MaxLength(5));
+    expect(constraints).toContainEqual(Constraint.MaxLength(10));
+    expect(constraints).toContainEqual(Constraint.MinLength(10));
+    expect(constraints).toContainEqual(Constraint.Regex('.+'));
+  });
 });

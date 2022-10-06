@@ -1,5 +1,5 @@
 import * as uuid from 'uuid';
-import { UUIDTypeValidator } from '@vulcan-sql/core/validators';
+import { Constraint, UUIDTypeValidator } from '@vulcan-sql/core/validators';
 
 describe('Test "uuid" type validator ', () => {
   it.each([
@@ -78,4 +78,14 @@ describe('Test "uuid" type validator ', () => {
       expect(() => validator.validateData(data, args)).toThrow();
     }
   );
+
+  it('Should return TypeConstraint', async () => {
+    // Arrange
+    const validator = new UUIDTypeValidator({}, '');
+    // Act
+    const constraints = validator.getConstraints();
+    // Assert
+    expect(constraints.length).toBe(1);
+    expect(constraints).toContainEqual(Constraint.Type('string'));
+  });
 });

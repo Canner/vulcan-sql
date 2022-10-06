@@ -1,4 +1,4 @@
-import { IntegerTypeValidator } from '@vulcan-sql/core/validators';
+import { Constraint, IntegerTypeValidator } from '@vulcan-sql/core/validators';
 
 describe('Test "integer" type validator', () => {
   it.each([
@@ -95,4 +95,23 @@ describe('Test "integer" type validator', () => {
       expect(() => validator.validateData(data, args)).toThrow();
     }
   );
+
+  it('Should return TypeConstraint, MaxConstraint, and MinConstraint', async () => {
+    // Arrange
+    const validator = new IntegerTypeValidator({}, '');
+    // Act
+    const constraints = validator.getConstraints({
+      min: 3,
+      max: 5,
+      greater: 10,
+      less: 20,
+    });
+    // Assert
+    expect(constraints.length).toBe(5);
+    expect(constraints).toContainEqual(Constraint.Type('integer'));
+    expect(constraints).toContainEqual(Constraint.MinValue(3, false));
+    expect(constraints).toContainEqual(Constraint.MaxValue(5, false));
+    expect(constraints).toContainEqual(Constraint.MinValue(10, true));
+    expect(constraints).toContainEqual(Constraint.MaxValue(20, true));
+  });
 });

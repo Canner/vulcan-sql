@@ -8,6 +8,7 @@ import {
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
 import { ConfigurationError, UserError } from '../../utils/errors';
+import { Constraint } from '../constraints';
 
 // Support custom date format -> dayjs.format(...)
 dayjs.extend(customParseFormat);
@@ -48,5 +49,10 @@ export class DateTypeValidator extends InputValidator {
       throw new UserError(
         'The input parameter is invalid, it should be date type'
       );
+  }
+
+  public override getConstraints() {
+    const constraints: Constraint[] = [Constraint.Type('string')];
+    return constraints;
   }
 }

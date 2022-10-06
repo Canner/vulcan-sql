@@ -5,6 +5,7 @@ import {
 } from '@vulcan-sql/core/models';
 import * as Joi from 'joi';
 import { ConfigurationError, UserError } from '../../utils/errors';
+import { Constraint } from '../constraints';
 
 export interface RequiredInputArgs {
   /**
@@ -51,5 +52,9 @@ export class RequiredValidator extends InputValidator {
         'The input parameter is invalid, it should be required'
       );
     }
+  }
+
+  public override getConstraints() {
+    return [Constraint.Required()];
   }
 }

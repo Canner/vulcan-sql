@@ -6,6 +6,7 @@ import {
 import * as Joi from 'joi';
 import { isUndefined } from 'lodash';
 import { ConfigurationError, UserError } from '../../utils/errors';
+import { Constraint } from '../constraints';
 export interface StringInputArgs {
   // The string regex format pattern
   format?: string;
@@ -60,5 +61,17 @@ export class StringTypeValidator extends InputValidator {
         'The input parameter is invalid, it should be string type'
       );
     }
+  }
+
+  public override getConstraints(args: StringInputArgs) {
+    const constraints: Constraint[] = [Constraint.Type('string')];
+    if (args.min) constraints.push(Constraint.MinLength(args.min));
+    if (args.max) constraints.push(Constraint.MaxLength(args.max));
+    if (args.length) {
+      constraints.push(Constraint.MinLength(args.length));
+      constraints.push(Constraint.MaxLength(args.length));
+    }
+    if (args.format) constraints.push(Constraint.Regex(args.format));
+    return constraints;
   }
 }
