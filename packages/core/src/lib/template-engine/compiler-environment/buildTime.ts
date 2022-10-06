@@ -9,6 +9,7 @@ import { TYPES } from '@vulcan-sql/core/types';
 import { inject, injectable, multiInject, optional } from 'inversify';
 import {
   generateMetadata,
+  getValidationFilterName,
   implementedOnAstVisit,
   implementedProvideMetadata,
   OnAstVisit,
@@ -70,7 +71,7 @@ export class BuildTimeCompilerEnvironment extends BaseCompilerEnvironment {
     // Validator filters
     for (const validator of this.validatorLoader.getValidators()) {
       this.addFilter(
-        validator.getExtensionId()!,
+        getValidationFilterName(validator),
         () => null, // We don't need to implement transform function in compile time
         false
       );

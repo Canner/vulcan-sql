@@ -14,7 +14,11 @@ import {
 import { inject } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import { IValidatorLoader } from '@vulcan-sql/core/validators';
-import { visitChildren } from '../../extension-utils';
+import {
+  getValidationFilterName,
+  getValidatorName,
+  visitChildren,
+} from '../../extension-utils';
 
 interface ValidationFilter extends nunjucks.nodes.Filter {
   name: nunjucks.nodes.Symbol; // a.b
@@ -48,7 +52,7 @@ export class ParametersChecker extends CompileTimeExtension {
     validatorLoader
       .getValidators()
       .forEach((validator) =>
-        this.validationFilterNames.add(validator.getExtensionId()!)
+        this.validationFilterNames.add(getValidationFilterName(validator))
       );
   }
 
@@ -141,7 +145,7 @@ export class ParametersChecker extends CompileTimeExtension {
     if (parameter?.name.includes('.')) return null;
 
     parameter?.validators.push({
-      name: node.name.value,
+      name: getValidatorName(node.name.value),
       args,
     });
 

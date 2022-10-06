@@ -11,6 +11,7 @@ import { IValidatorLoader } from '@vulcan-sql/core/validators';
 import { inject, multiInject, optional } from 'inversify';
 import { omit } from 'lodash';
 import { InternalError } from '../../utils/errors';
+import { getValidationFilterName } from '../extension-utils';
 import { BaseCompilerEnvironment } from './base';
 
 /**
@@ -46,7 +47,7 @@ export class RuntimeCompilerEnvironment extends BaseCompilerEnvironment {
     // Validator filters
     for (const validator of this.validatorLoader.getValidators()) {
       this.addFilter(
-        validator.getExtensionId()!,
+        getValidationFilterName(validator),
         (value: any, rawArgs: any) => {
           const args = omit(rawArgs, '__keywords'); // Remove the additional property from template engine.
           try {

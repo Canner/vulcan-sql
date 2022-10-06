@@ -58,7 +58,7 @@ it('Extension should extract validator and arguments from preCheck validation fi
   const { compiler } = await createTestCompiler();
   // Act
   const { metadata } = await compiler.compile(
-    `{{ context.params.a | integer(someNumber=10, someString=":)", someBool=true) }}`
+    `{{ context.params.a | is_integer(someNumber=10, someString=":)", someBool=true) }}`
   );
   const parameters = metadata['parameter.vulcan.com'];
   // Assert
@@ -85,7 +85,7 @@ it('Extension should accept preCheck validation filters without argument', async
   const { compiler } = await createTestCompiler();
   // Act
   const { metadata } = await compiler.compile(
-    `{{ context.params.a | required }}`
+    `{{ context.params.a | is_required }}`
   );
   const parameters = metadata['parameter.vulcan.com'];
   // Assert
@@ -112,7 +112,7 @@ it('Validation filters with dynamic arguments should not be preCheck validation 
   const { compiler } = await createTestCompiler();
   // Act
   const { metadata } = await compiler.compile(
-    `{{ context.params.a | integer(someNumber=a) }}`
+    `{{ context.params.a | is_integer(someNumber=a) }}`
   );
   const parameters = metadata['parameter.vulcan.com'];
   // Assert
@@ -134,7 +134,7 @@ it('Validation filters which is not applied right after parameters should not be
   const { compiler } = await createTestCompiler();
   // Act
   const { metadata } = await compiler.compile(
-    `{{ context.params.a | abs | integer(someNumber=a) }}`
+    `{{ context.params.a | abs | is_integer(someNumber=a) }}`
   );
   const parameters = metadata['parameter.vulcan.com'];
   // Assert
@@ -156,7 +156,7 @@ it('PreCheck validation filters are chainable', async () => {
   const { compiler } = await createTestCompiler();
   // Act
   const { metadata } = await compiler.compile(
-    `{{ context.params.a | integer(max=10) | integer(min=0) | date(format="yyyy/mm/dd") | abs }}`
+    `{{ context.params.a | is_integer(max=10) | is_integer(min=0) | is_date(format="yyyy/mm/dd") | abs }}`
   );
   const parameters = metadata['parameter.vulcan.com'];
   // Assert
@@ -191,9 +191,9 @@ it('Different preCheck validation filters can be added to the same parameters', 
   const { compiler } = await createTestCompiler();
   // Act
   const { metadata } = await compiler.compile(`
-{{ context.params.a | integer(max=10) }}
-{{ context.params.a | integer(min=2) | date(format="yyyy/mm/dd") }}
-{{ context.params.a | abs | integer(min=20) }}
+{{ context.params.a | is_integer(max=10) }}
+{{ context.params.a | is_integer(min=2) | is_date(format="yyyy/mm/dd") }}
+{{ context.params.a | abs | is_integer(min=20) }}
 `);
   const parameters = metadata['parameter.vulcan.com'];
   // Assert
@@ -236,7 +236,7 @@ it('Validation filters which is applied to the children of parameters should not
   const { compiler } = await createTestCompiler();
   // Act
   const { metadata } = await compiler.compile(`
-{{ context.params.a.b | integer(max=10) }}
+{{ context.params.a.b | is_integer(max=10) }}
 `);
   const parameters = metadata['parameter.vulcan.com'];
   // Assert
@@ -269,7 +269,7 @@ it('Extension should reject the validation filter when invalid arguments', async
   // Act, Assert
   await expect(
     compiler.compile(`
-{{ context.params.a.b | integer(10) }}
+{{ context.params.a.b | is_integer(10) }}
 `)
-  ).rejects.toThrow(`The arguments of validation filter integer is invalid`);
+  ).rejects.toThrow(`The arguments of validation filter is_integer is invalid`);
 });
