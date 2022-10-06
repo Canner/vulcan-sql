@@ -14,6 +14,7 @@ import {
   TemplateEngineOptions,
   TemplateProviderType,
   TYPES,
+  validatorLoaderModule,
 } from '@vulcan-sql/core';
 
 export const getTestCompiler = async (config: Partial<ICoreOptions> = {}) => {
@@ -32,6 +33,8 @@ export const getTestCompiler = async (config: Partial<ICoreOptions> = {}) => {
 
   // Extension
   await container.loadAsync(extensionModule(config as any));
+  // Validators
+  await container.loadAsync(validatorLoaderModule());
 
   // Compiler
   container.bind(TYPES.Compiler).to(NunjucksCompiler).inSingletonScope();
@@ -52,7 +55,8 @@ export const getTestCompiler = async (config: Partial<ICoreOptions> = {}) => {
     .bind<BaseCompilerEnvironment>(TYPES.CompilerEnvironment)
     .toDynamicValue((context) => {
       return new BuildTimeCompilerEnvironment(
-        context.container.getAll(TYPES.Extension_TemplateEngine)
+        context.container.getAll(TYPES.Extension_TemplateEngine),
+        context.container.get(TYPES.ValidatorLoader)
       );
     })
     .inSingletonScope()
