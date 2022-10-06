@@ -398,6 +398,8 @@ declare module 'nunjucks' {
     class Dict extends NodeList {}
 
     class KeywordArgs extends Dict {}
+
+    class Array extends NodeList {}
   }
 
   namespace lexer {

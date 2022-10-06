@@ -273,3 +273,52 @@ it('Extension should reject the validation filter when invalid arguments', async
 `)
   ).rejects.toThrow(`The arguments of validation filter is_integer is invalid`);
 });
+
+it('Validation filters with array arguments should be preCheck validation filters', async () => {
+  // Arrange
+  const { compiler } = await createTestCompiler();
+  // Act
+  const { metadata } = await compiler.compile(
+    `{{ context.params.a | is_enum(items=[1,"2",true]) }}`
+  );
+  const parameters = metadata['parameter.vulcan.com'];
+  // Assert
+  expect(parameters.length).toBe(1);
+  expect(parameters[0]).toEqual({
+    name: 'a',
+    locations: [
+      {
+        lineNo: 0,
+        columnNo: 17,
+      },
+    ],
+    validators: [
+      {
+        name: 'enum',
+        args: { items: [1, '2', true] },
+      },
+    ],
+  });
+});
+
+it('Validation filters with dynamic array arguments should not be preCheck validation filters', async () => {
+  // Arrange
+  const { compiler } = await createTestCompiler();
+  // Act
+  const { metadata } = await compiler.compile(
+    `{{ context.params.a | is_enum(item=[1,2,3,a]) }}`
+  );
+  const parameters = metadata['parameter.vulcan.com'];
+  // Assert
+  expect(parameters.length).toBe(1);
+  expect(parameters[0]).toEqual({
+    name: 'a',
+    locations: [
+      {
+        lineNo: 0,
+        columnNo: 17,
+      },
+    ],
+    validators: [],
+  });
+});

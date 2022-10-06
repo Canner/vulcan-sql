@@ -42,6 +42,10 @@ describe('Test "enum" validator', () => {
   it.each([
     ['1', '{"items": ["1"]}'],
     [1, '{"items": [1]}'],
+    ['1', '{"items": [1]}'],
+    ['true', '{"items": [true]}'],
+    [true, '{"items": [true]}'],
+    [true, '{"items": ["true"]}'],
     [1, '{"items": [2,3,1,1]}'],
   ])(
     'Should be valid when validate data %p with args is %p',
@@ -57,8 +61,8 @@ describe('Test "enum" validator', () => {
   );
 
   it.each([
-    ['1', '{"items": [1]}'],
     [1, '{"items": [2,3,4]}'],
+    [false, '{"items": ["true"]}'],
   ])(
     'Should be invalid when validate data %p with args is %p',
     async (data: any, inputArgs: string) => {

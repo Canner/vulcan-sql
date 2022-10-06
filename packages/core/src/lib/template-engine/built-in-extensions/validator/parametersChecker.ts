@@ -129,8 +129,18 @@ export class ParametersChecker extends CompileTimeExtension {
         }
 
         if (arg.value instanceof nunjucks.nodes.Literal) {
-          // Static value, set the value
+          // Static value, set the value. e.g. a=1, a="s", a=true ...
           args[arg.key.value] = arg.value.value;
+        } else if (
+          arg.value instanceof nunjucks.nodes.Array &&
+          arg.value.children.every(
+            (child) => child instanceof nunjucks.nodes.Literal
+          )
+        ) {
+          // Static array value, set the value. e.g. a=[1,2,3]
+          args[arg.key.value] = arg.value.children.map(
+            (child) => (child as nunjucks.nodes.Literal).value
+          );
         } else {
           // Dynamic value, set to null because we know the value only when executing.
           args[arg.key.value] = null;

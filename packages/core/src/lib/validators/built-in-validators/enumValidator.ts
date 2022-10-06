@@ -4,7 +4,7 @@ import {
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
 import * as Joi from 'joi';
-import { ConfigurationError } from '../../utils/errors';
+import { ConfigurationError, UserError } from '../../utils/errors';
 import { Constraint } from '../constraints';
 
 export interface EnumInputArgs {
@@ -38,18 +38,18 @@ export class EnumValidator extends InputValidator {
 
   public validateData(value: any, args: EnumInputArgs) {
     // Only allow the values in items property
-    const schema = Joi.valid(...args.items);
+    const schema = Joi.valid(...args.items.map((item) => String(item)));
 
     try {
-      Joi.assert(value, schema);
+      Joi.assert(String(value), schema);
     } catch (e: any) {
       if (e instanceof Joi.ValidationError)
-        throw new ConfigurationError(
+        throw new UserError(
           `The input data for "enum" type validator is invalid: ${e.message}`,
           { nestedError: e }
         );
       else
-        throw new ConfigurationError(
+        throw new UserError(
           'The input data for "enum" type validator is invalid',
           { nestedError: e }
         );
