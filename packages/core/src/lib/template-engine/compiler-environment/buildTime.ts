@@ -67,6 +67,14 @@ export class BuildTimeCompilerEnvironment extends BaseCompilerEnvironment {
 
   private loadExtensions(): void {
     this.extensions.forEach(this.loadExtension.bind(this));
+    // Validator filters
+    for (const validator of this.validatorLoader.getValidators()) {
+      this.addFilter(
+        validator.getExtensionId()!,
+        () => null, // We don't need to implement transform function in compile time
+        false
+      );
+    }
   }
 
   private loadExtension(extension: TemplateEngineExtension) {
@@ -86,14 +94,6 @@ export class BuildTimeCompilerEnvironment extends BaseCompilerEnvironment {
     }
     if (implementedProvideMetadata(extension)) {
       this.metadataProviders.push(extension);
-    }
-    // Validator filters
-    for (const validator of this.validatorLoader.getValidators()) {
-      this.addFilter(
-        validator.getExtensionId()!,
-        () => null, // We don't need to implement transform function in compile time
-        true
-      );
     }
   }
 }

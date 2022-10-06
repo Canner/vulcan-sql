@@ -46,7 +46,8 @@ export const createTestCompiler = async ({
     .toDynamicValue((context) => {
       return new RuntimeCompilerEnvironment(
         context.container.get(TYPES.CompilerLoader),
-        context.container.getAll(TYPES.Extension_TemplateEngine)
+        context.container.getAll(TYPES.Extension_TemplateEngine),
+        context.container.get(TYPES.ValidatorLoader)
       );
     })
     .inSingletonScope()
