@@ -12,6 +12,7 @@ import {
   ArtifactBuilder,
   InternalError,
   ConfigurationError,
+  VulcanError,
 } from '@vulcan-sql/core';
 import { Container, TYPES } from '../containers';
 import { ServeConfig, sslFileOptions } from '../models';
@@ -35,6 +36,13 @@ export class VulcanServer {
     this.config = config;
     this.container = new Container();
   }
+
+  private uncaughtErrorHandler = async (err: any) => {
+    // Display non vulcan error
+    if (!(err instanceof VulcanError))
+      logger.warn('Unexpected error happened', err);
+    logger.debug('Make server keep listening');
+  };
   /**
    * Start the vulcan server. default http port is 3000, you could also change it by setting "port" under config.
    *
@@ -87,12 +95,16 @@ export class VulcanServer {
     this.servers = this.runServer(app);
     return this.servers;
   }
+
   public async close() {
     if (this.servers) {
       if (this.servers['http']) this.servers['http'].close();
       if (this.servers['https']) this.servers['https'].close();
       this.servers = undefined;
+      // remove 'uncaughtException' listener
+      process.off('uncaughtException', this.uncaughtErrorHandler);
     }
+
     this.container.unload();
   }
 
@@ -107,6 +119,9 @@ export class VulcanServer {
 
     const httpPort = this.config['port'] || 3000;
     const httpServer = http.createServer(app.getHandler()).listen(httpPort);
+
+    // Listen the all uncaught errors (including event emitter errors) to prevent server stop.
+    process.on('uncaughtException', this.uncaughtErrorHandler);
 
     if (enabled && options['type'] === ResolverType.LOCAL) {
       const httpsServer = this.createHttpsServer(

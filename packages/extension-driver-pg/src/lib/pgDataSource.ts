@@ -54,6 +54,13 @@ export class PGDataSource extends DataSource<any, PGOptions> {
     const { pool, options } = this.poolMapping.get(profileName)!;
     this.logger.debug(`Acquiring connection from ${profileName}`);
     const client = await pool.connect();
+    // listen the pg connection event errors when executing query
+    pool.on('error', (err) => {
+      //  Ignore the error and display warn message
+      this.logger.warn(
+        `Pool client of profile instance ${profileName} connecting failed, detail error, ${err}`
+      );
+    });
     this.logger.debug(`Acquired connection from ${profileName}`);
     try {
       const cursor = client.query(
