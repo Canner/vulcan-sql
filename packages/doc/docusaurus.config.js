@@ -70,6 +70,11 @@ const config = {
             label: 'Community',
           },
           {
+            to: '/docs/contributing/overview',
+            position: 'left',
+            label: 'Contributing',
+          },
+          {
             href: 'https://github.com/Canner/vulcan-sql',
             label: 'GitHub',
             position: 'right',
