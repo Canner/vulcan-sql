@@ -1,10 +1,10 @@
-import { FieldInType } from '@vulcan-sql/core';
+import { FieldInType, ValidatorDefinition } from '@vulcan-sql/core';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 
 interface Parameter {
   name: string;
-  lineNo: number;
-  columnNo: number;
+  locations: { lineNo: number; columnNo: number }[];
+  validators: ValidatorDefinition[];
 }
 
 export class AddParameter extends SchemaParserMiddleware {
@@ -20,15 +20,18 @@ export class AddParameter extends SchemaParserMiddleware {
     parameters.forEach((parameter) => {
       // We only check the first value of nested parameters
       const name = parameter.name.split('.')[0];
-      if (
-        !schemas.request!.some(
-          (paramInSchema) => paramInSchema.fieldName === name
-        )
-      ) {
+      const existedParam = schemas.request!.find(
+        (paramInSchema) => paramInSchema.fieldName === name
+      );
+
+      if (existedParam) {
+        if (!existedParam.validators) existedParam.validators = [];
+        existedParam.validators.push(...(parameter.validators || []));
+      } else {
         schemas.request!.push({
           fieldName: name,
           fieldIn: FieldInType.QUERY,
-          validators: [],
+          validators: parameter.validators || [],
         });
       }
     });
