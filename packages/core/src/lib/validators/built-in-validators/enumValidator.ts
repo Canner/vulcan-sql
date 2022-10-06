@@ -37,6 +37,9 @@ export class EnumValidator extends InputValidator {
   }
 
   public validateData(value: any, args: EnumInputArgs) {
+    // It there is no value, ignore the check.
+    if (value === undefined || value === null) return;
+
     // Only allow the values in items property
     const schema = Joi.valid(...args.items.map((item) => String(item)));
 

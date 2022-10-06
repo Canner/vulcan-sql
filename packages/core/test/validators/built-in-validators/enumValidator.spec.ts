@@ -47,6 +47,7 @@ describe('Test "enum" validator', () => {
     [true, '{"items": [true]}'],
     [true, '{"items": ["true"]}'],
     [1, '{"items": [2,3,1,1]}'],
+    [undefined, '{"items": [2]}'],
   ])(
     'Should be valid when validate data %p with args is %p',
     async (data: any, inputArgs: string) => {
