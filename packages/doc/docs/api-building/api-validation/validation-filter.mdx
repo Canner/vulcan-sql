@@ -1,3 +1,98 @@
 # Validation Filter
 
-TBD
+Validation filters allow you to define validators with [SQL Syntax](../sql-syntax#filters).
+Every validator has a unique filter named with prefix `is_`, e.g. `integer` validator has the `is_integer` filter. You can chain these filters after the variable you want to validate.
+
+For example, we can ensure the [dynamic parameters](../sql-syntax#dynamic-parameter) `id` is integer type before sending queries to data warehouse.
+
+```sql
+SELECT * FROM "artists"
+WHERE ConstituentID = {{ context.params.id | is_required | is_integer }}
+```
+
+Besides dynamic parameters, we can also chain these filters after any variables. The example below validates the result of [Predefined Queries
+](../predefined-queries) before sending the second query.
+
+```sql
+{% req artist %}
+SELECT * FROM "artists"
+WHERE DisplayName = {{ context.params.name }} LIMIT 1
+{% endreq %}
+
+SELECT * FROM "artworks"
+WHERE ConstituentID = {{ artist.value()[0].ConstituentID | is_required | is_integer }}
+```
+
+## Set the arguments of validators
+
+We could use Python's keyword-style arguments the configure the arguments of validators. For example, if we want to add `integer` validator with range [0, 100] on dynamic parameter `age`:
+
+```sql
+SELECT * FROM users
+WHERE age = {{ context.params.age | integer(min=0, max=100) }}
+```
+
+You can use dynamic arguments as well, the following example uses a [predefined query](../predefined-queries) to get all the classes, and puts it into the [enum](../api-validation#enum-validator) validator.
+
+```sql
+{% req classification %}
+SELECT Classification FROM artworks GROUP BY Classification;
+{% endreq %}
+
+{# Push the classes into classes array #}
+{% set classes = [] %}
+{% for c in classification.value() %}
+  {% set temp = classes.push(c.Classification) %}
+{% endfor %}
+
+
+SELECT * FROM "artworks"
+WHERE Classification = {{ context.params.class | is_required | is_enum(items=classes) }}
+```
+
+## PreCheck Validation Filters
+
+VulcanSQL optimizes your validation filters, some filters will be upgraded to PreCheck validation filter (PCVF). PCVF provides these benefits:
+
+1. **Validations be done before executing your SQL.** <br/>
+   VulcanSQL evaluates the dynamic parameters before executing SQL, we won't waste any time with invalid requests.
+
+2. **Generate rules for [API document](../api-document) and [Catalog](../../catalog/catalog-intro).** <br/>
+   VulcanSQL extracts the PreCheck validation filters and tells other services the rules.
+   ```sql
+   SELECT * FROM "customers"
+   WHERE age = {{ context.params.age | is_required | is_integer(min=18, max=100) }}
+   ```
+   ![auto generated rules on API document](./img/auto-generated-rules.jpg)
+
+### Requirements of PreCheck Validation Filters
+
+:::info
+Validation filters also work well without fitting the following requirements, but VulcanSQL makes the API server better if your validation filters follow those rules.
+
+:::
+
+We will continue to improve our optimizer, but the following are the criteria to be the candidate.
+
+1. All arguments should be static.
+
+   ```sql
+   ✅ context.params.id | is_number(max=20)
+   ❌ context.params.id | is_number(max=var)
+   ```
+
+2. Filters should be chained right after the dynamic parameters or another PCVF.
+
+   ```sql
+   ✅ context.params.id | is_number(max=20)
+   ✅ context.params.id | is_required | is_number(max=20)
+   ❌ context.params.id | upper | is_number(max=20)
+   ❌ var | is_number(max=20)
+   ```
+
+3. Filters should not be chained on the child of dynamic parameters.
+
+   ```sql
+   ✅ context.params.id | is_number(max=20)
+   ❌ context.params.id.account | is_number(max=20)
+   ```
