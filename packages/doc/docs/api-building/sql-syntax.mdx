@@ -12,7 +12,7 @@ Let's start from basic SQL syntax.
 
 # Basic SQL Syntax
 
-You could use basic SQL Syntax to create an SQL file and define Data API by defining [Data API Schema](./configuration/data-api-schema) to let create the API endpoint and send the request to run your SQL file for querying data.
+You could use basic SQL Syntax to create an SQL file and define Data API by defining [API Schema](./configuration/api-schema) to let create the API endpoint and send the request to run your SQL file for querying data.
 
 First You could write your SQL logistic in the file and put the file in a place e.g: create the SQL file named `youth_users.sql` and put it in `/sqls` folder:
 
@@ -20,7 +20,7 @@ First You could write your SQL logistic in the file and put the file in a place 
 SELECT * FROM public.users WHERE age >= 10 AND age <= 19;
 ```
 
-Second, define your `youth_users.sql` API entry point by [Data API Schema](./configuration/data-api-schema) for creating the API:
+Second, define your `youth_users.sql` API entry point by [API Schema](./configuration/api-schema) for creating the API:
 
 ```yaml
 urlPath: /youth_users
@@ -85,7 +85,7 @@ In the `{% ... %}`, you could write **Python language syntax** code, because the
 
 The dynamic parameter is first important feature, which could let you use the request parameter in SQL file for making your Query result could change follow by your API request parameter.
 
-You could use `{{ context.params.[request-parameter] }}` to get the request parameter you defined it in [Data API Schema ](./configuration/data-api-schema), the `[request-parameter]` should replace to your request parameter which is the same as the `fieldName` under the `request` of API schema , we use the basic SQL syntax sample:
+You could use `{{ context.params.[request-parameter] }}` to get the request parameter you defined it in [API Schema](./configuration/api-schema), the `[request-parameter]` should replace to your request parameter which is the same as the `fieldName` under the `request` of API schema , we use the basic SQL syntax sample:
 
 ```sql
 SELECT * FROM public.users
