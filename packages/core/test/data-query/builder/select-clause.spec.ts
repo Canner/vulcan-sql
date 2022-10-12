@@ -4,12 +4,13 @@ import {
   AggregateFuncType,
   AliasColumn,
   DataQueryBuilder,
+  Parameterizer,
   SelectClauseOperation,
   SelectCommandType,
   SelectedColumn,
 } from '@vulcan-sql/core/data-query';
 import { find, isEmpty } from 'lodash';
-import { DataSource, BindParameters } from '@vulcan-sql/core/models';
+import { DataSource } from '@vulcan-sql/core/models';
 
 // Use to generate select record expected results
 const generateSelectRecords = (
@@ -40,7 +41,7 @@ const generateSelectRecords = (
 const createStub = () => {
   return {
     dataSource: sinon.stubInterface<DataSource>(),
-    bindParams: sinon.stubInterface<BindParameters>(),
+    parameterizer: sinon.stubInterface<Parameterizer>(),
   };
 };
 
@@ -48,7 +49,7 @@ const createStubBuilder = ({ statement }: { statement: string }) =>
   new DataQueryBuilder({
     statement: statement,
     dataSource: createStub().dataSource,
-    bindParams: createStub().bindParams,
+    parameterizer: createStub().parameterizer,
     profileName: '',
   });
 

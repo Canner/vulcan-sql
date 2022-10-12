@@ -1,12 +1,11 @@
 import {
   DataSource,
   Pagination,
-  BindParameters,
   DataResult,
+  isOffsetPagination,
 } from '@vulcan-sql/core/models';
 import * as uuid from 'uuid';
-
-import { find, isEmpty } from 'lodash';
+import { find, isEmpty, isNull, isUndefined } from 'lodash';
 import {
   ComparisonPredicate,
   ComparisonOperator,
@@ -21,7 +20,9 @@ import {
   JoinOnClause,
   JoinOnClauseOperation,
 } from './joinOnClause';
-import { TemplateError } from '../../utils/errors';
+import { InternalError, TemplateError } from '../../utils/errors';
+import { IParameterizer } from '../parameterizer';
+import { Builtin } from 'ts-essentials';
 
 export enum SelectCommandType {
   SELECT = 'SELECT',
@@ -183,11 +184,16 @@ export interface SQLClauseOperation {
   offset: number | null;
 }
 
+export type Parameterized<T> = T extends Builtin
+  ? string | null
+  : T extends Record<string, any>
+  ? { [K in keyof T]: Parameterized<T[K]> }
+  : T;
+
 export interface IDataQueryBuilder {
   readonly statement: string;
   readonly operations: SQLClauseOperation;
   readonly dataSource: DataSource;
-  readonly bindParams: BindParameters;
   // used for distinguish different builder
   readonly identifier: string;
   // Select clause methods
@@ -407,6 +413,7 @@ export interface IDataQueryBuilder {
   paginate(pagination: Pagination): void;
   value(): Promise<DataResult>;
   clone(): IDataQueryBuilder;
+  parameterizeOperations(): Promise<Partial<Parameterized<SQLClauseOperation>>>;
 }
 
 export class DataQueryBuilder implements IDataQueryBuilder {
@@ -414,28 +421,28 @@ export class DataQueryBuilder implements IDataQueryBuilder {
   // record all operations for different SQL clauses
   public readonly operations: SQLClauseOperation;
   public readonly dataSource: DataSource;
-  public readonly bindParams: BindParameters;
   public pagination?: Pagination;
   public readonly identifier: string;
   private profileName: string;
+  private parameterizer: IParameterizer;
 
   constructor({
     statement,
     operations,
-    bindParams,
+    parameterizer,
     dataSource,
     profileName,
   }: {
     statement: string;
     operations?: SQLClauseOperation;
-    bindParams: BindParameters;
+    parameterizer: IParameterizer;
     dataSource: DataSource;
     profileName: string;
   }) {
     this.identifier = uuid.v4();
     this.statement = statement;
     this.dataSource = dataSource;
-    this.bindParams = bindParams;
+    this.parameterizer = parameterizer;
     this.operations = operations || {
       select: null,
       where: [],
@@ -638,7 +645,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
     const wrappedBuilder = new DataQueryBuilder({
       statement: '',
       dataSource: this.dataSource,
-      bindParams: this.bindParams,
+      parameterizer: this.parameterizer,
       profileName: this.profileName,
     });
     builderCallback(wrappedBuilder);
@@ -1087,28 +1094,41 @@ export class DataQueryBuilder implements IDataQueryBuilder {
       statement: this.statement,
       dataSource: this.dataSource,
       operations: this.operations,
-      bindParams: this.bindParams,
+      parameterizer: this.parameterizer.clone(),
       profileName: this.profileName,
     });
   }
 
   // setup pagination if would like to do paginate
   public paginate(pagination: Pagination) {
-    this.pagination = pagination;
+    if (!isOffsetPagination(pagination)) {
+      throw new InternalError(`Only offset pagination is supported`);
+    }
+    this.take(pagination.limit, pagination.offset);
+  }
+
+  public async parameterizeOperations(): Promise<
+    Partial<Parameterized<SQLClauseOperation>>
+  > {
+    // We only support offset and limit now.
+    const parameterizedOperations: Partial<Parameterized<SQLClauseOperation>> =
+      {
+        offset: await this.parameterizeValue(this.operations.offset),
+        limit: await this.parameterizeValue(this.operations.limit),
+      };
+    this.parameterizer.reset();
+    return parameterizedOperations;
   }
 
   public async value() {
     // call data source
     const result = await this.dataSource.execute({
       statement: this.statement,
-      operations: this.operations,
-      bindParams: this.bindParams,
+      operations: await this.parameterizeOperations(),
+      bindParams: this.parameterizer.getBinding(),
       pagination: this.pagination,
       profileName: this.profileName,
     });
-
-    // Reset operations
-    await this.resetOperations();
 
     return result;
   }
@@ -1188,14 +1208,10 @@ export class DataQueryBuilder implements IDataQueryBuilder {
     });
   }
 
-  private resetOperations() {
-    this.operations.select = null;
-    this.operations.where = [];
-    this.operations.join = [];
-    this.operations.groupBy = [];
-    this.operations.having = [];
-    this.operations.orderBy = [];
-    this.operations.limit = null;
-    this.operations.offset = null;
+  private async parameterizeValue(
+    value?: Builtin | null
+  ): Promise<string | null> {
+    if (isUndefined(value) || isNull(value)) return null;
+    return await this.parameterizer.generateIdentifier(value);
   }
 }

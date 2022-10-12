@@ -1,11 +1,11 @@
 import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
-import { DataQueryBuilder, DataSource, BindParameters } from '@vulcan-sql/core';
+import { DataQueryBuilder, DataSource, Parameterizer } from '@vulcan-sql/core';
 
 const createStub = () => {
   return {
     dataSource: sinon.stubInterface<DataSource>(),
-    bindParams: sinon.stubInterface<BindParameters>(),
+    parameterizer: sinon.stubInterface<Parameterizer>(),
   };
 };
 
@@ -13,7 +13,7 @@ const createStubBuilder = ({ statement }: { statement: string }) =>
   new DataQueryBuilder({
     statement: statement,
     dataSource: createStub().dataSource,
-    bindParams: createStub().bindParams,
+    parameterizer: createStub().parameterizer,
     profileName: '',
   });
 

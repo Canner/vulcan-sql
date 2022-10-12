@@ -5,7 +5,7 @@ import {
 } from '@vulcan-sql/core/models';
 import { InternalError } from '../../../utils/errors';
 import { PARAMETERIZER_VAR_NAME, SANITIZER_NAME } from './constants';
-import { Parameterizer } from './parameterizer';
+import { Parameterizer } from '../../../data-query/parameterizer';
 import { TemplateInput } from './templateInput';
 
 @VulcanInternalExtension()

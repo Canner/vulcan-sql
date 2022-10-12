@@ -1,5 +1,4 @@
 import {
-  BindParameters,
   DataSource,
   PrepareParameterFunc,
   RequestParameter,
@@ -7,12 +6,13 @@ import {
 import { inject, injectable, interfaces } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import { DataQueryBuilder, IDataQueryBuilder } from './builder';
+import { IParameterizer } from './parameterizer';
 
 export interface IExecutor {
   createBuilder(
     profileName: string,
     query: string,
-    bindParams: BindParameters
+    parameterizer: IParameterizer
   ): Promise<IDataQueryBuilder>;
   prepare: PrepareParameterFunc;
 }
@@ -39,11 +39,11 @@ export class QueryExecutor implements IExecutor {
   public async createBuilder(
     profileName: string,
     query: string,
-    bindParams: BindParameters
+    parameterizer: IParameterizer
   ) {
     return new DataQueryBuilder({
       statement: query,
-      bindParams,
+      parameterizer,
       dataSource: this.dataSourceFactory(profileName)!,
       profileName,
     });

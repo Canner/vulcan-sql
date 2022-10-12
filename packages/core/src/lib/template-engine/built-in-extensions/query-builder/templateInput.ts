@@ -1,4 +1,4 @@
-import { Parameterizer } from './parameterizer';
+import { Parameterizer } from '../../../data-query/parameterizer';
 
 export class TemplateInput {
   private rawValue: any;

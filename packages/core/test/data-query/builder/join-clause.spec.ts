@@ -12,13 +12,14 @@ import {
   JoinOnOperatorInput,
   LogicalOperator,
   NullPredicateInput,
+  Parameterizer,
 } from '@vulcan-sql/core/data-query';
-import { DataSource, BindParameters } from '@vulcan-sql/core';
+import { DataSource } from '@vulcan-sql/core';
 
 const createStub = () => {
   return {
     dataSource: sinon.stubInterface<DataSource>(),
-    bindParams: sinon.stubInterface<BindParameters>(),
+    parameterizer: sinon.stubInterface<Parameterizer>(),
   };
 };
 
@@ -26,7 +27,7 @@ const createStubBuilder = ({ statement }: { statement: string }) =>
   new DataQueryBuilder({
     statement: statement,
     dataSource: createStub().dataSource,
-    bindParams: createStub().bindParams,
+    parameterizer: createStub().parameterizer,
     profileName: '',
   });
 

@@ -88,7 +88,7 @@ export const createTestCompiler = async ({
     },
     getCreatedBinding: async () => {
       const calls = stubExecutor.createBuilder.getCalls();
-      return calls.map((call) => call.args[2]);
+      return calls.map((call) => call.args[2].getBinding());
     },
   };
 };
