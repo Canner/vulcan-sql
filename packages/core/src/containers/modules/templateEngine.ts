@@ -8,10 +8,12 @@ import {
   NunjucksCompiler,
   Compiler,
   TemplateEngine,
+  BaseCompilerEnvironment,
+  RuntimeCompilerEnvironment,
+  BuildTimeCompilerEnvironment,
 } from '@vulcan-sql/core/template-engine';
 import { AsyncContainerModule, interfaces } from 'inversify';
 import { TemplateEngineOptions } from '../../options';
-import * as nunjucks from 'nunjucks';
 
 export const templateEngineModule = (options: ITemplateEngineOptions = {}) =>
   new AsyncContainerModule(async (bind) => {
@@ -40,22 +42,24 @@ export const templateEngineModule = (options: ITemplateEngineOptions = {}) =>
         .inSingletonScope();
     }
 
-    // Compiler environment
-    bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
+    // Compiler environment, we need to initialize them manually because they extends some old js libraries.
+    bind<BaseCompilerEnvironment>(TYPES.CompilerEnvironment)
       .toDynamicValue((context) => {
-        // We only need loader in runtime
-        const codeLoader = context.container.get<CodeLoader>(
-          TYPES.CompilerLoader
+        return new RuntimeCompilerEnvironment(
+          context.container.get(TYPES.CompilerLoader),
+          context.container.getAll(TYPES.Extension_TemplateEngine),
+          context.container.get(TYPES.ValidatorLoader)
         );
-
-        return new nunjucks.Environment(codeLoader);
       })
       .inSingletonScope()
       .whenTargetNamed('runtime');
 
-    bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
-      .toDynamicValue(() => {
-        return new nunjucks.Environment();
+    bind<BaseCompilerEnvironment>(TYPES.CompilerEnvironment)
+      .toDynamicValue((context) => {
+        return new BuildTimeCompilerEnvironment(
+          context.container.getAll(TYPES.Extension_TemplateEngine),
+          context.container.get(TYPES.ValidatorLoader)
+        );
       })
       .inSingletonScope()
       .whenTargetNamed('compileTime');

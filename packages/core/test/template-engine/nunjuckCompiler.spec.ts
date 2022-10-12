@@ -36,12 +36,3 @@ it('Nunjucks compiler should load compiled code and execute rendered template wi
   expect(queries[0]).toBe('Hello $1!');
   expect(binding[0].get('$1')).toBe('World');
 });
-
-it('Nunjucks compiler should reject the extension which has no valid super class', async () => {
-  // Arrange
-  const { compiler } = await createTestCompiler();
-  // Action, Assert
-  expect(() => compiler.loadExtension({} as any)).toThrow(
-    'Extension must be of type RuntimeExtension or CompileTimeExtension'
-  );
-});

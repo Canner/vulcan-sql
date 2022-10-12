@@ -1,4 +1,4 @@
-import { RequiredValidator } from '@vulcan-sql/core/validators';
+import { Constraint, RequiredValidator } from '@vulcan-sql/core/validators';
 
 describe('Test "required" type validator', () => {
   it.each([
@@ -85,4 +85,14 @@ describe('Test "required" type validator', () => {
       expect(() => validator.validateData(data, args)).toThrow();
     }
   );
+
+  it('Should return RequiredConstraint', async () => {
+    // Arrange
+    const validator = new RequiredValidator({}, '');
+    // Act
+    const constraints = validator.getConstraints();
+    // Assert
+    expect(constraints.length).toBe(1);
+    expect(constraints).toContainEqual(Constraint.Required());
+  });
 });

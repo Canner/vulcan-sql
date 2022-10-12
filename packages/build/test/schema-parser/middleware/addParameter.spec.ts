@@ -71,6 +71,7 @@ it(`Should add query parameter automatically when some parameters haven't be def
     fieldName: 'param1',
     fieldIn: FieldInType.PATH,
     description: 'origin',
+    validators: [],
   });
   expect(schema.request![1]).toEqual({
     fieldName: 'param2',
@@ -130,4 +131,41 @@ it('Should tolerate empty request and add fallback value for it', async () => {
   await addParameter.handle(schema, async () => Promise.resolve());
   // Assert
   expect(schema.request).toEqual([]);
+});
+
+it(`Should merge validators when some parameters are defined in both schema and metadata`, async () => {
+  // Arrange
+  const schema: RawAPISchema = {
+    sourceName: 'some-name',
+    templateSource: 'some-name',
+    request: [
+      {
+        fieldName: 'param1',
+        fieldIn: FieldInType.PATH,
+        description: 'origin',
+        validators: [{ name: 'required' }],
+      },
+    ],
+    metadata: {
+      'parameter.vulcan.com': [
+        {
+          name: 'param1',
+          locations: [],
+          validators: [{ name: 'integer', args: { min: 3 } }],
+        },
+      ],
+      errors: [],
+    },
+  };
+  const addParameter = new AddParameter();
+  // Act
+  await addParameter.handle(schema, async () => Promise.resolve());
+
+  // Assert
+  expect(schema.request![0]).toEqual({
+    fieldName: 'param1',
+    fieldIn: FieldInType.PATH,
+    description: 'origin',
+    validators: [{ name: 'required' }, { name: 'integer', args: { min: 3 } }],
+  });
 });

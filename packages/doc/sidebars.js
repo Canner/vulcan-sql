@@ -61,8 +61,15 @@ const sidebars = {
           id: 'api-building/build-from-dbt',
         },
         {
-          type: 'doc',
-          id: 'api-building/api-validation',
+          type: 'category',
+          label: 'API Validation',
+          link: { type: 'doc', id: 'api-building/api-validation' },
+          items: [
+            {
+              type: 'doc',
+              id: 'api-building/api-validation/validation-filter',
+            },
+          ]
         },
         {
           type: 'doc',

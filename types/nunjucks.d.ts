@@ -389,6 +389,17 @@ declare module 'nunjucks' {
     class TemplateData extends Literal {}
 
     class Output extends NodeList {}
+
+    class Pair extends Node {
+      key: Symbol;
+      value: Node;
+    }
+
+    class Dict extends NodeList {}
+
+    class KeywordArgs extends Dict {}
+
+    class Array extends NodeList {}
   }
 
   namespace lexer {

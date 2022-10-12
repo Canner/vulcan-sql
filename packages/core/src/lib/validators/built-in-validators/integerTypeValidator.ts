@@ -6,6 +6,7 @@ import {
 import * as Joi from 'joi';
 import { isUndefined } from 'lodash';
 import { ConfigurationError, UserError } from '../../utils/errors';
+import { Constraint } from '../constraints';
 
 export interface IntInputArgs {
   // The integer minimum value
@@ -61,5 +62,14 @@ export class IntegerTypeValidator extends InputValidator {
         'The input parameter is invalid, it should be integer type'
       );
     }
+  }
+
+  public override getConstraints(args: IntInputArgs) {
+    const constraints: Constraint[] = [Constraint.Type('integer')];
+    if (args.min) constraints.push(Constraint.MinValue(args.min, false));
+    if (args.max) constraints.push(Constraint.MaxValue(args.max, false));
+    if (args.greater) constraints.push(Constraint.MinValue(args.greater, true));
+    if (args.less) constraints.push(Constraint.MaxValue(args.less, true));
+    return constraints;
   }
 }

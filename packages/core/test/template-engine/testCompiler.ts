@@ -1,13 +1,18 @@
 import { TYPES } from '@vulcan-sql/core/types';
 import {
+  BaseCompilerEnvironment,
+  BuildTimeCompilerEnvironment,
   InMemoryCodeLoader,
   NunjucksCompiler,
+  RuntimeCompilerEnvironment,
 } from '@vulcan-sql/core/template-engine';
 import { Container } from 'inversify';
 import * as sinon from 'ts-sinon';
-import * as nunjucks from 'nunjucks';
 import { IDataQueryBuilder, IExecutor } from '@vulcan-sql/core/data-query';
-import { extensionModule } from '../../src/containers/modules';
+import {
+  extensionModule,
+  validatorLoaderModule,
+} from '../../src/containers/modules';
 import { ICoreOptions } from '@vulcan-sql/core';
 import { DeepPartial } from 'ts-essentials';
 
@@ -33,23 +38,28 @@ export const createTestCompiler = async ({
   container.bind(TYPES.Compiler).to(NunjucksCompiler).inSingletonScope();
 
   await container.loadAsync(extensionModule(options as any));
+  await container.loadAsync(validatorLoaderModule());
 
   // Compiler environment
   container
-    .bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
+    .bind<BaseCompilerEnvironment>(TYPES.CompilerEnvironment)
     .toDynamicValue((context) => {
-      // We only need loader in runtime
-      const loader = context.container.get<nunjucks.ILoader>(
-        TYPES.CompilerLoader
+      return new RuntimeCompilerEnvironment(
+        context.container.get(TYPES.CompilerLoader),
+        context.container.getAll(TYPES.Extension_TemplateEngine),
+        context.container.get(TYPES.ValidatorLoader)
       );
-      return new nunjucks.Environment(loader);
     })
     .inSingletonScope()
     .whenTargetNamed('runtime');
+
   container
-    .bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
-    .toDynamicValue(() => {
-      return new nunjucks.Environment();
+    .bind<BaseCompilerEnvironment>(TYPES.CompilerEnvironment)
+    .toDynamicValue((context) => {
+      return new BuildTimeCompilerEnvironment(
+        context.container.getAll(TYPES.Extension_TemplateEngine),
+        context.container.get(TYPES.ValidatorLoader)
+      );
     })
     .inSingletonScope()
     .whenTargetNamed('compileTime');

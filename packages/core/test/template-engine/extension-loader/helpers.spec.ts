@@ -15,11 +15,7 @@ it('AST walker should traversal all nodes', async () => {
   root.addChild(new nunjucks.nodes.Literal(0, 0, 'b')); // 5
   let visitedNodes = 0;
   // Act
-  walkAst(root, [
-    {
-      onVisit: () => visitedNodes++,
-    },
-  ]);
+  walkAst(root, [() => visitedNodes++]);
   // Assert
   expect(visitedNodes).toBe(5);
 });

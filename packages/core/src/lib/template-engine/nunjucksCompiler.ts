@@ -1,60 +1,36 @@
 import { Compiler, CompileResult, ExecuteContext } from './compiler';
 import * as nunjucks from 'nunjucks';
 import * as transformer from 'nunjucks/src/transformer';
-import { inject, injectable, multiInject, named, optional } from 'inversify';
+import { inject, injectable, named } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
-import {
-  generateMetadata,
-  implementedOnAstVisit,
-  implementedProvideMetadata,
-  OnAstVisit,
-  ProvideMetadata,
-  walkAst,
-} from './extension-utils';
 import { IDataQueryBuilder } from '../data-query';
-import {
-  Pagination,
-  TemplateEngineExtension,
-  RuntimeExtension,
-  CompileTimeExtension,
-  TagBuilder,
-  TagRunner,
-  FilterBuilder,
-  FilterRunner,
-  DataResult,
-} from '@vulcan-sql/core/models';
+import { Pagination, DataResult } from '@vulcan-sql/core/models';
 import { NunjucksExecutionMetadata } from './nunjucksExecutionMetadata';
-import { InternalError } from '../utils';
+import {
+  BuildTimeCompilerEnvironment,
+  RuntimeCompilerEnvironment,
+} from './compiler-environment';
 
 @injectable()
 export class NunjucksCompiler implements Compiler {
   public name = 'nunjucks';
-  private runtimeEnv: nunjucks.Environment;
-  private compileTimeEnv: nunjucks.Environment;
-  private extensions: TemplateEngineExtension[];
-  private astVisitors: OnAstVisit[] = [];
-  private metadataProviders: ProvideMetadata[] = [];
-  private extensionsInitialized = false;
+  private runtimeEnv: RuntimeCompilerEnvironment;
+  private compileTimeEnv: BuildTimeCompilerEnvironment;
 
   constructor(
-    @multiInject(TYPES.Extension_TemplateEngine)
-    @optional()
-    extensions: TemplateEngineExtension[] = [],
     @inject(TYPES.CompilerEnvironment)
     @named('runtime')
-    runtimeEnv: nunjucks.Environment,
+    runtimeEnv: RuntimeCompilerEnvironment,
     @inject(TYPES.CompilerEnvironment)
     @named('compileTime')
-    compileTimeEnv: nunjucks.Environment
+    compileTimeEnv: BuildTimeCompilerEnvironment
   ) {
     this.runtimeEnv = runtimeEnv;
     this.compileTimeEnv = compileTimeEnv;
-    this.extensions = extensions;
-    this.loadAllExtensions();
   }
 
   public async compile(template: string): Promise<CompileResult> {
-    await this.initializeExtensions();
+    await this.compileTimeEnv.initializeExtensions();
     const compiler = new nunjucks.compiler.Compiler(
       'main',
       this.compileTimeEnv.opts.throwOnUndefined || false
@@ -71,8 +47,8 @@ export class NunjucksCompiler implements Compiler {
       this.compileTimeEnv.extensionsList,
       {}
     );
-    this.traverseAst(ast);
-    const metadata = this.getMetadata();
+    this.compileTimeEnv.traverseAst(ast);
+    const metadata = this.compileTimeEnv.getMetadata();
     const preProcessedAst = this.preProcess(ast);
     return { ast: preProcessedAst, metadata };
   }
@@ -82,7 +58,7 @@ export class NunjucksCompiler implements Compiler {
     data: ExecuteContext,
     pagination?: Pagination
   ): Promise<DataResult> {
-    await this.initializeExtensions();
+    await this.runtimeEnv.initializeExtensions();
     const metadata = new NunjucksExecutionMetadata(data);
     const builder = await this.renderAndGetMainBuilder(
       templateName,
@@ -90,68 +66,6 @@ export class NunjucksCompiler implements Compiler {
     );
     if (pagination) builder.paginate(pagination);
     return builder.value();
-  }
-
-  public loadExtension(extension: TemplateEngineExtension): void {
-    if (extension instanceof RuntimeExtension) {
-      this.loadRuntimeExtensions(extension);
-    } else if (extension instanceof CompileTimeExtension) {
-      this.loadCompileTimeExtensions(extension);
-    } else {
-      throw new InternalError(
-        `Extension must be of type RuntimeExtension or CompileTimeExtension`
-      );
-    }
-  }
-
-  private loadAllExtensions(): void {
-    this.extensions.forEach((ext) => this.loadExtension(ext));
-  }
-
-  private loadCompileTimeExtensions(extension: CompileTimeExtension): void {
-    // Extends
-    if (extension instanceof TagBuilder) {
-      this.compileTimeEnv.addExtension(extension.getName(), extension);
-    } else if (extension instanceof FilterBuilder) {
-      this.compileTimeEnv.addFilter(
-        extension.filterName,
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        () => {}, // We don't need to implement transform function in compile time
-        true
-      );
-    }
-    // Implement
-    if (implementedOnAstVisit(extension)) {
-      this.astVisitors.push(extension);
-    }
-    if (implementedProvideMetadata(extension)) {
-      this.metadataProviders.push(extension);
-    }
-  }
-
-  private loadRuntimeExtensions(extension: RuntimeExtension): void {
-    if (extension instanceof TagRunner) {
-      this.runtimeEnv.addExtension(extension.getName(), extension);
-    } else if (extension instanceof FilterRunner) {
-      this.runtimeEnv.addFilter(
-        extension.filterName,
-        function (this: any, value: any, ...args) {
-          // use classic function to receive context
-          extension.__transform(this, value, ...args);
-        },
-        true
-      );
-    }
-  }
-
-  private traverseAst(ast: nunjucks.nodes.Node) {
-    walkAst(ast, this.astVisitors);
-  }
-
-  /** Get some metadata from the AST tree, e.g. the errors defined by templates.
-   * It'll help use to validate templates, validate schema ...etc. */
-  private getMetadata() {
-    return generateMetadata(this.metadataProviders);
   }
 
   /** Process the AST tree before compiling */
@@ -171,13 +85,5 @@ export class NunjucksCompiler implements Compiler {
         }
       );
     });
-  }
-
-  private async initializeExtensions() {
-    if (this.extensionsInitialized) return;
-    for (const extension of this.extensions) {
-      if (extension.activate) await extension.activate();
-    }
-    this.extensionsInitialized = true;
   }
 }

@@ -1,7 +1,8 @@
 import * as sinon from 'ts-sinon';
-import * as nunjucks from 'nunjucks';
 import { Container } from 'inversify';
 import {
+  BaseCompilerEnvironment,
+  BuildTimeCompilerEnvironment,
   extensionModule,
   ICoreOptions,
   IDataQueryBuilder,
@@ -9,9 +10,11 @@ import {
   InMemoryCodeLoader,
   ITemplateEngineOptions,
   NunjucksCompiler,
+  RuntimeCompilerEnvironment,
   TemplateEngineOptions,
   TemplateProviderType,
   TYPES,
+  validatorLoaderModule,
 } from '@vulcan-sql/core';
 
 export const getTestCompiler = async (config: Partial<ICoreOptions> = {}) => {
@@ -30,26 +33,32 @@ export const getTestCompiler = async (config: Partial<ICoreOptions> = {}) => {
 
   // Extension
   await container.loadAsync(extensionModule(config as any));
+  // Validators
+  await container.loadAsync(validatorLoaderModule());
 
   // Compiler
   container.bind(TYPES.Compiler).to(NunjucksCompiler).inSingletonScope();
 
   // Compiler environment
   container
-    .bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
+    .bind<BaseCompilerEnvironment>(TYPES.CompilerEnvironment)
     .toDynamicValue((context) => {
-      // We only need loader in runtime
-      const loader = context.container.get<nunjucks.ILoader>(
-        TYPES.CompilerLoader
+      return new RuntimeCompilerEnvironment(
+        context.container.get(TYPES.CompilerLoader),
+        context.container.getAll(TYPES.Extension_TemplateEngine),
+        context.container.get(TYPES.ValidatorLoader)
       );
-      return new nunjucks.Environment(loader);
     })
     .inSingletonScope()
     .whenTargetNamed('runtime');
+
   container
-    .bind<nunjucks.Environment>(TYPES.CompilerEnvironment)
-    .toDynamicValue(() => {
-      return new nunjucks.Environment();
+    .bind<BaseCompilerEnvironment>(TYPES.CompilerEnvironment)
+    .toDynamicValue((context) => {
+      return new BuildTimeCompilerEnvironment(
+        context.container.getAll(TYPES.Extension_TemplateEngine),
+        context.container.get(TYPES.ValidatorLoader)
+      );
     })
     .inSingletonScope()
     .whenTargetNamed('compileTime');

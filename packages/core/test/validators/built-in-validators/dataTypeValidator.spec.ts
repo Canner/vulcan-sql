@@ -1,4 +1,4 @@
-import { DateTypeValidator } from '@vulcan-sql/core/validators';
+import { Constraint, DateTypeValidator } from '@vulcan-sql/core/validators';
 
 describe('Test "date" type validator', () => {
   it.each([
@@ -74,4 +74,13 @@ describe('Test "date" type validator', () => {
       expect(() => validator.validateData(data, args)).toThrow();
     }
   );
+
+  it('Should return TypeConstraint', async () => {
+    // Arrange
+    const validator = new DateTypeValidator({}, '');
+    // Act
+    const constraints = validator.getConstraints();
+    // Assert
+    expect(constraints).toEqual([Constraint.Type('string')]);
+  });
 });

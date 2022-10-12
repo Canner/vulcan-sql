@@ -7,6 +7,7 @@ import * as Joi from 'joi';
 import { GuidVersions } from 'joi';
 import { isUndefined } from 'lodash';
 import { ConfigurationError, UserError } from '../../utils/errors';
+import { Constraint } from '../constraints';
 
 type UUIDVersion = 'uuid_v1' | 'uuid_v4' | 'uuid_v5';
 
@@ -56,5 +57,10 @@ export class UUIDTypeValidator extends InputValidator {
         'The input parameter is invalid, it should be uuid type'
       );
     }
+  }
+
+  public override getConstraints() {
+    const constraints: Constraint[] = [Constraint.Type('string')];
+    return constraints;
   }
 }

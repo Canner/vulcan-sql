@@ -1,4 +1,5 @@
 import { asyncReqIdStorage } from './logger';
+import * as nunjucks from 'nunjucks';
 
 export interface VulcanErrorOptions {
   code?: string;
@@ -6,6 +7,10 @@ export interface VulcanErrorOptions {
   httpCode?: number;
   exitCode?: number;
   description?: string;
+}
+
+export interface TemplateErrorOptions extends VulcanErrorOptions {
+  node?: nunjucks.nodes.Node;
 }
 
 export class VulcanError extends Error {
@@ -64,7 +69,7 @@ export class ConfigurationError extends InternalError {
 
 /** Error from template syntax */
 export class TemplateError extends InternalError {
-  constructor(message?: string, options?: VulcanErrorOptions) {
+  constructor(message?: string, options?: TemplateErrorOptions) {
     super(message, {
       ...options,
       code: options?.code || 'vulcan.templateError',

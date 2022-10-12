@@ -2,9 +2,7 @@ import {
   Constraint,
   EnumConstraint,
   MaxLengthConstraint,
-  MaxValueConstraint,
   MinLengthConstraint,
-  MinValueConstraint,
   RequiredConstraint,
 } from '@vulcan-sql/core/validators';
 
@@ -18,27 +16,59 @@ it('Required constraint compose should always return required constraint', async
   expect(composed instanceof RequiredConstraint).toBeTruthy();
 });
 
-it('MinValue constraint compose should maximum the value', async () => {
-  // Arrange
-  const constraint1: Constraint = Constraint.MinValue(1);
-  const constraint2 = Constraint.MinValue(2);
-  // Act
-  const composed = constraint1.compose(constraint2);
-  // Arrange
-  expect(composed instanceof MinValueConstraint).toBeTruthy();
-  expect((composed as MinValueConstraint).getMinValue()).toBe(2);
-});
+it.each([
+  [Constraint.MinValue(1), Constraint.MinValue(2), Constraint.MinValue(2)],
+  [Constraint.MinValue(2), Constraint.MinValue(1), Constraint.MinValue(2)],
+  [
+    Constraint.MinValue(2, true),
+    Constraint.MinValue(2, false),
+    Constraint.MinValue(2, true),
+  ],
+  [
+    Constraint.MinValue(2, false),
+    Constraint.MinValue(2, true),
+    Constraint.MinValue(2, true),
+  ],
+])(
+  'MinValue constraint compose should maximum the value',
+  async (
+    constraint1: Constraint,
+    constraint2: Constraint,
+    expectedResult: Constraint
+  ) => {
+    // Act
+    const composed = constraint1.compose(constraint2);
+    // Arrange
+    expect(composed).toEqual(expectedResult);
+  }
+);
 
-it('MaxValue constraint compose should minimize the value', async () => {
-  // Arrange
-  const constraint1: Constraint = Constraint.MaxValue(1);
-  const constraint2 = Constraint.MaxValue(2);
-  // Act
-  const composed = constraint1.compose(constraint2);
-  // Arrange
-  expect(composed instanceof MaxValueConstraint).toBeTruthy();
-  expect((composed as MaxValueConstraint).getMaxValue()).toBe(1);
-});
+it.each([
+  [Constraint.MaxValue(1), Constraint.MaxValue(2), Constraint.MaxValue(1)],
+  [Constraint.MaxValue(2), Constraint.MaxValue(1), Constraint.MaxValue(1)],
+  [
+    Constraint.MaxValue(2, true),
+    Constraint.MaxValue(2, false),
+    Constraint.MaxValue(2, true),
+  ],
+  [
+    Constraint.MaxValue(2, false),
+    Constraint.MaxValue(2, true),
+    Constraint.MaxValue(2, true),
+  ],
+])(
+  'MaxValue constraint compose should minimize the value',
+  async (
+    constraint1: Constraint,
+    constraint2: Constraint,
+    expectedResult: Constraint
+  ) => {
+    // Act
+    const composed = constraint1.compose(constraint2);
+    // Arrange
+    expect(composed).toEqual(expectedResult);
+  }
+);
 
 it('MinLength constraint compose should maximum the value', async () => {
   // Arrange
@@ -79,4 +109,12 @@ it('Enum constraint compose should return the intersection of them', async () =>
   // Arrange
   expect(composed instanceof EnumConstraint).toBeTruthy();
   expect((composed as EnumConstraint).getList()).toEqual([3, 4, 5]);
+});
+
+it('TypeConstraint constraint compose should throw error', async () => {
+  // Arrange
+  const constraint1: Constraint = Constraint.Type('string');
+  const constraint2 = Constraint.Type('number');
+  // Act, Arrange
+  expect(() => constraint1.compose(constraint2)).toThrow();
 });
