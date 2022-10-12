@@ -32,7 +32,7 @@ const sidebars = {
           items: [
             {
               type: 'doc',
-              id: 'api-building/configuration/data-api-schema',
+              id: 'api-building/configuration/api-schema',
             },
             {
               type: 'doc',
