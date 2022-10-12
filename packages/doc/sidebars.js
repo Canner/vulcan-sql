@@ -69,7 +69,7 @@ const sidebars = {
               type: 'doc',
               id: 'api-building/api-validation/validation-filter',
             },
-          ]
+          ],
         },
         {
           type: 'doc',
@@ -167,18 +167,8 @@ const sidebars = {
           items: [
             {
               type: 'doc',
-              id: 'extensions/vulcan-sql-core/code-loader',
-              label: 'CodeLoader',
-            },
-            {
-              type: 'doc',
               id: 'extensions/vulcan-sql-core/data-source',
               label: 'DataSource',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-core/decorator',
-              label: 'Decorator',
             },
             {
               type: 'doc',
@@ -219,11 +209,6 @@ const sidebars = {
               type: 'doc',
               id: 'extensions/vulcan-sql-core/tag-runner',
               label: 'TagRunner',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-core/template-engine',
-              label: 'TemplateEngine',
             },
             {
               type: 'doc',
