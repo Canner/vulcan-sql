@@ -1,19 +1,19 @@
 # Extensions
 
-VulcanSQL provide extensions concept to make ourself and users could create the extension components to enhance VulcanSQL and satisfy your use cases. We distinguish between **built-in extensions** and **external extensions** for different purpose.
+Extensions could make users to create implementing different extension function for enhancing VulcanSQL or satisfy users particular use cases.
 
-The built-in extensions has been used in VulcanSQL including `profiles`, `rate-limit`, `enforce-https`, `response-format`, and `auth`, you could see the [configuration](./api-building/configuration) to know how to use it.
+We distinguish between **built-in extensions** and **external extensions** for different purpose.
 
-The external extensions provide you to create your own extensions for satisfying your use case, solve your requirement from particular system architecture environment.
+The built-in extensions is VulcanSQL built-in function including `profiles`, `rate-limit`, `enforce-https`, `response-format`, and `auth`, please see the [configuration](./api-building/configuration) to know how to use it.
 
-For example, some enterprises may use AWS Redshift or Azure Synapse be your data source to save data, then you could use implement the data source connector to Redshift or Synapse querying data.
+The external extensions used to make users create they needed function to solve their requirement from particular system architecture environment or satisfy use cases.
 
-# How does the extensions work ?
+For example, some enterprises may use AWS Redshift or Azure Synapse be data source to save data, then you could use [DataSource](./extensions/vulcan-sql-core/data-source) extension to implement Redshift or Synapse connector to query data.
 
 # All Type of Extensions
 
-VulcanSQL provide 20 categories of base extension to make you use your extension by implementing it.
+VulcanSQL provide 20 categories of extension to make users implement customized extension.
 
-The scope you could enhance from connecting data source, creating the new SQL syntax tag or filter, validating parameters in API Server, these 20 types extensions could solve it...and so on.
+You could see the each introduction in the [@vulcan-sql/core](./extensions/vulcan-sql-core), [@vulcan-sql/build](./extensions/vulcan-sql-build), [@vulcan-sql/serve](./extensions/vulcan-sql-serve) pages separately.
 
-You could see the 20 extensions for more detail in the [@vulcan-sql/core](./extensions/vulcan-sql-core), [@vulcan-sql/build](./extensions/vulcan-sql-build), [@vulcan-sql/serve](./extensions/vulcan-sql-serve) pages separately.
+# How does the extensions work ?

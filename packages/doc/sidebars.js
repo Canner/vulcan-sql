@@ -184,6 +184,56 @@ const sidebars = {
               id: 'extensions/vulcan-sql-core/decorator',
               label: 'Decorator',
             },
+            {
+              type: 'doc',
+              id: 'extensions/vulcan-sql-core/filter-builder',
+              label: 'FilterBuilder',
+            },
+            {
+              type: 'doc',
+              id: 'extensions/vulcan-sql-core/filter-runner',
+              label: 'FilterRunner',
+            },
+            {
+              type: 'doc',
+              id: 'extensions/vulcan-sql-core/input-validator',
+              label: 'InputValidator',
+            },
+            {
+              type: 'doc',
+              id: 'extensions/vulcan-sql-core/persistent-store',
+              label: 'PersistentStore',
+            },
+            {
+              type: 'doc',
+              id: 'extensions/vulcan-sql-core/profile-reader',
+              label: 'ProfileReader',
+            },
+            {
+              type: 'doc',
+              id: 'extensions/vulcan-sql-core/serializer',
+              label: 'Serializer',
+            },
+            {
+              type: 'doc',
+              id: 'extensions/vulcan-sql-core/tag-builder',
+              label: 'TagBuilder',
+            },
+            {
+              type: 'doc',
+              id: 'extensions/vulcan-sql-core/tag-runner',
+              label: 'TagRunner',
+            },
+            {
+              type: 'doc',
+              id: 'extensions/vulcan-sql-core/template-engine',
+              label: 'TemplateEngine',
+            },
+            {
+              type: 'doc',
+              id: 'extensions/vulcan-sql-core/template-provider',
+              label: 'TemplateProvider',
+            },
           ],
         },
         {
