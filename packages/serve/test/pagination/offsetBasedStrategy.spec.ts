@@ -1,5 +1,5 @@
 import faker from '@faker-js/faker';
-import { PaginationMode } from '@vulcan-sql/core/models';
+import { UserError } from '@vulcan-sql/core';
 import { KoaContext } from '@vulcan-sql/serve';
 import { OffsetBasedStrategy } from '@vulcan-sql/serve/pagination';
 import { Request } from 'koa';
@@ -11,11 +11,36 @@ describe('Test offset based pagination strategy', () => {
     sinon.default.restore();
   });
 
-  it('Should throw error when "offset" field not in query string for request context', async () => {
+  it('Should throw error when "offset" field are duplicated', async () => {
     // Arrange
-    const expected = new Error(
-      `The ${PaginationMode.OFFSET} must provide limit and offset in query string.`
+    const expected = new UserError(
+      `The query string offset should be defined once.`
     );
+    const ctx = {
+      ...sinon.stubInterface<KoaContext>(),
+      request: {
+        ...sinon.stubInterface<Request>(),
+        query: {
+          ...sinon.stubInterface<ParsedUrlQuery>(),
+          offset: ['50', '100'],
+        },
+      },
+    } as KoaContext;
+
+    // Act
+    const strategy = new OffsetBasedStrategy();
+    const action = strategy.transform(ctx);
+
+    // Assert
+    await expect(action).rejects.toThrow(expected);
+  });
+
+  it('Should apply default value when "offset" field not in query string for request context', async () => {
+    // Arrange
+    const expected = {
+      offset: 0,
+      limit: 50,
+    };
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
@@ -29,17 +54,18 @@ describe('Test offset based pagination strategy', () => {
 
     // Act
     const strategy = new OffsetBasedStrategy();
-    const transformAction = strategy.transform(ctx);
+    const result = await strategy.transform(ctx);
 
     // Assert
-    expect(transformAction).rejects.toThrowError(expected);
+    expect(result).toEqual(expected);
   });
 
-  it('Should throw error when "limit" field not in query string for request context', async () => {
+  it('Should apply default value when "limit" field not in query string for request context', async () => {
     // Arrange
-    const expected = new Error(
-      `The ${PaginationMode.OFFSET} must provide limit and offset in query string.`
-    );
+    const expected = {
+      offset: 50,
+      limit: 20,
+    };
     const ctx = {
       ...sinon.stubInterface<KoaContext>(),
       request: {
@@ -53,10 +79,10 @@ describe('Test offset based pagination strategy', () => {
 
     // Act
     const strategy = new OffsetBasedStrategy();
-    const transformAction = strategy.transform(ctx);
+    const result = await strategy.transform(ctx);
 
     // Assert
-    expect(transformAction).rejects.toThrowError(expected);
+    expect(result).toEqual(expected);
   });
 
   it('Should transform successful when "limit" and "offset" existed in query string for request context format correct', async () => {
