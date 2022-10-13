@@ -1126,7 +1126,6 @@ export class DataQueryBuilder implements IDataQueryBuilder {
       statement: this.statement,
       operations: await this.parameterizeOperations(),
       bindParams: this.parameterizer.getBinding(),
-      pagination: this.pagination,
       profileName: this.profileName,
     });
 

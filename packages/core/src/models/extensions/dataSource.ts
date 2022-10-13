@@ -1,5 +1,5 @@
 import { Parameterized, SQLClauseOperation } from '@vulcan-sql/core/data-query';
-import { Pagination, Profile } from '@vulcan-sql/core/models';
+import { Profile } from '@vulcan-sql/core/models';
 import { TYPES } from '@vulcan-sql/core/types';
 import { inject, multiInject, optional } from 'inversify';
 import { Readable } from 'stream';
@@ -31,7 +31,6 @@ export interface ExecuteOptions {
   operations: Partial<Parameterized<SQLClauseOperation>>;
   /** The parameter bindings, we guarantee the order of the keys in the map is the same as the order when they were used in queries. */
   bindParams: BindParameters;
-  pagination?: Pagination;
   profileName: string;
 }
 
