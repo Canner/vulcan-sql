@@ -7,7 +7,8 @@ executors:
       # What software on the machine https://discuss.circleci.com/t/linux-machine-executor-update-2022-july-q3-update/44873
       image: ubuntu-2204:2022.07.1
       # About DLC https://circleci.com/docs/docker-layer-caching
-      docker_layer_caching: true
+      # We only build image when doing nightly builds, enabling DLC takes significant effect on billing but not on building speeds.
+      docker_layer_caching: false
     resource_class: large
 
 parameters:
