@@ -9,6 +9,7 @@ import {
 import { Pool, PoolConfig, QueryResult } from 'pg';
 import * as Cursor from 'pg-cursor';
 import { Readable } from 'stream';
+import { buildSQL } from './sqlBuilder';
 import { mapFromPGTypeId } from './typeMapper';
 
 export interface PGOptions extends PoolConfig {
@@ -47,6 +48,7 @@ export class PGDataSource extends DataSource<any, PGOptions> {
     statement: sql,
     bindParams,
     profileName,
+    operations,
   }: ExecuteOptions): Promise<DataResult> {
     if (!this.poolMapping.has(profileName)) {
       throw new InternalError(`Profile instance ${profileName} not found`);
@@ -63,8 +65,9 @@ export class PGDataSource extends DataSource<any, PGOptions> {
     });
     this.logger.debug(`Acquired connection from ${profileName}`);
     try {
+      const builtSQL = buildSQL(sql, operations);
       const cursor = client.query(
-        new Cursor(sql, Array.from(bindParams.values()))
+        new Cursor(builtSQL, Array.from(bindParams.values()))
       );
       cursor.once('done', async () => {
         this.logger.debug(
