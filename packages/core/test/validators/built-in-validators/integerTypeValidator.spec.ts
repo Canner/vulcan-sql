@@ -83,6 +83,7 @@ describe('Test "integer" type validator', () => {
     ['50', '{"greater": 50}'],
     ['3', '{"min": 1, "less":3}'],
     ['1', '{"greater": 1, "max":3}'],
+    ['1', '{"max":0}'],
   ])(
     'Should be invalid when validate data %p with args is %p',
     async (data: string | number, inputArgs: string) => {

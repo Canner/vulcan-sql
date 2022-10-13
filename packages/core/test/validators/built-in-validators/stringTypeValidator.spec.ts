@@ -66,6 +66,7 @@ describe('Test "string" type validator', () => {
     ['ab123456789', '{"length": "10"}'],
     ['ABCDEFGHIJK', '{"format": "[A-Z]", "length": 10}'],
     ['abcdefghijk', '{"format": "[A-Z]", "length": 10}'],
+    ['A', '{"length": 0}'],
   ])(
     'Should be invalid when validate data %p with args is %p',
     async (data: string, inputArgs: string) => {

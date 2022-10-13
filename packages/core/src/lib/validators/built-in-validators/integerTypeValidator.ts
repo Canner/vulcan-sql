@@ -50,10 +50,12 @@ export class IntegerTypeValidator extends InputValidator {
     // if there are args passed
     if (!isUndefined(args)) {
       // support min, max, greater, less validator if input field existed
-      schema = args.min ? schema.min(args.min) : schema;
-      schema = args.max ? schema.max(args.max) : schema;
-      schema = args.greater ? schema.greater(args.greater) : schema;
-      schema = args.less ? schema.less(args.less) : schema;
+      schema = !isUndefined(args.min) ? schema.min(args.min) : schema;
+      schema = !isUndefined(args.max) ? schema.max(args.max) : schema;
+      schema = !isUndefined(args.greater)
+        ? schema.greater(args.greater)
+        : schema;
+      schema = !isUndefined(args.less) ? schema.less(args.less) : schema;
     }
     try {
       Joi.assert(value, schema);
@@ -66,10 +68,14 @@ export class IntegerTypeValidator extends InputValidator {
 
   public override getConstraints(args: IntInputArgs) {
     const constraints: Constraint[] = [Constraint.Type('integer')];
-    if (args.min) constraints.push(Constraint.MinValue(args.min, false));
-    if (args.max) constraints.push(Constraint.MaxValue(args.max, false));
-    if (args.greater) constraints.push(Constraint.MinValue(args.greater, true));
-    if (args.less) constraints.push(Constraint.MaxValue(args.less, true));
+    if (!isUndefined(args.min))
+      constraints.push(Constraint.MinValue(args.min, false));
+    if (!isUndefined(args.max))
+      constraints.push(Constraint.MaxValue(args.max, false));
+    if (!isUndefined(args.greater))
+      constraints.push(Constraint.MinValue(args.greater, true));
+    if (!isUndefined(args.less))
+      constraints.push(Constraint.MaxValue(args.less, true));
     return constraints;
   }
 }

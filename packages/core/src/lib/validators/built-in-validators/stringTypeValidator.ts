@@ -47,9 +47,9 @@ export class StringTypeValidator extends InputValidator {
     // if there are args passed
     if (!isUndefined(args)) {
       // support length, min, max validator if input field existed
-      schema = args.length ? schema.length(args.length) : schema;
-      schema = args.min ? schema.min(args.min) : schema;
-      schema = args.max ? schema.max(args.max) : schema;
+      schema = !isUndefined(args.length) ? schema.length(args.length) : schema;
+      schema = !isUndefined(args.min) ? schema.min(args.min) : schema;
+      schema = !isUndefined(args.max) ? schema.max(args.max) : schema;
       // support regular expression pattern when input field existed
       schema = args.format ? schema.pattern(new RegExp(args.format)) : schema;
     }
@@ -65,9 +65,11 @@ export class StringTypeValidator extends InputValidator {
 
   public override getConstraints(args: StringInputArgs) {
     const constraints: Constraint[] = [Constraint.Type('string')];
-    if (args.min) constraints.push(Constraint.MinLength(args.min));
-    if (args.max) constraints.push(Constraint.MaxLength(args.max));
-    if (args.length) {
+    if (!isUndefined(args.min))
+      constraints.push(Constraint.MinLength(args.min));
+    if (!isUndefined(args.max))
+      constraints.push(Constraint.MaxLength(args.max));
+    if (!isUndefined(args.length)) {
       constraints.push(Constraint.MinLength(args.length));
       constraints.push(Constraint.MaxLength(args.length));
     }
