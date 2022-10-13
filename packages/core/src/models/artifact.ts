@@ -20,6 +20,7 @@ error:
 
 import { Constraint } from '../lib/validators/constraints';
 
+// Pagination mode should always be UPPERCASE because schema parser will transform the user inputs.
 export enum PaginationMode {
   CURSOR = 'CURSOR',
   OFFSET = 'OFFSET',

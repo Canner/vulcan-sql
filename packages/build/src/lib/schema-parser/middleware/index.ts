@@ -15,6 +15,8 @@ import { SetConstraints } from './setConstraints';
 import { SchemaParserMiddleware } from './middleware';
 import { ResponseSampler } from './responseSampler';
 import { CheckProfile } from './checkProfile';
+import { ExtractPaginationParams } from './extractPaginationParams';
+import { TransformPaginationMode } from './transformPaginationMode';
 
 export * from './middleware';
 
@@ -32,7 +34,9 @@ export const SchemaParserMiddlewares: ClassType<SchemaParserMiddleware>[] = [
   NormalizeDataType,
   GeneratePathParameters,
   AddRequiredValidatorForPath,
+  TransformPaginationMode,
   SetConstraints,
+  ExtractPaginationParams, // ExtractPaginationParams should be loaded after SetConstraints
   ResponseSampler,
   CheckProfile,
 ];
