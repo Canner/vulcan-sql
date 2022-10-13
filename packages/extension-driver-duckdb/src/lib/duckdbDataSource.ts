@@ -9,6 +9,7 @@ import {
   VulcanExtensionId,
 } from '@vulcan-sql/core';
 import * as path from 'path';
+import { buildSQL } from './sqlBuilder';
 
 const getType = (value: any) => {
   const jsType = typeof value;
@@ -67,14 +68,16 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     statement: sql,
     bindParams,
     profileName,
+    operations,
   }: ExecuteOptions): Promise<DataResult> {
     if (!this.dbMapping.has(profileName)) {
       throw new InternalError(`Profile instance ${profileName} not found`);
     }
     const { db, ...options } = this.dbMapping.get(profileName)!;
-    const statement = db.prepare(sql);
+    const builtSQL = buildSQL(sql, operations);
+    const statement = db.prepare(builtSQL);
     const parameters = Array.from(bindParams.values());
-    this.logRequest(sql, parameters, options);
+    this.logRequest(builtSQL, parameters, options);
 
     const result = await statement.stream(...parameters);
     const firstChunk = await result.nextChunk();
