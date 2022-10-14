@@ -121,6 +121,17 @@ const sidebars = {
           type: 'doc',
           id: 'api-building/rate-limit',
         },
+        {
+          type: 'category',
+          label: 'Pagination',
+          link: { type: 'doc', id: 'api-building/pagination' },
+          items: [
+            {
+              type: 'doc',
+              id: 'api-building/pagination/offset',
+            },
+          ],
+        },
       ],
     },
     {

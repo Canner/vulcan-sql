@@ -1,0 +1,29 @@
+# Pagination
+
+## Why pagination?
+
+We sometimes make some SQL to list all entities, which might contain lots of data. Instead of sending all of them to our clients, we can paginate them and send the necessary data. It's a common design of modern API servers.
+
+## Implement by yourself
+
+You can implement pagination strategies yourself by modifying your SQL. For example, we can use parameters to implement simple offset-based pagination.
+
+```sql
+SELECT * FROM users
+// highlight-next-line
+LIMIT {{ context.params.limit }}
+// highlight-next-line
+OFFSET {{ context.params.offset }}
+```
+
+## Auto Pagination
+
+VulcanSQL has implemented some pagination strategies for us, we can use them simply by setting the configuration in [API Schema](./configuration/data-api-schema). No SQL modification is required.
+
+Please check the corresponding page for further information about each pagination mode.
+
+| Mode                          | Description                                            |
+| ----------------------------- | ------------------------------------------------------ |
+| [offset](./pagination/offset) | Offset-based pagination e.g. /path?offset=10&limit=100 |
+| cursor                        | TBD                                                    |
+| keyset                        | TBD                                                    |
