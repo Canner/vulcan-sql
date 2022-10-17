@@ -181,11 +181,11 @@ document-generator:
     - oas3
 ```
 
-## Built-in extension configurations
+## Extension
 
-VulcanSQL provides the extension components to let users could extend it for making VulcanSQL powerful, and VulcanSQL also uses the extension components to create built-in extensions which enable it to run the feature.
+You could set the VulcanSQL extension configuration. The [Extension](../extensions) could let users extend to do powerful things. VulcanSQL also uses the extensions to create built-in extensions which enable it to run the feature.
 
-Like the below configurations, The `profiles`, `rate-limit`, `enforce-https`, `response-format`, and `auth` are our built-in extensions. These extensions work in **serve phase** to make the API request have more restrictions when sending requests.
+Below is an configuration sample, these extensions work in **serve phase** to make the API have more restrictions when sending requests.
 
 ```yaml
 profiles:
@@ -210,113 +210,4 @@ response-format:
 
 Every built-in extension has its configuration, but you don't need to define all of them manually because we have default configurations for most of them.
 
-We'll talk about the detailed configuration of extensions in their chapters.
-
 For the above configuration, if you are interested, you could see [Data Source Profile](./configuration/data-source-profile), [Rate Limit](./rate-limit), Enforce HTTPS, [Response Format](./response-format), and [Access Control](./access-control) first.
-
-## External extension configurations
-
-Besides built-in extensions, users could extend our extension components to create extensions, and these extended extensions are called **external extensions.**
-
-VulcanSQL had created some external extensions, if you would like to use these extensions, you could follow the below structure to define them.
-
-```yaml
-# Declare you would like to used-external module and give a module name
-extensions:
-  ext-module-name1: @vulcan-sql/xxx-module # installed VulcanSQL module
-  ext-module-name2: path/to/folder/of/package # path
-
-ext-module-name1:
-  ... # The config options of the ext-module-name1
-
-ext-module-name2:
-  ... # The config options of ext-module-name2
-
-# The config options of core feature and built-in extension
-...
-```
-
-The `extensions` config could let user could declare what external extensions they would like to use in the VulcanSQL project.
-
-The user should declare a variable called **module name** and **specify it external extension location.** The **location** has two ways to specify**:**
-
-- **module name**
-- **local module folder path.**
-
-### Specify the module name
-
-you could use `npm` or `yarn` to install a 3rd-party source or VulcanSQL-provided external extension package ( `@vulcan-sql/xxx-ext-module` format ) and specify the package module name, e.g: `ext-module-name-1` :
-
-```yaml
-extensions:
-  ext-module-name1: @vulcan-sql/xxx-module # installed VulcanSQL module
-```
-
-For example, if you would like to use `@vulcan-sql/dbt` it looks like the below:
-
-```yaml
-extensions:
-  dbt: '@vulcan-sql/extension-dbt'
-
-dbt:
-  modelFiles: path/to/folder
-```
-
-### Specify the local module file path
-
-If you would like to use your **local developed external extensions**, you could specify the module path e.g: `ext-module-name-2` :
-
-```yaml
-extensions:
-  ext-module-name2: path/to/folder/of/package # path
-
-# Set the configuration options of the ext-module-name2 if ext-module-name2 provide configurations to let user could set.
-ext-module-name2: ...
-```
-
-### Not all external extensions have configuration options
-
-Not all external extensions have configuration options, some options maybe rely on internal or built-extensions configuration options and set options under internal or built-extensions config options. We should check each document of the external extensions module.
-
-For example, if you would like to use `@vulcan-sql/duckdb` it looks like the below:
-
-```yaml
-extensions:
-  duckdb: '@vulcan-sql/extension-driver-duckdb'
-```
-
-But the `duckdb` is an data source driver, so if you would like to make your Data API `/orders` could query orders from `duckdb` driver, you should define the `duckdb` data source driver in **data source profile** like below:
-
-```yaml
-# duckdb-profile.yaml
-name: duck
-type: duckdb
-connection:
-  persistent-path: ./test-data/moma.db
-  log-queries: true
-  log-parameters: true
-allow: '*'
-```
-
-Or define it directly under the `profiles` configuration options of built-in extensions with `extensions` options in the project config:
-
-```yaml
-# vulcan.yaml
-
-# other configuration options core feature
----
-extensions:
-  duckdb: '@vulcan-sql/extension-driver-duckdb'
-
-profiles:
-  - name: duck
-    type: duckdb
-    connection:
-      persistent-path: ./test-data/moma.db
-      log-queries: true
-      log-parameters: true
-    allow: '*'
-
----
-# other configuration options built-in extensions
-```
