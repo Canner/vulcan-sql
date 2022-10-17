@@ -165,108 +165,120 @@ const sidebars = {
       link: { type: 'doc', id: 'extensions' },
       items: [
         {
-          type: 'category',
-          label: '@vulcan-sql/core',
-          link: { type: 'doc', id: 'extensions/vulcan-sql-core' },
-          items: [
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-core/data-source',
-              label: 'DataSource',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-core/filter-builder',
-              label: 'FilterBuilder',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-core/filter-runner',
-              label: 'FilterRunner',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-core/input-validator',
-              label: 'InputValidator',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-core/persistent-store',
-              label: 'PersistentStore',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-core/profile-reader',
-              label: 'ProfileReader',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-core/serializer',
-              label: 'Serializer',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-core/tag-builder',
-              label: 'TagBuilder',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-core/tag-runner',
-              label: 'TagRunner',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-core/template-provider',
-              label: 'TemplateProvider',
-            },
-          ],
+          type: 'doc',
+          id: 'extensions/use-extension',
+          label: 'Use Extension',
         },
         {
           type: 'category',
-          label: '@vulcan-sql/build',
-          link: { type: 'doc', id: 'extensions/vulcan-sql-build' },
+          label: 'Write Extension',
+          link: { type: 'doc', id: 'extensions/write-extension' },
           items: [
             {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-build/packager',
-              label: 'Packager',
+              type: 'category',
+              label: '@vulcan-sql/core',
+              link: { type: 'doc', id: 'extensions/vulcan-sql-core' },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-core/data-source',
+                  label: 'DataSource',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-core/filter-builder',
+                  label: 'FilterBuilder',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-core/filter-runner',
+                  label: 'FilterRunner',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-core/input-validator',
+                  label: 'InputValidator',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-core/persistent-store',
+                  label: 'PersistentStore',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-core/profile-reader',
+                  label: 'ProfileReader',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-core/serializer',
+                  label: 'Serializer',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-core/tag-builder',
+                  label: 'TagBuilder',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-core/tag-runner',
+                  label: 'TagRunner',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-core/template-provider',
+                  label: 'TemplateProvider',
+                },
+              ],
             },
             {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-build/schema-reader',
-              label: 'SchemaReader',
+              type: 'category',
+              label: '@vulcan-sql/build',
+              link: { type: 'doc', id: 'extensions/vulcan-sql-build' },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-build/packager',
+                  label: 'Packager',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-build/schema-reader',
+                  label: 'SchemaReader',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-build/spec-generator',
+                  label: 'SpecGenerator',
+                },
+              ],
             },
             {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-build/spec-generator',
-              label: 'SpecGenerator',
-            },
-          ],
-        },
-        {
-          type: 'category',
-          label: '@vulcan-sql/serve',
-          link: { type: 'doc', id: 'extensions/vulcan-sql-serve' },
-          items: [
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-serve/authenticator',
-              label: 'BaseAuthenticator',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-serve/document-router',
-              label: 'DocumentRouter',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-serve/response-formatter',
-              label: 'BaseResponseFormatter',
-            },
-            {
-              type: 'doc',
-              id: 'extensions/vulcan-sql-serve/route-middleware',
-              label: 'BaseRouteMiddleware',
+              type: 'category',
+              label: '@vulcan-sql/serve',
+              link: { type: 'doc', id: 'extensions/vulcan-sql-serve' },
+              items: [
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-serve/authenticator',
+                  label: 'BaseAuthenticator',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-serve/document-router',
+                  label: 'DocumentRouter',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-serve/response-formatter',
+                  label: 'BaseResponseFormatter',
+                },
+                {
+                  type: 'doc',
+                  id: 'extensions/vulcan-sql-serve/route-middleware',
+                  label: 'BaseRouteMiddleware',
+                },
+              ],
             },
           ],
         },

@@ -1,0 +1,95 @@
+# Use Extensions
+
+Besides built-in extensions, you could also use the published external extensions which built by VulcanSQL team or other contributor.
+
+## Install extension npm package
+
+VulcanSQL provides some external extension package for you could use it optionally, please see the [@vulcan-sql/](https://www.npmjs.com/search?q=%40vulcan-sql) prefix npm packages beside `@vulcan-sql/core`, `@vulcan-sql/build` and `@vulcan-sql/serve`.
+
+## Declare used extensions
+
+After you installed package, please declare which extension package you used under the `extensions` key in the `vulcan.yaml`.
+
+```yaml
+# Declare you would like to used-external module and give a module name
+extensions:
+  extension-name1: @vulcan-sql/ext-xxx
+  extension-name2: contributor-ext
+```
+
+The `extensions` could let you decide what external extensions you would like to use in the VulcanSQL.
+
+You should declare a extension name and specify external extension package name you installed under the `extensions`. For example the `extension-name1` is the extension name and specify to `@vulcan-sql/ext-xxx` package.
+
+## Set-up extension options
+
+After you define the extension name, use the set the options under extension name:
+
+```bash
+
+extension-name1:
+  ... # The config options of the extension-name1
+
+extension-name2:
+  ... # The config options of extension-name2
+
+# The config options of core feature and built-in extension
+...
+```
+
+Here is an specific example, you could see the `@vulcan-sql/extension-dbt` it looks like the below:
+
+```yaml
+extensions:
+  dbt: '@vulcan-sql/extension-dbt'
+
+dbt:
+  modelFiles: path/to/folder
+```
+
+## ⚠️ Not all extensions have options
+
+Some extension options maybe rely on internal or built-extensions config options and set options under internal or built-extensions config options. We should check each document of the external extensions module.
+
+For example, if you would like to use `@vulcan-sql/extension-driver-duckdb` it looks like the below:
+
+```yaml
+extensions:
+  duckdb: '@vulcan-sql/extension-driver-duckdb'
+```
+
+But the `duckdb` is an data source driver, so if you would like to make your Data API `/orders` could query orders from `duckdb` driver, you should define the `duckdb` data source driver in **data source profile** like below:
+
+```yaml
+# duckdb-profile.yaml
+name: duck
+type: duckdb
+connection:
+  persistent-path: ./test-data/moma.db
+  log-queries: true
+  log-parameters: true
+allow: '*'
+```
+
+Or define it directly under the `profiles` config options of built-in extensions with `extensions` options in the project config:
+
+```yaml
+# vulcan.yaml
+
+# other config options core feature
+---
+extensions:
+  duckdb: '@vulcan-sql/extension-driver-duckdb'
+
+profiles:
+  - name: duck
+    type: duckdb
+    connection:
+      persistent-path: ./test-data/moma.db
+      log-queries: true
+      log-parameters: true
+    allow: '*'
+
+---
+# other config options built-in extensions
+```
