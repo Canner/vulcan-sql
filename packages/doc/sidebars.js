@@ -275,6 +275,11 @@ const sidebars = {
           id: 'extensions/test-extension',
           label: 'Test Extension',
         },
+        {
+          type: 'doc',
+          id: 'extensions/publish-extension',
+          label: 'Publish Extension',
+        },
       ],
     },
   ],
