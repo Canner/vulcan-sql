@@ -270,6 +270,11 @@ const sidebars = {
             },
           ],
         },
+        {
+          type: 'doc',
+          id: 'extensions/test-extension',
+          label: 'Test Extension',
+        },
       ],
     },
   ],
