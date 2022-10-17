@@ -1,3 +1,5 @@
+import ASTVisitor from './partial/_ast-visitor.mdx';
+
 # TagBuilder
 
 TagBuilder extension works together with [TagRunner](./tag-runner), it parses the SQL templates and generate an Abstract Syntax Tree (AST).
@@ -95,3 +97,7 @@ SELECT {% mask len=3 %} id {% endmask %} FROM users;
    ![](./img/tag-builder-flow-6.png)
 7. At line 30, we consumed all the tokens belong to us, then gave the control back.
    ![](./img/tag-builder-flow-7.png)
+
+## Advanced: AST Visitor
+
+<ASTVisitor name="TagBuilder" />
