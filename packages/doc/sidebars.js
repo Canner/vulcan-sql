@@ -171,8 +171,8 @@ const sidebars = {
         },
         {
           type: 'category',
-          label: 'Write Extension',
-          link: { type: 'doc', id: 'extensions/write-extension' },
+          label: 'Customize Extension',
+          link: { type: 'doc', id: 'extensions/customize-extension' },
           items: [
             {
               type: 'category',

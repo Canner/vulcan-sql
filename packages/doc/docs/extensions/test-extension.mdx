@@ -6,11 +6,12 @@ In this time you could do it by two ways:
 
 ## Local Testing
 
-The local testing means you use the extension in the VulcanSQL by through npm link to test your extension locally.
+The local testing means you use the extension in the VulcanSQL locally.
 
-Please use [npm link](https://docs.npmjs.com/cli/v8/commands/npm-link) to link your extension be an npm package locally.
+You could use [npm link](https://docs.npmjs.com/cli/v8/commands/npm-link) to link extension package locally or install local extension package by `npm i -g <extension-package-folder>`, you could see [Use your customized extensions
+](./customize-extension).
 
-After you linked, set the extension config in `vulcan.yaml`, same like our other extensions:
+After you installed local extension package, set the extension config in `vulcan.yaml`, same like our other extensions:
 
 ```yaml
 extensions:
@@ -21,7 +22,7 @@ extensions:
   # ...
 ```
 
-Finally, test yor extension by `vulcan start` directly to check.
+Finally, test yor extension by `vulcan start` command directly to test it.
 
 :::info
 We suggest to do the local test at least for ensuring your extension is workable.

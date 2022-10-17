@@ -1,4 +1,4 @@
-# Use Extensions
+# Use Extension
 
 Besides built-in extensions, you could also use the published external extensions which built by VulcanSQL team or other contributor.
 
@@ -12,10 +12,10 @@ Not including `@vulcan-sql/core`, `@vulcan-sql/build` and `@vulcan-sql/serve` pa
 
 ## Declare used extensions
 
-After you installed package, please declare which extension package you used under the `extensions` key in the `vulcan.yaml`.
+After you installed extension npm package, please declare which package you used under the `extensions` key in the `vulcan.yaml`.
 
 ```yaml
-# Declare you would like to used-external module and give a module name
+# Declare used external extension package name and give a extension name
 extensions:
   extension-name1: @vulcan-sql/ext-xxx
   extension-name2: contributor-ext
@@ -23,7 +23,7 @@ extensions:
 
 The `extensions` could let you decide what external extensions you would like to use in the VulcanSQL.
 
-You should declare a extension name and specify external extension package name you installed under the `extensions`. For example the `extension-name1` is the extension name and specify to `@vulcan-sql/ext-xxx` package.
+You should declare a extension name and specify to extension package name you installed under the `extensions` key. For example the `extension-name1` is the extension name and specify to `@vulcan-sql/ext-xxx` package.
 
 ## Set-up extension options
 
@@ -53,7 +53,7 @@ dbt:
 
 ## ⚠️ Not all extensions have options
 
-Some extension options maybe rely on internal or built-extensions config options and set options under internal or built-extensions config options. We should check each document of the external extensions module.
+Some extension options maybe rely on internal or built-extensions config options and set options under internal or built-extensions config options. We should check each document of the extensions npm package.
 
 For example, if you would like to use `@vulcan-sql/extension-driver-duckdb` it looks like the below:
 

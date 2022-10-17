@@ -1,0 +1,147 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Customize Extension
+
+Beside use the published extensions, you could also customized extensions by using our base extension components .
+
+VulcanSQL provide 17 categories of extension to make you write your customized extension and put the base extension component into [@vulcan-sql/core](./vulcan-sql-core), [@vulcan-sql/build](./vulcan-sql-build), [@vulcan-sql/serve](./vulcan-sql-serve) separately.
+
+You could customize your extension by extending 17 categories base extension components.
+
+## Create your extension package
+
+1. Create a extension folder and use `npm init` to set package information, e.g: `my-extension`.
+
+   ```bash
+   $ mkdir my-extension
+   $ cd my-extension
+   my-extension $ npm init
+   ```
+
+   Set your package name be `my-first-extensions` in `package.json`
+
+2. Install VulcanSQL base extension packages.
+
+   Because base extension components existed in [@vulcan-sql/core](./vulcan-sql-core), [@vulcan-sql/build](./vulcan-sql-build), [@vulcan-sql/serve](./vulcan-sql-serve) separately.
+
+   You could install these 3 packages all or according to which base extension you need to install its package.
+
+   ```base
+   my-extension $ npm i @vulcan-sql/core @vulcan-sql/build @vulcan-sql/serve
+   ```
+
+## Customize extension
+
+Import the base extension class from the extension package under the `my-extension` folder.
+
+Here is an sample for extending `InputValidator` class to `MyValidator` in the `my-validator.js`:
+
+```js
+const { InputValidator } = require('@vulcan-sql/core');
+
+export class MyValidator extend InputValidator {
+  validateSchema(args) {
+    // implemented ...
+  }
+  validateData(value, args) {
+    // implemented ...
+  }
+}
+```
+
+## Export customized extensions
+
+1.  Create `index.js`
+
+2.  Export your customized extensions:
+
+    You could use `export` to export the extensions:
+
+    <Tabs groupId="export-extension">
+
+    <TabItem value="export" label="Use export">
+
+    Use `export` to export your customized extension class.
+
+    ```js
+    const { MyValidator } = require('./my-validator.js');
+
+    export MyValidator;
+    ```
+
+    You could also use `export` to export multiple extensions.
+
+    ```js
+    const { MyValidator1 } = require('./my-validator1.js');
+    const { MyValidator2 } = require('./my-validator2.js');
+
+    export MyValidator1;
+    export MyValidator2;
+    ```
+
+    </TabItem>
+
+    <TabItem value="module-exports" label="Use module.exports">
+
+    Use `module.exports` to export your customized extension class.
+
+    ```js
+    const { MyValidator } = require('./my-validator.js');
+
+    module.exports = MyValidator;
+    ```
+
+    We also support 2 different way to use `module.exports` when you customized multiple extensions in the package:
+
+    1. use `module.exports` extensions by array type, when you customized multiple same type base extensions, you could use this way:
+
+    ```js
+    const { MyValidator1 } = require('./my-validator1.js');
+    const { MyValidator2 } = require('./my-validator2.js');
+
+    module.exports = [MyValidator1, MyValidator2];
+    ```
+
+    2. use `module.exports` extensions by key-value type, when you customized multiple different type base extensions, you could use this way:
+
+    ```js
+    const { MyValidator1 } = require('./my-validator1.js');
+    const { MyDataSource1 } = require('./my-data-source1.js');
+    const { MyDataSource2 } = require('./my-data-source2.js');
+
+    module.exports = {
+     validators: MyValidator1;
+     dataSources: [ MyDataSource1, MyDataSource2 ];
+    }
+    ```
+
+    </TabItem>
+
+    </Tabs>
+
+## Use your customized extensions
+
+You could use [npm link](https://docs.npmjs.com/cli/v8/commands/npm-link) to link extension package locally:
+
+```bash
+my-extension $ npm link
+```
+
+Or you could install local extension package by `npm i -g <extension-package-folder>`:
+
+```bash
+$ npm i -g /Users/<user-name>/Code/my-extension
+```
+
+After you installed local extension package, set the extension config in `vulcan.yaml`, same like our other extensions:
+
+```yaml
+extensions:
+  my-extension: 'my-first-extensions' # package name
+
+my-extension:
+  # my extension setting
+```
+
+Then use `vulcan start` to run it.
