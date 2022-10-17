@@ -1,0 +1,11 @@
+<span>{props.name}</span> supports visiting and modifying the AST we parsed.
+
+Simply override the `onVisit` function like below:
+
+```ts
+  public override onVisit(node: nunjucks.nodes.Node) {
+    // you can modify nodes here
+  }
+```
+
+VulcanSQL will call this function for each node.
