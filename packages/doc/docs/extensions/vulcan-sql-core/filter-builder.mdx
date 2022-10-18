@@ -1,1 +1,38 @@
+import ASTVisitor from './partial/_ast-visitor.mdx';
+
 # FilterBuilder
+
+FilterBuilder extension works together with [FilterRunnger](./filter-runner), in most of time, it does nothing but only claims the filter name.
+
+## What's filters
+
+A filter is used to transform variables, e.g. `upper` filter can convert string to upper case.
+
+```sql
+SELECT * FROM users WHERE name = {{ context.params.name | upper }}
+```
+
+You can use FilterBuilder to add custom filters and control the transform logic.
+
+## How FilterBuilder works
+
+FilterBuilder extensions have no function to implement, the only things we need to do is claiming the name of the filter.
+
+## Example
+
+:::info
+You can check the [demo repository](https://github.com/Canner/vulcan-sql-extension-demo/blob/main/extensions/filter-runner-and-builder/src/prefixFilterBuilder.ts) for the full code.
+
+:::
+
+```ts
+import { FilterBuilder } from '@vulcan-sql/core';
+
+export class PrefixFilterBuilder extends FilterBuilder {
+  public filterName = 'prefix';
+}
+```
+
+## Advanced: AST Visitor
+
+<ASTVisitor name="FilterBuilder" />
