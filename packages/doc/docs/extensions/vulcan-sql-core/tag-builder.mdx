@@ -26,7 +26,7 @@ You can use TagBuilder to add custom tags and control the rendering logic.
 
 ## How TagBuilder works
 
-You'll need to claim some names first, when the compiler finds a matched name, it calls `parse` function of a specified tag builder, the tag builder takes the control, parses the template, then gives the control back to the compiler.
+You'll need to claim some names first, when the compiler finds a matched name, it calls `parse` function of a specified TagBuilder, the TagBuilder takes the control, parses the template, then gives the control back to the compiler.
 
 For example, assume that we created a TagBuilder with tag name `mask`, it'd parse the template from line 2 ("mask" token).
 
@@ -96,7 +96,7 @@ SELECT {% mask len=3 %} id {% endmask %} FROM users;
 
 1. Compiler will tokenize the template as follows:
    ![](./img/tag-builder-flow-1.png)
-2. When it found target tag names, that is, `mask` in this example. It gives the control to tag builder.
+2. When it found target tag names, that is, `mask` in this example. It gives the control to TagBuilder.
    ![](./img/tag-builder-flow-2.png)
 3. At line 13, we consumed a token, which is a token with string "mask", so the position of parser moves to the next.
 
