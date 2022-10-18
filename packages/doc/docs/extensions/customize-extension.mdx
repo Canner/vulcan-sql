@@ -35,12 +35,35 @@ You could customize your extension by extending 17 categories base extension com
 
 Import the base extension class from the extension package under the `my-extension` folder.
 
-Here is an sample for extending `InputValidator` class to `MyValidator` in the `my-validator.js`:
+Here is an sample for extending `InputValidator` class to `MyValidator` in the `my-validator` module file:
+
+<Tabs groupId="customize-extension">
+
+<TabItem value="nodejs-commonjs" label="NodeJS with CommonJS">
 
 ```js
 const { InputValidator } = require('@vulcan-sql/core');
 
-export class MyValidator extend InputValidator {
+class MyValidator extends InputValidator {
+  validateSchema(args) {
+    // implemented ...
+  }
+  validateData(value, args) {
+    // implemented ...
+  }
+}
+
+module.exports = { MyValidator };
+```
+
+</TabItem>
+
+<TabItem value="nodejs-es6" label="NodeJS with ES6">
+
+```js
+import { InputValidator } from '@vulcan-sql/core';
+
+export class MyValidator extends InputValidator {
   validateSchema(args) {
     // implemented ...
   }
@@ -50,75 +73,187 @@ export class MyValidator extend InputValidator {
 }
 ```
 
+</TabItem>
+
+<TabItem value="typescript" label="NodeJS with Typescript">
+
+```ts
+import { InputValidator } from '@vulcan-sql/core';
+
+export class MyValidator extends InputValidator {
+  public validateSchema(args: any) {
+    // implemented ...
+  }
+  public validateData(value: any, args: any) {
+    // implemented ...
+  }
+}
+```
+
+</TabItem>
+</Tabs>
+
 ## Export customized extensions
 
-1.  Create `index.js`
+1. Create `index` file to be entry:
 
-2.  Export your customized extensions:
+   <Tabs groupId="create-index">
 
-    You could use `export` to export the extensions:
+   <TabItem value="nodejs" label="NodeJS">
 
-    <Tabs groupId="export-extension">
+   ```bash
+   my-extension $ touch index.js
+   ```
 
-    <TabItem value="export" label="Use export">
+   </TabItem>
 
-    Use `export` to export your customized extension class.
+   <TabItem value="typescript" label="Typescript">
 
-    ```js
-    const { MyValidator } = require('./my-validator.js');
+   ```bash
+   my-extension $ touch index.ts
+   ```
 
-    export MyValidator;
-    ```
+   </TabItem>
 
-    You could also use `export` to export multiple extensions.
+   </Tabs>
 
-    ```js
-    const { MyValidator1 } = require('./my-validator1.js');
-    const { MyValidator2 } = require('./my-validator2.js');
+2. Export your customized extensions:
 
-    export MyValidator1;
-    export MyValidator2;
-    ```
+   You should export the extensions to make VulcanSQL could detect and load it for use.
 
-    </TabItem>
+   <Tabs groupId="export-extension">
 
-    <TabItem value="module-exports" label="Use module.exports">
+   <TabItem value="nodejs" label="NodeJS with CommonJS">
 
-    Use `module.exports` to export your customized extension class.
+   If you use `module.exports` to export your customized extension class.
 
-    ```js
-    const { MyValidator } = require('./my-validator.js');
+   ```js
+   const { MyValidator } = require('./my-validator.js');
 
-    module.exports = MyValidator;
-    ```
+   module.exports = MyValidator;
+   ```
 
-    We also support 2 different way to use `module.exports` when you customized multiple extensions in the package:
+   We also support 2 different way to use `module.exports` when you customized multiple extensions in the package:
 
-    1. use `module.exports` extensions by array type, when you customized multiple same type base extensions, you could use this way:
+   1. use `module.exports` extensions by **array type** when you customized multiple same type base extensions:
 
-    ```js
-    const { MyValidator1 } = require('./my-validator1.js');
-    const { MyValidator2 } = require('./my-validator2.js');
+   ```js
+   const { MyValidator1 } = require('./my-validator1.js');
+   const { MyValidator2 } = require('./my-validator2.js');
 
-    module.exports = [MyValidator1, MyValidator2];
-    ```
+   module.exports = [MyValidator1, MyValidator2];
+   ```
 
-    2. use `module.exports` extensions by key-value type, when you customized multiple different type base extensions, you could use this way:
+   2. use `module.exports` extensions by **key-value type** when you customized multiple different type base extensions:
 
-    ```js
-    const { MyValidator1 } = require('./my-validator1.js');
-    const { MyDataSource1 } = require('./my-data-source1.js');
-    const { MyDataSource2 } = require('./my-data-source2.js');
+   ```js
+   const { MyValidator1 } = require('./my-validator1.js');
+   const { MyDataSource1 } = require('./my-data-source1.js');
+   const { MyDataSource2 } = require('./my-data-source2.js');
 
-    module.exports = {
-     validators: MyValidator1;
-     dataSources: [ MyDataSource1, MyDataSource2 ];
-    }
-    ```
+   module.exports = {
+    validators: MyValidator1;
+    dataSources: [ MyDataSource1, MyDataSource2 ];
+   }
+   ```
 
-    </TabItem>
+   If you use `exports` to export your customized extension class, the `exports` is a `module.exports` alias, so same as above.
 
-    </Tabs>
+   ```js
+   const { MyValidator } = require('./my-validator.js');
+
+   exports = MyValidator;
+   ```
+
+   You could also use `exports` to export multiple same type extensions.
+
+   ```js
+   const { MyValidator1 } = require('./my-validator1.js');
+   const { MyValidator2 } = require('./my-validator2.js');
+
+   exports = [MyValidator1, MyValidator2];
+   ```
+
+   You could also use `exports` to export multiple different type extensions.
+
+   ```js
+   const { MyValidator1 } = require('./my-validator1.js');
+   const { MyDataSource1 } = require('./my-data-source1.js');
+   const { MyDataSource2 } = require('./my-data-source2.js');
+
+   exports = {
+    validators: MyValidator1;
+    dataSources: [ MyDataSource1, MyDataSource2 ];
+   }
+   ```
+
+   </TabItem>
+
+   <TabItem value="typescript" label="NodeJS with Typescript">
+
+   :::info
+   Use NodeJS with ES6 is the same as Typescript.
+   :::
+
+   If you use `export` to export your customized extension class.
+
+   ```ts
+   export { MyValidator } from './my-validator.ts';
+   ```
+
+   You could also use `export` to export multiple same type or different type extensions.
+
+   ```ts
+   export { MyValidator1 } from './my-validator1';
+   export { MyValidator2 } from './my-validator2';
+   ```
+
+   But you could also use `export` with **key-value** type to export multiple different type extensions clearly.
+
+   ```ts
+   import { MyValidator1 } from './my-validator1';
+   import { MyDataSource1 } from './my-data-source1';
+   import { MyDataSource2 } from './my-data-source2';
+
+   export {
+    validators: MyValidator1;
+    dataSources: [ MyDataSource1, MyDataSource2 ];
+   }
+   ```
+
+   If you use `export default` to export your customized extension class.
+
+   ```ts
+   import { MyValidator } from './my-validator';
+
+   export default [MyValidator];
+   ```
+
+   You could also use `export default` to export multiple same type extensions by **array type**.
+
+   ```ts
+   import { MyValidator1 } from './my-validator1';
+   import { MyValidator2 } from './my-validator2';
+
+   export default [MyValidator1, MyValidator2];
+   ```
+
+   You could also use `export default` to export multiple different type extensions by **key-value type**.
+
+   ```ts
+   import { MyValidator1 } from './my-validator1';
+   import { MyDataSource1 } from './my-data-source1';
+   import { MyDataSource2 } from './my-data-source2';
+
+   export default {
+    validators: MyValidator1;
+    dataSources: [ MyDataSource1, MyDataSource2 ];
+   }
+   ```
+
+   </TabItem>
+
+   </Tabs>
 
 ## Use your customized extensions
 
