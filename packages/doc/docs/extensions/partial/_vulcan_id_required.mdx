@@ -1,0 +1,12 @@
+import CodeBlock from '@theme/CodeBlock';
+
+:::caution Extension Id is required
+This extension needs you set an id for VulcanSQL, use `@VulcanExtensionId` decorator from `@vulcan-sql/core` to decorate your class.
+For example:
+
+<CodeBlock language="typescript">
+  {`@VulcanExtensionId('mock')
+export class Mock${props.name} extends ${props.name} { }`}
+</CodeBlock>
+
+:::
