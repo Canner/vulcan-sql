@@ -112,5 +112,5 @@ export class APISchema {
 
 export class BuiltArtifact {
   @Type(() => APISchema)
-  apiSchemas!: Array<APISchema>;
+  schemas!: Array<APISchema>;
 }
