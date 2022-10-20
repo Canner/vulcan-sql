@@ -1,0 +1,48 @@
+import ThemedImage from '@theme/ThemedImage';
+import IntroLight from './img/offset-light.png';
+import IntroDark from './img/offset-dark.png';
+
+# Offset
+
+## Introduction
+
+Offset pagination is the simplest pagination strategy, it uses `limit` parameter to select a certain number of results and `offset` parameter to skip results.
+
+<ThemedImage
+  alt="offset pagination introduction"
+  sources={{
+    light: IntroLight,
+    dark: IntroDark,
+  }}
+/>
+
+👍 Pros of this mode
+
+- You can jump to any random position you want, e.g. we can send offset=10000 and limit=1 to fetch the 10001st row.
+
+👎 Cons of this mode
+
+- Performance issue: Database or warehouse needs to loop through the skipped rows to take your data. e.g. if you skip 10000 rows and take 1 row, it'd traverse all the 10000 rows before give you the result.
+
+## Configuration
+
+Set `pagination.mode` to `offset` to enable this pagination strategy.
+
+```yaml
+# customers.yaml
+urlPath: /customers
+// highlight-start
+pagination:
+  mode: offset
+// highlight-end
+profiles:
+  - pg
+```
+
+## Usage
+
+We'd add two parameters to your API: `offset` and `limit`.
+![api document of offset pagination](./img/offset-parameters.png)
+
+- To fetch the first 10 rows: `/api/customers?limit=10`
+- To fetch the 11th ~ 20th rows: `/api/customers?limit=10&offset=10`

@@ -1,5 +1,5 @@
-import { SQLClauseOperation } from '@vulcan-sql/core/data-query';
-import { Pagination, Profile } from '@vulcan-sql/core/models';
+import { Parameterized, SQLClauseOperation } from '@vulcan-sql/core/data-query';
+import { Profile } from '@vulcan-sql/core/models';
 import { TYPES } from '@vulcan-sql/core/types';
 import { inject, multiInject, optional } from 'inversify';
 import { Readable } from 'stream';
@@ -27,10 +27,10 @@ export interface DataResult {
 
 export interface ExecuteOptions {
   statement: string;
-  operations: SQLClauseOperation;
+  /** For core version >= 0.3.0, operations.limit and operation.offset must be handled */
+  operations: Partial<Parameterized<SQLClauseOperation>>;
   /** The parameter bindings, we guarantee the order of the keys in the map is the same as the order when they were used in queries. */
   bindParams: BindParameters;
-  pagination?: Pagination;
   profileName: string;
 }
 
@@ -66,7 +66,7 @@ export abstract class DataSource<
     return this.profiles;
   }
 
-  protected getProfile(name: string): Profile {
+  protected getProfile(name: string): Profile<PROFILE> {
     const profile = this.profiles.get(name);
     if (!profile)
       throw new InternalError(

@@ -58,7 +58,7 @@ export abstract class BaseRoute implements IRoute {
   protected abstract prepare(ctx: KoaContext): Promise<TransformedRequest>;
 
   protected async handle(user: AuthUserInfo, transformed: TransformedRequest) {
-    const { reqParams } = transformed;
+    const { reqParams, pagination } = transformed;
     // could template name or template path, use for template engine
     const { templateSource, profiles } = this.apiSchema;
 
@@ -69,11 +69,15 @@ export abstract class BaseRoute implements IRoute {
         code: 'vulcan.forbidden',
       });
 
-    const result = await this.templateEngine.execute(templateSource, {
-      parameters: reqParams,
-      user,
-      profileName: profile,
-    });
+    const result = await this.templateEngine.execute(
+      templateSource,
+      {
+        parameters: reqParams,
+        user,
+        profileName: profile,
+      },
+      pagination
+    );
     return result;
   }
 }

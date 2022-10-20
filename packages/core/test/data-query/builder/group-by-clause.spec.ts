@@ -3,16 +3,17 @@ import faker from '@faker-js/faker';
 import {
   GroupByClauseOperations,
   DataQueryBuilder,
+  Parameterizer,
 } from '@vulcan-sql/core/data-query';
-import { DataSource, BindParameters } from '@vulcan-sql/core/models';
+import { DataSource } from '@vulcan-sql/core/models';
 
 describe('Test data query builder > group by clause', () => {
   let stubDataSource: sinon.StubbedInstance<DataSource>;
-  let stubBindParameters: sinon.StubbedInstance<BindParameters>;
+  let stubParameterizer: sinon.StubbedInstance<Parameterizer>;
 
   beforeEach(() => {
     stubDataSource = sinon.stubInterface<DataSource>();
-    stubBindParameters = sinon.stubInterface<BindParameters>();
+    stubParameterizer = sinon.stubInterface<Parameterizer>();
   });
 
   it.each([
@@ -32,7 +33,7 @@ describe('Test data query builder > group by clause', () => {
       let builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
-        bindParams: stubBindParameters,
+        parameterizer: stubParameterizer,
         profileName: '',
       });
       columns.map((column) => {
@@ -59,7 +60,7 @@ describe('Test data query builder > group by clause', () => {
       const builder = new DataQueryBuilder({
         statement: 'select * from orders',
         dataSource: stubDataSource,
-        bindParams: stubBindParameters,
+        parameterizer: stubParameterizer,
         profileName: '',
       });
       builder.groupBy(first, second, third);

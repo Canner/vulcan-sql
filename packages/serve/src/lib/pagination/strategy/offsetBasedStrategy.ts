@@ -1,7 +1,6 @@
 import { KoaContext } from '@vulcan-sql/serve/models';
 import {
   normalizeStringValue,
-  PaginationMode,
   OffsetPagination,
   UserError,
 } from '@vulcan-sql/core';
@@ -9,18 +8,19 @@ import { PaginationStrategy } from './strategy';
 
 export class OffsetBasedStrategy extends PaginationStrategy<OffsetPagination> {
   public async transform(ctx: KoaContext) {
-    const checkFelidInQueryString = ['limit', 'offset'].every((field) =>
-      Object.keys(ctx.request.query).includes(field)
-    );
-    if (!checkFelidInQueryString)
-      throw new UserError(
-        `The ${PaginationMode.OFFSET} must provide limit and offset in query string.`
-      );
-    const limitVal = ctx.request.query['limit'] as string;
-    const offsetVal = ctx.request.query['offset'] as string;
+    ['limit', 'offset'].forEach((field) => {
+      // Reject the request with duplicated query string. e.g. xxxx?limit=10&limit=100
+      if (typeof ctx.request.query[field] === 'object')
+        throw new UserError(
+          `The query string ${field} should be defined once.`
+        );
+    });
+
+    const limitVal = ctx.request.query['limit'] ?? '20';
+    const offsetVal = ctx.request.query['offset'] ?? '0';
     return {
-      limit: normalizeStringValue(limitVal, 'limit', Number.name),
-      offset: normalizeStringValue(offsetVal, 'offset', Number.name),
+      limit: normalizeStringValue(limitVal as string, 'limit', Number.name),
+      offset: normalizeStringValue(offsetVal as string, 'offset', Number.name),
     } as OffsetPagination;
   }
 }

@@ -10,3 +10,5 @@ sample:
     id: '1'
   profile: duck
 profile: duck
+pagination:
+  mode: offset

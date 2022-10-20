@@ -7,7 +7,7 @@ import {
   VulcanInternalExtension,
 } from '@vulcan-sql/core/models';
 import { FINIAL_BUILDER_NAME, PARAMETERIZER_VAR_NAME } from './constants';
-import { Parameterizer } from './parameterizer';
+import { Parameterizer } from '@vulcan-sql/core/data-query';
 import { InternalError } from '../../../utils/errors';
 
 @VulcanInternalExtension()
@@ -39,20 +39,15 @@ export class ReqTagRunner extends TagRunner {
     for (let index = 0; index < contentArgs.length; index++) {
       query += await contentArgs[index]();
     }
-    // Seal current parameterizer to avoid incorrect usage.
-    parameterizer.seal();
-    context.setVariable(PARAMETERIZER_VAR_NAME, parentParameterizer);
     query = query
       .split(/\r?\n/)
       .filter((line) => line.trim().length > 0)
       .join('\n');
-    // Get bind real parameters and pass to data query builder for data source used.
-    const binds = parameterizer.getBinding();
 
     const builder = await this.executor.createBuilder(
       profileName,
       query,
-      binds
+      parameterizer
     );
     context.setVariable(name, builder);
 
@@ -60,5 +55,8 @@ export class ReqTagRunner extends TagRunner {
       context.setVariable(FINIAL_BUILDER_NAME, builder);
       context.addExport(FINIAL_BUILDER_NAME);
     }
+
+    // Set parameter back for upstream usage
+    context.setVariable(PARAMETERIZER_VAR_NAME, parentParameterizer);
   }
 }

@@ -89,6 +89,7 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
         in: this.convertFieldInTypeToOASIn(param.fieldIn),
         schema: this.getSchemaObjectFromParameter(param),
         required: this.isParameterRequired(param),
+        description: param.description,
       });
     }
 

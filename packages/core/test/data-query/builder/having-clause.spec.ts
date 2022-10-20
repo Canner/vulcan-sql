@@ -10,8 +10,9 @@ import {
   AggregateFuncType,
   HavingClauseOperation,
   HavingPredicateInput,
+  Parameterizer,
 } from '@vulcan-sql/core/data-query';
-import { DataSource, BindParameters } from '@vulcan-sql/core/models';
+import { DataSource } from '@vulcan-sql/core/models';
 
 const normalized = (column: string | SelectedColumn) => {
   if (typeof column === 'string') return { name: column };
@@ -21,7 +22,7 @@ const normalized = (column: string | SelectedColumn) => {
 const createStub = () => {
   return {
     dataSource: sinon.stubInterface<DataSource>(),
-    bindParams: sinon.stubInterface<BindParameters>(),
+    parameterizer: sinon.stubInterface<Parameterizer>(),
   };
 };
 
@@ -29,7 +30,7 @@ const createStubBuilder = ({ statement }: { statement: string }) =>
   new DataQueryBuilder({
     statement: statement,
     dataSource: createStub().dataSource,
-    bindParams: createStub().bindParams,
+    parameterizer: createStub().parameterizer,
     profileName: '',
   });
 
