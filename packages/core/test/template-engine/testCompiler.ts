@@ -13,13 +13,15 @@ import {
   extensionModule,
   validatorLoaderModule,
 } from '../../src/containers/modules';
-import { ICoreOptions } from '@vulcan-sql/core';
+import { TemplateEngineExtension, ICoreOptions } from '@vulcan-sql/core';
 import { DeepPartial } from 'ts-essentials';
 
 export const createTestCompiler = async ({
   options = {},
+  additionalExtensions = [],
 }: {
   options?: DeepPartial<ICoreOptions>;
+  additionalExtensions?: TemplateEngineExtension[];
 } = {}) => {
   const container = new Container();
   const stubQueryBuilder = sinon.stubInterface<IDataQueryBuilder>();
@@ -46,7 +48,12 @@ export const createTestCompiler = async ({
     .toDynamicValue((context) => {
       return new RuntimeCompilerEnvironment(
         context.container.get(TYPES.CompilerLoader),
-        context.container.getAll(TYPES.Extension_TemplateEngine),
+        [
+          ...context.container.getAll<TemplateEngineExtension>(
+            TYPES.Extension_TemplateEngine
+          ),
+          ...additionalExtensions,
+        ],
         context.container.get(TYPES.ValidatorLoader)
       );
     })
@@ -57,7 +64,12 @@ export const createTestCompiler = async ({
     .bind<BaseCompilerEnvironment>(TYPES.CompilerEnvironment)
     .toDynamicValue((context) => {
       return new BuildTimeCompilerEnvironment(
-        context.container.getAll(TYPES.Extension_TemplateEngine),
+        [
+          ...context.container.getAll<TemplateEngineExtension>(
+            TYPES.Extension_TemplateEngine
+          ),
+          ...additionalExtensions,
+        ],
         context.container.get(TYPES.ValidatorLoader)
       );
     })
