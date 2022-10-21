@@ -1,7 +1,10 @@
 import { intersection } from 'lodash';
 import { InternalError } from '../utils';
+import { DiscriminatorDescriptor } from 'class-transformer';
 
 export abstract class Constraint {
+  abstract __type: string;
+
   static Required() {
     return new RequiredConstraint();
   }
@@ -38,6 +41,8 @@ export abstract class Constraint {
 }
 
 export class RequiredConstraint extends Constraint {
+  __type = 'Required';
+
   public compose() {
     // No matter what other required constraint is, we always return a required constraint
     return new RequiredConstraint();
@@ -45,6 +50,8 @@ export class RequiredConstraint extends Constraint {
 }
 
 export class MinValueConstraint extends Constraint {
+  __type = 'MinValue';
+
   constructor(private minValue: number, private exclusive = false) {
     super();
   }
@@ -72,6 +79,8 @@ export class MinValueConstraint extends Constraint {
 }
 
 export class MaxValueConstraint extends Constraint {
+  __type = 'MaxValue';
+
   constructor(private maxValue: number, private exclusive = false) {
     super();
   }
@@ -99,6 +108,8 @@ export class MaxValueConstraint extends Constraint {
 }
 
 export class MinLengthConstraint extends Constraint {
+  __type = 'MinLength';
+
   constructor(private minLength: number) {
     super();
   }
@@ -115,6 +126,8 @@ export class MinLengthConstraint extends Constraint {
 }
 
 export class MaxLengthConstraint extends Constraint {
+  __type = 'MaxLength';
+
   constructor(private maxLength: number) {
     super();
   }
@@ -131,6 +144,8 @@ export class MaxLengthConstraint extends Constraint {
 }
 
 export class RegexConstraint extends Constraint {
+  __type = 'Regex';
+
   constructor(private regex: string) {
     super();
   }
@@ -147,6 +162,8 @@ export class RegexConstraint extends Constraint {
 }
 
 export class EnumConstraint<T = string> extends Constraint {
+  __type = 'Enum';
+
   constructor(private list: Array<T>) {
     super();
   }
@@ -171,6 +188,8 @@ export type TypeConstraintType =
   | 'object';
 
 export class TypeConstraint extends Constraint {
+  __type = 'Type';
+
   constructor(private type: TypeConstraintType) {
     super();
   }
@@ -185,3 +204,18 @@ export class TypeConstraint extends Constraint {
     );
   }
 }
+
+// https://github.com/typestack/class-transformer/tree/master#providing-more-than-one-type-option
+export const ConstraintDiscriminator: DiscriminatorDescriptor = {
+  property: '__type',
+  subTypes: [
+    { value: RequiredConstraint, name: 'Required' },
+    { value: MinValueConstraint, name: 'MinValue' },
+    { value: MaxValueConstraint, name: 'MaxValue' },
+    { value: MinLengthConstraint, name: 'MinLength' },
+    { value: MaxLengthConstraint, name: 'MaxLength' },
+    { value: RegexConstraint, name: 'Regex' },
+    { value: EnumConstraint, name: 'Enum' },
+    { value: TypeConstraint, name: 'Type' },
+  ],
+};

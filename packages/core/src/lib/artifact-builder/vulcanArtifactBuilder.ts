@@ -1,9 +1,10 @@
 import { ArtifactBuilder } from './artifactBuilder';
-import { PersistentStore } from '@vulcan-sql/core/models';
+import { BuiltArtifact, PersistentStore } from '@vulcan-sql/core/models';
 import { Serializer } from '@vulcan-sql/core/models';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import { InternalError } from '../utils';
+import { plainToInstance, instanceToPlain } from 'class-transformer';
 
 @injectable()
 export class VulcanArtifactBuilder implements ArtifactBuilder {
@@ -22,13 +23,16 @@ export class VulcanArtifactBuilder implements ArtifactBuilder {
   }
 
   public async build(): Promise<void> {
-    const serializedArtifact = this.serializer.serialize(this.artifact);
+    const artifactInPureObject = instanceToPlain(this.artifact);
+    const serializedArtifact = this.serializer.serialize(artifactInPureObject);
     await this.persistentStore.save(serializedArtifact);
   }
 
   public async load(): Promise<void> {
     const serializedArtifact = await this.persistentStore.load();
-    this.artifact = this.serializer.deserialize(serializedArtifact);
+    const artifactInPureObject =
+      this.serializer.deserialize(serializedArtifact);
+    this.artifact = plainToInstance(BuiltArtifact, artifactInPureObject);
   }
 
   public getArtifact<T = any>(key: string): T {

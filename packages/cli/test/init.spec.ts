@@ -40,4 +40,4 @@ it('Init command with folder path should create default config in target folder'
   );
   // Assert
   expect(config.name).toBe(projectName);
-}, 30000);
+}, 60000);

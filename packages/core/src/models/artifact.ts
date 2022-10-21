@@ -18,7 +18,17 @@ error:
     message: 'You are not allowed to access this resource'
  */
 
-import { Constraint } from '../lib/validators/constraints';
+// This is the model of our built result
+// It will be serialized and deserialized by class-transformer
+// https://github.com/typestack/class-transformer/tree/master
+// So we should use classes instead of interfaces.
+
+import {
+  Constraint,
+  ConstraintDiscriminator,
+} from '../lib/validators/constraints';
+import { Type } from 'class-transformer';
+import 'reflect-metadata';
 
 // Pagination mode should always be UPPERCASE because schema parser will transform the user inputs.
 export enum PaginationMode {
@@ -39,62 +49,69 @@ export enum FieldDataType {
   STRING = 'STRING',
 }
 
-export interface ValidatorDefinition<T = any> {
-  name: string;
-  args: T;
+export class ValidatorDefinition<T = any> {
+  name!: string;
+  args!: T;
 }
 
-export interface RequestSchema {
-  fieldName: string;
+export class RequestSchema {
+  fieldName!: string;
   // the field put in query parameter or headers
-  fieldIn: FieldInType;
-  description: string;
-  type: FieldDataType;
-  validators: Array<ValidatorDefinition>;
-  constraints: Array<Constraint>;
+  fieldIn!: FieldInType;
+  description!: string;
+  type!: FieldDataType;
+  validators!: Array<ValidatorDefinition>;
+  @Type(() => Constraint, {
+    discriminator: ConstraintDiscriminator,
+  })
+  constraints!: Array<Constraint>;
 }
 
-export interface ResponseProperty {
-  name: string;
+export class ResponseProperty {
+  name!: string;
   description?: string;
-  type: FieldDataType | Array<ResponseProperty>;
+  type!: FieldDataType | Array<ResponseProperty>;
   required?: boolean;
 }
 
-export interface PaginationSchema {
-  mode: PaginationMode;
+export class PaginationSchema {
+  mode!: PaginationMode;
   // The key name used for do filtering by key for keyset pagination.
   keyName?: string;
 }
 
-export interface ErrorInfo {
-  code: string;
-  message: string;
+export class ErrorInfo {
+  code!: string;
+  message!: string;
 }
 
-export interface Sample {
-  profile: string;
-  parameters: Record<string, any>;
+export class Sample {
+  profile!: string;
+  parameters!: Record<string, any>;
 }
 
-export interface APISchema {
+export class APISchema {
   // graphql operation name
-  operationName: string;
+  operationName!: string;
   // restful url path
-  urlPath: string;
+  urlPath!: string;
   // template, could be name or path
-  templateSource: string;
-  request: Array<RequestSchema>;
-  errors: Array<ErrorInfo>;
-  response: Array<ResponseProperty>;
+  templateSource!: string;
+  @Type(() => RequestSchema)
+  request!: Array<RequestSchema>;
+  @Type(() => ErrorInfo)
+  errors!: Array<ErrorInfo>;
+  @Type(() => ResponseProperty)
+  response!: Array<ResponseProperty>;
   description?: string;
   // The pagination strategy that do paginate when querying
   // If not set pagination, then API request not provide the field to do it
   pagination?: PaginationSchema;
   sample?: Sample;
-  profiles: Array<string>;
+  profiles!: Array<string>;
 }
 
-export interface BuiltArtifact {
-  apiSchemas: Array<APISchema>;
+export class BuiltArtifact {
+  @Type(() => APISchema)
+  schemas!: Array<APISchema>;
 }
