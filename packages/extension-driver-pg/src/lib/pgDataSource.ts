@@ -30,11 +30,13 @@ export class PGDataSource extends DataSource<any, PGOptions> {
       // https://node-postgres.com/api/pool#poolconnect
       // When a client is sitting idly in the pool it can still emit errors because it is connected to a live backend.
       // If the backend goes down or a network partition is encountered all the idle, connected clients in your application will emit an error through the pool's error event emitter.
-      pool.on('error', () => {
-        // Ignore the pool client error
+      pool.on('error', (err) => {
+        this.logger.warn(
+          `Pool client of profile instance ${profile.name} connecting failed, detail error, ${err}`
+        );
       });
       this.poolMapping.set(profile.name, {
-        pool: new Pool(profile.connection),
+        pool,
         options: profile.connection,
       });
       // Testing connection
@@ -54,13 +56,6 @@ export class PGDataSource extends DataSource<any, PGOptions> {
     const { pool, options } = this.poolMapping.get(profileName)!;
     this.logger.debug(`Acquiring connection from ${profileName}`);
     const client = await pool.connect();
-    // listen the pg connection event errors when executing query
-    pool.on('error', (err) => {
-      //  Ignore the error and display warn message
-      this.logger.warn(
-        `Pool client of profile instance ${profileName} connecting failed, detail error, ${err}`
-      );
-    });
     this.logger.debug(`Acquired connection from ${profileName}`);
     try {
       const cursor = client.query(

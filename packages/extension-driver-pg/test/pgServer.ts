@@ -3,6 +3,7 @@ import * as Docker from 'dockerode';
 import faker from '@faker-js/faker';
 import { Client } from 'pg';
 import * as BPromise from 'bluebird';
+import { PGOptions } from '../src/lib/pgDataSource';
 
 const docker = new Docker();
 
@@ -60,6 +61,21 @@ export class PGServer {
 
   public async destroy() {
     await this.container?.remove({ force: true });
+  }
+
+  public getProfile(name: string) {
+    return {
+      name,
+      type: 'pg',
+      connection: {
+        host: this.host,
+        user: this.user,
+        password: this.password,
+        database: this.database,
+        port: this.port,
+      } as PGOptions,
+      allow: '*',
+    };
   }
 
   private async waitPGReady() {
