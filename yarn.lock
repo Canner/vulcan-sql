@@ -2828,10 +2828,10 @@ dotenv@~10.0.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
   integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
 
-duckdb@0.4.1-dev2371.0:
-  version "0.4.1-dev2371.0"
-  resolved "https://registry.yarnpkg.com/duckdb/-/duckdb-0.4.1-dev2371.0.tgz#14680c7db68da9acb6e166ee83cc02f85ec19b01"
-  integrity sha512-MS/5HlJbrbSvh6iie0TTXjRqU4vYQID6A5+sWB8axoUg8A7tPTVou7TqzJULcVq32IZwcYL8HRjyiOrjD7Rp+w==
+duckdb@0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/duckdb/-/duckdb-0.5.1.tgz#265d8c20a16bb39801b388f314b2076ff5dabb68"
+  integrity sha512-4z2VeoszKPkZwtbgYmEqZngdz5tsgVvsT8eFQFgkgbyQWis0BMGEP2VhaVQFgWFl5MZW27JIQOLGI5d6GugqmA==
   dependencies:
     "@mapbox/node-pre-gyp" "^1.0.0"
     node-addon-api "*"
