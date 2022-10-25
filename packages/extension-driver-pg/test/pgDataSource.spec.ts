@@ -24,20 +24,7 @@ afterAll(async () => {
 
 it('Data source should be activate without any error when all profiles are valid', async () => {
   // Arrange
-  dataSource = new PGDataSource({}, '', [
-    {
-      name: 'profile1',
-      type: 'pg',
-      connection: {
-        host: pg.host,
-        user: pg.user,
-        password: pg.password,
-        database: pg.database,
-        port: pg.port,
-      } as PGOptions,
-      allow: '*',
-    },
-  ]);
+  dataSource = new PGDataSource({}, '', [pg.getProfile('profile1')]);
   // Act, Assert
   await expect(dataSource.activate()).resolves.not.toThrow();
 });
@@ -45,18 +32,7 @@ it('Data source should be activate without any error when all profiles are valid
 it('Data source should throw error when activating if any profile is invalid', async () => {
   // Arrange
   dataSource = new PGDataSource({}, '', [
-    {
-      name: 'profile1',
-      type: 'pg',
-      connection: {
-        host: pg.host,
-        user: pg.user,
-        password: pg.password,
-        database: pg.database,
-        port: pg.port,
-      } as PGOptions,
-      allow: '*',
-    },
+    pg.getProfile('profile1'),
     {
       name: 'wrong-password',
       type: 'pg',
@@ -76,20 +52,7 @@ it('Data source should throw error when activating if any profile is invalid', a
 
 it('Data source should return correct rows with 2 chunks', async () => {
   // Arrange
-  dataSource = new PGDataSource({}, '', [
-    {
-      name: 'profile1',
-      type: 'pg',
-      connection: {
-        host: pg.host,
-        user: pg.user,
-        password: pg.password,
-        database: pg.database,
-        port: pg.port,
-      } as PGOptions,
-      allow: '*',
-    },
-  ]);
+  dataSource = new PGDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
   // Act
   const { getData } = await dataSource.execute({
@@ -105,20 +68,7 @@ it('Data source should return correct rows with 2 chunks', async () => {
 
 it('Data source should return correct rows with 1 chunk', async () => {
   // Arrange
-  dataSource = new PGDataSource({}, '', [
-    {
-      name: 'profile1',
-      type: 'pg',
-      connection: {
-        host: pg.host,
-        user: pg.user,
-        password: pg.password,
-        database: pg.database,
-        port: pg.port,
-      } as PGOptions,
-      allow: '*',
-    },
-  ]);
+  dataSource = new PGDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
   // Act
   const { getData } = await dataSource.execute({
@@ -134,20 +84,7 @@ it('Data source should return correct rows with 1 chunk', async () => {
 
 it('Data source should return empty data with no row', async () => {
   // Arrange
-  dataSource = new PGDataSource({}, '', [
-    {
-      name: 'profile1',
-      type: 'pg',
-      connection: {
-        host: pg.host,
-        user: pg.user,
-        password: pg.password,
-        database: pg.database,
-        port: pg.port,
-      } as PGOptions,
-      allow: '*',
-    },
-  ]);
+  dataSource = new PGDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
   // Act
   const { getData } = await dataSource.execute({
@@ -229,20 +166,7 @@ it('Data source should release the connection when finished no matter success or
 
 it('Data source should work with prepare statements', async () => {
   // Arrange
-  dataSource = new PGDataSource({}, '', [
-    {
-      name: 'profile1',
-      type: 'pg',
-      connection: {
-        host: pg.host,
-        user: pg.user,
-        password: pg.password,
-        database: pg.database,
-        port: pg.port,
-      } as PGOptions,
-      allow: '*',
-    },
-  ]);
+  dataSource = new PGDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
   // Act
   const bindParams = new Map();
@@ -273,20 +197,7 @@ it('Data source should work with prepare statements', async () => {
 
 it('Data source should return correct column types', async () => {
   // Arrange
-  dataSource = new PGDataSource({}, '', [
-    {
-      name: 'profile1',
-      type: 'pg',
-      connection: {
-        host: pg.host,
-        user: pg.user,
-        password: pg.password,
-        database: pg.database,
-        port: pg.port,
-      } as PGOptions,
-      allow: '*',
-    },
-  ]);
+  dataSource = new PGDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
   // Act
   const { getColumns, getData } = await dataSource.execute({
@@ -308,20 +219,7 @@ it('Data source should return correct column types', async () => {
 
 it('Data source should release connection when readable stream is destroyed', async () => {
   // Arrange
-  dataSource = new PGDataSource({}, '', [
-    {
-      name: 'profile1',
-      type: 'pg',
-      connection: {
-        host: pg.host,
-        user: pg.user,
-        password: pg.password,
-        database: pg.database,
-        port: pg.port,
-      } as PGOptions,
-      allow: '*',
-    },
-  ]);
+  dataSource = new PGDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
   // Act
   const { getData } = await dataSource.execute({

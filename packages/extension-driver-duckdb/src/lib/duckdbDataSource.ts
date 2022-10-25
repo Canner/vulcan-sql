@@ -29,9 +29,6 @@ export interface DuckDBOptions {
   'log-parameters'?: boolean;
 }
 
-/// NOTICE: We're using the dev version of duckdb nodejs client for stream data support
-/// It might contain some issues.
-
 @VulcanExtensionId('duckdb')
 export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
   private dbMapping = new Map<

@@ -16,7 +16,7 @@
     "class-validator": "^0.13.2",
     "commander": "^9.4.0",
     "dayjs": "^1.11.2",
-    "duckdb": "0.4.1-dev2371.0",
+    "duckdb": "0.5.1",
     "glob": "^8.0.1",
     "inquirer": "^8.0.0",
     "inversify": "^6.0.1",
