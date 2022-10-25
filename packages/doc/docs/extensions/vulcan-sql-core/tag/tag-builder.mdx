@@ -1,28 +1,11 @@
-import ASTVisitor from './partial/_ast-visitor.mdx';
+import ASTVisitor from '../partial/_ast-visitor.mdx';
+import UseFunctionalTag from './_use_functional_tag.mdx';
 
 # TagBuilder
 
 TagBuilder extension works together with [TagRunner](./tag-runner), it parses the SQL templates and generate an Abstract Syntax Tree (AST).
 
-:::info
-Parsing SQL templates and generating AST are low-level operations of VulcanSQL compiler, it allows you to access the parser directly, it's the only way to add custom tags now, but we're planning to make the high-level components to create custom tags, please follow [Issue #115](https://github.com/Canner/vulcan-sql/issues/115).
-
-:::
-
-## What's tags
-
-A tag is something enclosed by `{%` and `%}`, it often converts the content starts from `{% xxx %}` to `{% endxxx %}` to some sql statements. For example:
-
-```sql
-SELECt * FROM users
-{% if context.user.attr.name != 'admin' %}
-LIMIT 10
-{% endif %}
-```
-
-The `if` tag renders `LIMIT 10` only when user is not admin.
-
-You can use TagBuilder to add custom tags and control the rendering logic.
+<UseFunctionalTag />
 
 ## How TagBuilder works
 
