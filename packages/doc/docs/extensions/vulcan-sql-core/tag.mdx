@@ -19,16 +19,16 @@ You can create custom tags with two methods:
 
 Functional tag is an async function that accepts some arguments and the content enclosed by it and returns a snippet (pure string) to replace the sql statement.
 
-For example, you can write a sample custom tag to add prefix:
+For example, you can write a simple custom tag to add prefix:
 
 ```ts
 import { createTagExtension, FunctionalTag } from '@vulcan-sql/core';
 
-const PreviewFunctionalTag: FunctionalTag = async ({ sql }) => {
+const PrefixFunctionalTag: FunctionalTag = async ({ sql }) => {
   return `vulcan-sql-${sql}`;
 };
 
-export const PrefixTag = createTagExtension('prefix', PreviewFunctionalTag);
+export const PrefixTag = createTagExtension('prefix', PrefixFunctionalTag);
 ```
 
 ```sql

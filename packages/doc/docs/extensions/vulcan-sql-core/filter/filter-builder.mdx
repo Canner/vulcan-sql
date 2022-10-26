@@ -1,18 +1,11 @@
-import ASTVisitor from './partial/_ast-visitor.mdx';
+import ASTVisitor from '../partial/_ast-visitor.mdx';
+import UseFunctionalFilter from './_use_functional_filter.mdx';
 
 # FilterBuilder
 
 FilterBuilder extension works together with [FilterRunnger](./filter-runner), in most of time, it does nothing but only claims the filter name.
 
-## What's filters
-
-A filter is used to transform variables, e.g. `upper` filter can convert string to upper case.
-
-```sql
-SELECT * FROM users WHERE name = {{ context.params.name | upper }}
-```
-
-You can use FilterBuilder to add custom filters and control the transform logic.
+<UseFunctionalFilter />
 
 ## How FilterBuilder works
 
