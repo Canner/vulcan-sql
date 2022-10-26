@@ -1,0 +1,82 @@
+# Filter
+
+A filter is used to transform variables, e.g. `upper` filter can convert string to upper case.
+
+```sql
+SELECT * FROM users WHERE name = {{ context.params.name | upper }}
+```
+
+You can create custom filters with two methods:
+
+## Create custom filters with function extensions
+
+### How function filter works
+
+Functional filter is an async function that accepts some arguments and the value before it and returns a new value depending on them.
+
+For example: you can write a simple custom filter to add prefix:
+
+```ts
+import { createFilterExtension, FunctionalFilter } from '@vulcan-sql/core';
+
+const PrefixFunctionalFilter: FunctionalFilter = async ({ value }) => {
+  return `vulcan-sql-${value}`;
+};
+
+export const PrefixFilter = createFilterExtension(
+  'prefix',
+  PrefixFunctionalFilter
+);
+```
+
+```sql
+SELECT * FROM users WHERE name = {{ context.params.name | prefix }}
+-- Result: SELECT * FROM users WHERE name = $1
+-- Parameters: $1 = vulcan-sql-xxxxx
+```
+
+### FunctionalFilterOptions
+
+This is the interface of the argument of FunctionalFilter, it contains the following properties:
+
+- value: The value before the filter. For example: `Ivan` is the following template:
+
+  ```sql
+  SELECT * FROM users WHERE name = {{ "Ivan" | prefix }}
+  ```
+
+  :::tip
+  You'd receive the raw value, that is, the value before parameterizing.
+
+  :::
+
+- args: The arguments passed into the filter. For example: `{len: 3, str: "xxxx"}` in the following template:
+
+  ```sql
+  SELECT * FROM users WHERE name =
+  // highlight-next-line
+  {{ "Ivan" | prefix(len=3, str='xxxx') }}
+  ```
+
+- metadata: The metadata of this request. e.g. profile name, user attributes ...etc.
+
+### Example
+
+:::info
+You can check the [demo repository](https://github.com/Canner/vulcan-sql-extension-demo/blob/main/extensions/functional-filter/src/prefix2.ts) for the full code.
+
+:::
+
+```ts showLineNumbers
+import { createFilterExtension, FunctionalFilter } from '@vulcan-sql/core';
+
+const PrefixFunctionFilter: FunctionalFilter = async ({ args, value }) => {
+  return `${args.pre || 'vulcan'}-${value}`;
+};
+
+export const PrefixTag = createFilterExtension('prefix', Prefix2FunctionFilter);
+```
+
+## Create custom filters with FilterBuilder and FilterRunner
+
+If function extensions don't fit your requirements, you can use [FilterBuilder](./filter/filter-builder) and [FilterRunner](./filter/filter-runner) instead, please see the correcsponding document.
