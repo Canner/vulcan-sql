@@ -17,29 +17,20 @@
   </a>
 </p>
 
-## Why VulcanSQL
-> ⚡️ Data analyst / analytical engineers’ time should focus on important matters like data transformation and communicating with data consumers on high level.
-
-<p align="center">
-  <img src="https://i.imgur.com/OTFP6Qh.jpg" width="800" >
-</p>
-
-Data analysts and analytical engineers often take lots of time helping data consumers. Backend engineers who build internal dashboards will ask about data catalog, documentations and if there are any APIs they can directly use. Business users will ask what data they can use to achieve their goals, and how to get data to their spreadsheet or excel.
+## What is VulcanSQL
+> **VulcanSQL is a Analytics API generator**, that helps data engineers to build scalable analytics APIs using only SQL without writing any backend code.  
 
 <p align="center">
   <img src="https://i.imgur.com/dn5kzXC.png" width="800" >
 </p>
 
-With VulcanSQL, we prepare what data consumers need for you. Imagine you can **unify the data access by building APIs instantly with just SQL. Authorization, validation, pagination features work out of the box.**
-
-VulcanSQL also builds documentations and a self-serve catalog, so **data consumers can understand the data and get data from the tools they’re using all by themselves without using any SQL**.
+With VulcanSQL, data engineers can build complex personalized APIs for different user persona and business context.  
 
 ## Features
-- Build API instantly with just SQL.
-- Access control & authorization in SQL.
-- API best practices included (validation, caching, pagination, sorting, etc).
-- API documentation is automatically built.
-- Self-serve API catalog for data consumers. A step-by-step guide to get data from Excel / Google spreadsheet, Zapier, Retool, etc.
+- Parameterized SQL into scalable and secure APIs
+- Built-in API access and version control
+- Built-in self-generated API documentation
+- Integrate with existing toolsets, such as Excel / Google spreadsheet, Zapier, Retool, etc.
 
 ## How VulcanSQL works?
 
@@ -56,9 +47,7 @@ Building API with just SQL. No complex web framework and business logic.
 select * from public.users where id = {{ context.params.userId }}
 ```
 
-You can build an API endpoint `users` with `userId` as input.
-
-API users will be able to get data like
+You can build an API endpoint `/users` with `userId` as input easily, You can immediately get data through API as below.
 
 ```js
 GET /users?userId=1
@@ -75,7 +64,7 @@ Response
 <details>
   <summary>1. Error Handling</summary>
 
-  If you want to throw errors based on data, for example, run a query first, if no data return, throw `404 not found`.
+  If you want to throw errors based on business logics. for example, run a query first, if no data return, throw `404 not found`.
   
   ```sql
   {% req user %}
@@ -93,7 +82,7 @@ Response
 <details>
   <summary>2. Authorization</summary>
 
-  You can pass in user attributes to SQL to control the access.
+  You can pass in user attributes, to achieve user access control. We will build corresponding SQL on the fly.
     
   ```sql
   select
@@ -116,7 +105,7 @@ Response
 <details>
   <summary>3. Validation</summary>
 
-  You can add a number validator on `userId` input on your API with schema.
+  You can add a number validator on `userId` input.
 
   - SQL
       ```sql
@@ -128,7 +117,7 @@ Response
       parameters:
         userId:
           in: query
-          valudators:
+          validators:  # set your validator here.
             - name: 'number'
       ```
 </details>
@@ -136,9 +125,9 @@ Response
 
 ### Step 2: Build self-serve documentation and catalog
 
-VulcanSQL will automatically build documentation and catalog.
+VulcanSQL will automatically build documentation and catalog for you.
 
-- **Catalog**: VulcanSQL will build a catalog page for data consumers. This page will consist of more clear information on data that is exposed as APIs. Description, Column information are all included.
+- **Catalog**: VulcanSQL will build a API catalog page for data consumers, to learn how to use the APIs and explore in the dashboard.
 
 <p align="center">
   <img src="https://i.imgur.com/qz6swW2.png" width="800" >
@@ -156,16 +145,16 @@ VulcanSQL will automatically build documentation and catalog.
 
 ### Step 3: Connect from framework & applications
 
-On API catalog page, you can preview data here and connect from your own framework and applications.
+On API catalog page, you can preview data or read from your applications.
 
-- You can `Copy API URL` to use it at frontend / backend.
+- You can `Copy API URL` and use it in your frontend/backend applications.
 - You can download the selected data as CSV or JSON.
 
 <p align="center">
   <img src="https://i.imgur.com/YZFczO3.png" width="800" >
 </p>
 
-- You can follow the steps to connect from Excel / Google Spreadsheet / Zapier / Retools.
+- You can follow the steps to read from Excel/Google Spreadsheet/Zapier/Retools.
 
 <p align="center">
   <img src="https://i.imgur.com/zOEdRYT.png" width="800" >
@@ -173,35 +162,35 @@ On API catalog page, you can preview data here and connect from your own framewo
 
 ## Installation
 
-Visit [the document](https://vulcansql.com/docs/installation) for installation guide.
+Visit [the documentation](https://vulcansql.com/docs/installation) for installation guide.
 
 ## Demo Screenshot
 <p align="center">
   <img src="https://i.imgur.com/j4jcYj1.png" width="800" >
 </p>
 
-> 🔑 **Login Page**: data consumers will be asked to authenticate themselves.
+> 🔑 **Login Page**: Users will need to login.
 
 <p align="center">
   <img src="https://i.imgur.com/0VmXMpl.png" width="800" >
 </p>
 
-> 📖 **Catalog**: After logged-in, data consumers can see what endpoints are available to be used.
+> 📖 **Catalog**: After logged-in, users can see what endpoints are available to be used.
 
 <p align="center">
   <img src="https://i.imgur.com/YZFczO3.png" width="800" >
 </p>
 
-> ✅ **Endpoint**: data consumers can view the details of one endpoint and preview the data.
+> ✅ **Endpoint**: Users can view the details of one endpoint and preview the data.
 
 <p align="center">
   <img src="https://i.imgur.com/zOEdRYT.png" width="800" >
 </p>
 
-> 🔌 **Connect**: data consumers will be able to follow the guide and connect from their applications.
+> 🔌 **Connect**: Users will be able to follow the guide and connect from their applications.
 
 ## Community
-* Welcome to our [Discord](https://discord.gg/ztDz8DCmG4) to give us feedbacks!
+* Welcome to our [Discord](https://discord.gg/ztDz8DCmG4) to give us feedback!
 * If any issues, please visit [Github Issues](https://github.com/Canner/vulcan-sql/issues)
 
 ## Special Thanks
