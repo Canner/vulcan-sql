@@ -62,7 +62,12 @@ const config = {
             type: 'doc',
             docId: 'quickstart',
             position: 'left',
-            label: 'Document',
+            label: 'Docs',
+          },
+          {
+            href: 'https://discord.gg/ztDz8DCmG4',
+            position: 'left',
+            label: 'Community',
           },
           {
             href: 'https://github.com/Canner/vulcan-sql',
@@ -75,7 +80,7 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Document',
+            title: 'Documentation',
             items: [
               {
                 label: 'Quickstart',
@@ -84,6 +89,10 @@ const config = {
               {
                 label: 'Installation',
                 to: '/docs/installation',
+              },
+              {
+                label: 'Build VulcanSQL projects',
+                to: '/docs/api-building/configuration',
               },
               {
                 label: 'Connectors',

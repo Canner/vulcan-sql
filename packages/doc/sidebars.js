@@ -19,16 +19,15 @@ const sidebars = {
   // But you can create a sidebar manually
 
   tutorialSidebar: [
-    'intro',
     'quickstart',
     'installation',
     {
       type: 'category',
-      label: 'Building APIs',
+      label: 'Build VulcanSQL Projects',
       items: [
         {
           type: 'category',
-          label: 'Configuration',
+          label: 'VulcanSQL Configuration',
           link: { type: 'doc', id: 'api-building/configuration' },
           items: [
             {
@@ -136,7 +135,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Catalog',
+      label: 'API Catalog',
       link: { type: 'doc', id: 'catalog/catalog-intro' },
       items: [
         {

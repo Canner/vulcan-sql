@@ -54,17 +54,17 @@ options:
 
 const FeatureList: FeatureData[] = [
   {
-    title: 'Build API instantly with just SQL',
+    title: 'Parameterized your SQL',
     schematic: <img src={'./img/build-api-with-sql.png'} />,
     description: (
       <span className={styles.cardDescription}>
-        No complex web framework and business logic. Learn about{' '}
+        Build APIs with just parameterized your SQL and with extendability.  Learn about{' '}
         <Link to="docs/api-building/configuration">building API</Link>.
       </span>
     ),
   },
   {
-    title: 'Provide API best practices',
+    title: 'Comprehensive API methods',
     schematic: (
       <div className={styles.bestPracticesCodeContainer}>
         <Tabs
@@ -109,28 +109,28 @@ const FeatureList: FeatureData[] = [
     schematic: <CodeBlock language="sql">{AccessControlCode}</CodeBlock>,
     description: (
       <span className={styles.cardDescription}>
-        Pass in user attributes to SQL to control the access. Learn about{' '}
+        SQL knows who you are and what you can retrieve. Learn about{' '}
         <Link to="docs/api-building/access-control">access control</Link>.
       </span>
     ),
   },
   {
-    title: 'Self-serve documentation and catalog',
+    title: 'API docs & catalog',
     schematic: <img src={'./img/catalog-api-list.png'} />,
     description: (
       <span className={styles.cardDescription}>
-        Automatically build API documentation (OpenAPI) and catalog for data
+        Automatically build complete API documentation(OpenAPI) and catalog for data
         consumers and web engineer. Learn about{' '}
         <Link to="docs/api-building/api-document">API documentation</Link>.
       </span>
     ),
   },
   {
-    title: 'Connect from framework & applications',
+    title: 'Connect from business applications',
     schematic: <img src={'./img/catalog-connect-page.png'} />,
     description: (
       <span className={styles.cardDescription}>
-        Preview data and connect from your own framework and applications.
+        Preview data and self-serve interface to read from your own business applications or export into files.
       </span>
     ),
   },
@@ -140,6 +140,7 @@ export default function HomepageFeatures(): JSX.Element {
   return (
     <section className={styles.section}>
       <h1 className={`text--center ${styles.title}`}>What is VulcanSQL?</h1>
+      <h3 className={`text--center ${styles.cardDescription}`} style={{maxWidth: '900px', marginBottom: '100px'}}>VulcanSQL is an Analytics API generator that helps data engineers to build scalable analytics APIs using only SQL without writing any backend code.</h3>
       <FeatureCard featureList={FeatureList} />
     </section>
   );
