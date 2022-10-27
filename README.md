@@ -38,12 +38,12 @@ VulcanSQL aims to solve that problem by translating SQL into flexible APIs; it i
 
 ## How VulcanSQL works?
 
-### Step 1: Instant API with just SQL.
+### Step 1: Parameterized your SQL.
 <p align="center">
   <img src="https://i.imgur.com/2PMrlJC.png" width="600" >
 </p>
 
-You can build APIs with just SQL and with extendability.
+Build APIs with just parameterized your SQL and with extendability.
 
 **Example: passing parameters from url**
 
