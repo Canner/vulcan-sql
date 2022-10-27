@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.imgur.com/dqWx61T.png" width="600" >
+  <img src="https://i.imgur.com/P7lJaK6.png" width="600" >
 </p>
 
 <p align="center">
@@ -18,13 +18,17 @@
 </p>
 
 ## What is VulcanSQL
-> **VulcanSQL is a Analytics API generator**, that helps data engineers to build scalable analytics APIs using only SQL without writing any backend code.  
+> **VulcanSQL is an Analytics API generator** that helps data engineers to build scalable analytics APIs using only SQL without writing any backend code.  
+
+## Why VulcanSQL?
+
+APIs are still the primary programming interface for data consumers to utilize data in their daily business applications, such as BI, reports, dashboards, spreadsheets, and web applications.  However, data stored in data warehouses are not accessible for those users and tools without an API consumption layer.
+
+VulcanSQL aims to solve that problem by translating SQL into flexible APIs; it is contextual in that it can translate APIs into the corresponding SQL based on different user personas and business contexts.  It is also extendable with custom business logic and complex SQL translation. 
 
 <p align="center">
   <img src="https://i.imgur.com/dn5kzXC.png" width="800" >
 </p>
-
-With VulcanSQL, data engineers can build complex personalized APIs for different user persona and business context.  
 
 ## Features
 - Parameterized SQL into scalable and secure APIs
@@ -39,7 +43,7 @@ With VulcanSQL, data engineers can build complex personalized APIs for different
   <img src="https://i.imgur.com/2PMrlJC.png" width="600" >
 </p>
 
-Building API with just SQL. No complex web framework and business logic.
+You can build APIs with just SQL and with extendability.
 
 **Example: passing parameters from url**
 
@@ -64,7 +68,7 @@ Response
 <details>
   <summary>1. Error Handling</summary>
 
-  If you want to throw errors based on business logics. for example, run a query first, if no data return, throw `404 not found`.
+  If you want to throw errors based on business logic. for example, run a query first, if no data return, throw `404 not found`.
   
   ```sql
   {% req user %}
@@ -82,7 +86,7 @@ Response
 <details>
   <summary>2. Authorization</summary>
 
-  You can pass in user attributes, to achieve user access control. We will build corresponding SQL on the fly.
+  You can pass in user attributes to achieve user access control. We will build the corresponding SQL on the fly.
     
   ```sql
   select
@@ -127,7 +131,7 @@ Response
 
 VulcanSQL will automatically build documentation and catalog for you.
 
-- **Catalog**: VulcanSQL will build a API catalog page for data consumers, to learn how to use the APIs and explore in the dashboard.
+- **API Catalog**: VulcanSQL will build an API catalog page for data consumers to learn how to use the APIs and explore data in the dashboard.
 
 <p align="center">
   <img src="https://i.imgur.com/qz6swW2.png" width="800" >
@@ -137,7 +141,7 @@ VulcanSQL will automatically build documentation and catalog for you.
   <img src="https://i.imgur.com/YZFczO3.png" width="800" >
 </p>
 
-- **API Documentation**: VulcanSQL will build a swagger page for backend engineers.
+- **API Documentation**: VulcanSQL will build a Swagger API page for backend engineers.
 
 <p align="center">
   <img src="https://i.imgur.com/oH9UEoD.png" width="800" >
