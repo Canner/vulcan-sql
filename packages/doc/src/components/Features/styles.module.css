@@ -22,7 +22,7 @@
   justify-content: center;
 }
 
-.card:nth-child(2n + 0) {
+.card:nth-child(2n + 1) {
   background: var(--ifm-color-emphasis-200);
 }
 

@@ -6,21 +6,21 @@ import OverviewImageUrl from '@site/static/img/vulcan-overview.png';
 const featureList = [
   {
     icon: require('@site/static/img/feature-1-icon.svg').default,
-    title: 'Build API instantly',
+    title: 'Build APIs from SQL',
     description:
-      'Just use SQL that the data analyst is most familiar with to build API.',
+      'Use only SQL to build your scalable and flexible APIs.',
   },
   {
     icon: require('@site/static/img/feature-2-icon.svg').default,
-    title: 'Automate API development',
+    title: 'Dynamic SQL generation',
     description:
-      'Let data analyst focus on data insights and save development time and cost.',
+      'Generate corresponding SQL based on personas and context on the fly.',
   },
   {
     icon: require('@site/static/img/feature-3-icon.svg').default,
-    title: 'Easy to get data',
+    title: 'Scalable and Extendable',
     description:
-      'Provide self-serve catalog UI for data consumer to easily get data from applications.',
+      'Modular and extendable with your custom business logic at scale.',
   },
 ];
 
@@ -36,7 +36,7 @@ export default function Overview(): JSX.Element {
         title="GitHub"
       ></iframe>
       <h1 className={`text--center ${styles.title}`}>
-        Instant API on your data warehouse & data lake
+        Build Analytics APIs from parameterized SQL
       </h1>
       <Link
         className={`button button--primary ${styles.getStartButton}`}

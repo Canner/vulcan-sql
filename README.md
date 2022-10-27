@@ -45,7 +45,7 @@ VulcanSQL aims to solve that problem by translating SQL into flexible APIs; it i
 
 Build APIs with just parameterized your SQL and with extendability.
 
-**Example: passing parameters from url**
+**Example: passing parameters from URL**
 
 ```sql
 select * from public.users where id = {{ context.params.userId }}
