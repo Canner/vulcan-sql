@@ -1,0 +1,11 @@
+{
+  "name": "@vulcan-sql/extension-driver-snowflake",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "dependencies": {
+    "snowflake-sdk": "^1.6.14"
+  },
+  "devDependencies": {
+    "@types/snowflake-sdk": "^1.6.8"
+  }
+}

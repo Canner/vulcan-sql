@@ -4,13 +4,14 @@
     "build": "packages/build",
     "cli": "packages/cli",
     "core": "packages/core",
+    "doc": "packages/doc",
     "extension-dbt": "packages/extension-dbt",
     "extension-debug-tools": "packages/extension-debug-tools",
     "extension-driver-duckdb": "packages/extension-driver-duckdb",
     "extension-driver-pg": "packages/extension-driver-pg",
+    "extension-driver-snowflake": "packages/extension-driver-snowflake",
     "integration-testing": "packages/integration-testing",
     "serve": "packages/serve",
-    "test-utility": "packages/test-utility",
-    "doc": "packages/doc"
+    "test-utility": "packages/test-utility"
   }
 }

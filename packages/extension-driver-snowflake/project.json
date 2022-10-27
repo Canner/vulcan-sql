@@ -1,0 +1,52 @@
+{
+  "root": "packages/extension-driver-snowflake",
+  "sourceRoot": "packages/extension-driver-snowflake/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/extension-driver-snowflake",
+        "main": "packages/extension-driver-snowflake/src/index.ts",
+        "tsConfig": "packages/extension-driver-snowflake/tsconfig.lib.json",
+        "assets": ["packages/extension-driver-snowflake/*.md"]
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs extension-driver-snowflake {args.ver} {args.tag}",
+        "cwd": "dist/packages/extension-driver-snowflake"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/extension-driver-snowflake/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/extension-driver-snowflake"],
+      "options": {
+        "jestConfig": "packages/extension-driver-snowflake/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "install-dependencies": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn",
+        "cwd": "dist/packages/extension-driver-snowflake"
+      }
+    }
+  },
+  "tags": []
+}
