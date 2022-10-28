@@ -1,11 +1,11 @@
 # Configuration
 
 After creating a VulcanSQL project by `vulcan init`, you will see a file named `vulcan.yaml` under the project root.
-The `vulcan.yaml` is the **VulcanSQL project config**, a lot of features (e.g: Data Source, Authentication, API Document ..), and the core feature rely on the file, we will introduce it in this chapter.
+The `vulcan.yaml` is the **VulcanSQL project configurations**, features (e.g. Data Source, Authentication, API Document ..) and the core feature rely on the file, we will introduce it in this chapter.
 
-# Filename of Project Config
+# The project configuration file
 
-Although we said that the `vulcan.yaml` is the VulcanSQL project config name, but it is not mandatory actually. You could rename the project config file, but VulcanSQL will default use it when you play our command e.g: `vulcan build`, `vulcan serve`, or `vulcan start`.
+Although we said that the `vulcan.yaml` is the VulcanSQL project configuration, but it is not mandatory. You could rename the project configuration file name, but it is the default value using command like `vulcan build`, `vulcan serve`, or `vulcan start`.
 
 So for example, if you rename the project file name to `hello-world.yaml`, then when you run the above command, you should add the optional options `-c` or `--config` :
 
@@ -14,9 +14,9 @@ $ mv vulcan.yaml hello-world.yaml
 $ vulcan start -c ./hello-world.yaml
 ```
 
-# Structure of Project Config
+# Structure of the project configuration
 
-It's a default project config when you run `vulcan init` , you will see some config options you have defined, and we will let you know our config structure follow by the below default sample:
+It's a default project configuration settings, when you enter `vulcan init` , you will see some configuration options you have defined, and we will let you know our configuration structure follow by the below default sample:
 
 ```yaml
 # The project name, description version
@@ -24,7 +24,7 @@ name: my-first-vulcan-project
 description: A starter VulcanSQL project
 version: 0.2.0
 
-# The config options of core feature
+# The configuration options of core feature
 template:
   provider: LocalFile
   folderPath: sqls
@@ -45,7 +45,7 @@ types:
 extensions:
   duckdb: '@vulcan-sql/extension-driver-duckdb'
 
-# The config options of built-in extensions
+# The configuration options of built-in extensions
 profiles:
   - profile.yaml
 rate-limit:
@@ -66,11 +66,11 @@ response-format:
       - csv
 ```
 
-You will see a split of 4 sections by the above comment, and the 4 sections combine our **project information**, **core feature** config options, **built-in extension,** and **external extension** config options.
+You will see a split of 4 sections by the above comment, and the 4 sections combine our **project information**, **core feature** configuration options, **built-in extension,** and **external extension** configuration options.
 
 ## Project information
 
-In the VulcanSQL project config, we will provide a section for you to define the project `name` and give the `description` for recording it so you or your partner could know the project's purpose. The `version` will record your API version, you should bump this value when your API changs.
+In the VulcanSQL project configuration, we will provide a section for you to define the project `name` and give the `description` for recording it so you or your partner could know the project's purpose. The `version` will record your API version, you should bump this value when your API changs.
 
 ```yaml
 name: my-first-vulcan-project
@@ -78,9 +78,9 @@ description: A starter VulcanSQL project
 version: 0.2.0
 ```
 
-## Config of Core feature
+## Core feature options
 
-VulcanSQL has some config options related to core features, below are the core feature options:
+VulcanSQL has some configuration options related to core features, below are the core feature options:
 
 ```yaml
 template:
@@ -180,11 +180,11 @@ document-generator:
     - oas3
 ```
 
-## Config of Built-in Extension
+## Built-in extension configurations
 
-VulcanSQL provides the extension components to let users could extend it for making the VulcanSQL powerful, and VulcanSQL also uses the extension components to create built-in extensions which enable it to run the feature.
+VulcanSQL provides the extension components to let users could extend it for making VulcanSQL powerful, and VulcanSQL also uses the extension components to create built-in extensions which enable it to run the feature.
 
-Like the below configs, The `profiles`, `rate-limit`, `enforce-https`, `response-format`, and `auth` are our built-in extensions. These extensions work in **serve time** to make the API request have more restrictions when sending requests.
+Like the below configurations, The `profiles`, `rate-limit`, `enforce-https`, `response-format`, and `auth` are our built-in extensions. These extensions work in **serve time** to make the API request have more restrictions when sending requests.
 
 ```yaml
 profiles:
@@ -211,9 +211,9 @@ Every built-in extension has its configuration, but you don't need to define all
 
 We'll talk about the detailed configuration of extensions in their chapters.
 
-For the above config, if you are interested, you could see [Data Source Profile](./configuration/data-source-profile), [Rate Limit](./rate-limit), Enforce HTTPS, [Response Format](./response-format), and [Access Control](./access-control) first.
+For the above configuration, if you are interested, you could see [Data Source Profile](./configuration/data-source-profile), [Rate Limit](./rate-limit), Enforce HTTPS, [Response Format](./response-format), and [Access Control](./access-control) first.
 
-## Config of External extension
+## External extension configurations
 
 Besides built-in extensions, users could extend our extension components to create extensions, and these extended extensions are called **external extensions.**
 
@@ -269,13 +269,13 @@ If you would like to use your **local developed external extensions**, you could
 extensions:
   ext-module-name2: path/to/folder/of/package # path
 
-# Set the config options of the ext-module-name2 if ext-module-name2 provide config to let user could set.
+# Set the configuration options of the ext-module-name2 if ext-module-name2 provide configurations to let user could set.
 ext-module-name2: ...
 ```
 
-### Not all external extensions have config options
+### Not all external extensions have configuration options
 
-Not all external extensions have config options, some options maybe rely on internal or built-extensions config options and set options under internal or built-extensions config options. We should check each document of the external extensions module.
+Not all external extensions have configuration options, some options maybe rely on internal or built-extensions configuration options and set options under internal or built-extensions config options. We should check each document of the external extensions module.
 
 For example, if you would like to use `@vulcan-sql/duckdb` it looks like the below:
 
@@ -297,12 +297,12 @@ connection:
 allow: '*'
 ```
 
-Or define it directly under the `profiles` config options of built-in extensions with `extensions` options in the project config:
+Or define it directly under the `profiles` configuration options of built-in extensions with `extensions` options in the project config:
 
 ```yaml
 # vulcan.yaml
 
-# other config options core feature
+# other configuration options core feature
 ---
 extensions:
   duckdb: '@vulcan-sql/extension-driver-duckdb'
@@ -317,5 +317,5 @@ profiles:
     allow: '*'
 
 ---
-# other config options built-in extensions
+# other configuration options built-in extensions
 ```
