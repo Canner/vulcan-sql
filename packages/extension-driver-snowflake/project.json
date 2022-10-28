@@ -3,25 +3,39 @@
   "sourceRoot": "packages/extension-driver-snowflake/src",
   "targets": {
     "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts extension-driver-snowflake"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "tsc"
+        },
+        {
+          "projects": "self",
+          "target": "install-dependencies"
+        }
+      ]
+    },
+    "tsc": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/extension-driver-snowflake",
         "main": "packages/extension-driver-snowflake/src/index.ts",
         "tsConfig": "packages/extension-driver-snowflake/tsconfig.lib.json",
-        "assets": ["packages/extension-driver-snowflake/*.md"]
-      }
-    },
-    "publish": {
-      "executor": "@nrwl/workspace:run-commands",
-      "options": {
-        "command": "node tools/scripts/publish.mjs extension-driver-snowflake {args.ver} {args.tag}",
-        "cwd": "dist/packages/extension-driver-snowflake"
+        "assets": ["packages/extension-driver-snowflake/*.md"],
+        "buildableProjectDepsInPackageJsonType": "dependencies"
       },
       "dependsOn": [
         {
-          "projects": "self",
+          "projects": "dependencies",
           "target": "build"
+        },
+        {
+          "projects": "self",
+          "target": "install-dependencies"
         }
       ]
     },
@@ -38,13 +52,32 @@
       "options": {
         "jestConfig": "packages/extension-driver-snowflake/jest.config.ts",
         "passWithNoTests": true
-      }
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "install-dependencies"
+        }
+      ]
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
+        "cwd": "dist/packages/extension-driver-snowflake"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
     },
     "install-dependencies": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
         "command": "yarn",
-        "cwd": "dist/packages/extension-driver-snowflake"
+        "cwd": "packages/extension-driver-snowflake"
       }
     }
   },

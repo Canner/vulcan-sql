@@ -1,11 +1,35 @@
 {
   "name": "@vulcan-sql/extension-driver-snowflake",
-  "version": "0.0.1",
+  "description": "Snowflake driver for VulcanSQL",
+  "version": "0.3.0",
   "type": "commonjs",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "vulcan",
+    "vulcan-sql",
+    "data",
+    "sql",
+    "database",
+    "data-warehouse",
+    "data-lake",
+    "api-builder",
+    "snowflake",
+    "snow"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Canner/vulcan.git"
+  },
+  "license": "MIT",
   "dependencies": {
     "snowflake-sdk": "^1.6.14"
   },
   "devDependencies": {
     "@types/snowflake-sdk": "^1.6.8"
+  },
+  "peerDependencies": {
+    "@vulcan-sql/core": "~0.3.0-0"
   }
 }
