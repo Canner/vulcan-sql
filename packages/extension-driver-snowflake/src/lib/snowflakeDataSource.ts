@@ -29,9 +29,13 @@ export class SnowflakeDataSource extends DataSource<any, SnowflakeOptions> {
       this.logger.debug(
         `Initializing profile: ${profile.name} using snowflake driver`
       );
+      const options: SnowflakeOptions = {
+        ...{ application: 'VulcanSQL' },
+        ...profile.connection!,
+      };
       const pool = snowflake.createPool(
-        profile.connection!, // optionals for Snowflake SDK
-        profile.connection // optionals for connection pool
+        options, // optionals for Snowflake SDK
+        options // optionals for connection pool
       );
 
       this.poolMapping.set(profile.name, {
