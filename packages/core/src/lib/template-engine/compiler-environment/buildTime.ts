@@ -21,7 +21,7 @@ import * as nunjucks from 'nunjucks';
 import { IValidatorLoader } from '@vulcan-sql/core/validators';
 
 /**
- * Build time environment is used when we compiling templates.
+ * Build phase environment is used when we compiling templates.
  */
 @injectable()
 export class BuildTimeCompilerEnvironment extends BaseCompilerEnvironment {
