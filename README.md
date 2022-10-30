@@ -32,7 +32,7 @@ VulcanSQL aims to solve that problem by translating SQL into flexible APIs; it i
 
 ## When use VulcanSQL?
 
-Scale data usages outside the traditional data team to business users and application developers using APIs. VulcanSQL is the perfect solution for data using in applications.
+When scaling data usages outside the traditional data team to business users and application developers using APIs. VulcanSQL is the perfect solution for data using in applications.
 
 ## Features
 - Parameterized SQL into scalable and secure APIs
