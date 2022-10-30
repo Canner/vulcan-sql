@@ -37,7 +37,7 @@ alias "vulcan-install"="docker run -it --rm -p 3000:3000 -v ${PWD}:/usr/app --en
    vulcan init .
    ```
 
-2. Check the installation.
+2. Check if it is successsfully installed.
 
    ```bash
    vulcan version
@@ -64,7 +64,7 @@ For example, to use Postgres connector:
 
 ## Set proper profiles
 
-We need some credentials to connect to your data warehouses, which we call “profiles”. You need to set up at least one profile to let VulcanSQL work. Please check [Access Control](./api-building/access-control) for further information.
+We need some credentials to connect to your data warehouses, which we call **“profiles”**. You need to set up at least one profile to let VulcanSQL work. Please check [Access Control](./api-building/access-control) for further information.
 
 For example, to set up a profile for PostgreSQL connector, you can add the following content to `profiles.yaml` at your project root.
 

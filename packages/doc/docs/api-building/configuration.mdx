@@ -1,22 +1,22 @@
 # Configuration
 
 After creating a VulcanSQL project by `vulcan init`, you will see a file named `vulcan.yaml` under the project root.
-The `vulcan.yaml` is the **VulcanSQL project configurations**, features (e.g. Data Source, Authentication, API Document ..) and the core feature rely on the file, we will introduce it in this chapter.
+The `vulcan.yaml` is the where **VulcanSQL project configurations** stored, to setup core features like data source, authentication, API Documentation, etc... we will introduce it in this chapter.
 
 # The project configuration file
 
-Although we said that the `vulcan.yaml` is the VulcanSQL project configuration, but it is not mandatory. You could rename the project configuration file name, but it is the default value using command like `vulcan build`, `vulcan serve`, or `vulcan start`.
+Although we said that the `vulcan.yaml` is the main VulcanSQL project configuration file, but it is not mandatory. You could change the project configuration file name whatever you like by passing option, but it is the default filename using command like `vulcan build`, `vulcan serve`, or `vulcan start`.
 
 So for example, if you rename the project file name to `hello-world.yaml`, then when you run the above command, you should add the optional options `-c` or `--config` :
 
 ```bash
 $ mv vulcan.yaml hello-world.yaml
-$ vulcan start -c ./hello-world.yaml
+$ vulcan start -c ./hello-world.yaml  # set the configuation filename to `hello-world.yaml`
 ```
 
 # Structure of the project configuration
 
-It's a default project configuration settings, when you enter `vulcan init` , you will see some configuration options you have defined, and we will let you know our configuration structure follow by the below default sample:
+It's the default project configuration settings, when you enter `vulcan init` , you will see some configuration options you have pre-defined, below is a sample of how the file is contructed:
 
 ```yaml
 # The project name, description version
@@ -41,6 +41,7 @@ document-generator:
     - oas3
 types:
   - RESTFUL
+
 # The external extension modules you wouldl like to use in your VulcanSQL project
 extensions:
   duckdb: '@vulcan-sql/extension-driver-duckdb'
@@ -66,11 +67,11 @@ response-format:
       - csv
 ```
 
-You will see a split of 4 sections by the above comment, and the 4 sections combine our **project information**, **core feature** configuration options, **built-in extension,** and **external extension** configuration options.
+You will see a split of four major sections by the above comment, the sections consist of our **project information**, **core feature** configuration options, **built-in extension**, and **external extension** configuration options.
 
 ## Project information
 
-In the VulcanSQL project configuration, we will provide a section for you to define the project `name` and give the `description` for recording it so you or your partner could know the project's purpose. The `version` will record your API version, you should bump this value when your API changs.
+In the VulcanSQL project configuration, we will provide a section for you to define the project `name` and give it a `description` for the project's purpose. The `version` will record as of your API version, you should bump this value when your API changes by following [`semver`](https://semver.org/) conventions.
 
 ```yaml
 name: my-first-vulcan-project
@@ -80,7 +81,7 @@ version: 0.2.0
 
 ## Core feature options
 
-VulcanSQL has some configuration options related to core features, below are the core feature options:
+VulcanSQL has some configuration options related to our core features, below are the core feature options:
 
 ```yaml
 template:
@@ -103,15 +104,15 @@ profiles:
   - profile.yaml
 ```
 
-Actually, the `template`, `artifact`, and `document-generator` options are related to the `vulcan build` and `vulcan serve` command and we called **build time** and **serving time,** in VulcanSQL Team. For the `schema-parser`, `types` and `profiles` related to **serving time,**
+Actually, the `template`, `artifact`, and `document-generator` options are related to the `vulcan build` and `vulcan serve` command and we called **build phase** and **serving phase**. For the `schema-parser`, `types` and `profiles` related to **serving phase**,
 
-### Build time and Serve time
+### Build phase and Serve phase
 
-In the **build time,** VulcanSQL will use the `template` options to find where is the user-written SQL files and compile the SQL files to the artifact compiled files to the `artifact` options defined places.
+In the **build phase**, VulcanSQL will use the `template` options to find where is the user-written SQL files and compile the SQL files to the artifact compiled files to the `artifact` options defined places.
 
-In the **serving time,** VulcanSQL will use the `schema-parser` options to find where is the user-written API schema files, then VulcanSQL will check the API protocol user would like to create the API endpoints according to the `types` options.
+In the **serving phase**, VulcanSQL will use the `schema-parser` option to find where is the user-written API schema files, then VulcanSQL will check the API protocol user would like to create as the API endpoints, according to the `types` option.
 
-When API is created and users send requests to the API endpoints, VulcanSQL will use `template` and `artifact` options again for running the SQL files and analyzing them to send data sources, for the data sources connection data, VulcanSQL uses the `profiles` options to find each data sources settings.
+When API is created and users send requests to the API endpoints, VulcanSQL will use `template` and `artifact` options again for translating the SQL files and send to data sources, for the data sources connection information, VulcanSQL rely on `profiles` option to find each data source settings.
 
 ### `template` options
 
@@ -184,7 +185,7 @@ document-generator:
 
 VulcanSQL provides the extension components to let users could extend it for making VulcanSQL powerful, and VulcanSQL also uses the extension components to create built-in extensions which enable it to run the feature.
 
-Like the below configurations, The `profiles`, `rate-limit`, `enforce-https`, `response-format`, and `auth` are our built-in extensions. These extensions work in **serve time** to make the API request have more restrictions when sending requests.
+Like the below configurations, The `profiles`, `rate-limit`, `enforce-https`, `response-format`, and `auth` are our built-in extensions. These extensions work in **serve phase** to make the API request have more restrictions when sending requests.
 
 ```yaml
 profiles:
