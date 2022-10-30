@@ -30,11 +30,22 @@ VulcanSQL aims to solve that problem by translating SQL into flexible APIs; it i
   <img src="https://i.imgur.com/dn5kzXC.png" width="800" >
 </p>
 
+## When use VulcanSQL?
+
+Scale data usages outside the traditional data team to business users and application developers using APIs. VulcanSQL is the perfect solution for data using in applications.
+
 ## Features
 - Parameterized SQL into scalable and secure APIs
 - Built-in API access and version control
 - Built-in self-generated API documentation
 - Integrate with existing toolsets, such as Excel / Google spreadsheet, Zapier, Retool, etc.
+
+## Data sources support
+
+- PosgreSQL
+- DuckDB
+- Snowflake (WIP)
+- BigQuery (WIP)
 
 ## How VulcanSQL works?
 
