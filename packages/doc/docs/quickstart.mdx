@@ -27,7 +27,7 @@ Ensure you have installed one of the following:
    npm i -g @vulcan-sql/cli
    ```
 
-2. To ensure installation, print the version information.
+2. To ensure successful installation, print the version information.
 
    ```bash
    vulcan version
@@ -99,30 +99,32 @@ Ensure you have installed one of the following:
     vulcan start --watch
     ```
 
-4.  Open the API document with URL: [http://localhost:3000/doc](http://localhost:3000/doc)
+4.  Open the API documentation with URL: [http://localhost:3000/doc](http://localhost:3000/doc)
 
     ![the screenshot of VulcanSQL API document](./img/doc-screenshot.png)
 
 ## Know your data
 
-We used [Kaggle: Credit Card customers](https://www.kaggle.com/datasets/sakshigoyal7/credit-card-customers) as our demo dataset, the following is its background:
+We used [Kaggle: Credit Card customers](https://www.kaggle.com/datasets/sakshigoyal7/credit-card-customers) as our demo dataset
+
+Here's a scenario using this dataset:
 
 > A manager at the bank is disturbed with more and more customers leaving their credit card services. They would really appreciate if one could predict for them who is gonna get churned so they can proactively go to the customer to provide them better services and turn customers' decisions in the opposite direction
 
 We have two tables in our database from part of this dataset (first 1000 rows):
 
 - [customers](https://github.com/Canner/vulcan-demo/blob/main/data/customers.csv) contains the basic information of our customers
-- [churners](https://github.com/Canner/vulcan-demo/blob/main/data/churners.csv) contains the monitoring result of them including their age, salary, marital status …etc, and `attrited` column indicates whether the customer was attrited or not.
+- [churners](https://github.com/Canner/vulcan-demo/blob/main/data/churners.csv) contains their monitoring result, including their age, salary, marital status, etc..., and `attrited` column indicates whether the customer record was attrited or not.
 
 Instead of making predictions, we want to create APIs for further usage, we'll make two APIs in this tutorial:
 
 - `/customer?name=${name}` to query user's basic information.
 - `/customers?<filter>` to query users' monitoring results that fit the filter.
 
-## Make an API with SQL: customer
+## Build APIs with SQL with `customer` table
 
 :::info
-At any time you get lost, or you want to see the final result, feel free to check the full examples which are located in `sqls/examples` folder.
+At any time you get lost, or you want to see the final result, feel free to check the full examples which are located in [`sqls/examples`](https://github.com/Canner/vulcan-demo/tree/main/sqls/examples) folder.
 :::
 
 1.  Open `sqls/customer.sql`, it should already contain a SQL query like the below:
@@ -141,7 +143,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
     LIMIT 1
     ```
 
-    Your first API with parameters input is done! Try the API by visiting it:
+    Your first API with a parameter input is done! Try the API by visiting it:
 
     - [localhost:3000/api/customer?name=GABEY](http://localhost:3000/api/customer?name=GABEY)
     - [localhost:3000/api/customer?name=KENDELL](http://localhost:3000/api/customer?name=KENDELL)
@@ -157,7 +159,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
     Check [Display the variable](./api-building/sql-syntax#display-the-variable--dynamic-parameter) for more information.
     :::
 
-2.  Apply a [filter](./api-building/sql-syntax#filters) to the input, we can to `upper` filter to let our input be case-insensitive.
+2.  Apply a [filter](./api-building/sql-syntax#filters) to the input, we can to `upper` filter to coerce input into uppercase.
 
     ```sql
     SELECT * FROM customers
@@ -169,7 +171,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
 
     - [http://localhost:3000/api/customer?name=kendell](http://localhost:3000/api/customer?name=kendell)
 
-3.  Throw error when user not found. We can let our API better by showing an accurate error message.
+3.  Next, let's try to throw an error message when user is not found. We can let our API better by showing explicit error messages.
     First, we need to execute an extra query to know whether the user is in our database:
 
     ```sql
@@ -202,10 +204,10 @@ At any time you get lost, or you want to see the final result, feel free to chec
     LIMIT 1
     ```
 
-    We used the if expression to throw an error when the result equals `0`, VulcanSQL server will stop executing and respond immediately when meeting a `{% error %}` tag, `"CUSTOMER_NOT_FOUND"` is the error code we want to throw.
+    We used the if expression to throw an error when the result equals `0`, VulcanSQL server will stop executing and responding immediately when encounter a `{% error %}` tag, `"CUSTOMER_NOT_FOUND"` is the error code we want to throw the exception.
 
     :::info
-    You can add more information about your errors, e.g. description, HTTP code …etc. Please check [Error response](./api-building/error-response)
+    You can add more information about your errors, e.g. description, HTTP code, etc... Please check [Error responses](./api-building/error-response)
 
     :::
 
@@ -236,8 +238,8 @@ At any time you get lost, or you want to see the final result, feel free to chec
     `{% set %}` tag saved the result from the right side like most programming languages: `var someVar = someVal`, in this example, we saved the query result into `userCount` variable.
 
     :::info
-    Please save only the data you need in template logic, these data will be stored in VulcanSQL server memory and only exist while the template is executing.
-    Please check [Set tag](./api-building/sql-syntax#set-variable) for more information.
+    Please save only the data you need in template logic, these data will be stored in VulcanSQL server memory and only exist while the template is rendering.
+    Please check [`set` variable](./api-building/sql-syntax#set-variable) for more information.
 
     :::
 
@@ -268,7 +270,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
 
     - [http://localhost:3000/api/customer?name=Hayden](http://localhost:3000/api/customer?name=Hayden)
 
-5.  The last step: add a [sample request](./api-building/api-document#set-sampler). VulcanSQL is unable to describe our API responses until we give it a sample request. When you open the [API document](http://localhost:3000/doc#/paths/~1customer/get), you'll see nothing has been described yet.
+5.  The last step: Add a [sample request](./api-building/api-document#set-sampler). VulcanSQL is unable to describe our API responses until we give it a sample request. When you open the [API documentation](http://localhost:3000/doc#/paths/~1customer/get), you'll see nothing has been described yet.
 
     ![api document with empty response](./img/doc-empty-response.png)
 
@@ -281,7 +283,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
     request:
       - fieldName: name
         fieldIn: query
-    sample:
+    sample:                 # Add here!
       profile: demo
       parameters:
         name: 'Liuka'
@@ -291,7 +293,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
 
     ![api document with proper response](./img/doc-response.png)
 
-## Make an API with SQL: customers
+## Build APIs with SQL with `customers` table
 
 1.  Open `sqls/customers.sql`, it should already contain a SQL query like the below:
 
@@ -340,7 +342,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
     - [http://localhost:3000/api/customers?limit=10](http://localhost:3000/api/customers?limit=10)
     - [http://localhost:3000/api/customers?limit=10&offset=10](http://localhost:3000/api/customers?limit=10&offset=10)
 
-2.  Same as we did at the last API, we can add some where conditions from users' inputs:
+2.  Same as we did at the last API, we can add some conditions for users' inputs:
 
     ```sql
     SELECT
@@ -374,7 +376,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
     LIMIT {{ context.params.limit | default(20) }}
     ```
 
-    We use `default` filter here to set the fallback value. When users don't send the parameter, we use a default value.
+    We use `default` filter here to set the fallback value. When users don't send a parameter, we use the default value.
 
     Unlike the last API, we use `{% if %}` expression the determine whether render the SQL or not, the queries in if blocks are only sent when the condition is satisfied.
 
@@ -384,8 +386,8 @@ At any time you get lost, or you want to see the final result, feel free to chec
     - [localhost:3000/api/customers?age_gt=45&gender=m](http://localhost:3000/api/customers?age_gt=45&gender=m)
     - [localhost:3000/api/customers?age_gt=45&gender=m&attrited=yes](http://localhost:3000/api/customers?age_gt=45&gender=m&attrited=yes)
 
-3.  Let's finish the tutorial with a cool feature: render by users' attribute. Assuming we don't want to show the id of the customer to all people because it might be sensitive, we can mask it when the API requester is not an administrator.
-    You can use your own authenticators for your organization, please check [Authenticator](./api-building/access-control/authenticator) for further information. In this tutorial, we use a mock authenticator: You can simply be authenticated by adding `user` parameter, e.g. [localhost:3000/api/customers?user=tom](http://localhost:3000/api/customers?user=tom)
+3.  Let's finish the tutorial with a cool feature: Render by users' attribute. Assuming we don't want to show the id of the customer to all people because it might be sensitive, we can mask it when the API requester is not an administrator.
+    You can use your own authenticators for your organization, please check [Authenticator section](./api-building/access-control/authenticator) for further information. In this tutorial, we use a mock authenticator: You can simply be authenticated by adding `user` parameter, e.g. [localhost:3000/api/customers?user=tom](http://localhost:3000/api/customers?user=tom)
     We've set two users and their groups in the config:
 
     ```yaml
@@ -397,7 +399,7 @@ At any time you get lost, or you want to see the final result, feel free to chec
         group: admin
     ```
 
-    Now we want to mask the id column when the user's attribute is not `admin`:
+    Now we want to mask the id column when the user's attribute is not an `admin`:
 
     ```sql
     SELECT
