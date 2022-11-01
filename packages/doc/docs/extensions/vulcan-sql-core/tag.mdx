@@ -1,0 +1,88 @@
+# Tag
+
+A tag is something enclosed by `{%` and `%}`, it often converts the content starts from `{% xxx %}` to `{% endxxx %}` to some sql statements. For example:
+
+```sql
+SELECt * FROM users
+{% if context.user.attr.name != 'admin' %}
+LIMIT 10
+{% endif %}
+```
+
+The `if` tag renders `LIMIT 10` only when user is not admin.
+
+You can create custom tags with two methods:
+
+## Create custom tags with function extensions
+
+### How functional tag works
+
+Functional tag is an async function that accepts some arguments and the content enclosed by it and returns a snippet (pure string) to replace the sql statement.
+
+For example, you can write a simple custom tag to add prefix:
+
+```ts
+import { createTagExtension, FunctionalTag } from '@vulcan-sql/core';
+
+const PrefixFunctionalTag: FunctionalTag = async ({ sql }) => {
+  return `vulcan-sql-${sql}`;
+};
+
+export const PrefixTag = createTagExtension('prefix', PrefixFunctionalTag);
+```
+
+```sql
+SELECT {% prefix %} id {% endprefix %} FROM users;
+-- Result: SELECT vulcan-sql-id FROM users;
+```
+
+### FunctionalTagOptions
+
+This is the interface of the argument of FunctionTag, it contains the following properties:
+
+- sql: The sql statement enclosed by the tag. For example: `id` of the following template:
+
+  ```sql
+  SELECT
+  {% prefix %}
+  // highlight-next-line
+  id
+  {% endprefix %}
+  FROM users;
+  ```
+
+- args: The arguments passed into the tag. For example: `{len: 3, str: "xxxx"}` in the following template:
+  ```sql
+  SELECT
+  // highlight-next-line
+  {% prefix len=3 str='xxxx' %}
+  id
+  {% endprefix %}
+  FROM users;
+  ```
+- metadata: The metadata of this request. e.g. profile name, user attributes ...etc.
+
+### Example
+
+:::info
+You can check the [demo repository](https://github.com/Canner/vulcan-sql-extension-demo/blob/main/extensions/functional-tag/src/mask2.ts) for the full code.
+
+:::
+
+```ts showLineNumbers
+import { createTagExtension, FunctionalTag } from '@vulcan-sql/core';
+
+const Mask2FunctionalTag: FunctionalTag = async ({ args, sql }) => {
+  let { len = 3, padding = 5 } = args;
+
+  let paddingString = '';
+  while (padding--) paddingString += 'x';
+  return `CONCAT(SUBSTR(${sql}, 0, ${len + 1}), '${paddingString}')`;
+};
+
+export const Mask2Tag = createTagExtension('mask', Mask2FunctionalTag);
+```
+
+## Create custom tags with TagBuilder and TagRunner
+
+If function extensions don't fit your requirements, you can use [TagBuilder](./tag/tag-builder) and [TagRunner](./tag/tag-runner) instead, please see the correcsponding document.

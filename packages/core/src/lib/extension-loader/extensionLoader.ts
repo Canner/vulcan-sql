@@ -9,11 +9,10 @@ import {
 } from '../../models/extensions/decorators';
 import 'reflect-metadata';
 import { TYPES } from '../../containers/types';
-import { chain, isArray, values } from 'lodash';
+import { flattenElements, ElementEntry } from '../utils';
+import { chain } from 'lodash';
 
 type Extension = ClassType<ExtensionBase>;
-
-export type ExtensionModuleEntry = Extension[] | Record<string, Extension>;
 
 export class ExtensionLoader {
   private extensionRegistry = new Map<
@@ -50,22 +49,22 @@ export class ExtensionLoader {
 
     for (const module of extensionModules) {
       const moduleEntry = (
-        await defaultImport<ExtensionModuleEntry>(module.path)
+        await defaultImport<ElementEntry<Extension>>(module.path)
       )[0];
-      const extensions = this.flattenExtensions(moduleEntry);
+      const extensions = flattenElements<Extension>(moduleEntry);
       extensions.forEach((extension) =>
         this.loadExtension(module.alias, extension)
       );
     }
   }
 
-  public loadInternalExtensionModule(moduleEntry: ExtensionModuleEntry) {
+  public loadInternalExtensionModule(moduleEntry: ElementEntry<Extension>) {
     if (this.bound)
       throw new InternalError(
         `We must load all extensions before call bindExtension function`
       );
 
-    const extensions = this.flattenExtensions(moduleEntry);
+    const extensions = flattenElements<Extension>(moduleEntry);
 
     for (const extension of extensions) {
       const name = Reflect.getMetadata(EXTENSION_NAME_METADATA_KEY, extension);
@@ -135,10 +134,5 @@ export class ExtensionLoader {
       this.extensionRegistry.set(extensionType, []);
 
     this.extensionRegistry.get(extensionType)!.push({ name, extension });
-  }
-
-  private flattenExtensions(moduleEntry: ExtensionModuleEntry): Extension[] {
-    if (isArray(moduleEntry)) return moduleEntry;
-    return values(moduleEntry);
   }
 }
