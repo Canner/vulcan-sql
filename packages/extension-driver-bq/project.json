@@ -1,0 +1,45 @@
+{
+  "root": "packages/extension-driver-bq",
+  "sourceRoot": "packages/extension-driver-bq/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/extension-driver-bq",
+        "main": "packages/extension-driver-bq/src/index.ts",
+        "tsConfig": "packages/extension-driver-bq/tsconfig.lib.json",
+        "assets": ["packages/extension-driver-bq/*.md"]
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node tools/scripts/publish.mjs extension-driver-bq {args.ver} {args.tag}",
+        "cwd": "dist/packages/extension-driver-bq"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/extension-driver-bq/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/extension-driver-bq"],
+      "options": {
+        "jestConfig": "packages/extension-driver-bq/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
