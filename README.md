@@ -26,10 +26,6 @@ APIs are still the primary programming interface for data consumers to utilize d
 
 VulcanSQL aims to solve that problem by translating SQL into flexible APIs; it is contextual in that it can translate APIs into the corresponding SQL based on different user personas and business contexts.  It is also extendable with custom business logic and complex SQL translation. 
 
-<p align="center">
-  <img src="https://i.imgur.com/dn5kzXC.png" width="800" >
-</p>
-
 ## When use VulcanSQL?
 
 When scaling data usages outside the traditional data team to business users and application developers using APIs. VulcanSQL is the perfect solution for data using in applications.
