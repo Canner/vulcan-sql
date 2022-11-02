@@ -1,4 +1,5 @@
 import { RequestParameter } from '@vulcan-sql/core/models';
+import { isUndefined } from 'lodash';
 
 type PrepareParameterFuncWithoutProfile = {
   (param: Omit<RequestParameter, 'profileName'>): Promise<string>;
@@ -28,6 +29,9 @@ export class Parameterizer implements IParameterizer {
   }
 
   public async generateIdentifier(value: any): Promise<string> {
+    // If there is no value, ignore parameterization.
+    if (isUndefined(value)) return '';
+
     if (this.valueToIdMapping.has(value))
       return this.valueToIdMapping.get(value)!;
     const id = await this.prepare({
