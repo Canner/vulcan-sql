@@ -33,7 +33,7 @@ public async transform(
 This is the interface of the argument of `transform` function, it contains the following properties:
 
 - value: The input value
-- args: The input arguments;
+- args: The input arguments
 - context: The context of this request, we can use this class to access compiler features, e.g. add new parameters ...etc.
   :::info
   We haven't exported the interfaces of the [compiler](https://mozilla.github.io/nunjucks/), so you need to cast this object to `any` type then call the functions directly.
