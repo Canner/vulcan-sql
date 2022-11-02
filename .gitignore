@@ -41,3 +41,6 @@ Thumbs.db
 # testing folder from cli
 my-first-vulcan-project
 test-vulcan-project*
+
+# Local configuration
+.env.local
