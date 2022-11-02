@@ -1,0 +1,70 @@
+# BigQuery
+
+Connect with your bigquery servers via the official [Node.js Driver](https://cloud.google.com/nodejs/docs/reference/bigquery/latest).
+
+## Installation
+
+1. Install package
+
+   ```bash
+   npm i @vulcan-sql/extension-driver-bq
+   ```
+
+   :::info
+   If you run VulcanSQL with Docker, you should use the command `vulcan-install @vulcan-sql/extension-driver-bq` instead.
+
+   :::
+
+2. Update `vulcan.yaml`, and enable the extension.
+
+   ```yaml
+   extensions:
+     ...
+     // highlight-next-line
+     bq: '@vulcan-sql/extension-driver-bq' # Add this line
+   ```
+
+3. Create a new profile in `profiles.yaml` or in your profile files. For example:
+   :::info
+   You can choose one from `keyFilename` or `credentials` to use.
+   For details, please refer to [here](https://cloud.google.com/docs/authentication#service-accounts)
+   :::
+
+wish keyFilename:
+
+```yaml
+- name: bq # profile name
+  type: bq
+  connection:
+    location: ''
+    projectId: 'your-project-id'
+    keyFilename: '/path/to/keyfile.json'
+  allow: '*'
+```
+
+wish credential:
+
+```yaml
+- name: bq # profile name
+  type: bq
+  connection:
+  location: US
+  projectId: 'your-project-id'
+  credential:
+    client_email: vulcan@projectId.iam.gserviceaccount.com
+    private_key: '-----BEGIN PRIVATE KEY----- XXXXX -----END PRIVATE KEY-----\n'
+  allow: '*'
+```
+
+## Connection Configuration
+
+Please check [Interface BigQueryOptions](https://cloud.google.com/nodejs/docs/reference/bigquery/latest/bigquery/bigqueryoptions) and [Google BigQuery: Node.js Client](https://github.com/googleapis/nodejs-bigquery/blob/main/src/bigquery.ts#L173-L244) for further information.
+
+| Name                     | Required | Default | Description                                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------ | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| location                 | N        | US      | Location must match that of the dataset(s) referenced in the query.                                                                                                                                                                                                                                                                                                                               |
+| projectId                | N        |         | The project ID from the Google Developer's Console, e.g. 'grape-spaceship-123'. We will also check the environment variable `GCLOUD_PROJECT` for your project ID. If your app is running in an environment which [supports](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application Application Default Credentials), your project ID will be detected. |
+| keyFilename              | N        |         | Full path to the a .json, .pem, or .p12 key downloaded from the Google Developers Console. If you provide a path to a JSON file, the `projectId` option above is not necessary. NOTE: .pem and .p12 require you to specify the `email` option as well.                                                                                                                                            |
+| credentials              | N        |         | Credentials object.                                                                                                                                                                                                                                                                                                                                                                               |
+| credentials.client_email | N        |         | Your service account.                                                                                                                                                                                                                                                                                                                                                                             |
+| credentials.private_key  | N        |         | Your service account's private key.                                                                                                                                                                                                                                                                                                                                                               |
