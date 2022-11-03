@@ -1,11 +1,11 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Customize Extension
+# Make Extension
 
-Beside use the published extensions, you could also customized extensions by using our base extension components .
+Besides using the published extensions, you could also customize extensions by using our base extension components.
 
-VulcanSQL provide 17 categories of extension to make you write your customized extension and put the base extension component into [@vulcan-sql/core](./vulcan-sql-core), [@vulcan-sql/build](./vulcan-sql-build), [@vulcan-sql/serve](./vulcan-sql-serve) separately.
+VulcanSQL provides 17 categories of extension to make you write your customized extension and put the base extension component into [@vulcan-sql/core](./vulcan-sql-core), [@vulcan-sql/build](./vulcan-sql-build), [@vulcan-sql/serve](./vulcan-sql-serve) separately.
 
 You could customize your extension by extending 17 categories base extension components.
 
@@ -263,13 +263,13 @@ You could use [npm link](https://docs.npmjs.com/cli/v8/commands/npm-link) to lin
 my-extension $ npm link
 ```
 
-Or you could install local extension package by `npm i -g <extension-package-folder>`:
+Or you could install local extension package by `npm i <extension-package-folder>`:
 
 ```bash
-$ npm i -g /Users/<user-name>/Code/my-extension
+$ npm i /Users/<user-name>/Code/my-extension
 ```
 
-After you installed local extension package, set the extension config in `vulcan.yaml`, same like our other extensions:
+After you installed local extension package, set the extension configuration in `vulcan.yaml`, same like our other extensions:
 
 ```yaml
 extensions:
