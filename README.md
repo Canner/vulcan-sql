@@ -18,19 +18,21 @@
 </p>
 
 ## What is VulcanSQL
-> **VulcanSQL is an Analytics API generator** that helps data engineers to build scalable analytics APIs using only SQL without writing any backend code.  
+
+> **VulcanSQL is an Analytics API generator** that helps data engineers to build scalable analytics APIs using only SQL without writing any backend code.
 
 ## Why VulcanSQL?
 
-APIs are still the primary programming interface for data consumers to utilize data in their daily business applications, such as BI, reports, dashboards, spreadsheets, and web applications.  However, data stored in data warehouses are not accessible for those users and tools without an API consumption layer.
+APIs are still the primary programming interface for data consumers to utilize data in their daily business applications, such as BI, reports, dashboards, spreadsheets, and web applications. However, data stored in data warehouses are not accessible for those users and tools without an API consumption layer.
 
-VulcanSQL aims to solve that problem by translating SQL into flexible APIs; it is contextual in that it can translate APIs into the corresponding SQL based on different user personas and business contexts.  It is also extendable with custom business logic and complex SQL translation. 
+VulcanSQL aims to solve that problem by translating SQL into flexible APIs; it is contextual in that it can translate APIs into the corresponding SQL based on different user personas and business contexts. It is also extendable with custom business logic and complex SQL translation.
 
 ## When use VulcanSQL?
 
 When scaling data usages outside the traditional data team to business users and application developers using APIs. VulcanSQL is the perfect solution for data using in applications.
 
 ## Features
+
 - Parameterized SQL into scalable and secure APIs
 - Built-in API access and version control
 - Built-in self-generated API documentation
@@ -40,12 +42,13 @@ When scaling data usages outside the traditional data team to business users and
 
 - PosgreSQL
 - DuckDB
-- Snowflake (WIP)
-- BigQuery (WIP)
+- Snowflake
+- BigQuery
 
 ## How VulcanSQL works?
 
 ### Step 1: Parameterized your SQL.
+
 <p align="center">
   <img src="https://i.imgur.com/2PMrlJC.png" width="600" >
 </p>
@@ -75,64 +78,58 @@ Response
 <details>
   <summary>1. Error Handling</summary>
 
-  If you want to throw errors based on business logic. for example, run a query first, if no data return, throw `404 not found`.
-  
-  ```sql
-  {% req user %}
-  select * from public.users where userName = {{ context.parames.userName }} limit 1;
-  {% endreq %}
-  
-  {% if user.value().length == 0 %}
-    {% error "user not found" %}
-  {% endif %}
-  
-  select * from public.groups where userId = {{ user.value()[0].id }};
-  ```
+If you want to throw errors based on business logic. for example, run a query first, if no data return, throw `404 not found`.
+
+```sql
+{% req user %}
+select * from public.users where userName = {{ context.parames.userName }} limit 1;
+{% endreq %}
+
+{% if user.value().length == 0 %}
+  {% error "user not found" %}
+{% endif %}
+
+select * from public.groups where userId = {{ user.value()[0].id }};
+```
+
 </details>
 
 <details>
   <summary>2. Authorization</summary>
 
-  You can pass in user attributes to achieve user access control. We will build the corresponding SQL on the fly.
-    
-  ```sql
-  select
-    --- masking address if query user is not admin
-    {% if context.user.name == 'ADMIN' %}
-      {% "address" %}
-    {% elif %}
-      {% "masking(address)" %}
-    {% endif %},
-    
-    orderId,
-    amount
-  from orders
+You can pass in user attributes to achieve user access control. We will build the corresponding SQL on the fly.
 
-  --- limit the data to the store user belongs to.
-  where store = {{ context.user.attr.store }}
-  ```
+```sql
+select
+  --- masking address if query user is not admin
+  {% if context.user.name == 'ADMIN' %}
+    {% "address" %}
+  {% elif %}
+    {% "masking(address)" %}
+  {% endif %},
+
+  orderId,
+  amount
+from orders
+
+--- limit the data to the store user belongs to.
+where store = {{ context.user.attr.store }}
+```
+
 </details>
 
 <details>
   <summary>3. Validation</summary>
 
-  You can add a number validator on `userId` input.
+You can add a number validator on `userId` input.
 
-  - SQL
-      ```sql
-      select * from public.users where id = {{ context.params.userId }}
-      ```
-      
-  - Schema
-      ```yaml
-      parameters:
-        userId:
-          in: query
-          validators:  # set your validator here.
-            - name: 'number'
-      ```
+- SQL
+  ```sql
+  select * from public.users where id = {{ context.params.userId }}
+  ```
+- Schema
+`yaml parameters: userId: in: query validators: # set your validator here. - name: 'number' `
 </details>
-
 
 ### Step 2: Build self-serve documentation and catalog
 
@@ -176,6 +173,7 @@ On API catalog page, you can preview data or read from your applications.
 Visit [the documentation](https://vulcansql.com/docs/installation) for installation guide.
 
 ## Demo Screenshot
+
 <p align="center">
   <img src="https://i.imgur.com/j4jcYj1.png" width="800" >
 </p>
@@ -201,10 +199,12 @@ Visit [the documentation](https://vulcansql.com/docs/installation) for installat
 > 🔌 **Connect**: Users will be able to follow the guide and connect from their applications.
 
 ## Community
-* Welcome to our [Discord](https://discord.gg/ztDz8DCmG4) to give us feedback!
-* If any issues, please visit [Github Issues](https://github.com/Canner/vulcan-sql/issues)
+
+- Welcome to our [Discord](https://discord.gg/ztDz8DCmG4) to give us feedback!
+- If any issues, please visit [Github Issues](https://github.com/Canner/vulcan-sql/issues)
 
 ## Special Thanks
+
 <a href="https://vercel.com/?utm_source=vulcan-sql-document&utm_campaign=oss">
   <img src="https://user-images.githubusercontent.com/9553914/193729375-e242584f-95c5-49d4-b064-3892aa427117.svg">
 </a>

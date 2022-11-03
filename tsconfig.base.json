@@ -69,6 +69,9 @@
       "@vulcan-sql/extension-debug-tools": [
         "packages/extension-debug-tools/src/index.ts"
       ],
+      "@vulcan-sql/extension-driver-bq": [
+        "packages/extension-driver-bq/src/index.ts"
+      ],
       "@vulcan-sql/extension-driver-duckdb": [
         "packages/extension-driver-duckdb/src/index.ts"
       ],

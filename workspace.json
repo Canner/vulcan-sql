@@ -7,6 +7,7 @@
     "doc": "packages/doc",
     "extension-dbt": "packages/extension-dbt",
     "extension-debug-tools": "packages/extension-debug-tools",
+    "extension-driver-bq": "packages/extension-driver-bq",
     "extension-driver-duckdb": "packages/extension-driver-duckdb",
     "extension-driver-pg": "packages/extension-driver-pg",
     "extension-driver-snowflake": "packages/extension-driver-snowflake",
