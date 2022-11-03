@@ -6,6 +6,8 @@ import { SanitizerBuilder } from './sanitizerBuilder';
 import { SanitizerRunner } from './sanitizerRunner';
 import { RawBuilder } from './rawBuilder';
 import { RawRunner } from './rawRunner';
+import { VoidFilterBuilder } from './voidFilterBuilder';
+import { VoidFilterRunner } from './voidFIlterRunner';
 
 export default [
   ReqTagBuilder,
@@ -16,4 +18,6 @@ export default [
   SanitizerRunner,
   RawBuilder,
   RawRunner,
+  VoidFilterBuilder,
+  VoidFilterRunner,
 ];

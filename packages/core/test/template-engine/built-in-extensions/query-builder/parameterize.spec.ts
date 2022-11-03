@@ -155,3 +155,19 @@ it('Raw value should be wrapped again when it is assigned to variables and is re
     [['FREDA']]
   );
 });
+
+it('Nothing should be added into binding if the value is undefined', async () => {
+  await queryTest(
+    `{{ context.params.aaaa }}{{ context.params.name }}`,
+    [`$1`],
+    [['freda']]
+  );
+});
+
+it('Nothing should be added into binding if the value had been voided', async () => {
+  await queryTest(
+    `{{ context.params.name | void }}{{ context.params.name }}`,
+    [`$1`],
+    [['freda']]
+  );
+});

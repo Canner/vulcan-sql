@@ -2,6 +2,9 @@
 id: sql-syntax
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # SQL Syntax
 
 With VulcanSQL, you can build the APIs with SQL written in your `.sql` files.
@@ -315,6 +318,57 @@ SELECT {{ array | unique }} # result is 1,2,3,4
 ```
 
 You could also provide an argument `by` for deciding which field/column will operate the unique filter in the list from a variable, you could see the below for-loop expression sample.
+
+### Void Filter
+
+The void filter is the VulcanSQL custom filter which takes your input data into a blackhole. It's useful when you don't want your value to become part of a SQL query. For example, `Array.push` function returns the element you pushed, so the following SQL template will fail to be executed:
+
+<Tabs>
+
+<TabItem value="template" label="SQL Template">
+
+```sql
+{% set arr = [] %}
+{{ arr.push(1) }}
+SELECT {{ arr[0] }}
+```
+
+</TabItem>
+
+<TabItem value="result" label="Result">
+
+```sql
+$1
+SELECT $1
+```
+
+</TabItem>
+
+</Tabs>
+
+You can use this filter to void the result.
+
+<Tabs>
+
+<TabItem value="template" label="SQL Template">
+
+```sql
+{% set arr = [] %}
+{{ arr.push(1) | void }}
+SELECT {{ arr[0] }}
+```
+
+</TabItem>
+
+<TabItem value="result" label="Result">
+
+```sql
+SELECT $1
+```
+
+</TabItem>
+
+</Tabs>
 
 ## Use If-else / for-loop
 
