@@ -4,11 +4,7 @@ Besides built-in extensions, you could also use the published external extension
 
 ## Install extension npm package
 
-VulcanSQL provides some external extension package for you could use it optionally, please see the [@vulcan-sql/](https://www.npmjs.com/search?q=%40vulcan-sql) prefix npm packages.
-
-:::info
-Not including `@vulcan-sql/core`, `@vulcan-sql/build` and `@vulcan-sql/serve` packages, this packages have installed globally when you installing `@vulcan-sql/cli`.
-:::
+VulcanSQL provides some external extension packages for you to use them optionally, please see the [@vulcan-sql/](https://www.npmjs.com/search?q=%40vulcan-sql) prefix npm packages.
 
 ## Declare used extensions
 
@@ -32,12 +28,12 @@ After you define the extension name, use the set the options under extension nam
 ```bash
 
 extension-name1:
-  ... # The config options of the extension-name1
+  ... # The configuration options of the extension-name1
 
 extension-name2:
-  ... # The config options of extension-name2
+  ... # The configuration options of extension-name2
 
-# The config options of core feature and built-in extension
+# The configuration options of core feature and built-in extension
 ...
 ```
 
@@ -53,7 +49,7 @@ dbt:
 
 ## ⚠️ Not all extensions have options
 
-Some extension options maybe rely on internal or built-extensions config options and set options under internal or built-extensions config options. We should check each document of the extensions npm package.
+Some extension options may rely on internal or built-extensions configuration options and set options under internal or built-extensions configuration options. We should check each document of the extensions npm package.
 
 For example, if you would like to use `@vulcan-sql/extension-driver-duckdb` it looks like the below:
 
@@ -73,27 +69,4 @@ connection:
   log-queries: true
   log-parameters: true
 allow: '*'
-```
-
-Or define it directly under the `profiles` config options of built-in extensions with `extensions` options in the project config:
-
-```yaml
-# vulcan.yaml
-
-# other config options core feature
----
-extensions:
-  duckdb: '@vulcan-sql/extension-driver-duckdb'
-
-profiles:
-  - name: duck
-    type: duckdb
-    connection:
-      persistent-path: ./test-data/moma.db
-      log-queries: true
-      log-parameters: true
-    allow: '*'
-
----
-# other config options built-in extensions
 ```
