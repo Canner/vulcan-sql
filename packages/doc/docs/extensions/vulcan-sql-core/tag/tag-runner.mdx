@@ -1,0 +1,93 @@
+import UseFunctionalTag from './_use_functional_tag.mdx';
+
+# TagRunner
+
+TagRunner extension works together with [TagBuilder](./tag-builder), it renders the content of custom tags with the arguments passed by TagBuilders.
+
+<UseFunctionalTag />
+
+# How TagRunner works
+
+TagRunner `run` function will be called when an [AsyncExtensionNode](./tag-builder#asyncextensionnode) which is created by TagBuilder with the same tag names is executing. We need to implement the run function and return a SQL string to VulcanSQL.
+For example, we can create a TagRunner for `mask` tag:
+
+```ts title="maskTagRunner.ts"
+export class MaskTagRunner extends TagRunner {
+  public tags: string[] = ['mask', 'endmask'];
+
+  public async run({ contentArgs }: TagRunnerOptions): Promise<string> {
+    // Render sqls
+    const sql = (
+      await Promise.all(contentArgs.map((content) => content()))
+    ).join('\n');
+    // Use SafeString to avoid auto escaping
+    return new nunjucks.runtime.SafeString(
+      `CONCAT(SUBSTR(${sql}, 0, 4), 'xxxxxx')`
+    );
+  }
+}
+```
+
+```sql title="user.sql"
+SELECT
+{% mask %}
+id
+{% endmask %}
+FROM users
+```
+
+The SQL sent to warehourses will be:
+
+```sql
+SELECT
+CONCAT(SUBSTR(id, 0, 4), 'xxxxxx')
+FROM users
+```
+
+## TagRunnerOptions
+
+This is the interface of the argument of `run` function, it contains the following properties:
+
+- context: The context of this request, we can use this class to access compiler features, e.g. add new parameters ...etc.
+  :::info
+  We haven't exported the interfaces of the [compiler](https://mozilla.github.io/nunjucks/), so you need to cast this object to `any` type then call the functions directly.
+  Please follow [Issue #117](https://github.com/Canner/vulcan-sql/issues/117).
+
+  :::
+
+- args: The rendered results of arguments nodes, it'll be an array of values.
+- contentArgs: The render functions of content nodes, it can be rendered by calling them.
+- metadata: The metadata of this request. e.g. profile name, user attributes ...etc.
+
+## Example
+
+:::info
+You can check the [demo repository](https://github.com/Canner/vulcan-sql-extension-demo/blob/main/extensions/tag-runner-and-builder/src/maskTagRunner.ts) for the full code.
+
+:::
+
+```ts showLineNumbers
+import { TagRunner, TagRunnerOptions } from '@vulcan-sql/core';
+import * as nunjucks from 'nunjucks';
+
+export class MaskTagRunner extends TagRunner {
+  public tags: string[] = ['mask', 'endmask'];
+
+  public async run({ args, contentArgs }: TagRunnerOptions): Promise<string> {
+    // Get the arguments
+    let { len = 3, padding = 5 } = args[0] as any;
+    // Render sqls
+    const sql = (
+      await Promise.all(contentArgs.map((content) => content()))
+    ).join('\n');
+
+    let paddingString = '';
+    while (padding--) paddingString += 'x';
+
+    // Use SafeString to avoid auto escaping
+    return new nunjucks.runtime.SafeString(
+      `CONCAT(SUBSTR(${sql}, 0, ${len + 1}), '${paddingString}')`
+    );
+  }
+}
+```

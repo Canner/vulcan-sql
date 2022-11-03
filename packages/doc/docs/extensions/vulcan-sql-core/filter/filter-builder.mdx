@@ -1,0 +1,31 @@
+import ASTVisitor from '../partial/_ast-visitor.mdx';
+import UseFunctionalFilter from './_use_functional_filter.mdx';
+
+# FilterBuilder
+
+FilterBuilder extension works together with [FilterRunnger](./filter-runner), in most of time, it does nothing but only claims the filter name.
+
+<UseFunctionalFilter />
+
+## How FilterBuilder works
+
+FilterBuilder extensions have no function to implement, the only things we need to do is claiming the name of the filter.
+
+## Example
+
+:::info
+You can check the [demo repository](https://github.com/Canner/vulcan-sql-extension-demo/blob/main/extensions/filter-runner-and-builder/src/prefixFilterBuilder.ts) for the full code.
+
+:::
+
+```ts
+import { FilterBuilder } from '@vulcan-sql/core';
+
+export class PrefixFilterBuilder extends FilterBuilder {
+  public filterName = 'prefix';
+}
+```
+
+## Advanced: AST Visitor
+
+<ASTVisitor name="FilterBuilder" />

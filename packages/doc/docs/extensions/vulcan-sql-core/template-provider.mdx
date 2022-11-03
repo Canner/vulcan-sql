@@ -1,1 +1,74 @@
+import VulcanIdRequired from '../partial/_vulcan_id_required.mdx';
+
 # TemplateProvider
+
+By default, we read `.sql` files in `sql` folder as our template sources. But if you want to read templates from other sources like databases, s3 ...etc., TemplateProvider can help you.
+
+## How TemplateProvider works
+
+<VulcanIdRequired name="TemplateProvider" />
+
+TemplateProvider only needs you to implement `getTemplate` function, you should return an [AsyncGenerator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncGenerator).
+
+Every entity should have two properties:
+
+- name: The name of this template. VulcanSQL maps this name with [templateSource](../../api-building/configuration/api-schema#templatesource-field).
+- statemnet: The content of this template.
+
+```ts
+@VulcanExtensionId('mock') // Chose a extension id
+export class MockTemplateProvider extends TemplateProvider {
+  public async *getTemplates(): AsyncGenerator<Template> {
+    yield {
+      name: 'template1', // The name of this template
+      statement: 'select 1 as a', // The content of this template
+    };
+    yield {
+      name: 'template2',
+      statement: 'select 2 as a',
+    };
+  }
+}
+```
+
+To enable your template provider, you'll need to change [template.provider](../../api-building/configuration#template-options) to your extension id.
+
+```yaml title="vulcan.yaml"
+name: "vulcan-demo-extensions"
+description: A starter Vulcan project
+version: 0.2.0
+template:
+  // highlight-next-line
+  provider: mock # Change to you extension id
+  folderPath: sqls
+  codeLoader: InMemory
+```
+
+## Example
+
+:::info
+You can check the [demo repository](https://github.com/Canner/vulcan-sql-extension-demo/blob/main/extensions/template-provider/src/mockTemplateProvider.ts) for the full code.
+
+:::
+
+```ts showLineNumbers
+import {
+  Template,
+  TemplateProvider,
+  VulcanExtensionId,
+} from '@vulcan-sql/core';
+
+@VulcanExtensionId('mock')
+export class MockTemplateProvider extends TemplateProvider {
+  public async *getTemplates(): AsyncGenerator<Template> {
+    yield {
+      name: 'filter-runner-and-builder',
+      statement: 'select 1 as a',
+    };
+    yield {
+      name: 'tag-runner-and-builder',
+      statement: 'select 2 as a',
+    };
+  }
+}
+```

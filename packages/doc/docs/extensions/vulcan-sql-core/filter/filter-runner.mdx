@@ -1,0 +1,65 @@
+import UseFunctionalFilter from './_use_functional_filter.mdx';
+
+# FilterRunner
+
+FilterRunner extension works together with [FilterBuilder](./filter-builder), it converts the input data into whatever you like.
+
+<UseFunctionalFilter />
+
+## How FilterRunner works
+
+FilterRunner `transform` function will be called when executing the filters, it'll get the input value and arguments, all we have to do is return a value depends on them.
+
+For example, if we have a template like this:
+
+```sql
+{{ 'id' | prefix(pre='vulcan') }}
+```
+
+Transform function will be called with these arguments:
+
+```ts
+public async transform(
+  options: FilterRunnerTransformOptions<string>
+): Promise<any> {
+  options.value; // 'id'
+  optoins.args; // {pre: 'vulcan'}
+  return `${toptions.args.pre}-${options.value}`
+}
+```
+
+## FilterRunnerTransformOptions
+
+This is the interface of the argument of `transform` function, it contains the following properties:
+
+- value: The input value
+- args: The input arguments
+- context: The context of this request, we can use this class to access compiler features, e.g. add new parameters ...etc.
+  :::info
+  We haven't exported the interfaces of the [compiler](https://mozilla.github.io/nunjucks/), so you need to cast this object to `any` type then call the functions directly.
+  Please follow [Issue #117](https://github.com/Canner/vulcan-sql/issues/117).
+
+  :::
+
+- metadata: The metadata of this request. e.g. profile name, user attributes ...etc.
+
+## Example
+
+:::info
+You can check the [demo repository](https://github.com/Canner/vulcan-sql-extension-demo/blob/main/extensions/filter-runner-and-builder/src/prefixFilterRunner.ts) for the full code.
+
+:::
+
+```ts showLineNumbers
+import { FilterRunner, FilterRunnerTransformOptions } from '@vulcan-sql/core';
+
+export class PrefixFilterRunner extends FilterRunner {
+  public filterName = 'prefix';
+
+  public async transform(
+    options: FilterRunnerTransformOptions<string>
+  ): Promise<any> {
+    return `${options.args?.pre || 'vulcan'}-${options.value}`;
+  }
+}
+```
