@@ -1,6 +1,6 @@
 # Test Extension
 
-After you finish your developed extension, you may would like to test your extension is workable and debug fault.
+After finishing your developed extension, you may would like to test your extension is workable and debug faults.
 
 In this time you could do it by two ways:
 
@@ -8,10 +8,10 @@ In this time you could do it by two ways:
 
 The local testing means you use the extension in the VulcanSQL locally.
 
-You could use [npm link](https://docs.npmjs.com/cli/v8/commands/npm-link) to link extension package locally or install local extension package by `npm i -g <extension-package-folder>`, you could see [Use your customized extensions
-](./customize-extension).
+You could use [npm link](https://docs.npmjs.com/cli/v8/commands/npm-link) to link extension package locally or install local extension package by `npm i <extension-package-folder>`, you could see [Use your customized extensions
+](./make-extension).
 
-After you installed local extension package, set the extension config in `vulcan.yaml`, same like our other extensions:
+After you installed local extension package, set the extension configuration in `vulcan.yaml`, same like our other extensions:
 
 ```yaml
 extensions:
@@ -98,7 +98,7 @@ it('unit test description', async () => {
     {
       // project configuration
       extensions: { <your-extension-name>: path.join(__dirname, '..', 'src') },
-      // extension config options
+      // extension configuration options
       ...
     }
   );
