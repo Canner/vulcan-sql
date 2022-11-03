@@ -1,0 +1,118 @@
+# Test Extension
+
+After finishing your developed extension, you may would like to test your extension is workable and debug faults.
+
+In this time you could do it by two ways:
+
+## Local Testing
+
+The local testing means you use the extension in the VulcanSQL locally.
+
+You could use [npm link](https://docs.npmjs.com/cli/v8/commands/npm-link) to link extension package locally or install local extension package by `npm i <extension-package-folder>`, you could see [Use your customized extensions
+](./make-extension).
+
+After you installed local extension package, set the extension configuration in `vulcan.yaml`, same like our other extensions:
+
+```yaml
+extensions:
+  <extension-name>: <your-linked-extension-package-name>
+
+<extension-name>:
+  # your extension configuration
+  # ...
+```
+
+Finally, test yor extension by `vulcan start` command directly to test it.
+
+:::info
+We suggest to do the local test at least for ensuring your extension is workable.
+:::
+
+## Unit Testing
+
+Second way, you could write **test case** to do [unit testing](https://en.wikipedia.org/wiki/Unit_testing) for your extension.
+
+### Create Test Folder
+
+Please create test folder `test/` and put a test file named `[your-extension-name].spec.ts` in `test/` folder, like below:
+
+```bash
+ - your-extension-folder
+ |
+ | -- src/
+ |  |
+ |  | -- lib/
+ |     |
+ |     | -- your-extension.ts
+ |
+ | -- test/
+    |
+    | -- your-extension.spec.ts # your extension unit test file
+
+```
+
+:::tip
+Refer to source code structure of "@vulcan-sql/extension-xxx" extensions be samples, e.g: [@vulcan-sql/extension-dbt](https://github.com/Canner/vulcan-sql/tree/develop/packages/extension-dbt), [@vulcan-sql/extension-driver-pg](https://github.com/Canner/vulcan-sql/tree/develop/packages/extension-driver-pg).
+:::
+
+Please installed NodeJS (≥ 16), and installed test framework to write unit test, e.g; [Jest](https://jestjs.io/docs/getting-started), [Mocha](https://mochajs.org/).
+
+```js
+it('your unit test description', async () => {
+  ...
+});
+```
+
+### Test Filter and Tag
+
+When need to write unit test for extensions which related to SQL syntax including:
+
+- Filter: [FilterBuilder](./vulcan-sql-core/filter-builder) and [FilterRunner](./vulcan-sql-core/filter-runner)
+- Tag: [TagBuilder](./vulcan-sql-core/tag-builder) and [TagRunner](./vulcan-sql-core/tag-runner)
+
+it not easy to check the extension parsed correctly and ran correct result because it work with VulcanSQL compiler.
+
+Therefore, we prepare the test compiler for making you to test filter and tag extension.
+
+please install `@vulcan-sql/test-utility` package and use the package to test filter and tag extensions.
+
+```bash
+npm i --save-dev @vulcan-sql/test-utility
+```
+
+Write a unit test by importing `getTestCompiler` function:
+
+```js
+const { getTestCompiler } = require('@vulcan-sql/test-utility');
+```
+
+Then use the `getTestCompiler` to do the test, by this steps:
+
+1. Set extension configuration into the `getTestCompiler` functions and getting the `compileAndLoad`, `execute` and `getExecutedQueries` functions.
+2. Compile your filter or tag extension SQL syntax by `compileAndLoad` function, executing the compiled SQL by `execute` function.
+3. Getting result by `getExecutedQueries` function and assert your expected answer.
+
+```js
+it('unit test description', async () => {
+ const { compileAndLoad, execute, getExecutedQueries } = await getTestCompiler(
+    {
+      // project configuration
+      extensions: { <your-extension-name>: path.join(__dirname, '..', 'src') },
+      // extension configuration options
+      ...
+    }
+  );
+
+  // Compile your tag or filter syntax
+  await compileAndLoad('your tag or filter extension sql syntax');
+  await execute({});
+
+  // Get result to assert
+  const queries = await getExecutedQueries();
+  ...
+});
+```
+
+:::tip
+You could refer to the sample unit code of [@vulcan-sql/extension-dbt](https://github.com/Canner/vulcan-sql/blob/develop/packages/extension-dbt/test/dbt.spec.ts)
+:::

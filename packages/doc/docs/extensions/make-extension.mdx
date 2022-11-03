@@ -1,0 +1,282 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Make Extension
+
+Besides using the published extensions, you could also customize extensions by using our base extension components.
+
+VulcanSQL provides 17 categories of extension to make you write your customized extension and put the base extension component into [@vulcan-sql/core](./vulcan-sql-core), [@vulcan-sql/build](./vulcan-sql-build), [@vulcan-sql/serve](./vulcan-sql-serve) separately.
+
+You could customize your extension by extending 17 categories base extension components.
+
+## Create your extension package
+
+1. Create a extension folder and use `npm init` to set package information, e.g: `my-extension`.
+
+   ```bash
+   $ mkdir my-extension
+   $ cd my-extension
+   my-extension $ npm init
+   ```
+
+   Set your package name be `my-first-extensions` in `package.json`
+
+2. Install VulcanSQL base extension packages.
+
+   Because base extension components existed in [@vulcan-sql/core](./vulcan-sql-core), [@vulcan-sql/build](./vulcan-sql-build), [@vulcan-sql/serve](./vulcan-sql-serve) separately.
+
+   You could install these 3 packages all or according to which base extension you need to install its package.
+
+   ```base
+   my-extension $ npm i @vulcan-sql/core @vulcan-sql/build @vulcan-sql/serve
+   ```
+
+## Customize extension
+
+Import the base extension class from the extension package under the `my-extension` folder.
+
+Here is an sample for extending `InputValidator` class to `MyValidator` in the `my-validator` module file:
+
+<Tabs groupId="customize-extension">
+
+<TabItem value="nodejs-commonjs" label="NodeJS with CommonJS">
+
+```js
+const { InputValidator } = require('@vulcan-sql/core');
+
+class MyValidator extends InputValidator {
+  validateSchema(args) {
+    // implemented ...
+  }
+  validateData(value, args) {
+    // implemented ...
+  }
+}
+
+module.exports = { MyValidator };
+```
+
+</TabItem>
+
+<TabItem value="nodejs-es6" label="NodeJS with ES6">
+
+```js
+import { InputValidator } from '@vulcan-sql/core';
+
+export class MyValidator extends InputValidator {
+  validateSchema(args) {
+    // implemented ...
+  }
+  validateData(value, args) {
+    // implemented ...
+  }
+}
+```
+
+</TabItem>
+
+<TabItem value="typescript" label="NodeJS with Typescript">
+
+```ts
+import { InputValidator } from '@vulcan-sql/core';
+
+export class MyValidator extends InputValidator {
+  public validateSchema(args: any) {
+    // implemented ...
+  }
+  public validateData(value: any, args: any) {
+    // implemented ...
+  }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Export customized extensions
+
+1. Create `index` file to be entry:
+
+   <Tabs groupId="create-index">
+
+   <TabItem value="nodejs" label="NodeJS">
+
+   ```bash
+   my-extension $ touch index.js
+   ```
+
+   </TabItem>
+
+   <TabItem value="typescript" label="Typescript">
+
+   ```bash
+   my-extension $ touch index.ts
+   ```
+
+   </TabItem>
+
+   </Tabs>
+
+2. Export your customized extensions:
+
+   You should export the extensions to make VulcanSQL could detect and load it for use.
+
+   <Tabs groupId="export-extension">
+
+   <TabItem value="nodejs" label="NodeJS with CommonJS">
+
+   If you use `module.exports` to export your customized extension class.
+
+   ```js
+   const { MyValidator } = require('./my-validator.js');
+
+   module.exports = MyValidator;
+   ```
+
+   We also support 2 different way to use `module.exports` when you customized multiple extensions in the package:
+
+   1. use `module.exports` extensions by **array type** when you customized multiple same type base extensions:
+
+   ```js
+   const { MyValidator1 } = require('./my-validator1.js');
+   const { MyValidator2 } = require('./my-validator2.js');
+
+   module.exports = [MyValidator1, MyValidator2];
+   ```
+
+   2. use `module.exports` extensions by **key-value type** when you customized multiple different type base extensions:
+
+   ```js
+   const { MyValidator1 } = require('./my-validator1.js');
+   const { MyDataSource1 } = require('./my-data-source1.js');
+   const { MyDataSource2 } = require('./my-data-source2.js');
+
+   module.exports = {
+    validators: MyValidator1;
+    dataSources: [ MyDataSource1, MyDataSource2 ];
+   }
+   ```
+
+   If you use `exports` to export your customized extension class, the `exports` is a `module.exports` alias, so same as above.
+
+   ```js
+   const { MyValidator } = require('./my-validator.js');
+
+   exports = MyValidator;
+   ```
+
+   You could also use `exports` to export multiple same type extensions.
+
+   ```js
+   const { MyValidator1 } = require('./my-validator1.js');
+   const { MyValidator2 } = require('./my-validator2.js');
+
+   exports = [MyValidator1, MyValidator2];
+   ```
+
+   You could also use `exports` to export multiple different type extensions.
+
+   ```js
+   const { MyValidator1 } = require('./my-validator1.js');
+   const { MyDataSource1 } = require('./my-data-source1.js');
+   const { MyDataSource2 } = require('./my-data-source2.js');
+
+   exports = {
+    validators: MyValidator1;
+    dataSources: [ MyDataSource1, MyDataSource2 ];
+   }
+   ```
+
+   </TabItem>
+
+   <TabItem value="typescript" label="NodeJS with Typescript">
+
+   :::info
+   Use NodeJS with ES6 is the same as Typescript.
+   :::
+
+   If you use `export` to export your customized extension class.
+
+   ```ts
+   export { MyValidator } from './my-validator.ts';
+   ```
+
+   You could also use `export` to export multiple same type or different type extensions.
+
+   ```ts
+   export { MyValidator1 } from './my-validator1';
+   export { MyValidator2 } from './my-validator2';
+   ```
+
+   But you could also use `export` with **key-value** type to export multiple different type extensions clearly.
+
+   ```ts
+   import { MyValidator1 } from './my-validator1';
+   import { MyDataSource1 } from './my-data-source1';
+   import { MyDataSource2 } from './my-data-source2';
+
+   export {
+    validators: MyValidator1;
+    dataSources: [ MyDataSource1, MyDataSource2 ];
+   }
+   ```
+
+   If you use `export default` to export your customized extension class.
+
+   ```ts
+   import { MyValidator } from './my-validator';
+
+   export default [MyValidator];
+   ```
+
+   You could also use `export default` to export multiple same type extensions by **array type**.
+
+   ```ts
+   import { MyValidator1 } from './my-validator1';
+   import { MyValidator2 } from './my-validator2';
+
+   export default [MyValidator1, MyValidator2];
+   ```
+
+   You could also use `export default` to export multiple different type extensions by **key-value type**.
+
+   ```ts
+   import { MyValidator1 } from './my-validator1';
+   import { MyDataSource1 } from './my-data-source1';
+   import { MyDataSource2 } from './my-data-source2';
+
+   export default {
+    validators: MyValidator1;
+    dataSources: [ MyDataSource1, MyDataSource2 ];
+   }
+   ```
+
+   </TabItem>
+
+   </Tabs>
+
+## Use your customized extensions
+
+You could use [npm link](https://docs.npmjs.com/cli/v8/commands/npm-link) to link extension package locally:
+
+```bash
+my-extension $ npm link
+```
+
+Or you could install local extension package by `npm i <extension-package-folder>`:
+
+```bash
+$ npm i /Users/<user-name>/Code/my-extension
+```
+
+After you installed local extension package, set the extension configuration in `vulcan.yaml`, same like our other extensions:
+
+```yaml
+extensions:
+  my-extension: 'my-first-extensions' # package name
+
+my-extension:
+  # my extension setting
+```
+
+Then use `vulcan start` to run it.

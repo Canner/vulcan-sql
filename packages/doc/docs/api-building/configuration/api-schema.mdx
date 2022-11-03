@@ -1,10 +1,10 @@
-# Data API Schema
+# API Schema
 
-Data API Schema ( aka API Schema ) is a definition file for creating each Data API endpoint. When using VulcanSQL, you not only write SQL Query files to get results from the data source, but also need to write the Data API Schema, or no API created.
+API Schema is a definition file for creating each Data API endpoint. When using VulcanSQL, you not only write SQL Query files to get results from the data source, but also need to write the API Schema, or no API created.
 
 ## API Schema Structure
 
-Below is a Data API schema structure example, the Data API schema uses YAML format to define it:
+Below is a API schema structure example, the API schema uses YAML format to define it:
 
 ```yaml
 urlPath: /users/:id
@@ -19,7 +19,7 @@ profiles:
   - pg # replace this with your profile name
 ```
 
-VulcanSQL will read the Data API Schema and know what the SQL files mapping it, then auto-generated APIs that map to the user-written SQL files.
+VulcanSQL will read the API Schema and know what the SQL files mapping it, then auto-generated APIs that map to the user-written SQL files.
 
 Below is the introduction of each field in the structure.
 
