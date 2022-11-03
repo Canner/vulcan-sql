@@ -26,13 +26,14 @@ export class BQDataSource extends DataSource<any, BQOptions> {
     const profiles = this.getProfiles().values();
     for (const profile of profiles) {
       this.logger.debug(
-        `Initializing profile: ${profile.name} using pg driver`
+        `Initializing profile: ${profile.name} using bq driver`
       );
       const bigqueryClient = new BigQuery(profile.connection);
       // https://cloud.google.com/nodejs/docs/reference/bigquery/latest
 
       this.bqMapping.set(profile.name, {
         bq: bigqueryClient,
+        options: profile.connection,
       });
 
       // Testing connection
@@ -51,9 +52,7 @@ export class BQDataSource extends DataSource<any, BQOptions> {
       throw new InternalError(`Profile instance ${profileName} not found`);
     }
     const { bq: client, options } = this.bqMapping.get(profileName)!;
-    this.logger.debug(`Acquiring connection from ${profileName}`);
 
-    origin;
     const params: Record<string, any> = {};
     bindParams.forEach((value, key) => {
       params[key.replace('@', '')] = value;
@@ -70,7 +69,6 @@ export class BQDataSource extends DataSource<any, BQOptions> {
 
       const [job] = await client.createQueryJob(queryOptions);
 
-      // All promises MUST fulfilled in this function or we are not able to release the connection when error occurred
       return await this.getResultFromQueryJob(job, options);
     } catch (e: any) {
       this.logger.debug(
@@ -89,8 +87,8 @@ export class BQDataSource extends DataSource<any, BQOptions> {
     options?: BQOptions
   ): Promise<DataResult> {
     const { chunkSize = 100 } = options || {};
-    const jobDataRead = this.jobDataRead.bind(this);
-    const firstChunk = await jobDataRead(queryJob, chunkSize);
+    const fetchJobResult = this.fetchJobResult.bind(this);
+    const firstChunk = await fetchJobResult(queryJob, chunkSize);
 
     // save first chunk in buffer for incoming requests
     let bufferedRows = [...firstChunk.rows];
@@ -101,7 +99,7 @@ export class BQDataSource extends DataSource<any, BQOptions> {
       if (bufferReadIndex >= bufferedRows.length) {
         if (nextQuery == null) return null;
 
-        const fetchData = await jobDataRead(queryJob, chunkSize, nextQuery);
+        const fetchData = await fetchJobResult(queryJob, chunkSize, nextQuery);
         bufferedRows = fetchData.rows;
         nextQuery = fetchData.nextQuery;
         bufferReadIndex = 0;
@@ -122,10 +120,6 @@ export class BQDataSource extends DataSource<any, BQOptions> {
             this.destroy(error);
           });
       },
-      destroy(error: Error | null, cb: (error: Error | null) => void) {
-        // Send done event to notify upstream to release the connection.
-        cb(error);
-      },
       // automatically destroy() the stream when it emits 'finish' or errors. Node > 10.16
       autoDestroy: true,
     });
@@ -141,7 +135,7 @@ export class BQDataSource extends DataSource<any, BQOptions> {
     };
   }
 
-  public async jobDataRead(
+  public async fetchJobResult(
     queryJob: Job,
     chunkSize: number,
     nextQuery?: Query | null | undefined
@@ -151,7 +145,7 @@ export class BQDataSource extends DataSource<any, BQOptions> {
       nextQuery: Query | null | undefined;
       apiResponse: bigquery.IGetQueryResultsResponse | null | undefined;
     }>((resolve, reject) => {
-      return queryJob.getQueryResults(
+      queryJob.getQueryResults(
         nextQuery || { maxResults: chunkSize },
         (err, rows, nextQuery, apiResponse) => {
           if (err) {

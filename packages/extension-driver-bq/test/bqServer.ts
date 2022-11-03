@@ -11,8 +11,8 @@ export class BQflakeServer {
     return {
       name,
       type: 'bq',
-      location: process.env['BQ_LOCATION'],
       connection: {
+        location: process.env['BQ_LOCATION'],
         projectId: process.env['BQ_PROJECT_ID'],
         credentials: {
           client_email: process.env['BQ_CLIENT_EMAIL'],

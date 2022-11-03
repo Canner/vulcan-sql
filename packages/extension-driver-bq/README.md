@@ -19,7 +19,7 @@
 
 3. Create a new profile in `profiles.yaml` or in your profiles' paths.
 
-> ⚠️ Your service account must have the following permissions to successfully execute queries...
+> ⚠️ Your service account must have the following permissions to successfully execute queries.
 >
 > - BigQuery Data Viewer
 > - BigQuery Job User
@@ -32,7 +32,7 @@
     location: US
     # Optional: The max rows we should fetch once.
     chunkSize: 100
-    # The project ID from the Google Developer's Console, e.g. 'grape-spaceship-123'. We will also check the environment variable `GCLOUD_PROJECT` for your project ID. If your app is running in an environment which [supports](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application Application Default Credentials), your project ID will be detected.
+    # The project ID from the Google Developer's Console, e.g. 'grape-spaceship-123'. We will also check the environment variable `GCLOUD_PROJECT` for your project ID. If your app is running in an environment which [supports](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application) Application Default Credentials), your project ID will be detected.
     projectId: 'your-project-id'
     # Full path to the a .json, .pem, or .p12 key downloaded from the Google Developers Console. If you provide a path to a JSON file, the `projectId` option above is not necessary. NOTE: .pem and .p12 require you to specify the `email` option as well.
     keyFilename: '/path/to/keyfile.json'

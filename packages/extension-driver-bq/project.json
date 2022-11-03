@@ -3,19 +3,38 @@
   "sourceRoot": "packages/extension-driver-bq/src",
   "targets": {
     "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts extension-driver-bq"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "tsc"
+        }
+      ]
+    },
+    "tsc": {
       "executor": "@nrwl/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/extension-driver-bq",
         "main": "packages/extension-driver-bq/src/index.ts",
         "tsConfig": "packages/extension-driver-bq/tsconfig.lib.json",
-        "assets": ["packages/extension-driver-bq/*.md"]
-      }
+        "assets": ["packages/extension-driver-bq/*.md"],
+        "buildableProjectDepsInPackageJsonType": "dependencies"
+      },
+      "dependsOn": [
+        {
+          "projects": "dependencies",
+          "target": "build"
+        }
+      ]
     },
     "publish": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "node tools/scripts/publish.mjs extension-driver-bq {args.ver} {args.tag}",
+        "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
         "cwd": "dist/packages/extension-driver-bq"
       },
       "dependsOn": [

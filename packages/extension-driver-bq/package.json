@@ -15,8 +15,8 @@
     "data-warehouse",
     "data-lake",
     "api-builder",
-    "postgres",
-    "pg"
+    "bigquery",
+    "bq"
   ],
   "repository": {
     "type": "git",
