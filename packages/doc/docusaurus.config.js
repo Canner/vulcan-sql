@@ -125,6 +125,7 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      image: 'img/vulcan-sql-og.png',
     }),
 
   plugins: [
