@@ -70,6 +70,11 @@ const config = {
             label: 'Community',
           },
           {
+            href: 'https://twitter.com/vulcansql',
+            label: 'Twitter',
+            position: 'right',
+          },
+          {
             href: 'https://github.com/Canner/vulcan-sql',
             label: 'GitHub',
             position: 'right',
@@ -106,6 +111,10 @@ const config = {
               {
                 label: 'Discord',
                 href: 'https://discord.gg/ztDz8DCmG4',
+              },
+              {
+                label: 'Twitter',
+                href: 'https://twitter.com/vulcansql',
               },
             ],
           },
