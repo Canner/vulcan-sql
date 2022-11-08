@@ -24,6 +24,8 @@
 
 > **VulcanSQL is an Analytics API generator** that helps data engineers to build scalable analytics APIs using only SQL without writing any backend code.
 
+![overview of VulcanSQL](https://imgur.com/eKYhqTO.png)
+
 ## Why VulcanSQL?
 
 APIs are still the primary programming interface for data consumers to utilize data in their daily business applications, such as BI, reports, dashboards, spreadsheets, and web applications. However, data stored in data warehouses are not accessible for those users and tools without an API consumption layer.

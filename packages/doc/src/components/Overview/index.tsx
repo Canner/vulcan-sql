@@ -7,8 +7,7 @@ const featureList = [
   {
     icon: require('@site/static/img/feature-1-icon.svg').default,
     title: 'Build APIs from SQL',
-    description:
-      'Use only SQL to build your scalable and flexible APIs.',
+    description: 'Use only SQL to build your scalable and flexible APIs.',
   },
   {
     icon: require('@site/static/img/feature-2-icon.svg').default,
@@ -45,7 +44,7 @@ export default function Overview(): JSX.Element {
         Get started now
       </Link>
       <div className="container">
-        <img src={OverviewImageUrl} />
+        <img src={OverviewImageUrl} alt="Overview of VulcanSQL" />
         <div className={`row ${styles.featureContainer}`}>
           {featureList.map((feature) => (
             <div
