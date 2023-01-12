@@ -81,6 +81,7 @@ VulcanSQL use the [Nunjucks](https://mozilla.github.io/nunjucks/templating.html#
     - Set the dynamic parameter to the variable by `set`.
     - Define a [SQL Builder](./predefined-queries) feature.
     - Define the Main builder.
+    - Dynamic Data Masking feature by `masking` tag.
 
 In the `{% ... %}`, you could write **Python language syntax** code, because the [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) is based on [Jinja2](https://jinja.palletsprojects.com/en/3.1.x/) and it is a Python package.
 
@@ -165,7 +166,7 @@ Below are some examples:
 {% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
 ---
 # Sample 2: set dynamic parameter
-`{% set someVar = context.params.age %}
+{% set someVar = context.params.age %}
 ```
 
 ## Display the variable / dynamic parameter
@@ -369,6 +370,50 @@ SELECT $1
 </TabItem>
 
 </Tabs>
+
+## Dynamic Data Masking
+
+Dynamic Data Masking is a Column-level security feature, it could limit exposure of sensitive data.
+
+### Using `masking` tag
+
+You can use the masking tag with `{% ... %}` , the syntax like the below:
+
+```sql
+-- <masking-function> is 'partial' function
+{% masking <column-name> <masking-function> %}
+```
+
+### Using `partial` function
+
+VulcanSQL provides the `partial` masking function with a custom string, the syntax like the below:
+
+```js
+partial(prefix total number, padding, suffix total number);
+```
+
+Let's see an example, and assuming that we have a `users` table:
+
+The original data like:
+
+| id          | name    |
+| ----------- | ------- |
+| AB1234567CD | Ivan    |
+| EF2345678GH | William |
+
+```sql
+SELECT
+  {% masking id partial(2, 'xxxxxxx', 2) %} as id,
+  name
+FROM users;
+```
+
+We'll get the result below:
+
+| id          | name    |
+| ----------- | ------- |
+| ABxxxxxxxCD | Ivan    |
+| EFxxxxxxxGH | William |
 
 ## Use If-else / for-loop
 
