@@ -18,7 +18,7 @@ it('Data source should be activate without any error when all profiles are valid
   dataSource = new SnowflakeDataSource({}, '', [snow.getProfile('profile1')]);
   // Act, Assert
   await expect(dataSource.activate()).resolves.not.toThrow();
-});
+}, 10000);
 
 it('Data source should throw an error when any of profiles is invalid', async () => {
   // Arrange
