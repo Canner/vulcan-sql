@@ -37,6 +37,7 @@ export class ResponseSampler extends SchemaParserMiddleware {
       {
         parameters: schema.sample.parameters,
         profileName: schema.sample.profile,
+        req: schema.sample?.req,
       },
       // We only need the columns of this query, so we set offset=0 and limit=1 here.
       // Some drivers guess the column types by data, so we should at least query 1 rows.

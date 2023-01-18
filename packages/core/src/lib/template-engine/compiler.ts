@@ -31,6 +31,7 @@ export interface ExecuteContext {
   parameters?: Record<string, any>;
   user?: UserInfo;
   profileName: string;
+  req?: Request;
 }
 
 export interface Compiler {

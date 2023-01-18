@@ -12,7 +12,8 @@ export class RestfulRoute extends BaseRoute {
   public async respond(ctx: KoaContext) {
     const transformed = await this.prepare(ctx);
     const authUser = ctx.state.user;
-    const result = await this.handle(authUser, transformed);
+    const req = ctx.request as unknown as Request;
+    const result = await this.handle(authUser, transformed, req);
     ctx.response.body = {
       data: result.getData(),
       columns: result.getColumns(),

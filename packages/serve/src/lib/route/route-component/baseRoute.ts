@@ -57,7 +57,11 @@ export abstract class BaseRoute implements IRoute {
 
   protected abstract prepare(ctx: KoaContext): Promise<TransformedRequest>;
 
-  protected async handle(user: AuthUserInfo, transformed: TransformedRequest) {
+  protected async handle(
+    user: AuthUserInfo,
+    transformed: TransformedRequest,
+    req: Request
+  ) {
     const { reqParams, pagination } = transformed;
     // could template name or template path, use for template engine
     const { templateSource, profiles } = this.apiSchema;
@@ -74,6 +78,7 @@ export abstract class BaseRoute implements IRoute {
       {
         parameters: reqParams,
         user,
+        req,
         profileName: profile,
       },
       pagination

@@ -88,6 +88,7 @@ export class ErrorInfo {
 export class Sample {
   profile!: string;
   parameters!: Record<string, any>;
+  req?: Request;
 }
 
 export class APISchema {
