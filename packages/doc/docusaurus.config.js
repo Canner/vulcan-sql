@@ -65,7 +65,7 @@ const config = {
             label: 'Docs',
           },
           {
-            href: 'https://discord.gg/ztDz8DCmG4',
+            href: 'https://discord.gg/dMcfT5vfzr',
             position: 'left',
             label: 'Community',
           },
@@ -110,7 +110,7 @@ const config = {
             items: [
               {
                 label: 'Discord',
-                href: 'https://discord.gg/ztDz8DCmG4',
+                href: 'https://discord.gg/dMcfT5vfzr',
               },
               {
                 label: 'Twitter',
