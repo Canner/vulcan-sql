@@ -25,10 +25,13 @@ import { Container } from 'inversify';
 
 const getSchemaPaths = () =>
   new Promise<string[]>((resolve, reject) => {
-    glob(path.resolve(__dirname, 'schemas', '*.yaml'), (err, paths) => {
-      if (err) return reject(err);
-      resolve(sortBy(paths));
-    });
+    glob(
+      path.resolve(__dirname, 'schemas', '*.yaml').split(path.sep).join('/'),
+      (err, paths) => {
+        if (err) return reject(err);
+        resolve(sortBy(paths));
+      }
+    );
   });
 
 class MockValidator extends InputValidator {
