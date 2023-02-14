@@ -162,9 +162,9 @@ select
 from
   "artists"
 where
-  {{ context.req.method }} = "GET"
+  {{ context.req.method }} = 'GET'
 and
-  {{ context.header.customParameters }} = "custom parameters"
+  {{ context.req.header.customParameters }} = 'custom parameters'
   ......
 ```
 

@@ -29,6 +29,9 @@ import {
 } from '../lib/validators/constraints';
 import { Type } from 'class-transformer';
 import 'reflect-metadata';
+import { Request as KoaRequest } from 'koa';
+
+export type { KoaRequest };
 
 // Pagination mode should always be UPPERCASE because schema parser will transform the user inputs.
 export enum PaginationMode {
@@ -88,7 +91,7 @@ export class ErrorInfo {
 export class Sample {
   profile!: string;
   parameters!: Record<string, any>;
-  req?: Request;
+  req?: KoaRequest;
 }
 
 export class APISchema {

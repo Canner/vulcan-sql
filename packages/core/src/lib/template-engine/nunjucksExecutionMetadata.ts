@@ -1,5 +1,6 @@
 import * as nunjucks from 'nunjucks';
 import { ExecuteContext, UserInfo } from './compiler';
+import { KoaRequest } from '@vulcan-sql/core/models';
 
 export const ReservedContextKeys = {
   CurrentProfileName: 'RESERVED_CURRENT_PROFILE_NAME',
@@ -10,7 +11,7 @@ export class NunjucksExecutionMetadata {
   private profileName: string;
   private parameters: Record<string, any>;
   private userInfo?: UserInfo;
-  private req?: Request;
+  private req?: KoaRequest;
 
   constructor({ parameters = {}, profileName, user, req }: ExecuteContext) {
     this.parameters = parameters;

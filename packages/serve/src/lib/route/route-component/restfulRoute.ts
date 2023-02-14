@@ -1,5 +1,7 @@
 import { BaseRoute, RouteOptions } from './baseRoute';
 import { KoaContext } from '@vulcan-sql/serve/models';
+import { KoaRequest } from '@vulcan-sql/core';
+
 export class RestfulRoute extends BaseRoute {
   public readonly urlPath: string;
 
@@ -12,7 +14,7 @@ export class RestfulRoute extends BaseRoute {
   public async respond(ctx: KoaContext) {
     const transformed = await this.prepare(ctx);
     const authUser = ctx.state.user;
-    const req = ctx.request as unknown as Request;
+    const req = ctx.request as KoaRequest;
     const result = await this.handle(authUser, transformed, req);
     ctx.response.body = {
       data: result.getData(),
