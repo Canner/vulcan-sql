@@ -49,7 +49,10 @@ export class FileTemplateProvider extends TemplateProvider {
   private async getTemplateFilePaths(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       glob(
-        path.resolve(this.options.folderPath!, '**', '*.sql'),
+        path
+          .resolve(this.options.folderPath!, '**', '*.sql')
+          .split(path.sep)
+          .join('/'),
         { nodir: true },
         (err, files) => {
           if (err) return reject(err);

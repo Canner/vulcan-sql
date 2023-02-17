@@ -57,7 +57,10 @@ export class FileSchemaReader extends SchemaReader {
   private async getSchemaFilePaths(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       glob(
-        path.resolve(this.options!.folderPath, '**', '*.yaml'),
+        path
+          .resolve(this.options!.folderPath, '**', '*.yaml')
+          .split(path.sep)
+          .join('/'),
         { nodir: true },
         (err, files) => {
           if (err) return reject(err);
