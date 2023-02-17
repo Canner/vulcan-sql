@@ -9,6 +9,7 @@ import { IRequestValidator } from './requestValidator';
 import { IRequestTransformer, RequestParameters } from './requestTransformer';
 import { IPaginationTransformer } from './paginationTransformer';
 import { Evaluator } from '@vulcan-sql/serve/evaluator';
+import { KoaRequest } from '@vulcan-sql/core';
 
 export interface TransformedRequest {
   reqParams: RequestParameters;
@@ -57,7 +58,11 @@ export abstract class BaseRoute implements IRoute {
 
   protected abstract prepare(ctx: KoaContext): Promise<TransformedRequest>;
 
-  protected async handle(user: AuthUserInfo, transformed: TransformedRequest) {
+  protected async handle(
+    user: AuthUserInfo,
+    transformed: TransformedRequest,
+    req: KoaRequest
+  ) {
     const { reqParams, pagination } = transformed;
     // could template name or template path, use for template engine
     const { templateSource, profiles } = this.apiSchema;
@@ -74,6 +79,7 @@ export abstract class BaseRoute implements IRoute {
       {
         parameters: reqParams,
         user,
+        req,
         profileName: profile,
       },
       pagination

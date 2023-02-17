@@ -1,4 +1,4 @@
-import { DataResult } from '@vulcan-sql/core/models';
+import { DataResult, KoaRequest } from '@vulcan-sql/core/models';
 import { Pagination } from '../../models/pagination';
 
 export interface TemplateLocation {
@@ -31,6 +31,7 @@ export interface ExecuteContext {
   parameters?: Record<string, any>;
   user?: UserInfo;
   profileName: string;
+  req?: KoaRequest;
 }
 
 export interface Compiler {

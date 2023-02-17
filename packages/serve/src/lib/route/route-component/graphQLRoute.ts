@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 import { BaseRoute, RouteOptions } from './baseRoute';
 import { KoaContext } from '@vulcan-sql/serve/models';
+import { KoaRequest } from '@vulcan-sql/core';
 
 export class GraphQLRoute extends BaseRoute {
   public readonly operationName: string;
@@ -18,7 +19,8 @@ export class GraphQLRoute extends BaseRoute {
   public async respond(ctx: KoaContext) {
     const transformed = await this.prepare(ctx);
     const authUser = ctx.state.user;
-    await this.handle(authUser, transformed);
+    const req = ctx.request as KoaRequest;
+    await this.handle(authUser, transformed, req);
     // TODO: get template engine handled result and return response by checking API schema
     return transformed;
   }

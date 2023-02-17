@@ -150,6 +150,26 @@ from app_data.payments
 
 VulcanSQL will provide the feature by enhancing the [nunjucks](https://mozilla.github.io/nunjucks/templating.html#tags) macro function by importing a macro function from other files in the next version 😃
 
+## Useing HTTP Request data in SQL file
+
+You can easily use `{{ context.req.xxx }}` in the sql file to obtain data from the http request or a custom header as a query condition.
+
+the syntax like the below:
+
+```sql
+select
+  *
+from
+  "artists"
+where
+  {{ context.req.method }} = 'GET'
+and
+  {{ context.req.header.customParameters }} = 'custom parameters'
+  ......
+```
+
+For more available parameters, please refer to: [Koajs#Request](https://koajs.com/#request)
+
 ## Set variable
 
 You could set the variable not only primitive value e.g: integer, string, array. But also VulcanSQL support declares a variable by assigning the dynamic parameter to it. Use the `set` tag and `{% ... %}` to declare the variable and set:
