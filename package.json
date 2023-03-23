@@ -61,7 +61,6 @@
     "regenerator-runtime": "0.13.7",
     "semver": "^7.3.7",
     "styled-components": "5.3.5",
-    "styled-system": "^5.1.5",
     "tslib": "^2.3.0",
     "tslog": "^3.3.3",
     "uuid": "^9.0.0"
