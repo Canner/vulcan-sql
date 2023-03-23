@@ -1,7 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { gql, ApolloServer } from 'apollo-server-micro';
 import GraphQLJSON from 'graphql-type-json';
-import { authHelper, getBearerToken } from '../../utils/authHelper'
+import { authHelper, getBearerToken } from '../../utils/authHelper';
 import * as microCors from 'micro-cors';
 const cors = microCors();
 
@@ -67,107 +67,132 @@ const types = {
   BOOLEAN: 'BOOLEAN',
 };
 
-const testingData = [{
-  slug: 'customers',
-  name: 'Taiwan Customer',
-  description: `
+const testingData = [
+  {
+    slug: 'customers',
+    name: 'Taiwan Customer',
+    description: `
     line 1
     line 2
     the customer data we got from ERP.
   `,
-  apiDocUrl: 'https://petstore.swagger.io/#/pet',
-  parameters: [{
-    name: 'name',
-    key: 'name',
-    type: types.STRING,
-    description: 'test',
-    required: false,
-  }, {
-    name: 'age',
-    key: 'age',
-    type: types.NUMBER,
-    description: 'age',
-    required: false,
-  }],
-  columns: [{
-    name: 'name',
-    type: types.STRING,
-    description: 'name',
-  }, {
-    name: 'age',
-    type: types.NUMBER,
-    description: 'age',
-  }, {
-    name: 'address',
-    type: types.STRING,
-    description: 'address',
-  }, {
-    name: 'email',
-    type: types.STRING,
-    description: 'email',
-  }],
-  dataset: [{
-    name: 'test',
-    age: 10,
-    address: 'testing address',
-    email: 'testing@canner.io'
-  }, {
-    name: 'test2',
-    age: 20,
-    address: 'testing address',
-    email: 'testing2@canner.io'
-  }],
-}, {
-  slug: 'orders',
-  name: 'Taiwan Order',
-  description: `
+    apiDocUrl: 'https://petstore.swagger.io/#/pet',
+    parameters: [
+      {
+        name: 'name',
+        key: 'name',
+        type: types.STRING,
+        description: 'test',
+        required: false,
+      },
+      {
+        name: 'age',
+        key: 'age',
+        type: types.NUMBER,
+        description: 'age',
+        required: false,
+      },
+    ],
+    columns: [
+      {
+        name: 'name',
+        type: types.STRING,
+        description: 'name',
+      },
+      {
+        name: 'age',
+        type: types.NUMBER,
+        description: 'age',
+      },
+      {
+        name: 'address',
+        type: types.STRING,
+        description: 'address',
+      },
+      {
+        name: 'email',
+        type: types.STRING,
+        description: 'email',
+      },
+    ],
+    dataset: [
+      {
+        name: 'test',
+        age: 10,
+        address: 'testing address',
+        email: 'testing@canner.io',
+      },
+      {
+        name: 'test2',
+        age: 20,
+        address: 'testing address',
+        email: 'testing2@canner.io',
+      },
+    ],
+  },
+  {
+    slug: 'orders',
+    name: 'Taiwan Order',
+    description: `
     line 1
     line 2
     the order data we got from ERP.
   `,
-  apiDocUrl: 'https://petstore.swagger.io/#/store',
-  parameters: [{
-    name: 'orderkey',
-    key: 'orderkey',
-    type: types.STRING,
-    description: 'orderkey',
-    required: false,
-  }, {
-    name: 'status',
-    key: 'status',
-    type: types.STRING,
-    description: 'status',
-    required: true,
-  }, {
-    name: 'shipDate',
-    key: 'shipDate',
-    type: types.DATETIME,
-    description: 'shipDate',
-    required: true,
-  }],
-  columns: [{
-    name: 'orderkey',
-    type: types.STRING,
-    description: 'orderkey',
-  }, {
-    name: 'status',
-    type: types.STRING,
-    description: 'status',
-  }, {
-    name: 'shipDate',
-    type: types.DATETIME,
-    description: 'shipDate',
-  }],
-  dataset: [{
-    orderkey: '1234',
-    status: 'SHIPPED',
-    shipDate: Date.now(),
-  }, {
-    orderkey: '4556',
-    status: 'PENDING',
-    shipDate: Date.now(),
-  }],
-}];
+    apiDocUrl: 'https://petstore.swagger.io/#/store',
+    parameters: [
+      {
+        name: 'orderkey',
+        key: 'orderkey',
+        type: types.STRING,
+        description: 'orderkey',
+        required: false,
+      },
+      {
+        name: 'status',
+        key: 'status',
+        type: types.STRING,
+        description: 'status',
+        required: true,
+      },
+      {
+        name: 'shipDate',
+        key: 'shipDate',
+        type: types.DATETIME,
+        description: 'shipDate',
+        required: true,
+      },
+    ],
+    columns: [
+      {
+        name: 'orderkey',
+        type: types.STRING,
+        description: 'orderkey',
+      },
+      {
+        name: 'status',
+        type: types.STRING,
+        description: 'status',
+      },
+      {
+        name: 'shipDate',
+        type: types.DATETIME,
+        description: 'shipDate',
+      },
+    ],
+    dataset: [
+      {
+        orderkey: '1234',
+        status: 'SHIPPED',
+        shipDate: Date.now(),
+      },
+      {
+        orderkey: '4556',
+        status: 'PENDING',
+        shipDate: Date.now(),
+      },
+    ],
+  },
+];
 
 const resolvers = {
   JSON: GraphQLJSON,
@@ -177,10 +202,12 @@ const resolvers = {
       return testingData;
     },
     endpoint: (_, args, context) => {
-      return testingData.filter(row => row.slug === args.slug)[0] || null;
+      return testingData.filter((row) => row.slug === args.slug)[0] || null;
     },
     dataset: (_, args, context) => {
-      const data = testingData.filter(row => row.slug === args.endpointSlug)[0];
+      const data = testingData.filter(
+        (row) => row.slug === args.endpointSlug
+      )[0];
       if (!data) return null;
       return {
         data: data.dataset,
@@ -216,9 +243,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await apolloServer.createHandler({
     path: '/api/graphql',
   })(req, res);
-}
+};
 
-export default cors((req: NextApiRequest, res: NextApiResponse) => req.method === 'OPTIONS' ? res.status(200).end() : handler(req, res));
+export default cors((req: NextApiRequest, res: NextApiResponse) =>
+  req.method === 'OPTIONS' ? res.status(200).end() : handler(req, res)
+);
 
 export const config = {
   api: {

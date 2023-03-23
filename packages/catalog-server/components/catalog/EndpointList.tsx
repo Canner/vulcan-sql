@@ -1,111 +1,71 @@
 import styled from 'styled-components';
-import { Card } from 'antd';
-import { ApiOutlined } from '@ant-design/icons';
-import {
-  typography,
-  TypographyProps,
-  space,
-  SpaceProps,
-  layout,
-  LayoutProps,
-  flexbox,
-  FlexboxProps,
-  color,
-  ColorProps,
-} from 'styled-system';
-import Button from '@/components/Button';
+import Path from '@lib/path';
+import { Card, Button } from 'antd';
+import { ApiOutlined } from '@lib/icons';
 import { useRouter } from 'next/router';
-import { useEndpointsQuery } from '@/graphQL/catalog.graphql.generated';
 
-const StyledCard = styled(Card)<SpaceProps>`
-  && {
-    ${space}
-  }
-  .ant-card-body {
-    padding: 0;
-  }
-`;
-
-const CardTitle = styled.div.withConfig({
-  shouldForwardProp: (prop) => !['alignItems'].includes(prop),
-})<LayoutProps & FlexboxProps & SpaceProps>`
-  ${layout}
-  ${flexbox}
-  ${space}
-`;
-
-const StyledApiOutlined = styled(ApiOutlined)<SpaceProps>`
-  ${space}
-`;
-
-const CardTitleText = styled.span<TypographyProps & ColorProps>`
-  ${typography}
-  ${color}
-`;
-
-const CardContent = styled.div<TypographyProps & SpaceProps>`
-  ${typography}
-  ${space}
-`;
-const Content = styled.div<SpaceProps>`
-  ${space}
-`;
-
-const CardFooter = styled.div<SpaceProps>`
-  float: right;
-  ${space}
-`;
-
-const StyledButton = styled(Button)<SpaceProps>`
-  ${space}
-`;
-
-export function EndpointList() {
-  const router = useRouter();
-
-  const { data, loading, error } = useEndpointsQuery();
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Oh no... {error.message}</p>;
-
-  const endpointList = data.endpoints.map(
-    ({ name, description, apiDocUrl, slug }) => {
-      return (
-        <StyledCard key={name} p={2} my={3}>
-          <CardTitle mb={2} display="flex" alignItems="center">
-            <StyledApiOutlined mr={1} />
-            <CardTitleText fontSize={1} fontWeight={2} color="gray">
-              {name}
-            </CardTitleText>
-          </CardTitle>
-
-          <CardContent my={2} fontSize={1} fontWeight={0}>
-            {description || 'No description.'}
-          </CardContent>
-          <CardFooter mt="6">
-            <StyledButton
-              mx={2}
-              onClick={() =>
-                router.push({
-                  pathname: 'catalog/[slug]',
-                  query: { slug },
-                })
-              }
-            >
-              Connect
-            </StyledButton>
-            <StyledButton variant="primary">
-              <a href={apiDocUrl} target="_blank" rel="noopener noreferrer">
-                View API Docs
-              </a>
-            </StyledButton>
-          </CardFooter>
-        </StyledCard>
-      );
+const StyledEndpointList = styled(Card)`
+  .endpointList-footer {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    * + * {
+      margin-left: 16px;
     }
-  );
+  }
+  + .ant-card {
+    margin-top: 24px;
+  }
+`;
 
-  return <Content mt={6}>{endpointList}</Content>;
+const CardTitle = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  font-weight: 700;
+  color: var(--gray-8);
+
+  .anticon {
+    margin-right: 8px;
+  }
+`;
+
+/* eslint-disable-next-line */
+export interface EndpointListProps {
+  name: string;
+  description: string;
+  slug: string;
+  apiDocUrl: string;
 }
 
-export default EndpointList;
+export default function Endpoint(props: EndpointListProps) {
+  const router = useRouter();
+  const {
+    name = 'test',
+    description = 'No description.',
+    slug,
+    apiDocUrl,
+  } = props;
+  return (
+    <StyledEndpointList>
+      <CardTitle>
+        <ApiOutlined />
+        {name}
+      </CardTitle>
+      {description}
+      <div className="endpointList-footer">
+        <Button onClick={() => router.push(`${Path.Catalog}/${slug}`)}>
+          Connect
+        </Button>
+        <Button
+          type="primary"
+          href={apiDocUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View API Docs
+        </Button>
+      </div>
+    </StyledEndpointList>
+  );
+}

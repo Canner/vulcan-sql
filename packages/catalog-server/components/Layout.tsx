@@ -1,106 +1,57 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Avatar, Breadcrumb, Dropdown, Layout as AntdLayout, Menu } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import { upperFirst } from 'lodash';
+import { useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  space,
-  SpaceProps,
-  color,
-  ColorProps,
-  layout,
-  LayoutProps,
-  flexbox,
-  FlexboxProps,
-  border,
-  BorderProps,
-} from 'styled-system';
-import { useAuth } from '@/lib/auth';
+import { Avatar, Dropdown, Layout as AntdLayout, Menu, Row, Col } from 'antd';
+import Breadcrumb from './Breadcrumb';
+import LoginModal from '@components/LoginModal';
+import { useRouter } from 'next/router';
+import { UserOutlined } from '@lib/icons';
+import { useStore } from '@lib/store';
+import Path from '@lib/path';
+import { useAuth } from '@lib/auth';
 
 const { Header, Content } = AntdLayout;
 
-const StyledHeader = styled(Header).withConfig({
-  shouldForwardProp: (prop) =>
-    ![
-      'justifyContent',
-      'alignItems',
-      'borderBottom',
-      'borderBottomColor',
-      'borderBottomStyle',
-    ].includes(prop),
-})<ColorProps & LayoutProps & FlexboxProps & BorderProps>`
-  && {
-    ${layout}
-    ${flexbox}
-    ${color}
-    ${border}
+const StyledAntdLayout = styled(AntdLayout)`
+  min-height: 100vh;
+
+  .ant-layout-header {
+    border-bottom: 1px rgba(0, 0, 0, 0.03) solid;
   }
 `;
 
-const StyledBreadcrumb = styled(Breadcrumb)<SpaceProps>`
-  && {
-    ${space}
-    span {
-      cursor: pointer;
-    }
-  }
+const StyledAvatar = styled(Avatar)`
+  cursor: pointer;
 `;
 
-const StyledAvatar = styled(Avatar)<ColorProps & SpaceProps>`
-  && {
-    ${color}
-    ${space}
-    cursor: pointer;
-  }
-`;
+/* eslint-disable-next-line */
+interface LayoutProps {
+  children: React.ReactNode;
+}
 
-const StyledContent = styled(Content)<ColorProps & SpaceProps & LayoutProps>`
-  && {
-    ${color}
-    ${space}
-    ${layout}
-  }
-`;
-
-type Props = {
-  children?: React.ReactNode;
-};
-
-type PathParts = {
-  name: string;
-  path: string;
-};
-
-const generatePathParts = (pathStr: string): PathParts[] => {
-  const pathWithoutQuery = pathStr.split('?')[0];
-  return pathWithoutQuery
-    .split('/')
-    .filter((v) => v.length > 0)
-    .reduce((pV, cV, currentIndex) => {
-      return [
-        ...pV,
-        {
-          name: cV,
-          path:
-            currentIndex > 0
-              ? `${pV[currentIndex - 1].path || ''}/${cV}`
-              : `/${cV}`,
-        },
-      ];
-    }, []);
-};
-
-const Layout: React.FC<Props> = (props) => {
+export default function Layout(props: LayoutProps) {
+  const { children } = props;
   const router = useRouter();
-  const path: PathParts[] = generatePathParts(router.asPath);
-  const { logout, user } = useAuth();
+  const { user, pathNames, loginModal, setLoginModal } = useStore();
+  const { getProfile, login, logout } = useAuth();
+  const isLogin = Boolean(user);
 
-  const breadcrumbItem = path.map(({ name, path }) => (
-    <Breadcrumb.Item key={path} onClick={() => router.push(`/${path}`)}>
-      {upperFirst(name)}
-    </Breadcrumb.Item>
-  ));
+  useEffect(() => {
+    getProfile({ redirectTo: Path.Login });
+  }, []);
+
+  const onLoginModalClose = () =>
+    setLoginModal({ ...loginModal, visible: false });
+
+  const onLogin = async (data) => {
+    await login(data);
+    onLoginModalClose();
+    router.push(Path.Home);
+  };
+
+  const onLogout = async () => {
+    await logout();
+    router.push(Path.Login);
+  };
 
   const menu = (
     <Menu
@@ -112,17 +63,9 @@ const Layout: React.FC<Props> = (props) => {
         {
           key: 'logout',
           label: user ? (
-            <div onClick={logout}>Log out</div>
+            <div onClick={onLogout}>Log out</div>
           ) : (
-            <div
-              onClick={() =>
-                router.push({
-                  pathname: '/login',
-                })
-              }
-            >
-              Log in
-            </div>
+            <div onClick={() => router.push(Path.Login)}>Log in</div>
           ),
         },
       ]}
@@ -130,33 +73,40 @@ const Layout: React.FC<Props> = (props) => {
   );
 
   return (
-    <AntdLayout>
-      <StyledHeader
-        display="flex"
-        height={48}
-        justifyContent="space-between"
-        alignItems="center"
-        bg="neutralColor1"
-        borderBottom={1}
-        borderBottomColor="borderColor1"
-        borderBottomStyle="solid"
-      >
-        <StyledBreadcrumb my={2}>{breadcrumbItem}</StyledBreadcrumb>
-        <Dropdown overlay={menu} placement="bottomRight">
-          {user ? (
-            <StyledAvatar my={2} color="neutralColor1" bg="primaryColor1">
-              {user.username.charAt(0)}
-            </StyledAvatar>
-          ) : (
-            <Avatar icon={<UserOutlined />} />
-          )}
-        </Dropdown>
-      </StyledHeader>
-      <StyledContent bg="neutralColor1" px="50px" height="calc(100% - 48px)">
-        {props.children}
-      </StyledContent>
-    </AntdLayout>
-  );
-};
+    <StyledAntdLayout>
+      {isLogin && (
+        <Header>
+          <Row wrap={false}>
+            <Col flex={1}>
+              <Breadcrumb pathNames={pathNames} />
+            </Col>
+            <Col>
+              <Dropdown overlay={menu} placement="bottomRight">
+                {user ? (
+                  <StyledAvatar
+                    size={25}
+                    style={{ backgroundColor: 'var(--geekblue-6)' }}
+                  >
+                    {user.username.charAt(0)}
+                  </StyledAvatar>
+                ) : (
+                  <StyledAvatar size={25} icon={<UserOutlined />} />
+                )}
+              </Dropdown>
+            </Col>
+          </Row>
+        </Header>
+      )}
+      <Content style={{ height: '100%', padding: '32px 50px' }}>
+        {children}
 
-export default Layout;
+        <LoginModal
+          canClose={loginModal.canClose}
+          visible={loginModal.visible}
+          onSubmit={onLogin}
+          onClose={onLoginModalClose}
+        />
+      </Content>
+    </StyledAntdLayout>
+  );
+}

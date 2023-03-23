@@ -1,32 +1,25 @@
 import { AppProps } from 'next/app';
-import { ApolloProvider } from '@apollo/client';
 import Head from 'next/head';
-import { ThemeProvider } from 'styled-components';
-// import 'antd/dist/antd.css';
-import { AuthProvider } from '@/lib/auth';
-import apolloClient from '@/lib/apollo';
-import Layout from '@/components/Layout';
-import theme from '@/styles/theme';
-import '@/styles/styles.css';
-require('@/styles/antd-custom.less');
+import Layout from '@components/Layout';
+import apolloClient from '@lib/apollo';
+import { ApolloProvider } from '@apollo/client';
+import StoreProvider from '@lib/store';
 
-function App({ Component, pageProps }: AppProps): JSX.Element {
+require('@styles/main.less');
+
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
         <title>Vulcan</title>
       </Head>
-      <main className="app" style={{ height: '100%' }}>
-        <ApolloProvider client={apolloClient}>
-          <ThemeProvider theme={theme}>
-            <AuthProvider>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </AuthProvider>
-          </ThemeProvider>
-        </ApolloProvider>
-      </main>
+      <ApolloProvider client={apolloClient}>
+        <StoreProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </StoreProvider>
+      </ApolloProvider>
     </>
   );
 }

@@ -12,14 +12,15 @@ const nextConfig = {
   serverRuntimeConfig: {
     // Will only be available on the server side
     tokenSecret: process.env.TOKEN_SECRET || 'tokenSecret',
-    refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || 'refreshTokenSecret',
+    refreshTokenSecret:
+      process.env.REFRESH_TOKEN_SECRET || 'refreshTokenSecret',
   },
   nx: {
     // Set this to true if you would like to to use SVGR
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
-  reactStrictMode: true,
+  reactStrictMode: false,
   ...withAntdLess({
     lessVarsFilePath: themeVariables,
     lessVarsFilePathAppendToEndOfContent: false,

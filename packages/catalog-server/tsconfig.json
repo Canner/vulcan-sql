@@ -15,11 +15,10 @@
     "types": ["jest", "node"],
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["./components/*"],
-      "@/page/*": ["./page/*"],
-      "@/graphQL/*": ["./graphQL/*"],
-      "@/lib/*": ["./lib/*"],
-      "@/styles/*": ["./styles/*"]
+      "@components/*": ["components/*"],
+      "@styles/*": ["styles/*"],
+      "@lib/*": ["lib/*"],
+      "@utils/*": ["utils/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],

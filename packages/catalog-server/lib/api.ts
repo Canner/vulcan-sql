@@ -1,5 +1,13 @@
 import axios from 'axios';
 
+enum API {
+  Login = '/api/auth/login',
+  Logout = '/api/auth/logout',
+  Profile = '/api/auth/profile',
+}
+
+export default API;
+
 const handleError = ({ errorCode, errorMessage }) => {
   const errorCodeMap = {
     Unauthorized() {

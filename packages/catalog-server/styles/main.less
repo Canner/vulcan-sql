@@ -1,0 +1,32 @@
+@import '~antd/dist/antd.less';
+@import './antd-variables.less';
+
+:root {
+  .make-color-variables();
+  --disabled: @disabled-color;
+}
+
+body {
+  min-width: 360px;
+}
+
+// override antd styles
+.ant-table {
+  border: 1px @gray-4 solid;
+  
+  .ant-table-row:last-child .ant-table-cell {
+    border-bottom: none;
+  }
+
+  &.ant-table-empty {
+    border: none;
+
+    .ant-table-cell {
+      border-bottom: none;
+    }
+
+    .ant-empty-normal {
+      margin: 80px 0;
+    }
+  }
+}

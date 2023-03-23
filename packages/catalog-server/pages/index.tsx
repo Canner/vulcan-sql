@@ -8,7 +8,7 @@ export function Index() {
     router.push('./catalog');
   }, [router]);
 
-  return <></>;
+  return null;
 }
 
 export default Index;
