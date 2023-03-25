@@ -40,9 +40,7 @@ type GoogleSpreadsheetModalProps = ModalProps & {
 export default function GoogleSpreadsheetModal(
   props: GoogleSpreadsheetModalProps
 ) {
-  const {
-    codeContent = 'https://api.canner.co/v0/pipes/untitled_pipe_8974.json?token=p.eyJ1IjogIjgyM2Q3ZDNjLWNjNWItNGY2YS04N2E5LWI0YzAxZDA3YTllZCIsICJpZCI6ICI2NmM1MmU2Ni02ZTQwLTQ4N2UtOGEwNC1iZGMzMGJiMDJhMzYifQ.HB-M8Lo09eeGnridyuuRD82okTI9BboWlFGsARJcDt4',
-  } = props;
+  const { codeContent } = props;
   return (
     <StyledGoogleSpreadsheetModal
       title="Connect From Google Spreadsheet "

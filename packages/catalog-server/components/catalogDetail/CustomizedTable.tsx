@@ -1,8 +1,5 @@
 import styled from 'styled-components';
 import { Table, TableProps, ConfigProvider, Empty } from 'antd';
-import { ColumnProps } from 'antd/lib/table';
-import { Parameter } from '@lib/__generated__/types';
-import { SmileOutlined } from '@lib/icons';
 
 const StyledCustomizedTable = styled.div`
   .customizedTable {

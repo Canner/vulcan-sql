@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import API, { axiosInstance } from './api';
-import Path from './path';
 import { useStore } from './store';
 
 interface User {
