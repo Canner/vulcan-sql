@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { gql, ApolloServer } from 'apollo-server-micro';
 import GraphQLJSON from 'graphql-type-json';
-import { authHelper, getBearerToken } from '../../utils/authHelper';
+import {
+  authHelper,
+  getBearerToken,
+} from '@vulcan-sql/catalog-server/utils/authHelper';
 import * as microCors from 'micro-cors';
 const cors = microCors();
 

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { authHelper } from '@utils/authHelper';
-import { HttpError } from '@utils/errorCode';
+import { authHelper } from '@vulcan-sql/catalog-server/utils/authHelper';
+import { HttpError } from '@vulcan-sql/catalog-server/utils/errorCode';
 import * as microCors from 'micro-cors';
 const cors = microCors();
 

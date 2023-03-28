@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Avatar, Dropdown, Layout as AntdLayout, Menu, Row, Col } from 'antd';
 import Breadcrumb from './Breadcrumb';
-import LoginModal from '@components/LoginModal';
+import LoginModal from '@vulcan-sql/catalog-server/components/LoginModal';
 import { useRouter } from 'next/router';
-import { UserOutlined } from '@lib/icons';
-import { useStore } from '@lib/store';
-import Path from '@lib/path';
-import { useAuth } from '@lib/auth';
+import { UserOutlined } from '@vulcan-sql/catalog-server/lib/icons';
+import { useStore } from '@vulcan-sql/catalog-server/lib/store';
+import Path from '@vulcan-sql/catalog-server/lib/path';
+import { useAuth } from '@vulcan-sql/catalog-server/lib/auth';
 
 const { Header, Content } = AntdLayout;
 
@@ -58,7 +58,7 @@ export default function Layout(props: LayoutProps) {
       items={[
         {
           key: 'profile',
-          label: user ? user.username : 'Guest',
+          label: user ? user.name : 'Guest',
         },
         {
           key: 'logout',
@@ -87,7 +87,7 @@ export default function Layout(props: LayoutProps) {
                     size={25}
                     style={{ backgroundColor: 'var(--geekblue-6)' }}
                   >
-                    {user.username.charAt(0)}
+                    {user.name.charAt(0)}
                   </StyledAvatar>
                 ) : (
                   <StyledAvatar size={25} icon={<UserOutlined />} />

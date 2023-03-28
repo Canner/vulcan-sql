@@ -117,7 +117,8 @@
       "@vulcan-sql/serve/types": ["packages/serve/src/containers/types"],
       "@vulcan-sql/serve/utils": ["packages/serve/src/lib/utils/index"],
       "@vulcan-sql/serve/utils/*": ["packages/serve/src/lib/utils/*"],
-      "@vulcan-sql/test-utility": ["packages/test-utility/src/index"]
+      "@vulcan-sql/test-utility": ["packages/test-utility/src/index"],
+      "@vulcan-sql/catalog-server/*": ["packages/catalog-server/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

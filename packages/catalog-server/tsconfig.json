@@ -12,14 +12,7 @@
     "isolatedModules": true,
     "incremental": true,
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["jest", "node"],
-    "baseUrl": ".",
-    "paths": {
-      "@components/*": ["components/*"],
-      "@styles/*": ["styles/*"],
-      "@lib/*": ["lib/*"],
-      "@utils/*": ["utils/*"]
-    }
+    "types": ["jest", "node"]
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],
   "exclude": [

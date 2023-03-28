@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import PageTitle from '@components/PageTitle';
+import PageTitle from '@vulcan-sql/catalog-server/components/PageTitle';
 import EndpointList from './EndpointList';
 
 const StyledCatalog = styled.div``;

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import CatalogComponent from '@components/catalog';
-import { useEndpointsQuery } from 'graphQL/catalog.graphql.generated';
+import CatalogComponent from '@vulcan-sql/catalog-server/components/catalog';
+import { useEndpointsQuery } from '@vulcan-sql/catalog-server/graphQL/catalog.graphql.generated';
 
 /* eslint-disable-next-line */
 export interface CatalogProps {}

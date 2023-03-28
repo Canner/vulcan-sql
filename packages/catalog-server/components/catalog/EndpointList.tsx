@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import Path from '@lib/path';
+import Path from '@vulcan-sql/catalog-server/lib/path';
 import { Card, Button } from 'antd';
-import { ApiOutlined } from '@lib/icons';
+import { ApiOutlined } from '@vulcan-sql/catalog-server/lib/icons';
 import { useRouter } from 'next/router';
 
 const StyledEndpointList = styled(Card)`

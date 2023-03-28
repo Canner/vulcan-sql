@@ -1,4 +1,4 @@
-import { Parameter } from '@lib/__generated__/types';
+import { Parameter } from '@vulcan-sql/catalog-server/lib/__generated__/types';
 import { Button, Form, Input } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import styled from 'styled-components';

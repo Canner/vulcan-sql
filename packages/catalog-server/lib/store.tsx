@@ -1,4 +1,5 @@
-import { LoginModalProps } from '@components/LoginModal';
+import type { LoginModalProps } from '@vulcan-sql/catalog-server/components/LoginModal';
+import type { UserProfile } from '@vulcan-sql/catalog-server/utils/authHelper';
 import {
   createContext,
   Dispatch,
@@ -9,13 +10,9 @@ import {
 
 type LoginModal = Pick<LoginModalProps, 'visible' | 'canClose'>;
 
-type User = {
-  username: string;
-};
-
 interface Store {
-  user: User;
-  setUser: Dispatch<SetStateAction<User>>;
+  user: UserProfile;
+  setUser: Dispatch<SetStateAction<UserProfile>>;
   token: string;
   setToken: Dispatch<SetStateAction<string>>;
   pathNames: string[];

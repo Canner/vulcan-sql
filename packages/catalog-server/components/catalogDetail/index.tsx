@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { Tabs } from 'antd';
-import PageTitle from '@components/PageTitle';
+import PageTitle from '@vulcan-sql/catalog-server/components/PageTitle';
 import QueryResult from './QueryResult';
 import CustomizedTable from './CustomizedTable';
-import { Dataset } from '@lib/__generated__/types';
+import { Dataset } from '@vulcan-sql/catalog-server/lib/__generated__/types';
 
 const StyledCatalogDetail = styled.div``;
 

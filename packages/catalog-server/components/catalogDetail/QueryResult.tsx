@@ -1,11 +1,18 @@
 import { Typography, Button, Badge, Dropdown, Space, Menu } from 'antd';
-import { DownOutlined, FilterOutlined } from '@lib/icons';
+import {
+  DownOutlined,
+  FilterOutlined,
+} from '@vulcan-sql/catalog-server/lib/icons';
 import styled from 'styled-components';
 import { useMemo, useState } from 'react';
 import CustomizedTable from './CustomizedTable';
 import ParameterForm from './ParameterForm';
 import GoogleSpreadsheetModal from './GoogleSpreadsheetModal';
-import { Parameter, Column, Dataset } from '@lib/__generated__/types';
+import {
+  Parameter,
+  Column,
+  Dataset,
+} from '@vulcan-sql/catalog-server/lib/__generated__/types';
 import Link from 'next/link';
 
 const { Title } = Typography;

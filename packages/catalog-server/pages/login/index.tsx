@@ -1,5 +1,5 @@
-import Path from '@lib/path';
-import { useStore } from '@lib/store';
+import Path from '@vulcan-sql/catalog-server/lib/path';
+import { useStore } from '@vulcan-sql/catalog-server/lib/store';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import styled from 'styled-components';

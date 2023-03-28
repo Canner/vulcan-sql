@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import { Form, Input, Modal, Button, Typography } from 'antd';
-import { UserOutlined, LockOutlined } from '@lib/icons';
+import {
+  UserOutlined,
+  LockOutlined,
+} from '@vulcan-sql/catalog-server/lib/icons';
 import Image from 'next/image';
 
 const { Title } = Typography;

@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { HttpError } from '../../../utils/errorCode';
-import { authHelper, getBearerToken } from '../../../utils/authHelper';
+import { HttpError } from '@vulcan-sql/catalog-server/utils/errorCode';
+import {
+  authHelper,
+  getBearerToken,
+} from '@vulcan-sql/catalog-server/utils/authHelper';
 
 export default async function handler(
   req: NextApiRequest,
