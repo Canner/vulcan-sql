@@ -48,8 +48,9 @@ export class AuthSourceNormalizerMiddleware extends BuiltInMiddleware<AuthSource
       [AuthSourceTypes.PAYLOAD]: context.request.body as Record<string, any>,
     };
 
-    // The /auth/token endpoint not need contains auth credentials
-    if (context.path === '/auth/token') return next();
+    // The endpoint not need contains auth credentials
+    const pathsWithoutAuth = ['/auth/token', '/auth/available-types'];
+    if (pathsWithoutAuth.includes(context.path)) return next();
 
     try {
       // normalize auth source to header

@@ -15,8 +15,9 @@ export class AuthCredentialsMiddleware extends BaseAuthMiddleware {
     // return to stop the middleware, if disabled
     if (!this.enabled) return next();
 
-    // The /auth/token endpoint not need contains auth credentials
-    if (context.path === '/auth/token') return next();
+    // The endpoint not need contains auth credentials
+    const pathsWithoutAuth = ['/auth/token', '/auth/available-types'];
+    if (pathsWithoutAuth.includes(context.path)) return next();
 
     // pass current context to auth token for users
     for (const name of Object.keys(this.authenticators)) {

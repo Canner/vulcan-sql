@@ -6,6 +6,7 @@ import {
   KoaContext,
   AuthStatus,
   AuthResult,
+  AuthType,
 } from '@vulcan-sql/serve/models';
 import {
   UserError,
@@ -60,7 +61,7 @@ type UserCredentialsMap = {
  *  It authenticate by passing encode base64 {username}:{password} to authorization
  */
 @VulcanInternalExtension('auth')
-@VulcanExtensionId('basic')
+@VulcanExtensionId(AuthType.Basic)
 export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
   private usersCredentials: UserCredentialsMap = {};
   private options: BasicOptions = {};

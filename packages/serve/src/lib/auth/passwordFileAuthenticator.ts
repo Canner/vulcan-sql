@@ -6,6 +6,7 @@ import {
   KoaContext,
   AuthStatus,
   AuthResult,
+  AuthType,
 } from '@vulcan-sql/serve/models';
 import {
   ConfigurationError,
@@ -43,7 +44,7 @@ type UserCredentialsMap = {
  * Then authenticate by passing encode base64 {username}:{password} to authorization.
  */
 @VulcanInternalExtension('auth')
-@VulcanExtensionId('password-file')
+@VulcanExtensionId(AuthType.PasswordFile)
 export class PasswordFileAuthenticator extends BaseAuthenticator<PasswordFileOptions> {
   private usersCredentials: UserCredentialsMap = {};
   private options: PasswordFileOptions = {};

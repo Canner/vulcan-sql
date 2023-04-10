@@ -5,6 +5,7 @@ import { BuiltInRouteMiddlewares } from '@vulcan-sql/serve/middleware';
 import { BuiltInFormatters } from '@vulcan-sql/serve/response-formatter';
 import { BuiltInAuthenticators } from '../../lib/auth';
 import { BuiltInDocumentRouters } from '../../lib/document-router';
+import { BuiltInCatalogRouters } from '../../lib/catalog-router';
 
 export const extensionModule = (options: ServeConfig) =>
   new AsyncContainerModule(async (bind) => {
@@ -19,6 +20,8 @@ export const extensionModule = (options: ServeConfig) =>
     loader.loadInternalExtensionModule(BuiltInAuthenticators);
     // document router (single module)
     loader.loadInternalExtensionModule(BuiltInDocumentRouters);
+    // catalog router (single module)
+    loader.loadInternalExtensionModule(BuiltInCatalogRouters);
 
     loader.bindExtensions(bind);
   });

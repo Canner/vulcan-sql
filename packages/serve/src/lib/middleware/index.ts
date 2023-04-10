@@ -22,6 +22,7 @@ import { EnforceHttpsMiddleware } from './enforceHttpsMiddleware';
 import { ClassType, ExtensionBase } from '@vulcan-sql/core';
 import { DocRouterMiddleware } from './docRouterMiddleware';
 import { ErrorHandlerMiddleware } from './errorHandlerMIddleware';
+import { CatalogRouterMiddleware } from './catalogRouterMiddleware';
 
 // The array is the middleware running order
 export const BuiltInRouteMiddlewares: ClassType<ExtensionBase>[] = [
@@ -36,4 +37,5 @@ export const BuiltInRouteMiddlewares: ClassType<ExtensionBase>[] = [
   AuthRouterMiddleware,
   ResponseFormatMiddleware,
   DocRouterMiddleware,
+  CatalogRouterMiddleware,
 ];

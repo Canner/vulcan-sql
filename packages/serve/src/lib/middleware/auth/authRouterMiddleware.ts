@@ -32,6 +32,8 @@ export class AuthRouterMiddleware extends BaseAuthMiddleware {
     this.mountTokenEndpoint();
     // mount get /auth/user-profile endpoint
     this.mountUserProfileEndpoint();
+    // mount get /auth/available-types endpoint
+    this.mountAvailableTypesEndpoint();
   }
 
   /* add Getting auth token info endpoint  */
@@ -90,6 +92,18 @@ export class AuthRouterMiddleware extends BaseAuthMiddleware {
         ...(context.state.user as AuthUserInfo),
       };
       return;
+    });
+  }
+
+  // get the available auth types
+  private mountAvailableTypesEndpoint() {
+    this.router.get(`/auth/available-types`, async (context: KoaContext) => {
+      const names = Object.keys(this.authenticators);
+      const availableTypes = names.filter(
+        (name) => !isEmpty(this.options[name])
+      );
+
+      context.body = availableTypes;
     });
   }
 }
