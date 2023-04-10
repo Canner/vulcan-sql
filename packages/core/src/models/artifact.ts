@@ -94,6 +94,15 @@ export class Sample {
   req?: KoaRequest;
 }
 
+export class CacheLayerInfo {
+  cacheTableName!: string;
+  sql!: string;
+  refreshTime?: Record<string, string>;
+  refreshExpression?: Record<string, string>;
+  // index key name -> index column
+  indexes?: Record<string, string>;
+}
+
 export class APISchema {
   // graphql operation name
   operationName!: string;
@@ -113,6 +122,7 @@ export class APISchema {
   pagination?: PaginationSchema;
   sample?: Sample;
   profiles!: Array<string>;
+  cache?:Array<CacheLayerInfo>;
 }
 
 export class BuiltArtifact {
