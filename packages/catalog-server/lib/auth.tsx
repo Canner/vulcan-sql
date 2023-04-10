@@ -1,17 +1,15 @@
+import { createContext, useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import API, { axiosInstance } from './api';
-import { useStore } from './store';
-
-interface User {
-  username: string;
-}
+import type { UserProfile } from '@vulcan-sql/catalog-server/utils/authHelper';
+import Path from './path';
 
 const ACCESS_TOKEN_KEY = 'session';
 const REFRESH_TOKEN_KEY = 'refreshToken';
 
 interface Auth {
-  user: User | null;
-  token: string | null;
+  user: UserProfile;
+  token: string;
   login: ({
     username,
     password,
@@ -24,9 +22,16 @@ interface Auth {
   syncStorageSession: (event: StorageEvent) => void;
 }
 
+const AuthContext = createContext<Auth>(null);
+
 export const useAuth = (): Auth => {
+  return useContext(AuthContext);
+};
+
+const AuthProvider = ({ children }) => {
   const router = useRouter();
-  const { user, setUser, token, setToken } = useStore();
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
   const clearLoginInfo = () => {
     window.localStorage.removeItem(ACCESS_TOKEN_KEY);
@@ -70,12 +75,19 @@ export const useAuth = (): Auth => {
         window.localStorage.getItem(ACCESS_TOKEN_KEY) || token;
       setToken(accessToken);
 
-      const response = await axiosInstance.get(API.Profile, {
+      const { data } = await axiosInstance.get(API.Profile, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      setUser(response.data);
+      setUser(data.profile);
+
+      // go to home page if auth is disabled
+      if (data.profile === null) {
+        if (router.pathname === Path.Login) {
+          router.push(Path.Home);
+        }
+      }
     } catch (e) {
       clearLoginInfo();
       options.redirectTo && router.push(options.redirectTo);
@@ -88,12 +100,16 @@ export const useAuth = (): Auth => {
     }
   };
 
-  return {
-    token,
+  const auth = {
     user,
+    token,
     login,
     logout,
     getProfile,
     syncStorageSession,
   };
+
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 };
+
+export default AuthProvider;

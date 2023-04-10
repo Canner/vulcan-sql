@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Form, Input, Modal, Button, Typography } from 'antd';
+import { Form, Input, Modal, Button, Typography, Alert } from 'antd';
 import {
   UserOutlined,
   LockOutlined,
@@ -13,6 +13,7 @@ export interface LoginModalProps {
   visible: boolean;
   onClose: () => void;
   onSubmit: (data: object) => Promise<void>;
+  hasError: boolean;
   canClose?: boolean;
 }
 
@@ -31,7 +32,7 @@ const ModalHeader = styled.div`
 `;
 
 export function LoginModal(props: LoginModalProps) {
-  const { visible, onClose, onSubmit, canClose = true } = props;
+  const { visible, onClose, onSubmit, canClose = true, hasError } = props;
   return (
     <StyledLoginModal
       open={visible}
@@ -58,6 +59,14 @@ export function LoginModal(props: LoginModalProps) {
         initialValues={{ remember: true }}
         onFinish={onSubmit}
       >
+        {hasError && (
+          <Alert
+            message="Invalid username or password."
+            type="error"
+            style={{ marginBottom: 16 }}
+          />
+        )}
+
         <Form.Item
           name="username"
           rules={[{ required: true, message: 'Please input your Username!' }]}

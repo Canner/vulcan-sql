@@ -1,3 +1,5 @@
+import LoginModal from '@vulcan-sql/catalog-server/components/LoginModal';
+import { useAuth } from '@vulcan-sql/catalog-server/lib/auth';
 import Path from '@vulcan-sql/catalog-server/lib/path';
 import { useStore } from '@vulcan-sql/catalog-server/lib/store';
 import { useRouter } from 'next/router';
@@ -11,13 +13,31 @@ const StyledLogin = styled.div``;
 
 export default function Login(props: LoginProps) {
   const router = useRouter();
-  const { token, loginModal, setLoginModal } = useStore();
+  const { loginModal, setLoginModal } = useStore();
+  const { token, login } = useAuth();
+
+  const setLoginModalState = (data) =>
+    setLoginModal((state) => ({ ...state, ...data }));
+
+  const onLoginModalClose = () => setLoginModalState({ visible: false });
+
+  const onLogin = async (data) => {
+    setLoginModalState({ hasError: false });
+    try {
+      await login(data);
+
+      onLoginModalClose();
+      router.push(Path.Home);
+    } catch (error) {
+      setLoginModalState({ hasError: true });
+    }
+  };
 
   useEffect(() => {
-    setLoginModal({ ...loginModal, visible: true, canClose: false });
+    setLoginModalState({ visible: true, canClose: false });
 
     return () => {
-      setLoginModal({ ...loginModal, canClose: true });
+      setLoginModalState({ canClose: true });
     };
   }, []);
 
@@ -25,5 +45,15 @@ export default function Login(props: LoginProps) {
     if (token) router.push(Path.Home);
   }, [router, token]);
 
-  return <StyledLogin></StyledLogin>;
+  return (
+    <StyledLogin>
+      <LoginModal
+        canClose={loginModal.canClose}
+        hasError={loginModal.hasError}
+        visible={loginModal.visible}
+        onSubmit={onLogin}
+        onClose={onLoginModalClose}
+      />
+    </StyledLogin>
+  );
 }

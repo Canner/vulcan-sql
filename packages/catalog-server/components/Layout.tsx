@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Avatar, Dropdown, Layout as AntdLayout, Menu, Row, Col } from 'antd';
 import Breadcrumb from './Breadcrumb';
-import LoginModal from '@vulcan-sql/catalog-server/components/LoginModal';
 import { useRouter } from 'next/router';
 import { UserOutlined } from '@vulcan-sql/catalog-server/lib/icons';
 import { useStore } from '@vulcan-sql/catalog-server/lib/store';
@@ -31,50 +30,42 @@ interface LayoutProps {
 export default function Layout(props: LayoutProps) {
   const { children } = props;
   const router = useRouter();
-  const { user, pathNames, loginModal, setLoginModal } = useStore();
-  const { getProfile, login, logout } = useAuth();
+  const { user, getProfile, logout } = useAuth();
+  const { pathNames } = useStore();
+
   const isLogin = Boolean(user);
-
-  useEffect(() => {
-    getProfile({ redirectTo: Path.Login });
-  }, []);
-
-  const onLoginModalClose = () =>
-    setLoginModal({ ...loginModal, visible: false });
-
-  const onLogin = async (data) => {
-    await login(data);
-    onLoginModalClose();
-    router.push(Path.Home);
-  };
+  const isHeaderShow = router.pathname !== Path.Login;
 
   const onLogout = async () => {
     await logout();
     router.push(Path.Login);
   };
 
+  useEffect(() => {
+    getProfile({ redirectTo: Path.Login });
+  }, []);
+
   const menu = (
     <Menu
       items={[
         {
           key: 'profile',
-          label: user ? user.name : 'Guest',
+          label: isLogin ? user.name : 'Guest',
         },
-        {
-          key: 'logout',
-          label: user ? (
-            <div onClick={onLogout}>Log out</div>
-          ) : (
-            <div onClick={() => router.push(Path.Login)}>Log in</div>
-          ),
-        },
+        isLogin
+          ? {
+              key: 'logout',
+              label: 'Log out',
+              onClick: onLogout,
+            }
+          : null,
       ]}
     />
   );
 
   return (
     <StyledAntdLayout>
-      {isLogin && (
+      {isHeaderShow && (
         <Header>
           <Row wrap={false}>
             <Col flex={1}>
@@ -82,12 +73,12 @@ export default function Layout(props: LayoutProps) {
             </Col>
             <Col>
               <Dropdown overlay={menu} placement="bottomRight">
-                {user ? (
+                {isLogin ? (
                   <StyledAvatar
                     size={25}
                     style={{ backgroundColor: 'var(--geekblue-6)' }}
                   >
-                    {user.name.charAt(0)}
+                    {user.name.charAt(0).toUpperCase()}
                   </StyledAvatar>
                 ) : (
                   <StyledAvatar size={25} icon={<UserOutlined />} />
@@ -99,13 +90,6 @@ export default function Layout(props: LayoutProps) {
       )}
       <Content style={{ height: '100%', padding: '32px 50px' }}>
         {children}
-
-        <LoginModal
-          canClose={loginModal.canClose}
-          visible={loginModal.visible}
-          onSubmit={onLogin}
-          onClose={onLoginModalClose}
-        />
       </Content>
     </StyledAntdLayout>
   );

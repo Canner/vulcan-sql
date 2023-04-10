@@ -4,9 +4,11 @@ import getConfig from 'next/config';
 import { v1 as uuidv1 } from 'uuid';
 import * as jwt from 'jsonwebtoken';
 import { IncomingHttpHeaders } from 'http';
+import adapter from './vulcanSQLAdapter';
 
 export interface UserProfile {
-  username: string;
+  name: string;
+  attr?: Record<string, string>;
 }
 
 export interface TokenPayload {
@@ -18,6 +20,7 @@ export class AuthHelper {
   private tokenStorage: TokenStorage;
   private tokenSecret: string;
   private refreshTokenSecret: string;
+  private authType: string | null;
 
   constructor(tokenStorage: TokenStorage) {
     this.tokenStorage = tokenStorage;
@@ -26,25 +29,21 @@ export class AuthHelper {
     this.refreshTokenSecret = serverRuntimeConfig.refreshTokenSecret;
   }
 
-  public login = async (combination: {
-    username: string;
-    password: string;
-  }): Promise<{
+  async login(combination: { username: string; password: string }): Promise<{
     accessToken: string;
     refreshToken: string;
     profile: UserProfile;
-  }> => {
+  }> {
     const { username, password } = combination;
-    // authentication with vulcan api server
-    if (username !== 'test' && password !== 'test') {
-      throw errorCode.LOGIN_FAILED;
-    }
 
     // get api token & profile from vulcan api server
-    const apiToken = 'testing-api-token';
-    const profile: UserProfile = {
-      username: 'test',
-    };
+    const authType = await adapter.getAuthType();
+    const apiToken = await adapter.getInitToken({
+      type: authType,
+      username,
+      password,
+    });
+    const profile: UserProfile = await adapter.getUserProfile();
 
     // create a session in storage
     const session = uuidv1();
@@ -55,11 +54,32 @@ export class AuthHelper {
     );
     await this.tokenStorage.setToken(session, apiToken);
     return { accessToken, refreshToken, profile };
-  };
+  }
 
-  public auth = async (
-    accessToken: string
-  ): Promise<{ apiToken: string; session: string; profile: UserProfile }> => {
+  async auth(accessToken: string): Promise<{
+    apiToken: string;
+    session: string;
+    profile: UserProfile;
+  }> {
+    // check auth type
+    if (this.authType === undefined) {
+      try {
+        this.authType = await adapter.getAuthType();
+        console.log('auth type: ', this.authType);
+      } catch (err) {
+        console.log('no auth');
+        this.authType = null;
+      }
+    }
+
+    if (this.authType === null) {
+      return {
+        profile: null,
+        session: null,
+        apiToken: null,
+      };
+    }
+
     try {
       if (!accessToken) {
         throw errorCode.UNAUTHORIZED_REQUEST;
@@ -84,15 +104,13 @@ export class AuthHelper {
       console.log(error);
       throw errorCode.UNAUTHORIZED_REQUEST;
     }
-  };
+  }
 
-  public refreshToken = async (
-    refreshToken: string
-  ): Promise<{
+  public async refreshToken(refreshToken: string): Promise<{
     accessToken: string;
     refreshToken: string;
     profile: UserProfile;
-  }> => {
+  }> {
     const { session, profile } = jwt.verify(
       refreshToken,
       this.refreshTokenSecret
@@ -107,9 +125,9 @@ export class AuthHelper {
       refreshToken: newRefreshToken,
       profile,
     };
-  };
+  }
 
-  public logout = async (accessToken: string): Promise<void> => {
+  public async logout(accessToken: string): Promise<void> {
     try {
       const { session } = jwt.verify(
         accessToken,
@@ -120,7 +138,7 @@ export class AuthHelper {
       console.log(error);
       throw errorCode.UNAUTHORIZED_REQUEST;
     }
-  };
+  }
 }
 
 export const getBearerToken = (headers: IncomingHttpHeaders) => {

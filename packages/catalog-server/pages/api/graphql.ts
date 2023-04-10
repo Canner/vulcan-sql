@@ -5,6 +5,8 @@ import {
   authHelper,
   getBearerToken,
 } from '@vulcan-sql/catalog-server/utils/authHelper';
+import adapter from '@vulcan-sql/catalog-server/utils/vulcanSQLAdapter';
+import { Dataset, Endpoint } from '@vulcan-sql/catalog-server/utils/dataModel';
 import * as microCors from 'micro-cors';
 const cors = microCors();
 
@@ -201,27 +203,20 @@ const resolvers = {
   JSON: GraphQLJSON,
 
   Query: {
-    endpoints: () => {
-      return testingData;
+    endpoints: async (): Promise<Endpoint[]> => {
+      const schemas = await adapter.getSchemas();
+      return schemas.map((schema) => new Endpoint(schema));
     },
-    endpoint: (_, args, context) => {
-      return testingData.filter((row) => row.slug === args.slug)[0] || null;
+    endpoint: async (_, args, context) => {
+      const schema = await adapter.getSchema(args.slug);
+      return new Endpoint(schema);
     },
-    dataset: (_, args, context) => {
-      const data = testingData.filter(
-        (row) => row.slug === args.endpointSlug
-      )[0];
-      if (!data) return null;
-      return {
-        data: data.dataset,
-        metadata: {
-          currentCount: 100,
-          totalCount: 1000,
-        },
-        apiUrl: 'http://localhost/api',
-        csvDownloadUrl: 'http://localhost/csv',
-        jsonDownloadUrl: 'http://localhost/json',
-      };
+    dataset: async (_, args, context) => {
+      const { schema, data } = await adapter.getPreviewData({
+        slug: args.endpointSlug,
+        filter: args.filter,
+      });
+      return new Dataset(schema, data);
     },
   },
 };

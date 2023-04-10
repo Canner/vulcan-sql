@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const accessToken = getBearerToken(headers);
       const { profile } = await authHelper.auth(accessToken);
-      res.status(200).json(profile);
+      res.status(200).json({ profile });
     } catch (error) {
       if (error instanceof HttpError) {
         return res.status(error.status).json({ code: error.code });

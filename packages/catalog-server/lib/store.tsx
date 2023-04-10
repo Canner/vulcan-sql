@@ -1,5 +1,4 @@
 import type { LoginModalProps } from '@vulcan-sql/catalog-server/components/LoginModal';
-import type { UserProfile } from '@vulcan-sql/catalog-server/utils/authHelper';
 import {
   createContext,
   Dispatch,
@@ -8,13 +7,9 @@ import {
   useState,
 } from 'react';
 
-type LoginModal = Pick<LoginModalProps, 'visible' | 'canClose'>;
+type LoginModal = Pick<LoginModalProps, 'visible' | 'canClose' | 'hasError'>;
 
 interface Store {
-  user: UserProfile;
-  setUser: Dispatch<SetStateAction<UserProfile>>;
-  token: string;
-  setToken: Dispatch<SetStateAction<string>>;
   pathNames: string[];
   setPathNames: Dispatch<SetStateAction<string[]>>;
   loginModal: LoginModal;
@@ -24,24 +19,18 @@ interface Store {
 export const StoreContext = createContext<Store>(null);
 
 export const useStore = () => {
-  const Context = useContext(StoreContext);
-  return Context;
+  return useContext(StoreContext);
 };
 
 const StoreProvider = (props: any) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
   const [pathNames, setPathNames] = useState([]);
   const [loginModal, setLoginModal] = useState({
     visible: false,
     canClose: false,
+    hasError: false,
   });
 
   const value = {
-    user,
-    setUser,
-    token,
-    setToken,
     pathNames,
     setPathNames,
     loginModal,

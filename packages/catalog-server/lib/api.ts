@@ -36,11 +36,12 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    const { code } = error?.response?.data ?? '';
-    console.error(' error ', code);
-
     const { code: errorCode, message } = error;
-    console.error(' code, message  ', code, errorCode, message);
+    const { code } = error?.response?.data ?? '';
+    console.error(
+      `${code} ${error.config.baseURL}${error.config.url} ${message}`
+    );
+
     handleError({ errorCode, errorMessage: message });
     return Promise.reject(error);
   }

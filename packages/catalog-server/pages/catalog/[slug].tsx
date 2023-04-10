@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-import CatalogDetailComponent from '@components/catalogDetail';
+import CatalogDetailComponent from '@vulcan-sql/catalog-server/components/catalogDetail';
 import {
   DatasetQueryVariables,
   useDatasetLazyQuery,
   useEndpointLazyQuery,
-} from 'graphQL/catalog.graphql.generated';
+} from '@vulcan-sql/catalog-server/graphQL/catalog.graphql.generated';
+import { useStore } from '@vulcan-sql/catalog-server/lib/store';
 import { useRouter } from 'next/router';
-import { useStore } from '@lib/store';
 import { useEffect } from 'react';
 
 /* eslint-disable-next-line */
@@ -34,7 +34,7 @@ export function CatalogDetail(props: CatalogDetailProps) {
 
   useEffect(() => {
     if (slug) {
-      fetchEndpoint({ variables: { slug } });
+      fetchEndpoint({ variables: { slug: encodeURIComponent(slug) } });
     }
   }, [fetchEndpoint, fetchDataset, slug]);
 
