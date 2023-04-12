@@ -5,6 +5,7 @@ import { ProjectOptions } from '../options';
 import { documentModule, extensionModule, profilesModule } from './modules';
 import {
   artifactBuilderModule,
+  cacheLayerModule,
   executorModule,
   templateEngineModule,
   validatorLoaderModule,
@@ -41,6 +42,10 @@ export class Container {
     );
     const profiles = await profileLoader.getProfiles();
     await this.inversifyContainer.loadAsync(executorModule(profiles));
+
+    await this.inversifyContainer.loadAsync(
+      cacheLayerModule(options['cache-layer'])
+    );
   }
 
   public async unload() {

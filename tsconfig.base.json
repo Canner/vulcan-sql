@@ -43,6 +43,10 @@
       "@vulcan-sql/core/containers": ["packages/core/src/containers/index"],
       "@vulcan-sql/core/data-query": ["packages/core/src/lib/data-query/index"],
       "@vulcan-sql/core/data-query/*": ["packages/core/src/lib/data-query/*"],
+      "@vulcan-sql/core/cache-layer": [
+        "packages/core/src/lib/cache-layer/index"
+      ],
+      "@vulcan-sql/core/cache-layer/*": ["packages/core/src/lib/cache-layer/*"],
       "@vulcan-sql/core/data-source": [
         "packages/core/src/lib/data-source/index"
       ],
@@ -97,7 +101,6 @@
       ],
       "@vulcan-sql/serve/middleware/*": ["packages/serve/src/lib/middleware/*"],
       "@vulcan-sql/serve/models": ["packages/serve/src/models/index"],
-      "@vulcan-sql/serve/options": ["packages/serve/src/options/index"],
       "@vulcan-sql/serve/pagination": [
         "packages/serve/src/lib/pagination/index"
       ],
@@ -108,6 +111,7 @@
       "@vulcan-sql/serve/response-formatter/*": [
         "packages/serve/src/lib/response-formatter/*"
       ],
+
       "@vulcan-sql/serve/route": ["packages/serve/src/lib/route/index"],
       "@vulcan-sql/serve/route/*": ["packages/serve/src/lib/route/*"],
       "@vulcan-sql/serve/types": ["packages/serve/src/containers/types"],

@@ -17,8 +17,8 @@ it('Extension compiled succeed even if exist multiple "cache" scope tags ', asyn
   // Action, Assert
   await expect(
     compiler.compile(`
-  {% cache %}{% endcache %}
-  {% cache %} some statement {% endcache %}
+  {% cache %} some statement1 {% endcache %}
+  {% cache %} some statement2 {% endcache %}
     `)
   ).resolves.not.toThrow();
 });

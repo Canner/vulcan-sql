@@ -5,7 +5,6 @@ export const TYPES = {
   PaginationTransformer: Symbol.for('PaginationTransformer'),
   Route: Symbol.for('Route'),
   RouteGenerator: Symbol.for('RouteGenerator'),
-
   // Application
   VulcanApplication: Symbol.for('VulcanApplication'),
   // Document router

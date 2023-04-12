@@ -104,7 +104,9 @@ export class RefreshExpression {
 }
 
 export class CacheLayerInfo {
+  // the table name kept in cache
   cacheTableName!: string;
+  // the sql to query the data from data source and put in cache by "cacheTableName"
   sql!: string;
   profile!: string;
   refreshTime?: RefreshTime;
@@ -132,7 +134,7 @@ export class APISchema {
   pagination?: PaginationSchema;
   sample?: Sample;
   profiles!: Array<string>;
-  cache?: Array<CacheLayerInfo>;
+  cache!: Array<CacheLayerInfo>;
 }
 
 export class BuiltArtifact {
