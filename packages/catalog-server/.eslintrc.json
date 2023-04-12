@@ -5,7 +5,7 @@
     "next",
     "next/core-web-vitals"
   ],
-  "ignorePatterns": ["!**/*"],
+  "ignorePatterns": ["!**/*", "lib/__generated__/*"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -27,5 +27,8 @@
   ],
   "env": {
     "jest": true
+  },
+  "rules": {
+    "react-hooks/exhaustive-deps": "off"
   }
 }

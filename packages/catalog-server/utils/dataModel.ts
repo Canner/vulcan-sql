@@ -1,5 +1,3 @@
-import { APISchema } from '@vulcan-sql/core';
-
 interface IParameter {
   name: string;
   key: string;
@@ -23,17 +21,59 @@ interface IEndpoint {
   columns: IColumn[];
 }
 
-type APIRawSchema = APISchema & {
+interface RequestSchema {
+  fieldName: string;
+  fieldIn: string;
+  description: string;
+  type: string;
+  validators: Array<{ name: string; args: Record<string, any> }>;
+  constraints: Array<Record<string, any>>;
+}
+
+interface ResponseSchema {
+  name: string;
+  description: string;
+  type: string;
+  required: boolean;
+}
+
+interface Sample {
+  parameters: Record<string, any>;
+  profile: string;
+  req?: Record<string, any>;
+}
+
+interface APISchema {
   sourceName: string;
+  urlPath: string;
+  templateSource: string;
+  request: Array<RequestSchema>;
+  response: Array<ResponseSchema>;
+  errors: Array<{ code: string; message: string }>;
+  description?: string;
+  pagination?: {
+    mode: string;
+    keyName?: string;
+  };
+  sample?: Array<Sample>;
+  profiles?: string[];
+}
+
+type Schema = APISchema & {
   apiDocUrl: string;
+  // host + urlPath
   url: string;
-  apiUrl: string;
+  // urlPath with actual param values
+  actualPath: string;
+  // host + urlPath with actual param values
+  actualUrl: string;
+  // the search key included auth token
   shareKey: string;
 };
 
 export class Endpoint implements IEndpoint {
-  private schema: APIRawSchema;
-  constructor(schema: APIRawSchema) {
+  private schema: Schema;
+  constructor(schema: Schema) {
     this.schema = schema;
   }
 
@@ -89,11 +129,11 @@ interface IDataset {
 }
 
 export class Dataset implements IDataset {
-  private schema: APIRawSchema;
+  private schema: Schema;
   private originalData: any[];
   public data: any[];
 
-  constructor(schema: APIRawSchema, originalData: any[]) {
+  constructor(schema: Schema, originalData: any[]) {
     this.schema = schema;
     this.originalData = originalData;
 
@@ -109,18 +149,33 @@ export class Dataset implements IDataset {
   }
 
   get apiUrl() {
-    return this.schema.apiUrl;
+    return this.schema.actualUrl;
   }
 
   get csvDownloadUrl() {
-    return `${this.schema.apiUrl}.csv`;
+    const formatPath = this.getFormatPath(this.schema.actualPath, '.csv');
+    return `/api/download${formatPath}${this.getShareKey()}`;
   }
 
   get jsonDownloadUrl() {
-    return `${this.schema.apiUrl}.json`;
+    const formatPath = this.getFormatPath(this.schema.actualPath, '.json');
+    return `/api/download${formatPath}${this.getShareKey()}`;
   }
 
   get shareJsonUrl() {
-    return `${this.schema.apiUrl}.json${this.schema.shareKey}`;
+    const formatUrl = this.getFormatPath(this.schema.actualUrl, '.json');
+    return `${formatUrl}${this.getShareKey()}`;
+  }
+
+  private getFormatPath(urlPath, format = '') {
+    const [path, search] = urlPath.split('?');
+    const searchKey = search ? `?${search}` : '';
+    return `${path}${format}${searchKey}`;
+  }
+
+  private getShareKey() {
+    const { shareKey, actualPath } = this.schema;
+    const hasQuery = actualPath.includes('?');
+    return hasQuery ? shareKey.replace('?', '&') : shareKey;
   }
 }

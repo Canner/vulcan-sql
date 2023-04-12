@@ -39,7 +39,7 @@ axiosInstance.interceptors.response.use(
 );
 
 class VulcanSQLAdapter {
-  public getAuthType = async () => {
+  public async getAuthType() {
     try {
       const { data } = await axiosInstance.get(`/auth/available-types`);
       const authType =
@@ -48,18 +48,18 @@ class VulcanSQLAdapter {
     } catch (err) {
       return null;
     }
-  };
+  }
 
-  public getInitToken = async (params: {
+  public async getInitToken(params: {
     type: string;
     username: string;
     password: string;
-  }): Promise<string> => {
+  }): Promise<string> {
     const { data } = await axiosInstance.post(`/auth/token`, params);
     return data.token;
-  };
+  }
 
-  public getUserProfile = async (ctx) => {
+  public async getUserProfile(ctx) {
     try {
       const { data } = await axiosInstance.get(
         `/auth/user-profile`,
@@ -69,15 +69,15 @@ class VulcanSQLAdapter {
     } catch (err) {
       throw errorCode.LOGIN_FAILED;
     }
-  };
+  }
 
-  public getSchemas = async (ctx) => {
+  public async getSchemas(ctx) {
     const { data } = await axiosInstance.get(
       `/catalog/schemas`,
       getAuthorization(ctx)
     );
     return data;
-  };
+  }
 
   public getSchema = async (ctx, slug) => {
     const { data } = await axiosInstance.get(
@@ -87,16 +87,16 @@ class VulcanSQLAdapter {
     return data;
   };
 
-  public getPreviewData = async (
+  public async getPreviewData(
     ctx: any,
     args: {
       slug: string;
       filter: Record<string, string>;
     }
-  ) => {
+  ) {
     const { slug, filter } = args;
     const schema = await this.getSchema(ctx, slug);
-    const url = Object.keys(filter).reduce((result, key) => {
+    const actualPath = Object.keys(filter).reduce((result, key) => {
       if (!filter[key]) return result;
 
       const param = `:${key}`;
@@ -108,14 +108,14 @@ class VulcanSQLAdapter {
         : `${result}${querySymbol}${key}=${filter[key]}`;
     }, `/api${schema.urlPath}`);
 
-    const apiUrl = `${VULCAN_SQL_HOST}${url}`;
-    console.log('apiUrl: ', apiUrl);
-    const { data } = await axiosInstance.get(url, getAuthorization(ctx));
+    const actualUrl = `${VULCAN_SQL_HOST}${actualPath}`;
+    console.log('actualUrl: ', actualUrl);
+    const { data } = await axiosInstance.get(actualPath, getAuthorization(ctx));
     return {
-      schema: { ...schema, apiUrl },
+      schema: { ...schema, actualPath, actualUrl },
       data,
     };
-  };
+  }
 }
 
 export default new VulcanSQLAdapter();

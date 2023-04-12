@@ -20,7 +20,6 @@ export class AuthHelper {
   private tokenStorage: TokenStorage;
   private tokenSecret: string;
   private refreshTokenSecret: string;
-  private authType: string | null;
 
   constructor(tokenStorage: TokenStorage) {
     this.tokenStorage = tokenStorage;
@@ -31,8 +30,7 @@ export class AuthHelper {
 
   async checkAuth() {
     // check auth type
-    this.authType = await adapter.getAuthType();
-    return this.authType;
+    return await adapter.getAuthType();
   }
 
   async login(combination: { username: string; password: string }): Promise<{
@@ -68,10 +66,9 @@ export class AuthHelper {
     session: string;
     profile: UserProfile;
   }> {
-    if (this.authType === undefined) await this.checkAuth();
-
+    const authType = await this.checkAuth();
     // if user not setup auth, return a guest user
-    if (this.authType === null) {
+    if (authType === null) {
       return {
         profile: null,
         session: null,
