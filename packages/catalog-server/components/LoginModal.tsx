@@ -35,7 +35,7 @@ export function LoginModal(props: LoginModalProps) {
   const { visible, onClose, onSubmit, canClose = true, hasError } = props;
   return (
     <StyledLoginModal
-      open={visible}
+      visible={visible}
       onCancel={onClose}
       footer={null}
       width={464}

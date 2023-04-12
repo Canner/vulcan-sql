@@ -1,4 +1,3 @@
-
 export class HttpError extends Error {
   public code: string;
   public status: number;

@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { useMemo, useState } from 'react';
 import CustomizedTable from './CustomizedTable';
 import ParameterForm from './ParameterForm';
-import GoogleSpreadsheetModal from './GoogleSpreadsheetModal';
+import TutorialModal, { TutorialType } from './TutorialModal';
 import {
   Parameter,
   Column,
@@ -99,8 +99,12 @@ export default function QueryResult(props: QueryResultProps) {
     jsonDownloadUrl = '',
     metadata,
   } = dataset;
-  const [googleSpreadsheetVisible, setGoogleSpreadsheetVisible] =
-    useState(false);
+  const [tutorialModalProps, setTutorialModalProps] = useState({
+    type: null,
+    visible: false,
+  });
+  const closeTutorialModal = () =>
+    setTutorialModalProps((state) => ({ ...state, visible: false }));
 
   const tableColumns = useMemo(
     () =>
@@ -157,7 +161,9 @@ export default function QueryResult(props: QueryResultProps) {
         {
           label: (
             <Link href={csvDownloadUrl}>
-              <a target="_blank">Download as CSV</a>
+              <a target="_blank" download>
+                Download as CSV
+              </a>
             </Link>
           ),
           key: 'download-as-csv',
@@ -165,7 +171,9 @@ export default function QueryResult(props: QueryResultProps) {
         {
           label: (
             <Link href={jsonDownloadUrl}>
-              <a target="_blank">Download as JSON</a>
+              <a target="_blank" download>
+                Download as JSON
+              </a>
             </Link>
           ),
           key: 'download-as-json',
@@ -179,21 +187,42 @@ export default function QueryResult(props: QueryResultProps) {
         {
           label: 'Excel',
           key: 'excel',
+          onClick: () => {
+            setTutorialModalProps({
+              type: TutorialType.EXCEL,
+              visible: true,
+            });
+          },
         },
         {
           label: 'Google Spreadsheet',
           key: 'google-spreadsheet',
           onClick: () => {
-            setGoogleSpreadsheetVisible(true);
+            setTutorialModalProps({
+              type: TutorialType.GOOGLE_SPREADSHEET,
+              visible: true,
+            });
           },
         },
         {
           label: 'Zapier',
           key: 'zapier',
+          onClick: () => {
+            setTutorialModalProps({
+              type: TutorialType.ZAPIER,
+              visible: true,
+            });
+          },
         },
         {
           label: 'Retool',
           key: 'retool',
+          onClick: () => {
+            setTutorialModalProps({
+              type: TutorialType.RETOOL,
+              visible: true,
+            });
+          },
         },
       ]}
     />
@@ -260,11 +289,12 @@ export default function QueryResult(props: QueryResultProps) {
         }
       />
 
-      <GoogleSpreadsheetModal
-        open={googleSpreadsheetVisible}
-        codeContent={`=IMPORTDATA("${dataset.csvDownloadUrl}")`}
-        onCancel={() => setGoogleSpreadsheetVisible(false)}
-        onOk={() => setGoogleSpreadsheetVisible(false)}
+      <TutorialModal
+        visible={tutorialModalProps.visible}
+        type={tutorialModalProps.type}
+        codeContent={dataset.shareJsonUrl}
+        onCancel={closeTutorialModal}
+        onOk={closeTutorialModal}
         destroyOnClose={true}
       />
     </StyledQueryResult>

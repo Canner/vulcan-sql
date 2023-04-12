@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { errorCode } from '@vulcan-sql/catalog-server/utils/errorCode';
 
 enum API {
   Login = '/api/auth/login',
@@ -8,20 +9,16 @@ enum API {
 
 export default API;
 
-const handleError = ({ errorCode, errorMessage }) => {
+const handleError = ({ statusCode, errorMessage }) => {
   const errorCodeMap = {
-    Unauthorized() {
+    [errorCode.UNAUTHORIZED_REQUEST.status]() {
       localStorage.clear();
-      window.location.href = '/';
     },
     default() {
-      const event = new CustomEvent('apiErr', {
-        detail: { errorMessage },
-      });
-      window.dispatchEvent(event);
+      //
     },
   };
-  return (errorCodeMap[errorCode] || errorCodeMap['default'])();
+  return (errorCodeMap[statusCode] || errorCodeMap['default'])();
 };
 
 export const axiosInstance = axios.create({
@@ -36,13 +33,13 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    const { code: errorCode, message } = error;
-    const { code } = error?.response?.data ?? '';
+    const { message } = error;
+    const { status: statusCode } = error.response;
+    const { code } = error.response?.data ?? '';
     console.error(
       `${code} ${error.config.baseURL}${error.config.url} ${message}`
     );
-
-    handleError({ errorCode, errorMessage: message });
+    if (code) handleError({ statusCode, errorMessage: message });
     return Promise.reject(error);
   }
 );

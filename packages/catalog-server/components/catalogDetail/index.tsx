@@ -65,7 +65,13 @@ export default function CatalogDetail(props: CatalogDetailProps) {
         onDatasetPreview={onDatasetPreview}
       />
 
-      <Tabs items={tabItems} />
+      <Tabs>
+        {tabItems.map((item) => (
+          <Tabs.TabPane key={item.key} tab={item.label}>
+            {item.children}
+          </Tabs.TabPane>
+        ))}
+      </Tabs>
     </StyledCatalogDetail>
   );
 }

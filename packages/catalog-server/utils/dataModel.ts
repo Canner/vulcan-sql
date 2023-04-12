@@ -28,6 +28,7 @@ type APIRawSchema = APISchema & {
   apiDocUrl: string;
   url: string;
   apiUrl: string;
+  shareKey: string;
 };
 
 export class Endpoint implements IEndpoint {
@@ -54,12 +55,12 @@ export class Endpoint implements IEndpoint {
     return this.schema.request.map((param) => {
       return {
         name: param.fieldName,
+        type: param.type,
         key: param.fieldName,
         description: param.description,
         required: param.validators.some(
           (validator) => validator.name === 'required'
         ),
-        type: param.type,
       };
     });
   }
@@ -68,7 +69,8 @@ export class Endpoint implements IEndpoint {
       return {
         name: column.name,
         type: column.type as string,
-        description: column?.description || '',
+        description: column.description || '',
+        required: column.required || false,
       };
     });
   }
@@ -83,6 +85,7 @@ interface IDataset {
   apiUrl: string;
   csvDownloadUrl: string;
   jsonDownloadUrl: string;
+  shareJsonUrl: string;
 }
 
 export class Dataset implements IDataset {
@@ -115,5 +118,9 @@ export class Dataset implements IDataset {
 
   get jsonDownloadUrl() {
     return `${this.schema.apiUrl}.json`;
+  }
+
+  get shareJsonUrl() {
+    return `${this.schema.apiUrl}.json${this.schema.shareKey}`;
   }
 }

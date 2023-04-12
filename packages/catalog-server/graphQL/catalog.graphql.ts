@@ -41,6 +41,7 @@ export const Dataset = gql`
       apiUrl
       csvDownloadUrl
       jsonDownloadUrl
+      shareJsonUrl
       metadata {
         currentCount
         totalCount

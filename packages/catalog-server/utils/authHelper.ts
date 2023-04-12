@@ -29,6 +29,12 @@ export class AuthHelper {
     this.refreshTokenSecret = serverRuntimeConfig.refreshTokenSecret;
   }
 
+  async checkAuth() {
+    // check auth type
+    this.authType = await adapter.getAuthType();
+    return this.authType;
+  }
+
   async login(combination: { username: string; password: string }): Promise<{
     accessToken: string;
     refreshToken: string;
@@ -37,13 +43,14 @@ export class AuthHelper {
     const { username, password } = combination;
 
     // get api token & profile from vulcan api server
-    const authType = await adapter.getAuthType();
-    const apiToken = await adapter.getInitToken({
+    const authType = await this.checkAuth();
+    const token = await adapter.getInitToken({
       type: authType,
       username,
       password,
     });
-    const profile: UserProfile = await adapter.getUserProfile();
+    const apiToken = `${authType} ${token}`;
+    const profile: UserProfile = await adapter.getUserProfile({ apiToken });
 
     // create a session in storage
     const session = uuidv1();
@@ -61,17 +68,9 @@ export class AuthHelper {
     session: string;
     profile: UserProfile;
   }> {
-    // check auth type
-    if (this.authType === undefined) {
-      try {
-        this.authType = await adapter.getAuthType();
-        console.log('auth type: ', this.authType);
-      } catch (err) {
-        console.log('no auth');
-        this.authType = null;
-      }
-    }
+    if (this.authType === undefined) await this.checkAuth();
 
+    // if user not setup auth, return a guest user
     if (this.authType === null) {
       return {
         profile: null,

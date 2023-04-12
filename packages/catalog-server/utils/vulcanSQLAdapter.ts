@@ -5,7 +5,19 @@ const VULCAN_SQL_HOST = 'http://localhost:3000';
 
 export const axiosInstance = axios.create({
   baseURL: VULCAN_SQL_HOST,
+  responseType: 'json',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
+
+const getAuthorization = (ctx) => {
+  return {
+    headers: {
+      Authorization: ctx.apiToken,
+    },
+  };
+};
 
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -21,16 +33,21 @@ axiosInstance.interceptors.response.use(
       '\x1b[31m%s\x1b[0m',
       `ERROR: ${JSON.stringify(errorInformation)}`
     );
+
     return Promise.reject(error);
   }
 );
 
 class VulcanSQLAdapter {
   public getAuthType = async () => {
-    const { data } = await axiosInstance.get(`/auth/available-types`);
-    const authType =
-      data.find((type) => ['basic', 'password-file'].includes(type)) || '';
-    return authType;
+    try {
+      const { data } = await axiosInstance.get(`/auth/available-types`);
+      const authType =
+        data.find((type) => ['basic', 'password-file'].includes(type)) || '';
+      return authType;
+    } catch (err) {
+      return null;
+    }
   };
 
   public getInitToken = async (params: {
@@ -39,49 +56,65 @@ class VulcanSQLAdapter {
     password: string;
   }): Promise<string> => {
     const { data } = await axiosInstance.post(`/auth/token`, params);
-    axios.defaults.headers['Authorization'] = `${params.type} ${data.token}`;
-
     return data.token;
   };
 
-  public getUserProfile = async () => {
+  public getUserProfile = async (ctx) => {
     try {
-      const { data } = await axiosInstance.get(`/auth/user-profile`);
+      const { data } = await axiosInstance.get(
+        `/auth/user-profile`,
+        getAuthorization(ctx)
+      );
       return data;
     } catch (err) {
       throw errorCode.LOGIN_FAILED;
     }
   };
 
-  public getSchemas = async () => {
-    const { data } = await axiosInstance.get(`/catalog/schemas`);
+  public getSchemas = async (ctx) => {
+    const { data } = await axiosInstance.get(
+      `/catalog/schemas`,
+      getAuthorization(ctx)
+    );
     return data;
   };
 
-  public getSchema = async (slug) => {
-    const { data } = await axiosInstance.get(`/catalog/schemas/${slug}`);
+  public getSchema = async (ctx, slug) => {
+    const { data } = await axiosInstance.get(
+      `/catalog/schemas/${slug}`,
+      getAuthorization(ctx)
+    );
     return data;
   };
 
-  public getPreviewData = async (args: {
-    slug: string;
-    filter: Record<string, string>;
-  }) => {
-    try {
-      const { slug, filter } = args;
-      const schema = await this.getSchema(slug);
-      const url = Object.keys(filter).reduce((result, key) => {
-        return result.replace(`:${key}`, filter[key]);
-      }, `/api${schema.urlPath}`);
-
-      const { data } = await axiosInstance.get(url);
-      return {
-        schema: { ...schema, apiUrl: `${VULCAN_SQL_HOST}${url}` },
-        data,
-      };
-    } catch (err) {
-      // API result not found
+  public getPreviewData = async (
+    ctx: any,
+    args: {
+      slug: string;
+      filter: Record<string, string>;
     }
+  ) => {
+    const { slug, filter } = args;
+    const schema = await this.getSchema(ctx, slug);
+    const url = Object.keys(filter).reduce((result, key) => {
+      if (!filter[key]) return result;
+
+      const param = `:${key}`;
+      const isParam = result.includes(param);
+      const querySymbol = result.includes('?') ? '&' : '?';
+
+      return isParam
+        ? result.replace(param, filter[key])
+        : `${result}${querySymbol}${key}=${filter[key]}`;
+    }, `/api${schema.urlPath}`);
+
+    const apiUrl = `${VULCAN_SQL_HOST}${url}`;
+    console.log('apiUrl: ', apiUrl);
+    const { data } = await axiosInstance.get(url, getAuthorization(ctx));
+    return {
+      schema: { ...schema, apiUrl },
+      data,
+    };
   };
 }
 

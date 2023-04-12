@@ -36,6 +36,7 @@ export type Dataset = {
   data?: Maybe<Scalars['JSON']>;
   jsonDownloadUrl?: Maybe<Scalars['String']>;
   metadata?: Maybe<DatasetMetadata>;
+  shareJsonUrl?: Maybe<Scalars['String']>;
 };
 
 export type DatasetMetadata = {

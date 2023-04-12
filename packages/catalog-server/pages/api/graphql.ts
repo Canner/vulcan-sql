@@ -4,6 +4,7 @@ import GraphQLJSON from 'graphql-type-json';
 import {
   authHelper,
   getBearerToken,
+  UserProfile,
 } from '@vulcan-sql/catalog-server/utils/authHelper';
 import adapter from '@vulcan-sql/catalog-server/utils/vulcanSQLAdapter';
 import { Dataset, Endpoint } from '@vulcan-sql/catalog-server/utils/dataModel';
@@ -55,6 +56,7 @@ const typeDefs = gql`
     apiUrl: String
     csvDownloadUrl: String
     jsonDownloadUrl: String
+    shareJsonUrl: String
   }
 
   type Query {
@@ -64,155 +66,20 @@ const typeDefs = gql`
   }
 `;
 
-const types = {
-  STRING: 'STRING',
-  NUMBER: 'NUMBER',
-  DATE: 'DATE',
-  DATETIME: 'DATETIME',
-  BOOLEAN: 'BOOLEAN',
-};
-
-const testingData = [
-  {
-    slug: 'customers',
-    name: 'Taiwan Customer',
-    description: `
-    line 1
-    line 2
-    the customer data we got from ERP.
-  `,
-    apiDocUrl: 'https://petstore.swagger.io/#/pet',
-    parameters: [
-      {
-        name: 'name',
-        key: 'name',
-        type: types.STRING,
-        description: 'test',
-        required: false,
-      },
-      {
-        name: 'age',
-        key: 'age',
-        type: types.NUMBER,
-        description: 'age',
-        required: false,
-      },
-    ],
-    columns: [
-      {
-        name: 'name',
-        type: types.STRING,
-        description: 'name',
-      },
-      {
-        name: 'age',
-        type: types.NUMBER,
-        description: 'age',
-      },
-      {
-        name: 'address',
-        type: types.STRING,
-        description: 'address',
-      },
-      {
-        name: 'email',
-        type: types.STRING,
-        description: 'email',
-      },
-    ],
-    dataset: [
-      {
-        name: 'test',
-        age: 10,
-        address: 'testing address',
-        email: 'testing@canner.io',
-      },
-      {
-        name: 'test2',
-        age: 20,
-        address: 'testing address',
-        email: 'testing2@canner.io',
-      },
-    ],
-  },
-  {
-    slug: 'orders',
-    name: 'Taiwan Order',
-    description: `
-    line 1
-    line 2
-    the order data we got from ERP.
-  `,
-    apiDocUrl: 'https://petstore.swagger.io/#/store',
-    parameters: [
-      {
-        name: 'orderkey',
-        key: 'orderkey',
-        type: types.STRING,
-        description: 'orderkey',
-        required: false,
-      },
-      {
-        name: 'status',
-        key: 'status',
-        type: types.STRING,
-        description: 'status',
-        required: true,
-      },
-      {
-        name: 'shipDate',
-        key: 'shipDate',
-        type: types.DATETIME,
-        description: 'shipDate',
-        required: true,
-      },
-    ],
-    columns: [
-      {
-        name: 'orderkey',
-        type: types.STRING,
-        description: 'orderkey',
-      },
-      {
-        name: 'status',
-        type: types.STRING,
-        description: 'status',
-      },
-      {
-        name: 'shipDate',
-        type: types.DATETIME,
-        description: 'shipDate',
-      },
-    ],
-    dataset: [
-      {
-        orderkey: '1234',
-        status: 'SHIPPED',
-        shipDate: Date.now(),
-      },
-      {
-        orderkey: '4556',
-        status: 'PENDING',
-        shipDate: Date.now(),
-      },
-    ],
-  },
-];
-
 const resolvers = {
   JSON: GraphQLJSON,
 
   Query: {
-    endpoints: async (): Promise<Endpoint[]> => {
-      const schemas = await adapter.getSchemas();
+    endpoints: async (_, args, ctx): Promise<Endpoint[]> => {
+      const schemas = await adapter.getSchemas(ctx);
       return schemas.map((schema) => new Endpoint(schema));
     },
-    endpoint: async (_, args, context) => {
-      const schema = await adapter.getSchema(args.slug);
+    endpoint: async (_, args, ctx) => {
+      const schema = await adapter.getSchema(ctx, args.slug);
       return new Endpoint(schema);
     },
-    dataset: async (_, args, context) => {
-      const { schema, data } = await adapter.getPreviewData({
+    dataset: async (_, args, ctx) => {
+      const { schema, data } = await adapter.getPreviewData(ctx, {
         slug: args.endpointSlug,
         filter: args.filter,
       });
@@ -224,7 +91,11 @@ const resolvers = {
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req }: { req: NextApiRequest }) => {
+  context: async ({
+    req,
+  }: {
+    req: NextApiRequest;
+  }): Promise<{ profile: UserProfile; apiToken: string }> => {
     const accessToken = getBearerToken(req.headers);
     const { profile, apiToken } = await authHelper.auth(accessToken);
     return {

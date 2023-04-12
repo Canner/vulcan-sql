@@ -6,7 +6,7 @@ import { ApolloProvider } from '@apollo/client';
 import StoreProvider from '@vulcan-sql/catalog-server/lib/store';
 import AuthProvider from '@vulcan-sql/catalog-server/lib/auth';
 
-require('@styles/main.less');
+require('../styles/main.less');
 
 function App({ Component, pageProps }: AppProps) {
   return (

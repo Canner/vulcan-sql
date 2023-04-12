@@ -21,7 +21,7 @@ export type DatasetQueryVariables = Types.Exact<{
 }>;
 
 
-export type DatasetQuery = { __typename?: 'Query', dataset?: { __typename?: 'Dataset', data?: any | null, apiUrl?: string | null, csvDownloadUrl?: string | null, jsonDownloadUrl?: string | null, metadata?: { __typename?: 'DatasetMetadata', currentCount?: number | null, totalCount?: number | null } | null } | null };
+export type DatasetQuery = { __typename?: 'Query', dataset?: { __typename?: 'Dataset', data?: any | null, apiUrl?: string | null, csvDownloadUrl?: string | null, jsonDownloadUrl?: string | null, shareJsonUrl?: string | null, metadata?: { __typename?: 'DatasetMetadata', currentCount?: number | null, totalCount?: number | null } | null } | null };
 
 
 export const EndpointsDocument = gql`
@@ -118,6 +118,7 @@ export const DatasetDocument = gql`
     apiUrl
     csvDownloadUrl
     jsonDownloadUrl
+    shareJsonUrl
     metadata {
       currentCount
       totalCount
