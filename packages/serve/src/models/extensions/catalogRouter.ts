@@ -29,11 +29,13 @@ export abstract class CatalogRouter<C = any> extends ExtensionBase<C> {
 
   public abstract handle(context: KoaContext, next: Next): Promise<void>;
 
-  protected getOptions() {
+  protected getProjectOptions() {
     return this.projectOptions;
   }
 
   protected async getArtifactSchemas() {
-    return await this.artifactBuilder.getArtifact<APISchema[]>(BuiltInArtifactKeys.Schemas)
+    return await this.artifactBuilder.getArtifact<APISchema[]>(
+      BuiltInArtifactKeys.Schemas
+    );
   }
 }

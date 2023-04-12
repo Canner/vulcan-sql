@@ -47,6 +47,7 @@ export class CatalogRouters extends CatalogRouter {
         ...schema,
         url: `${baseUrl}/api${schema.urlPath}`,
         apiDocUrl: `${baseUrl}${this.getAPIDocUrl(schema)}`,
+        shareKey: this.getShareKey(ctx.request.headers.authorization),
       };
       ctx.response.body = result;
     });
@@ -60,10 +61,23 @@ export class CatalogRouters extends CatalogRouter {
           ...schema,
           url: `${baseUrl}/api${schema.urlPath}`,
           apiDocUrl: `${baseUrl}${this.getAPIDocUrl(schema)}`,
+          shareKey: this.getShareKey(ctx.request.headers.authorization),
         };
       });
       ctx.response.body = result;
     });
+  }
+
+  private getShareKey(authorization: string | undefined) {
+    if (!authorization) return '';
+
+    const project = this.getProjectOptions();
+    const authSource = project?.['auth-source'];
+    const token = Buffer.from(
+      JSON.stringify({ Authorization: authorization })
+    ).toString('base64');
+    const key = (authSource && authSource?.options?.key) || 'auth';
+    return `?${key}=${token}`;
   }
 
   private getAPIDocUrl(schema: APISchema) {
@@ -73,8 +87,12 @@ export class CatalogRouters extends CatalogRouter {
         brick.startsWith(':') ? `{${brick.replace(':', '')}}` : brick
       )
       .join('~1');
+    const project = this.getProjectOptions();
+    const redoc = project?.['redoc'];
+    const docPath =
+      redoc?.url?.replace(/\/+$/, '').replace(/^\/+/, '') || 'doc';
     // currently vulcan-sql only support get method
-    return `/doc#/paths/${encodeURI(restructureUrl)}/get`;
+    return `/${docPath}#/paths/${encodeURI(restructureUrl)}/get`;
   }
 
   public async handle(
