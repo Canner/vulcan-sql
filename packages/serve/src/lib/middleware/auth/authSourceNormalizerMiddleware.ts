@@ -2,6 +2,8 @@ import {
   ConfigurationError,
   getLogger,
   VulcanInternalExtension,
+  TYPES as CORE_TYPES,
+  ICoreOptions,
 } from '@vulcan-sql/core';
 import {
   AuthSourceOptions,
@@ -11,6 +13,7 @@ import {
   Next,
 } from '@vulcan-sql/serve/models';
 import { isBase64 } from 'class-validator';
+import { inject } from 'inversify';
 import { capitalize, chain } from 'lodash';
 
 const logger = getLogger({ scopeName: 'SERVE' });
@@ -21,6 +24,16 @@ const logger = getLogger({ scopeName: 'SERVE' });
 @VulcanInternalExtension('auth-source')
 export class AuthSourceNormalizerMiddleware extends BuiltInMiddleware<AuthSourceOptions> {
   private options = (this.getOptions() as AuthSourceOptions) || {};
+  private projectOptions: ICoreOptions;
+
+  constructor(
+    @inject(CORE_TYPES.ExtensionConfig) config: any,
+    @inject(CORE_TYPES.ExtensionName) name: string,
+    @inject(CORE_TYPES.ProjectOptions) projectOptions: ICoreOptions
+  ) {
+    super(config, name);
+    this.projectOptions = projectOptions;
+  }
 
   public override async onActivate() {
     if (this.enabled) {
@@ -49,7 +62,17 @@ export class AuthSourceNormalizerMiddleware extends BuiltInMiddleware<AuthSource
     };
 
     // The endpoint not need contains auth credentials
-    const pathsWithoutAuth = ['/auth/token', '/auth/available-types'];
+    const docPrefix =
+      this.projectOptions?.['redoc']?.url
+        .replace(/\/$/, '')
+        .replace(/^\//, '') || 'doc';
+    const pathsWithoutAuth = [
+      '/auth/token',
+      '/auth/available-types',
+      `/${docPrefix}`,
+      `/${docPrefix}/spec`,
+      `/${docPrefix}/redoc`,
+    ];
     if (pathsWithoutAuth.includes(context.path)) return next();
 
     try {

@@ -1,12 +1,37 @@
-import { UserError, VulcanInternalExtension } from '@vulcan-sql/core';
-import { Next, KoaContext, AuthStatus } from '@vulcan-sql/serve/models';
+import {
+  ICoreOptions,
+  TYPES as CORE_TYPES,
+  UserError,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core';
+import {
+  Next,
+  KoaContext,
+  AuthStatus,
+  BaseAuthenticator,
+} from '@vulcan-sql/serve/models';
 import { BaseAuthMiddleware } from './authMiddleware';
+import { TYPES } from '@vulcan-sql/serve/containers';
+import { inject, multiInject } from 'inversify';
 
 /** The middleware responsible for checking request auth credentials.
  *  It seek the 'auth' module name to match data through built-in and customized authenticator by BaseAuthenticator
  * */
 @VulcanInternalExtension('auth')
 export class AuthCredentialsMiddleware extends BaseAuthMiddleware {
+  private projectOptions: ICoreOptions;
+
+  constructor(
+    @inject(CORE_TYPES.ExtensionConfig) config: any,
+    @inject(CORE_TYPES.ExtensionName) name: string,
+    @multiInject(TYPES.Extension_Authenticator)
+    authenticators: BaseAuthenticator<any>[],
+    @inject(CORE_TYPES.ProjectOptions) projectOptions: ICoreOptions
+  ) {
+    super(config, name, authenticators);
+    this.projectOptions = projectOptions;
+  }
+
   public override async onActivate() {
     await this.initialize();
   }
@@ -16,7 +41,17 @@ export class AuthCredentialsMiddleware extends BaseAuthMiddleware {
     if (!this.enabled) return next();
 
     // The endpoint not need contains auth credentials
-    const pathsWithoutAuth = ['/auth/token', '/auth/available-types'];
+    const docPrefix =
+      this.projectOptions?.['redoc']?.url
+        .replace(/\/$/, '')
+        .replace(/^\//, '') || 'doc';
+    const pathsWithoutAuth = [
+      '/auth/token',
+      '/auth/available-types',
+      `/${docPrefix}`,
+      `/${docPrefix}/spec`,
+      `/${docPrefix}/redoc`,
+    ];
     if (pathsWithoutAuth.includes(context.path)) return next();
 
     // pass current context to auth token for users
