@@ -1,11 +1,12 @@
-import { ICoreOptions } from '@vulcan-sql/core/models';
+import { APISchema, ICoreOptions } from '@vulcan-sql/core/models';
 import { Container as InversifyContainer } from 'inversify';
-import { ProfileLoader } from '..';
+import { ArtifactBuilder, BuiltInArtifactKeys, ProfileLoader } from '..';
 import { ProjectOptions } from '../options';
 import { documentModule, extensionModule, profilesModule } from './modules';
 import {
   artifactBuilderModule,
   cacheLayerModule,
+  dataSourceModule,
   executorModule,
   templateEngineModule,
   validatorLoaderModule,
@@ -36,16 +37,10 @@ export class Container {
     await this.inversifyContainer.loadAsync(validatorLoaderModule());
     await this.inversifyContainer.loadAsync(extensionModule(options));
     await this.inversifyContainer.loadAsync(documentModule(options.document));
-    // executor module depends on extensionModule and profileModule.
-    const profileLoader = this.inversifyContainer.get<ProfileLoader>(
-      TYPES.ProfileLoader
-    );
-    const profiles = await profileLoader.getProfiles();
-    await this.inversifyContainer.loadAsync(executorModule(profiles));
 
-    await this.inversifyContainer.loadAsync(
-      cacheLayerModule(options['cache-layer'])
-    );
+    await this.loadDataSources(options);
+    await this.inversifyContainer.loadAsync(executorModule());
+    await this.inversifyContainer.loadAsync(cacheLayerModule(options.cache));
   }
 
   public async unload() {
@@ -54,5 +49,25 @@ export class Container {
 
   public getInversifyContainer() {
     return this.inversifyContainer;
+  }
+
+  private async loadDataSources(options: ICoreOptions) {
+    // data source module depends on extensionModule and profileModule.
+    const profileLoader = this.inversifyContainer.get<ProfileLoader>(
+      TYPES.ProfileLoader
+    );
+    const profiles = await profileLoader.getProfiles();
+    // cache layer data source depends on schemas from artifactBuilderModule.
+    const artifactBuilder = this.inversifyContainer.get<ArtifactBuilder>(
+      TYPES.ArtifactBuilder
+    );
+    await artifactBuilder.load();
+    const schemas = artifactBuilder.getArtifact<APISchema[]>(
+      BuiltInArtifactKeys.Schemas
+    );
+
+    await this.inversifyContainer.loadAsync(
+      dataSourceModule(profiles, schemas, options.cache)
+    );
   }
 }

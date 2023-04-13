@@ -11,10 +11,13 @@ export interface ExportOptions {
   // The sql query result to export
   sql: string;
   // The full pathname to export result to file
+  filepath: string;
+  // The full pathname to export result to file
   directory: string;
   // The profile name to select to export data
   profileName: string;
 }
+
 // Original request parameters
 export interface RequestParameter {
   /** The index (starts from 1) of parameters, it's useful to generate parameter id like $1, $2 ...etc. */
@@ -69,14 +72,18 @@ export abstract class DataSource<
   // prepare parameterized format for query later
   abstract prepare(param: RequestParameter): Promise<string>;
 
-  /**
-   * Export query result data to parquet file
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public export(options: ExportOptions): Promise<void> {
+  public async export(options: ExportOptions): Promise<void> {
     throw new Error(`Export method not implemented`);
   }
 
+  public addProfile(profile: Profile<PROFILE>) {
+    if (profile.type != this.getExtensionId())
+      throw new Error(`The profile type not belong to the data source.`);
+    if (this.profiles.has(profile.name))
+      throw new Error(`The profile named ${profile.name} has already set`);
+
+    this.profiles.set(profile.name, profile);
+  }
   /** Get all the profiles which belong to this data source */
   protected getProfiles() {
     return this.profiles;

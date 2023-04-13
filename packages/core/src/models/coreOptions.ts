@@ -24,6 +24,6 @@ export interface ICoreOptions {
   extensions?: ExtensionAliases;
   document?: IDocumentOptions;
   profiles?: IProfilesLookupOptions;
-  ['cache-layer']?: ICacheLayerOptions;
+  cache?: ICacheLayerOptions;
   [moduleAlias: string]: any;
 }

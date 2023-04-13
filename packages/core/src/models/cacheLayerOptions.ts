@@ -16,3 +16,5 @@ export interface ICacheLayerOptions {
   folderPath?: string;
   loader?: CacheLayerStoreLoaderType | string;
 }
+
+export const cacheProfileName = 'cache-layer';
