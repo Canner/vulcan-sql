@@ -10,7 +10,6 @@ import { Next } from 'koa';
 import * as Router from 'koa-router';
 import { CatalogRouter } from '@vulcan-sql/serve/models';
 import { inject } from 'inversify';
-
 @VulcanInternalExtension('catalog')
 @VulcanExtensionId('catalog')
 export class CatalogRouters extends CatalogRouter {
@@ -19,7 +18,7 @@ export class CatalogRouters extends CatalogRouter {
   constructor(
     @inject(CORE_TYPES.ExtensionConfig) config: any,
     @inject(CORE_TYPES.ExtensionName) moduleName: string,
-    @inject(CORE_TYPES.ProjectOptions) projectOptions: ICoreOptions,
+    @inject(CORE_TYPES.ProjectOptions) projectOptions: Partial<ICoreOptions>,
     @inject(CORE_TYPES.ArtifactBuilder) artifactBuilder: VulcanArtifactBuilder
   ) {
     super(config, moduleName, projectOptions, artifactBuilder);

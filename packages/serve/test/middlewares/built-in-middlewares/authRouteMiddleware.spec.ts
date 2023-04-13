@@ -15,6 +15,7 @@ import {
 } from '@vulcan-sql/serve/models';
 import { Server } from 'http';
 import { BasicAuthenticator } from '@vulcan-sql/serve';
+import { ProjectOptions } from '@vulcan-sql/core';
 
 const runServer = async (
   options: { enabled?: boolean; options?: AuthOptions },
@@ -290,7 +291,8 @@ describe('Test auth router middleware', () => {
     const authCredential = new AuthCredentialsMiddleware(
       { options: { basic: {} } },
       '',
-      [stubBasic]
+      [stubBasic],
+      new ProjectOptions()
     );
     app.use(koaParseBody());
     await authCredential.activate();

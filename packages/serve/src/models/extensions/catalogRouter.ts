@@ -13,13 +13,13 @@ import { inject } from 'inversify';
 
 @VulcanExtension(TYPES.Extension_CatalogRouter)
 export abstract class CatalogRouter<C = any> extends ExtensionBase<C> {
-  private projectOptions: ICoreOptions;
+  private projectOptions: Partial<ICoreOptions>;
   private artifactBuilder: VulcanArtifactBuilder;
 
   constructor(
     @inject(CORE_TYPES.ExtensionConfig) config: any,
     @inject(CORE_TYPES.ExtensionName) moduleName: string,
-    @inject(CORE_TYPES.ProjectOptions) projectOptions: ICoreOptions,
+    @inject(CORE_TYPES.ProjectOptions) projectOptions: Partial<ICoreOptions>,
     @inject(CORE_TYPES.ArtifactBuilder) artifactBuilder: VulcanArtifactBuilder
   ) {
     super(config, moduleName);

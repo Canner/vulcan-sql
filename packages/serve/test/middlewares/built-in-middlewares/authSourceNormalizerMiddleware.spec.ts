@@ -4,6 +4,7 @@ import { Request } from 'koa';
 import { IncomingHttpHeaders } from 'http';
 import { AuthSourceNormalizerMiddleware } from '@vulcan-sql/serve/middleware';
 import { AuthSourceTypes, KoaContext } from '@vulcan-sql/serve/models';
+import { ProjectOptions } from '@vulcan-sql/core';
 
 describe('Test auth source normalizer middleware', () => {
   afterEach(() => {
@@ -22,7 +23,8 @@ describe('Test auth source normalizer middleware', () => {
           in: 'header',
         },
       },
-      ''
+      '',
+      new ProjectOptions()
     );
     // Act
     const activateFunc = async () => await middleware.activate();
@@ -39,7 +41,8 @@ describe('Test auth source normalizer middleware', () => {
       {
         enabled: false,
       },
-      ''
+      '',
+      new ProjectOptions()
     );
     await middleware.activate();
     const spy = sinon.default.spy(isBase64);
@@ -61,7 +64,11 @@ describe('Test auth source normalizer middleware', () => {
         body: {},
       },
     };
-    const middleware = new AuthSourceNormalizerMiddleware({}, '');
+    const middleware = new AuthSourceNormalizerMiddleware(
+      {},
+      '',
+      new ProjectOptions()
+    );
     await middleware.activate();
     const spy = sinon.default.spy(isBase64);
 
@@ -94,7 +101,11 @@ describe('Test auth source normalizer middleware', () => {
         },
       },
     };
-    const middleware = new AuthSourceNormalizerMiddleware({}, '');
+    const middleware = new AuthSourceNormalizerMiddleware(
+      {},
+      '',
+      new ProjectOptions()
+    );
     await middleware.activate();
 
     // Act
@@ -132,7 +143,8 @@ describe('Test auth source normalizer middleware', () => {
           key: 'x-auth',
         },
       },
-      ''
+      '',
+      new ProjectOptions()
     );
     await middleware.activate();
 
@@ -171,7 +183,8 @@ describe('Test auth source normalizer middleware', () => {
           in: 'payload',
         },
       },
-      ''
+      '',
+      new ProjectOptions()
     );
     await middleware.activate();
 

@@ -19,14 +19,14 @@ import { inject, multiInject } from 'inversify';
  * */
 @VulcanInternalExtension('auth')
 export class AuthCredentialsMiddleware extends BaseAuthMiddleware {
-  private projectOptions: ICoreOptions;
+  private projectOptions: Partial<ICoreOptions>;
 
   constructor(
     @inject(CORE_TYPES.ExtensionConfig) config: any,
     @inject(CORE_TYPES.ExtensionName) name: string,
     @multiInject(TYPES.Extension_Authenticator)
     authenticators: BaseAuthenticator<any>[],
-    @inject(CORE_TYPES.ProjectOptions) projectOptions: ICoreOptions
+    @inject(CORE_TYPES.ProjectOptions) projectOptions: Partial<ICoreOptions>
   ) {
     super(config, name, authenticators);
     this.projectOptions = projectOptions;

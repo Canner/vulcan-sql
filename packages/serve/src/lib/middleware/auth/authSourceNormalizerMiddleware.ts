@@ -24,12 +24,12 @@ const logger = getLogger({ scopeName: 'SERVE' });
 @VulcanInternalExtension('auth-source')
 export class AuthSourceNormalizerMiddleware extends BuiltInMiddleware<AuthSourceOptions> {
   private options = (this.getOptions() as AuthSourceOptions) || {};
-  private projectOptions: ICoreOptions;
+  private projectOptions: Partial<ICoreOptions>;
 
   constructor(
     @inject(CORE_TYPES.ExtensionConfig) config: any,
     @inject(CORE_TYPES.ExtensionName) name: string,
-    @inject(CORE_TYPES.ProjectOptions) projectOptions: ICoreOptions
+    @inject(CORE_TYPES.ProjectOptions) projectOptions: Partial<ICoreOptions>
   ) {
     super(config, name);
     this.projectOptions = projectOptions;
