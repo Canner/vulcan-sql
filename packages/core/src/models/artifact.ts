@@ -94,11 +94,20 @@ export class Sample {
   req?: KoaRequest;
 }
 
+export class RefreshTime {
+  every!: string;
+}
+
+export class RefreshExpression {
+  expression!: string;
+  every!: string;
+}
+
 export class CacheLayerInfo {
   cacheTableName!: string;
   sql!: string;
-  refreshTime?: Record<string, string>;
-  refreshExpression?: Record<string, string>;
+  refreshTime?: RefreshTime;
+  refreshExpression?: RefreshExpression;
   // index key name -> index column
   indexes?: Record<string, string>;
 }
@@ -122,7 +131,7 @@ export class APISchema {
   pagination?: PaginationSchema;
   sample?: Sample;
   profiles!: Array<string>;
-  cache?:Array<CacheLayerInfo>;
+  cache?: Array<CacheLayerInfo>;
 }
 
 export class BuiltArtifact {
