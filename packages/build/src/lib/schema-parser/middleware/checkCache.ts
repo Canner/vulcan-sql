@@ -14,43 +14,69 @@ export class CheckCache extends SchemaParserMiddleware {
     // throw if cache not used in .sql file
     if (isUsedCache && !caches) {
       throw new ConfigurationError(
-        "Cache feature was used in SQL file, but didn't find the cache configurations in YAML file."
+        `{% cache %} tag was used in SQL file, but the cache configurations was not found in Schema ${schemas.urlPath}.`
+      );
+    }
+    if (!isUsedCache && caches) {
+      throw new ConfigurationError(
+        `Can not configurate the cache setting in Schema ${schemas.urlPath}, {% cache %} tag not been used in SQL file.`
       );
     }
 
     if (caches) {
-      caches.forEach(({ refreshTime, refreshExpression }): void => {
+      caches.forEach((cache): void => {
         // refreshTime and refreshExpression can not be set at the same time
+        const { refreshTime, refreshExpression } = cache;
         if (refreshTime && refreshExpression) {
           throw new ConfigurationError(
-            'can not configure refreshTime and refreshExpression at the same time, please pick one'
+            `The cache ${cache.cacheTableName} of Schema file ${schemas.urlPath} is invalid: Can not configure refreshTime and refreshExpression at the same time, please pick one`
           );
         }
-        // the "every" in refreshTime or refreshExpression should be valid
-        const timeInterval =
-          refreshTime?.['every'] || refreshExpression?.['every'];
-        if (timeInterval) {
-          let interval: number;
-          try {
-            interval = ms(timeInterval as StringValue);
-          } catch (error) {
+
+        // check "every" of "refreshTime" is valid
+        let every = refreshTime?.['every'];
+        if (every) {
+          const { isValid, error } = this.checkRefreshInterval(every);
+          if (!isValid) {
             throw new ConfigurationError(
-              'invalid refreshTime representation, check node library "ms" for the valid representation'
+              `The "every" of "refreshTime" in cache ${cache.cacheTableName} of schema ${schemas.urlPath} is invalid: ${error}`
             );
           }
-          if (isNaN(interval)) {
+        }
+        // check "every" of "refreshExpression" is valid
+        every = refreshExpression?.['every'];
+        if (every) {
+          const { isValid, error } = this.checkRefreshInterval(every);
+          if (!isValid) {
             throw new ConfigurationError(
-              'invalid refreshTime representation, check node library "ms" for the valid representation'
-            );
-          }
-          if (interval < 0) {
-            throw new ConfigurationError(
-              'invalid refreshTime representation, refreshTime can not be negitive'
+              `The "every" of "refreshExpression" in cache ${cache.cacheTableName} of schema ${schemas.urlPath} is invalid: ${error}`
             );
           }
         }
       });
     }
     await next();
+  }
+
+  private checkRefreshInterval(timeInterval: string) {
+    let isValid = true;
+    let error = null;
+
+    const interval = ms(timeInterval as StringValue);
+    if (isNaN(interval)) {
+      isValid = false;
+      error = 'Invalid time string to convert.';
+      return {
+        isValid,
+        error,
+      };
+    }
+    if (interval < 0) {
+      return {
+        isValid: false,
+        error: 'Time can not be negitive.',
+      };
+    }
+    return { isValid, error };
   }
 }
