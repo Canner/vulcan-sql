@@ -8,7 +8,7 @@ beforeEach(() => {
   middleware = new CheckCache();
   next.mockClear();
 });
-it('should call next() when there are no caches or cache metadata', async () => {
+it('Should call next() when there are no caches or cache metadata', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     metadata: {},
@@ -17,7 +17,7 @@ it('should call next() when there are no caches or cache metadata', async () => 
   expect(next).toHaveBeenCalled();
 });
 
-it('should throw an error when caches is used but not been defined in schema.', async () => {
+it('Should throw an error when caches is used but not been defined in schema.', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
@@ -33,7 +33,7 @@ it('should throw an error when caches is used but not been defined in schema.', 
   expect(next).not.toHaveBeenCalled();
 });
 
-it('should throw an error when caches is not used but been defined in schema.', async () => {
+it('Should throw an error when caches is not used but been defined in schema.', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
@@ -56,7 +56,7 @@ it('should throw an error when caches is not used but been defined in schema.', 
   expect(next).not.toHaveBeenCalled();
 });
 
-it('should throw an error when both refreshTime and refreshExpression are defined.', async () => {
+it('Should throw an error when both refreshTime and refreshExpression are defined.', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
@@ -81,7 +81,7 @@ it('should throw an error when both refreshTime and refreshExpression are define
 });
 
 // refreshTime expression test cases
-it('should throw an error when the value of "every" of "refreshTime" is a invalid string that can not be convert.', async () => {
+it('Should throw an error when the value of "every" of "refreshTime" is a invalid string that can not be convert.', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
@@ -104,7 +104,7 @@ it('should throw an error when the value of "every" of "refreshTime" is a invali
   expect(next).not.toHaveBeenCalled();
 });
 
-it('should throw an error when a converted value of "every" of "refreshTime" is negative.', async () => {
+it('Should throw an error when a converted value of "every" of "refreshTime" is negative.', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
@@ -127,7 +127,7 @@ it('should throw an error when a converted value of "every" of "refreshTime" is 
   expect(next).not.toHaveBeenCalled();
 });
 
-it('should call next function when schemas have cache with valid refreshTime representation', async () => {
+it('Should call next function when schemas have cache with valid refreshTime representation', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     metadata: {
@@ -148,7 +148,7 @@ it('should call next function when schemas have cache with valid refreshTime rep
 });
 
 // refreshExpression time expression test cases
-it('should throw an error when the value of "every" of "refreshExpression" is a invalid string that can not be convert.', async () => {
+it('Should throw an error when the value of "every" of "refreshExpression" is a invalid string that can not be convert.', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
@@ -170,7 +170,7 @@ it('should throw an error when the value of "every" of "refreshExpression" is a 
   );
   expect(next).not.toHaveBeenCalled();
 });
-it('should throw an error when a negative refreshExpression interval is used', async () => {
+it('Should throw an error when a negative refreshExpression interval is used', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
@@ -193,7 +193,7 @@ it('should throw an error when a negative refreshExpression interval is used', a
   expect(next).not.toHaveBeenCalled();
 });
 
-it('should call next function when schemas have cache with valid refreshExpression representation', async () => {
+it('Should call next function when schemas have cache with valid refreshExpression representation', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     metadata: {
