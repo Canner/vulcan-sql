@@ -20,6 +20,7 @@ it('should call next() when there are no caches or cache metadata', async () => 
 it('should throw an error when caches is used but not been defined in schema.', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
+    urlPath: '/urlPath',
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -27,7 +28,30 @@ it('should throw an error when caches is used but not been defined in schema.', 
     },
   };
   await expect(middleware.handle(schemas, next)).rejects.toThrow(
-    "Cache feature was used in SQL file, but didn't find the cache configurations in YAML file."
+    '{% cache %} tag was used in SQL file, but the cache configurations was not found in Schema /urlPath.'
+  );
+  expect(next).not.toHaveBeenCalled();
+});
+
+it('should throw an error when caches is not used but been defined in schema.', async () => {
+  const schemas: RawAPISchema = {
+    sourceName: 'test',
+    urlPath: '/urlPath',
+    metadata: {
+      'cache.vulcan.com': {
+        isUsedTag: false,
+      },
+    },
+    cache: [
+      {
+        cacheTableName: 'cache_table_name',
+        sql: 'SELECT * FROM test_table',
+        refreshTime: { every: '5m' },
+      },
+    ],
+  };
+  await expect(middleware.handle(schemas, next)).rejects.toThrow(
+    'Can not configurate the cache setting in Schema /urlPath, {% cache %} tag not been used in SQL file.'
   );
   expect(next).not.toHaveBeenCalled();
 });
@@ -35,6 +59,7 @@ it('should throw an error when caches is used but not been defined in schema.', 
 it('should throw an error when both refreshTime and refreshExpression are defined.', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
+    urlPath: '/urlPath',
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -42,23 +67,24 @@ it('should throw an error when both refreshTime and refreshExpression are define
     },
     cache: [
       {
-        cacheTableName: 'test_cache',
+        cacheTableName: 'cache_table_name',
         sql: 'SELECT * FROM test_table',
         refreshTime: { every: '5m' },
-        refreshExpression: { expression: '*/5,*,*,*,*', every: '5m' },
+        refreshExpression: { expression: 'MAX(create_time)', every: '5m' },
       },
     ],
   };
   await expect(middleware.handle(schemas, next)).rejects.toThrow(
-    'can not configure refreshTime and refreshExpression at the same time, please pick one'
+    'The cache cache_table_name of Schema /urlPath is invalid: Can not configure refreshTime and refreshExpression at the same time, please pick one'
   );
   expect(next).not.toHaveBeenCalled();
 });
 
 // refreshTime expression test cases
-it('should throw an error when an invalid refreshTime representation is used', async () => {
+it('should throw an error when the value of "every" of "refreshTime" is a invalid string that can not be convert.', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
+    urlPath: '/urlPath',
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -66,21 +92,22 @@ it('should throw an error when an invalid refreshTime representation is used', a
     },
     cache: [
       {
-        cacheTableName: 'test_cache',
+        cacheTableName: 'cache_table_name',
         sql: 'SELECT * FROM test_table',
-        refreshTime: { every: 'invalidString' },
+        refreshTime: { every: 'invalidTimeString' },
       },
     ],
   };
   await expect(middleware.handle(schemas, next)).rejects.toThrow(
-    'invalid refreshTime representation, check node library "ms" for the valid representation'
+    'The "every" of "refreshTime" in cache cache_table_name of schema /urlPath is invalid: Invalid time string to convert.'
   );
   expect(next).not.toHaveBeenCalled();
 });
 
-it('should throw an error when a negative refreshTime interval is used', async () => {
+it('should throw an error when a converted value of "every" of "refreshTime" is negative.', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
+    urlPath: '/urlPath',
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -88,14 +115,14 @@ it('should throw an error when a negative refreshTime interval is used', async (
     },
     cache: [
       {
-        cacheTableName: 'test_cache',
+        cacheTableName: 'cache_table_name',
         sql: 'SELECT * FROM test_table',
         refreshTime: { every: '-5m' },
       },
     ],
   };
   await expect(middleware.handle(schemas, next)).rejects.toThrow(
-    'invalid refreshTime representation, refreshTime can not be negitive'
+    'The "every" of "refreshTime" in cache cache_table_name of schema /urlPath is invalid: Time can not be negitive.'
   );
   expect(next).not.toHaveBeenCalled();
 });
@@ -110,7 +137,7 @@ it('should call next function when schemas have cache with valid refreshTime rep
     },
     cache: [
       {
-        cacheTableName: 'test_cache',
+        cacheTableName: 'cache_table_name',
         sql: 'SELECT * FROM test_table',
         refreshTime: { every: '5m' },
       },
@@ -121,9 +148,10 @@ it('should call next function when schemas have cache with valid refreshTime rep
 });
 
 // refreshExpression time expression test cases
-it('should throw an error when an invalid refreshExpression representation is used', async () => {
+it('should throw an error when the value of "every" of "refreshExpression" is a invalid string that can not be convert.', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
+    urlPath: '/urlPath',
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -131,20 +159,21 @@ it('should throw an error when an invalid refreshExpression representation is us
     },
     cache: [
       {
-        cacheTableName: 'test_cache',
+        cacheTableName: 'cache_table_name',
         sql: 'SELECT * FROM test_table',
         refreshExpression: { every: 'invalidString' },
       },
     ],
   };
   await expect(middleware.handle(schemas, next)).rejects.toThrow(
-    'invalid refreshTime representation, check node library "ms" for the valid representation'
+    'The "every" of "refreshExpression" in cache cache_table_name of schema /urlPath is invalid: Invalid time string to convert.'
   );
   expect(next).not.toHaveBeenCalled();
 });
 it('should throw an error when a negative refreshExpression interval is used', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
+    urlPath: '/urlPath',
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -152,14 +181,14 @@ it('should throw an error when a negative refreshExpression interval is used', a
     },
     cache: [
       {
-        cacheTableName: 'test_cache',
+        cacheTableName: 'cache_table_name',
         sql: 'SELECT * FROM test_table',
         refreshExpression: { every: '-5m' },
       },
     ],
   };
   await expect(middleware.handle(schemas, next)).rejects.toThrow(
-    'invalid refreshTime representation, refreshTime can not be negitive'
+    'The "every" of "refreshExpression" in cache cache_table_name of schema /urlPath is invalid: Time can not be negitive.'
   );
   expect(next).not.toHaveBeenCalled();
 });
@@ -174,7 +203,7 @@ it('should call next function when schemas have cache with valid refreshExpressi
     },
     cache: [
       {
-        cacheTableName: 'test_cache',
+        cacheTableName: 'cache_table_name',
         sql: 'SELECT * FROM test_table',
         refreshExpression: { every: '5m' },
       },

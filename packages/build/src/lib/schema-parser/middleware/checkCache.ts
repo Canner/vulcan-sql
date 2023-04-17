@@ -29,7 +29,7 @@ export class CheckCache extends SchemaParserMiddleware {
         const { refreshTime, refreshExpression } = cache;
         if (refreshTime && refreshExpression) {
           throw new ConfigurationError(
-            `The cache ${cache.cacheTableName} of Schema file ${schemas.urlPath} is invalid: Can not configure refreshTime and refreshExpression at the same time, please pick one`
+            `The cache ${cache.cacheTableName} of Schema ${schemas.urlPath} is invalid: Can not configure refreshTime and refreshExpression at the same time, please pick one`
           );
         }
 
