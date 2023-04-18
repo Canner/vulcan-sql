@@ -17,6 +17,16 @@ export interface ExportOptions {
   // The profile name to select to export data
   profileName: string;
 }
+export interface ImportOptions {
+  // The table name to create from imported file data
+  tableName: string;
+  // The full pathname to import data from file
+  filepath: string;
+  // The profile name to select to import data
+  profileName: string;
+  // default schema
+  schema: string;
+}
 
 // Original request parameters
 export interface RequestParameter {
@@ -69,21 +79,24 @@ export abstract class DataSource<
   }
 
   abstract execute(options: ExecuteOptions): Promise<DataResult>;
+
   // prepare parameterized format for query later
   abstract prepare(param: RequestParameter): Promise<string>;
 
-  public async export(options: ExportOptions): Promise<void> {
+  /**
+   * Export query result data to parquet file
+   */
+  public export(options: ExportOptions): Promise<void> {
     throw new Error(`Export method not implemented`);
   }
 
-  public addProfile(profile: Profile<PROFILE>) {
-    if (profile.type != this.getExtensionId())
-      throw new Error(`The profile type not belong to the data source.`);
-    if (this.profiles.has(profile.name))
-      throw new Error(`The profile named ${profile.name} has already set`);
-
-    this.profiles.set(profile.name, profile);
+  /**
+   * Import data to create table from parquet file
+   */
+  public import(options: ImportOptions): Promise<void> {
+    throw new Error(`import method not implemented`);
   }
+
   /** Get all the profiles which belong to this data source */
   protected getProfiles() {
     return this.profiles;

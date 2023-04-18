@@ -6,6 +6,7 @@ import {
   CacheLayerProvider,
   ICacheLayerOptions,
 } from '@vulcan-sql/core/models';
+import { CacheLayerLoader } from '@vulcan-sql/core/cache-layer';
 
 export const cacheLayerModule = (options: ICacheLayerOptions = {}) =>
   new AsyncContainerModule(async (bind) => {
@@ -35,4 +36,6 @@ export const cacheLayerModule = (options: ICacheLayerOptions = {}) =>
         })
         .inSingletonScope();
     }
+    // Cache Layer Loader
+    bind<CacheLayerLoader>(TYPES.CacheLayerLoader).to(CacheLayerLoader);
   });

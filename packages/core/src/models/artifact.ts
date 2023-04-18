@@ -106,6 +106,8 @@ export class RefreshExpression {
 export class CacheLayerInfo {
   // the table name kept in cache
   cacheTableName!: string;
+  // the used profile to query the data from data source
+  profile!: string;
   // the sql to query the data from data source and put in cache by "cacheTableName"
   sql!: string;
   profile!: string;

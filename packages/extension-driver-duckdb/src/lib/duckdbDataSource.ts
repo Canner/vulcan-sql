@@ -4,6 +4,8 @@ import {
   DataResult,
   DataSource,
   ExecuteOptions,
+  ExportOptions,
+  ImportOptions,
   InternalError,
   RequestParameter,
   VulcanExtensionId,
@@ -134,5 +136,38 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
         this.logger.info(sql);
       }
     }
+  }
+
+  public override async export(options: ExportOptions): Promise<void> {
+    const { filepath, sql, profileName } = options;
+    if (!this.dbMapping.has(profileName)) {
+      throw new InternalError(`Profile instance ${profileName} not found`);
+    }
+    const { db } = this.dbMapping.get(profileName)!;
+    // export to parquet file
+    db.run(
+      `COPY ${sql} TO '${filepath}' (FORMAT 'parquet', ROW_GROUP_SIZE 100000)`,
+      () => {
+        this.logger.info(`Export to parquet file done, path = ${filepath}`);
+      }
+    );
+  }
+
+  public override async import(options: ImportOptions) {
+    const { tableName, filepath, profileName, schema } = options;
+    if (!this.dbMapping.has(profileName)) {
+      throw new InternalError(`Profile instance ${profileName} not found`);
+    }
+    const { db } = this.dbMapping.get(profileName)!;
+    // parquet is extension, need to install and load it first.
+
+    db.run(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
+    db.run(
+      `CREATE TABLE ${schema}.${tableName} AS SELECT * FROM read_parquet(?)`,
+      [filepath],
+      () => {
+        this.logger.info(`Table created, name = ${tableName}`);
+      }
+    );
   }
 }

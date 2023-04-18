@@ -37,6 +37,7 @@ export class FileCacheLayerProvider extends CacheLayerProvider {
     for (const file of files) {
       yield {
         name: path.relative(this.options.folderPath!, file),
+        path: file,
       };
     }
   }

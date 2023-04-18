@@ -21,7 +21,8 @@ it('File template provider should throw error with file search errors', async ()
     {},
     ''
   );
-  // Act, Assert
+  // Act
   const iter = provider.getFiles();
+  // Assert
   await expect(iter.next()).rejects.toThrow('mock error');
 });

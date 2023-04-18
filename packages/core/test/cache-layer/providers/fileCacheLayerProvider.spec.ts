@@ -1,6 +1,6 @@
 import * as path from 'path';
-import { ConfigurationError } from '@vulcan-sql/core';
-import { CacheFileInfo, FileCacheLayerProvider } from '@vulcan-sql/core';
+import { CacheFileInfo, ConfigurationError } from '@vulcan-sql/core';
+import { FileCacheLayerProvider } from '@vulcan-sql/core';
 
 it('File data cache provider should provide correct files and contents', async () => {
   // Arrange
@@ -14,7 +14,6 @@ it('File data cache provider should provide correct files and contents', async (
     ''
   );
   const files: CacheFileInfo[] = [];
-
   // Act
   for await (const file of provider.getFiles()) {
     files.push(file);
@@ -23,12 +22,18 @@ it('File data cache provider should provide correct files and contents', async (
   expect(files.length).toBe(3);
   expect(files).toContainEqual({
     name: 'customer.parquet',
+    path: path.resolve(__dirname, '../test-data-caches/customer.parquet'),
   });
   expect(files).toContainEqual({
     name: 'orders.parquet',
+    path: path.resolve(__dirname, '../test-data-caches/orders.parquet'),
   });
   expect(files).toContainEqual({
     name: 'sub-folders/supplier.parquet',
+    path: path.resolve(
+      __dirname,
+      '../test-data-caches/sub-folders/supplier.parquet'
+    ),
   });
 });
 
