@@ -290,13 +290,11 @@ it('Should throw an error when cacheTableName does not match the regex', async (
     'table_name_with_special_char_/',
   ];
   for (const cacheTableName of invalidCacheTableNames) {
-    if (schemas['cache']) {
-      schemas['cache'][0]['cacheTableName'] = cacheTableName;
-      await expect(middleware.handle(schemas, next)).rejects.toThrow(
-        `The cacheTableName "${cacheTableName}" in schema "/urlPath" should meet the pattern "/^[a-zA-Z_][a-zA-Z0-9_$]+$/`
-      );
-      expect(next).not.toHaveBeenCalled();
-    }
+    schemas['cache']![0]['cacheTableName'] = cacheTableName;
+    await expect(middleware.handle(schemas, next)).rejects.toThrow(
+      `The cacheTableName "${cacheTableName}" in schema "/urlPath" should meet the pattern "/^[a-zA-Z_][a-zA-Z0-9_$]+$/`
+    );
+    expect(next).not.toHaveBeenCalled();
   }
 });
 // should pass test if cacheTableName is valid and meet the regex
@@ -328,11 +326,9 @@ it('Should call next function when schemas have cache with valid cacheTableName'
   ];
 
   for (const cacheTableName of validCacheTableNames) {
-    if (schemas['cache']) {
-      schemas['cache'][0]['cacheTableName'] = cacheTableName;
-      await middleware.handle(schemas, next);
-      expect(next).toHaveBeenCalled();
-    }
+    schemas['cache']![0]['cacheTableName'] = cacheTableName;
+    await middleware.handle(schemas, next);
+    expect(next).toHaveBeenCalled();
   }
 });
 // checkSql
@@ -398,10 +394,8 @@ it('Should assign the first profile in the schemas.profiles to the cache.profile
     ],
   };
   await middleware.handle(schemas, next);
-  if (schemas.cache && schemas.profiles) {
-    expect(schemas.cache[0].profile).toEqual(schemas.profiles[0]);
-    expect(next).toHaveBeenCalled();
-  }
+  expect(schemas.cache![0].profile).toEqual(schemas.profiles![0]);
+  expect(next).toHaveBeenCalled();
 });
 
 it('Should assign the cache.profile to the cache.profile if cache.profile is defined', async () => {
@@ -422,10 +416,8 @@ it('Should assign the cache.profile to the cache.profile if cache.profile is def
     ],
   };
   await middleware.handle(schemas, next);
-  if (schemas.cache && schemas.profiles) {
-    expect(schemas.cache[0].profile).toEqual(schemas.profiles[1]);
-    expect(next).toHaveBeenCalled();
-  }
+  expect(schemas.cache![0].profile).toEqual(schemas.profiles![1]);
+  expect(next).toHaveBeenCalled();
 });
 
 it('Should throw an error when cache.profile is not in the schemas.profiles', async () => {
