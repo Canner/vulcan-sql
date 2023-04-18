@@ -38,7 +38,15 @@ export class Container {
     await this.inversifyContainer.loadAsync(extensionModule(options));
     await this.inversifyContainer.loadAsync(documentModule(options.document));
 
-    await this.loadDataSources(options);
+    // data source module depends on extensionModule and profileModule.
+    const profileLoader = this.inversifyContainer.get<ProfileLoader>(
+      TYPES.ProfileLoader
+    );
+    const profiles = await profileLoader.getProfiles();
+
+    await this.inversifyContainer.loadAsync(
+      dataSourceModule(profiles, options.cache)
+    );
     await this.inversifyContainer.loadAsync(executorModule());
     await this.inversifyContainer.loadAsync(cacheLayerModule(options.cache));
   }
@@ -49,25 +57,5 @@ export class Container {
 
   public getInversifyContainer() {
     return this.inversifyContainer;
-  }
-
-  private async loadDataSources(options: ICoreOptions) {
-    // data source module depends on extensionModule and profileModule.
-    const profileLoader = this.inversifyContainer.get<ProfileLoader>(
-      TYPES.ProfileLoader
-    );
-    const profiles = await profileLoader.getProfiles();
-    // cache layer data source depends on schemas from artifactBuilderModule.
-    const artifactBuilder = this.inversifyContainer.get<ArtifactBuilder>(
-      TYPES.ArtifactBuilder
-    );
-    await artifactBuilder.load();
-    const schemas = artifactBuilder.getArtifact<APISchema[]>(
-      BuiltInArtifactKeys.Schemas
-    );
-
-    await this.inversifyContainer.loadAsync(
-      dataSourceModule(profiles, schemas, options.cache)
-    );
   }
 }

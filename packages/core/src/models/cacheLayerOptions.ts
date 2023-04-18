@@ -18,4 +18,7 @@ export interface ICacheLayerOptions {
 }
 
 // The cache layer profile name is used to load the cache data to table name from cache files
-export const cacheProfileName = 'cache-layer';
+export const cacheProfileName = 'vulcan.cache';
+
+// The schema name for vulcan used to create table when loading parquet files to cache data source
+export const vulcanCacheSchemaName = 'vulcan';

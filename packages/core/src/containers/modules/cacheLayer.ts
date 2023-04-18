@@ -26,7 +26,6 @@ export const cacheLayerModule = (options: ICacheLayerOptions = {}) =>
     );
 
     if (options?.provider) {
-      // data cache provider is an optional component, but we can't use templateEngine.compile() if provider wasn't bound.
       bind<CacheLayerProvider>(TYPES.CacheLayerProvider)
         .toDynamicValue((context) => {
           const factory = context.container.get<
@@ -37,5 +36,7 @@ export const cacheLayerModule = (options: ICacheLayerOptions = {}) =>
         .inSingletonScope();
     }
     // Cache Layer Loader
-    bind<CacheLayerLoader>(TYPES.CacheLayerLoader).to(CacheLayerLoader);
+    bind<CacheLayerLoader>(TYPES.CacheLayerLoader)
+      .to(CacheLayerLoader)
+      .inSingletonScope();
   });

@@ -6,6 +6,7 @@ import {
   CacheLayerProvider,
   ICacheLayerOptions,
   cacheProfileName,
+  vulcanCacheSchemaName,
 } from '@vulcan-sql/core/models';
 import { CacheLayerOptions } from '@vulcan-sql/core/options';
 import { APISchema, DataSource } from '@vulcan-sql/core/models';
@@ -16,7 +17,8 @@ export interface ICacheLayerLoader {
 
 @injectable()
 export class CacheLayerLoader implements ICacheLayerLoader {
-  private dataSourceFactory: interfaces.SimpleFactory<DataSource>;
+  // Use protected method for unit test
+  protected dataSourceFactory: interfaces.SimpleFactory<DataSource>;
   private options: ICacheLayerOptions;
   private provider: CacheLayerProvider;
 
@@ -63,7 +65,7 @@ export class CacheLayerLoader implements ICacheLayerLoader {
           // use the "cache-layer" profile to import the cache data
           profileName: cacheProfileName,
           // default schema name for cache layer
-          schema: 'vulcan',
+          schema: vulcanCacheSchemaName,
         });
       });
     }

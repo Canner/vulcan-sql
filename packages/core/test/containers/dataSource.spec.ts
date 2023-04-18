@@ -57,7 +57,6 @@ it('Executor module should bind correct profiles to data sources and create a fa
   container.bind(TYPES.ExtensionConfig).toConstantValue({});
   container.bind(TYPES.ExtensionName).toConstantValue('');
   await container.loadAsync(dataSourceModule(profiles));
-  await container.loadAsync(executorModule());
   const factory = container.get<interfaces.Factory<any>>(
     TYPES.Factory_DataSource
   );
@@ -85,7 +84,6 @@ it('Data source factory should throw error with invalid profile name', async () 
   const container = new Container();
   const profiles = new Map<string, Profile>();
   await container.loadAsync(dataSourceModule(profiles));
-  await container.loadAsync(executorModule());
   container.bind(TYPES.ExtensionConfig).toConstantValue({});
   container.bind(TYPES.ExtensionName).toConstantValue('');
   const factory = container.get<interfaces.Factory<any>>(
@@ -106,7 +104,6 @@ it('When the requestor is not a data source, container should return all profile
   profiles.set('p3', { name: 'p3', type: 'ds2', allow: '*' });
   container.bind(TYPES.Extension_DataSource).to(DataSource3);
   await container.loadAsync(dataSourceModule(profiles));
-  await container.loadAsync(executorModule());
 
   // Act
   const ds3 = container.get<DataSource3>(TYPES.Extension_DataSource);

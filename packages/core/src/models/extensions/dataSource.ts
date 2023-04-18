@@ -84,14 +84,14 @@ export abstract class DataSource<
   abstract prepare(param: RequestParameter): Promise<string>;
 
   /**
-   * Export query result data to parquet file
+   * Export query result data to parquet file for cache layer loader used
    */
   public export(options: ExportOptions): Promise<void> {
     throw new Error(`Export method not implemented`);
   }
 
   /**
-   * Import data to create table from parquet file
+   * Import data to create table from parquet file for cache layer loader used
    */
   public import(options: ImportOptions): Promise<void> {
     throw new Error(`import method not implemented`);

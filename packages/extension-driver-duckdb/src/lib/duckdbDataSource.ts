@@ -33,7 +33,8 @@ export interface DuckDBOptions {
 
 @VulcanExtensionId('duckdb')
 export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
-  private dbMapping = new Map<
+  // Use protected method for unit test
+  protected dbMapping = new Map<
     string,
     { db: duckdb.Database; logQueries: boolean; logParameters: boolean }
   >();
@@ -146,9 +147,9 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     const { db } = this.dbMapping.get(profileName)!;
     // export to parquet file
     db.run(
-      `COPY ${sql} TO '${filepath}' (FORMAT 'parquet', ROW_GROUP_SIZE 100000)`,
+      `COPY (${sql}) TO '${filepath}' (FORMAT 'parquet', ROW_GROUP_SIZE 100000)`,
       () => {
-        this.logger.info(`Export to parquet file done, path = ${filepath}`);
+        this.logger.debug(`Export to parquet file done, path = ${filepath}`);
       }
     );
   }
@@ -166,7 +167,7 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
       `CREATE TABLE ${schema}.${tableName} AS SELECT * FROM read_parquet(?)`,
       [filepath],
       () => {
-        this.logger.info(`Table created, name = ${tableName}`);
+        this.logger.debug(`Table created, name = ${tableName}`);
       }
     );
   }

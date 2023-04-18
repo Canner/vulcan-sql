@@ -8,21 +8,19 @@ import {
 import { Profile } from '../../models/profile';
 import { ClassType } from '../../lib/utils/module';
 import { ConfigurationError } from '@vulcan-sql/core/utils';
-import {
-  APISchema,
-  ICacheLayerOptions,
-  cacheProfileName,
-} from '@vulcan-sql/core/models';
+import { ICacheLayerOptions, cacheProfileName } from '@vulcan-sql/core/models';
 import 'reflect-metadata';
 
 export const dataSourceModule = (
   profiles: Map<string, Profile>,
-  schemas?: Array<APISchema>,
   options?: ICacheLayerOptions
 ) =>
   new AsyncContainerModule(async (bind) => {
-    // Set the cache layer profile if schemas has at least one used cache layer.
-    if (options?.loader && schemas?.some((schema) => schema.cache.length > 0)) {
+    // Set the cache layer profile if user set cache loader in options
+    // The cache layer is a special data source which is used to cache the data from other data sources.
+    // We don't check the schemas has cache config or not in artifact, because it need to load artifact first to get.
+    // However if the container loading data source module when artifact not generated, it will throw error.
+    if (options?.loader) {
       profiles.set(cacheProfileName, {
         name: cacheProfileName,
         type: options.loader.toLocaleLowerCase(),

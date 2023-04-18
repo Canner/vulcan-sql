@@ -15,6 +15,30 @@ const runQuery = (db: duckdb.Database, sql: string) =>
     });
   });
 
+const getQueryResults = (db: duckdb.Database, sql: string) =>
+  new Promise<any[]>((resolve, reject) => {
+    db.wait(() => {
+      db.all(sql, (err: any, result: any[]) => {
+        err ? reject(err) : resolve(result);
+      });
+    });
+  });
+
+const waitForQuery = (db: duckdb.Database) =>
+  new Promise<void>((resolve, reject) => {
+    db.wait((err: any) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+
+// Mock duckdb data source for getting the duckdb instance for unit test
+class MockDuckDBDataSource extends DuckDBDataSource {
+  public getInstance(profileName: string) {
+    return this.dbMapping.get(profileName)?.db;
+  }
+}
+
 beforeAll(async () => {
   if (fs.existsSync(testFile)) fs.unlinkSync(testFile);
   const db = new duckdb.Database(testFile);
@@ -389,4 +413,111 @@ it('Should throw error when profile instance not found', async () => {
       profileName: 'some-profile',
     })
   ).rejects.toThrow(`Profile instance some-profile not found`);
+});
+
+it('Should throw error when exporting data to parquet file but profile instance not found', async () => {
+  // Arrange
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      allow: '*',
+    },
+  ]);
+  await dataSource.activate();
+  // Act, Assert
+  await expect(
+    dataSource.export({
+      sql: 'some-sql-to-export',
+      filepath: 'some-filepath',
+      profileName: 'some-profile',
+    })
+  ).rejects.toThrow(`Profile instance some-profile not found`);
+});
+
+it('Should throw error when importing parquet file to create table but profile instance not found', async () => {
+  // Arrange
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      allow: '*',
+    },
+  ]);
+  await dataSource.activate();
+  // Act, Assert
+  await expect(
+    dataSource.import({
+      tableName: 'some-table-name',
+      filepath: 'some-filepath',
+      profileName: 'some-profile',
+      schema: 'some-schema',
+    })
+  ).rejects.toThrow(`Profile instance some-profile not found`);
+});
+
+it('Should succeed when exporting data to parquet file', async () => {
+  // Arrange
+  const dataSource = new MockDuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
+      allow: '*',
+    },
+  ]);
+  const filepath = path.resolve(__dirname, 'users.parquet');
+  await dataSource.activate();
+  // Act
+  await dataSource.export({
+    sql: 'select * from users',
+    filepath,
+    profileName: 'mocked-profile',
+  });
+  // Assert
+  const db = dataSource.getInstance('mocked-profile')!;
+  await waitForQuery(db);
+  await expect(fs.existsSync(filepath)).toBe(true);
+  // rm created parquet file
+  await fs.promises.rm(filepath, { force: true });
+});
+
+it('Should succeed when importing parquet file to create table', async () => {
+  // Arrange
+  const dataSource = new MockDuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
+      allow: '*',
+    },
+  ]);
+  const filepath = path.resolve(__dirname, 'test-files/nation.parquet');
+  await dataSource.activate();
+  // Act
+  await dataSource.import({
+    tableName: 'nation',
+    filepath,
+    profileName: 'mocked-profile',
+    schema: 'mocked_schema',
+  });
+  // Assert
+  const db = dataSource.getInstance('mocked-profile')!;
+  const actual = (
+    await getQueryResults(db, 'select * from information_schema.tables')
+  ).map((row) => {
+    return {
+      table: row['table_name'],
+      schema: row['table_schema'],
+    };
+  });
+
+  await expect(actual).toContainEqual({
+    table: 'nation',
+    schema: 'mocked_schema',
+  });
 });

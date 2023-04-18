@@ -13,6 +13,7 @@ import {
   InternalError,
   ConfigurationError,
   VulcanError,
+  CacheLayerLoader,
 } from '@vulcan-sql/core';
 import { Container, TYPES } from '../containers';
 import { ServeConfig, sslFileOptions } from '../models';
@@ -86,6 +87,16 @@ export class VulcanServer {
       await dataSource.activate();
       logger.debug(`Data source ${dataSource.getExtensionId()} initialized`);
     }
+
+    // Preload query result and keep to cache data source
+    const cacheLayerLoader = this.container.get<CacheLayerLoader>(
+      CORE_TYPES.CacheLayerLoader
+    );
+    logger.info(
+      'Start to preload prefetched data result from data sources to cache layer...'
+    );
+    cacheLayerLoader.preload(schemas);
+    logger.info('Preload done.');
 
     // Create application
     const app = this.container.get<VulcanApplication>(TYPES.VulcanApplication);

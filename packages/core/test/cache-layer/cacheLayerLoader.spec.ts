@@ -15,6 +15,7 @@ import {
   RequestParameter,
   VulcanExtensionId,
   cacheProfileName,
+  vulcanCacheSchemaName,
 } from '@vulcan-sql/core';
 
 let db: duckdb.Database;
@@ -76,7 +77,6 @@ class MockDataSource extends DataSource {
         `INSERT INTO ${fakeTableName} VALUES (${faker.random.numeric()}, '${faker.random.word()}', ${faker.datatype.boolean()})`
       );
     }
-
     // export to parquet
     db.run(
       `COPY ${fakeTableName} TO '${filepath}' (FORMAT 'parquet', ROW_GROUP_SIZE 100000)`,
@@ -84,11 +84,6 @@ class MockDataSource extends DataSource {
         this.logger.info(`Export to parquet file done, path = ${filepath}`);
       }
     );
-
-    // remove fake table
-    db.run(`DROP TABLE ${fakeTableName}`, () => {
-      this.logger.info(`Drop table done, name = ${fakeTableName}`);
-    });
   }
 
   public override async import(options: ImportOptions) {
@@ -191,11 +186,30 @@ it('Should preload success when export data to parquet file and load it', async 
   await loader.preload(schemas);
 
   // Assert
-  const actual = await getQueryResults('SHOW TABLES');
-  await expect(actual.map((x) => x['name'])).toEqual([
-    schemas[0].cache[0].cacheTableName,
-    schemas[0].cache[1].cacheTableName,
-    schemas[1].cache[0].cacheTableName,
-  ]);
-  console.log(actual);
+  const actual = (
+    await getQueryResults(
+      "select * from information_schema.tables where table_schema = 'vulcan'"
+    )
+  ).map((row) => {
+    return {
+      table: row['table_name'],
+      schema: row['table_schema'],
+    };
+  });
+  expect(actual).toEqual(
+    expect.arrayContaining([
+      {
+        table: schemas[0].cache[0].cacheTableName,
+        schema: vulcanCacheSchemaName,
+      },
+      {
+        table: schemas[0].cache[1].cacheTableName,
+        schema: vulcanCacheSchemaName,
+      },
+      {
+        table: schemas[1].cache[0].cacheTableName,
+        schema: vulcanCacheSchemaName,
+      },
+    ])
+  );
 }, 500000);
