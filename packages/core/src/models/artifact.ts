@@ -106,6 +106,7 @@ export class RefreshExpression {
 export class CacheLayerInfo {
   cacheTableName!: string;
   sql!: string;
+  profile!: string;
   refreshTime?: RefreshTime;
   refreshExpression?: RefreshExpression;
   // index key name -> index column
