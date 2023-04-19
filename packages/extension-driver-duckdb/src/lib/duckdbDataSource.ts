@@ -1,6 +1,7 @@
 import { Readable } from 'stream';
 import * as duckdb from 'duckdb';
 import {
+  CacheLayerStoreFormatType,
   DataResult,
   DataSource,
   ExecuteOptions,
@@ -140,31 +141,38 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
   }
 
   public override async export(options: ExportOptions): Promise<void> {
-    const { filepath, sql, profileName } = options;
+    const { filepath, sql, profileName, type } = options;
     if (!this.dbMapping.has(profileName)) {
       throw new InternalError(`Profile instance ${profileName} not found`);
     }
     const { db } = this.dbMapping.get(profileName)!;
-    // export to parquet file
+    const formatTypeMapper = {
+      [CacheLayerStoreFormatType.parquet.toString()]: 'parquet',
+    };
+    // export to cache file
     db.run(
-      `COPY (${sql}) TO '${filepath}' (FORMAT 'parquet', ROW_GROUP_SIZE 100000)`,
+      `COPY (${sql}) TO '${filepath}' (FORMAT '${formatTypeMapper[type]}')`,
       () => {
-        this.logger.debug(`Export to parquet file done, path = ${filepath}`);
+        this.logger.debug(
+          `Export to ${formatTypeMapper[type]} file done, path = ${filepath}`
+        );
       }
     );
   }
 
   public override async import(options: ImportOptions) {
-    const { tableName, filepath, profileName, schema } = options;
+    const { tableName, filepath, profileName, schema, type } = options;
     if (!this.dbMapping.has(profileName)) {
       throw new InternalError(`Profile instance ${profileName} not found`);
     }
     const { db } = this.dbMapping.get(profileName)!;
-    // parquet is extension, need to install and load it first.
+    const formatTypeMapper = {
+      [CacheLayerStoreFormatType.parquet.toString()]: 'read_parquet(?)',
+    };
 
     db.run(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
     db.run(
-      `CREATE TABLE ${schema}.${tableName} AS SELECT * FROM read_parquet(?)`,
+      `CREATE TABLE ${schema}.${tableName} AS SELECT * FROM ${formatTypeMapper[type]}`,
       [filepath],
       () => {
         this.logger.debug(`Table created, name = ${tableName}`);

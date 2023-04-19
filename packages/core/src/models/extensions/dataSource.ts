@@ -1,5 +1,5 @@
 import { Parameterized, SQLClauseOperation } from '@vulcan-sql/core/data-query';
-import { Profile } from '@vulcan-sql/core/models';
+import { CacheLayerStoreFormatType, Profile } from '@vulcan-sql/core/models';
 import { TYPES } from '@vulcan-sql/core/types';
 import { inject, multiInject, optional } from 'inversify';
 import { Readable } from 'stream';
@@ -16,6 +16,8 @@ export interface ExportOptions {
   directory: string;
   // The profile name to select to export data
   profileName: string;
+  // export file format type
+  type: CacheLayerStoreFormatType | string;
 }
 export interface ImportOptions {
   // The table name to create from imported file data
@@ -26,6 +28,8 @@ export interface ImportOptions {
   profileName: string;
   // default schema
   schema: string;
+  // import file format type
+  type: CacheLayerStoreFormatType | string;
 }
 
 // Original request parameters
@@ -84,14 +88,14 @@ export abstract class DataSource<
   abstract prepare(param: RequestParameter): Promise<string>;
 
   /**
-   * Export query result data to parquet file for cache layer loader used
+   * Export query result data to cache file for cache layer loader used
    */
   public export(options: ExportOptions): Promise<void> {
     throw new Error(`Export method not implemented`);
   }
 
   /**
-   * Import data to create table from parquet file for cache layer loader used
+   * Import data to create table from cache file for cache layer loader used
    */
   public import(options: ImportOptions): Promise<void> {
     throw new Error(`import method not implemented`);

@@ -2,7 +2,7 @@ import { injectable, inject, optional } from 'inversify';
 import { IsOptional, IsString, validateSync } from 'class-validator';
 import { TYPES } from '@vulcan-sql/core/types';
 import {
-  CacheLayerProviderType,
+  CacheLayerStoreFormatType,
   CacheLayerStoreLoaderType,
   ICacheLayerOptions,
 } from '@vulcan-sql/core/models';
@@ -12,7 +12,7 @@ import { ConfigurationError } from '../lib/utils/errors';
 export class CacheLayerOptions implements ICacheLayerOptions {
   @IsString()
   @IsOptional()
-  public readonly provider?: string = CacheLayerProviderType.LocalFile;
+  public readonly type?: string = CacheLayerStoreFormatType.parquet;
 
   @IsString()
   @IsOptional()
@@ -20,7 +20,7 @@ export class CacheLayerOptions implements ICacheLayerOptions {
 
   @IsString()
   @IsOptional()
-  public readonly loader: string = CacheLayerStoreLoaderType.DuckDB;
+  public readonly loader: string = CacheLayerStoreLoaderType.duckdb;
 
   constructor(
     @inject(TYPES.CacheLayerInputOptions)

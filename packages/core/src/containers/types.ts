@@ -34,8 +34,6 @@ export const TYPES = {
   // Cache Layer
   CacheLayerOptions: Symbol.for('CacheLayerOptions'),
   CacheLayerInputOptions: Symbol.for('CacheLayerInputOptions'),
-  Factory_CacheLayerProvider: Symbol.for('Factory_CacheLayerProvider'),
-  CacheLayerProvider: Symbol.for('CacheLayerProvider'),
   CacheLayerLoader: Symbol.for('CacheLayerLoader'),
   // Validator
   ValidatorLoader: Symbol.for('ValidatorLoader'),
@@ -53,5 +51,4 @@ export const TYPES = {
   Extension_CompilerLoader: Symbol.for('Extension_CompilerLoader'),
   Extension_DataSource: Symbol.for('Extension_DataSource'),
   Extension_ProfileReader: Symbol.for('ProfileReader'),
-  Extension_CacheLayerProvider: Symbol.for('Extension_CacheLayerProvider'),
 };

@@ -3,7 +3,6 @@ import * as fs from 'fs';
 import { inject, injectable, interfaces } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import {
-  CacheLayerProvider,
   ICacheLayerOptions,
   cacheProfileName,
   vulcanCacheSchemaName,
@@ -20,17 +19,14 @@ export class CacheLayerLoader implements ICacheLayerLoader {
   // Use protected method for unit test
   protected dataSourceFactory: interfaces.SimpleFactory<DataSource>;
   private options: ICacheLayerOptions;
-  private provider: CacheLayerProvider;
 
   constructor(
     @inject(TYPES.CacheLayerOptions) options: CacheLayerOptions,
-    @inject(TYPES.CacheLayerProvider) provider: CacheLayerProvider,
     @inject(TYPES.Factory_DataSource)
     dataSourceFactory: interfaces.SimpleFactory<DataSource>
   ) {
     this.dataSourceFactory = dataSourceFactory;
     this.options = options;
-    this.provider = provider;
   }
 
   /**
@@ -38,7 +34,6 @@ export class CacheLayerLoader implements ICacheLayerLoader {
    * @param schemas The API schemas from artifact to preload
    */
   public async preload(schemas: Array<APISchema>): Promise<void> {
-    await this.provider!.activate?.();
     // prepare cache data source
     const cacheStorage = this.dataSourceFactory(cacheProfileName);
     // traverse each cache table of each schema
@@ -56,7 +51,12 @@ export class CacheLayerLoader implements ICacheLayerLoader {
           fs.mkdirSync(this.options.folderPath!);
 
         // 1. export to cache files according to each schema set the cache value
-        await dataSource.export({ sql, filepath, profileName: profile });
+        await dataSource.export({
+          sql,
+          filepath,
+          profileName: profile,
+          type: this.options.type!,
+        });
 
         // 2. preload the files to cache data source
         await cacheStorage.import({
@@ -66,6 +66,7 @@ export class CacheLayerLoader implements ICacheLayerLoader {
           profileName: cacheProfileName,
           // default schema name for cache layer
           schema: vulcanCacheSchemaName,
+          type: this.options.type!,
         });
       });
     }

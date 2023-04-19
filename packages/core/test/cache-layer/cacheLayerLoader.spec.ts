@@ -10,7 +10,6 @@ import {
   DataResult,
   DataSource,
   ExportOptions,
-  FileCacheLayerProvider,
   ImportOptions,
   RequestParameter,
   VulcanExtensionId,
@@ -78,12 +77,9 @@ class MockDataSource extends DataSource {
       );
     }
     // export to parquet
-    db.run(
-      `COPY ${fakeTableName} TO '${filepath}' (FORMAT 'parquet', ROW_GROUP_SIZE 100000)`,
-      () => {
-        this.logger.info(`Export to parquet file done, path = ${filepath}`);
-      }
-    );
+    db.run(`COPY ${fakeTableName} TO '${filepath}' (FORMAT 'parquet')`, () => {
+      this.logger.info(`Export to parquet file done, path = ${filepath}`);
+    });
   }
 
   public override async import(options: ImportOptions) {
@@ -176,11 +172,7 @@ it('Should preload success when export data to parquet file and load it', async 
   const options = new CacheLayerOptions({
     folderPath,
   });
-  const loader = new CacheLayerLoader(
-    options,
-    new FileCacheLayerProvider(options, '', ''),
-    stubFactory as any
-  );
+  const loader = new CacheLayerLoader(options, stubFactory as any);
 
   // Act
   await loader.preload(schemas);

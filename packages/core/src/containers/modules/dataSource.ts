@@ -20,10 +20,10 @@ export const dataSourceModule = (
     // The cache layer is a special data source which is used to cache the data from other data sources.
     // We don't check the schemas has cache config or not in artifact, because it need to load artifact first to get.
     // However if the container loading data source module when artifact not generated, it will throw error.
-    if (options?.loader) {
+    if (options && options.loader) {
       profiles.set(cacheProfileName, {
         name: cacheProfileName,
-        type: options.loader.toLocaleLowerCase(),
+        type: options.loader!.toLocaleLowerCase(),
         // allow '*' to make every user request could use the cache-layer data source.
         allow: '*',
       } as Profile);

@@ -1,5 +1,5 @@
 import {
-  CacheLayerProviderType,
+  CacheLayerStoreFormatType,
   CacheLayerStoreLoaderType,
   ICacheLayerOptions,
 } from '@vulcan-sql/core/models';
@@ -21,8 +21,8 @@ it('Should provide correct default option values', async () => {
   // Action
   const options = container.get<CacheLayerOptions>(TYPES.CacheLayerOptions);
   // Assert
-  expect(options.provider).toBe(CacheLayerProviderType.LocalFile);
-  expect(options.loader).toBe(CacheLayerStoreLoaderType.DuckDB);
+  expect(options.type).toBe(CacheLayerStoreFormatType.parquet);
+  expect(options.loader).toBe(CacheLayerStoreLoaderType.duckdb);
 });
 
 it('Can override some option properties', async () => {
@@ -34,8 +34,8 @@ it('Can override some option properties', async () => {
     });
   const options = container.get<CacheLayerOptions>(TYPES.CacheLayerOptions);
   // Assert
-  expect(options.provider).toBe(CacheLayerProviderType.LocalFile);
-  expect(options.loader).toBe(CacheLayerStoreLoaderType.DuckDB);
+  expect(options.type).toBe(CacheLayerStoreFormatType.parquet);
+  expect(options.loader).toBe(CacheLayerStoreLoaderType.duckdb);
   expect(options.folderPath).toBe('/cache');
 });
 

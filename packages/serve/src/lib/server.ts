@@ -89,15 +89,16 @@ export class VulcanServer {
     }
 
     // Preload query result and keep to cache data source
-    const cacheLayerLoader = this.container.get<CacheLayerLoader>(
-      CORE_TYPES.CacheLayerLoader
-    );
-    logger.info(
-      'Start to preload prefetched data result from data sources to cache layer...'
-    );
-    cacheLayerLoader.preload(schemas);
-    logger.info('Preload done.');
-
+    if (this.config.cache) {
+      const cacheLayerLoader = this.container.get<CacheLayerLoader>(
+        CORE_TYPES.CacheLayerLoader
+      );
+      logger.info(
+        'Start to preload prefetched data result from data sources to cache layer...'
+      );
+      cacheLayerLoader.preload(schemas);
+      logger.info('Preload done.');
+    }
     // Create application
     const app = this.container.get<VulcanApplication>(TYPES.VulcanApplication);
     await app.useMiddleware();

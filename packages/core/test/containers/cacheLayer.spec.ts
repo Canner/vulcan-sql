@@ -1,12 +1,11 @@
 import {
   CacheLayerLoader,
   cacheLayerModule,
-  CacheLayerProviderType,
+  CacheLayerStoreFormatType,
   cacheProfileName,
   DataResult,
   DataSource,
   dataSourceModule,
-  FileCacheLayerProvider,
   Profile,
   TYPES,
   VulcanExtensionId,
@@ -65,12 +64,12 @@ beforeEach(async () => {
   profiles.set('test-duck', { name: 'test-duck', type: 'duckdb', allow: '*' });
 });
 
-it('Cache layer module should bind "cache-layer" profile to "duckdb" type data source when caches setting has least one in some schemas', async () => {
+it('Cache layer module should add "vulcan.cache" profile and bind "duckdb" type data source when cache options has set', async () => {
   // Arrange
   const stubOptions: ICacheLayerOptions = {
     ...sinon.stubInterface<ICacheLayerOptions>(),
-    provider: CacheLayerProviderType.LocalFile,
-    loader: CacheLayerStoreLoaderType.DuckDB,
+    type: CacheLayerStoreFormatType.parquet,
+    loader: CacheLayerStoreLoaderType.duckdb,
   };
   // load data source module
   await container.loadAsync(dataSourceModule(profiles, stubOptions));
@@ -98,17 +97,60 @@ it('Cache layer module should bind "cache-layer" profile to "duckdb" type data s
   ]);
 });
 
+it('Cache layer module should not add "vulcan.cache" profile and bind to data source when cache option does not set.', async () => {
+  // Arrange
+
+  await container.loadAsync(dataSourceModule(profiles));
+  const factory = container.get<interfaces.Factory<any>>(
+    TYPES.Factory_DataSource
+  );
+
+  // Act
+  const dsFromTestPg = factory('test-pg') as MockPGDataSource;
+  const dsFromTestDuck = factory('test-duck') as MockDuckDBDataSource;
+
+  // Assert
+  expect(() => factory(cacheProfileName)).toThrow();
+  expect(dsFromTestPg instanceof MockPGDataSource).toBeTruthy();
+  expect(dsFromTestDuck instanceof MockDuckDBDataSource).toBeTruthy();
+
+  expect(dsFromTestDuck.injectedProfiles).toEqual([
+    { name: 'test-duck', type: 'duckdb', allow: '*' },
+  ]);
+});
+
+it('Cache layer module should not add "vulcan.cache" profile and bind to data source when cache option set but miss the "loader".', async () => {
+  // Arrange
+  const stubOptions: ICacheLayerOptions = {
+    ...sinon.stubInterface<ICacheLayerOptions>(),
+    type: CacheLayerStoreFormatType.parquet,
+  };
+  await container.loadAsync(dataSourceModule(profiles, stubOptions));
+  const factory = container.get<interfaces.Factory<any>>(
+    TYPES.Factory_DataSource
+  );
+
+  // Act
+  const dsFromTestPg = factory('test-pg') as MockPGDataSource;
+  const dsFromTestDuck = factory('test-duck') as MockDuckDBDataSource;
+
+  // Assert
+  expect(() => factory(cacheProfileName)).toThrow();
+  expect(dsFromTestPg instanceof MockPGDataSource).toBeTruthy();
+  expect(dsFromTestDuck instanceof MockDuckDBDataSource).toBeTruthy();
+
+  expect(dsFromTestDuck.injectedProfiles).toEqual([
+    { name: 'test-duck', type: 'duckdb', allow: '*' },
+  ]);
+});
+
 it('Cache layer loader should be bound to "duckdb" type data source when loader of caches options has set', async () => {
   // Arrange
   const stubOptions: ICacheLayerOptions = {
     ...sinon.stubInterface<ICacheLayerOptions>(),
-    provider: CacheLayerProviderType.LocalFile,
-    loader: CacheLayerStoreLoaderType.DuckDB,
+    type: CacheLayerStoreFormatType.parquet,
+    loader: CacheLayerStoreLoaderType.duckdb,
   };
-  container
-    .bind(TYPES.Extension_CacheLayerProvider)
-    .to(FileCacheLayerProvider)
-    .whenTargetNamed(CacheLayerProviderType.LocalFile);
   // load data source module & cache layer options
   await container.loadAsync(dataSourceModule(profiles, stubOptions));
   await container.loadAsync(cacheLayerModule(stubOptions));

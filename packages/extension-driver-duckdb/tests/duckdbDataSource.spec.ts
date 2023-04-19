@@ -1,4 +1,8 @@
-import { getLogger, streamToArray } from '@vulcan-sql/core';
+import {
+  CacheLayerStoreFormatType,
+  getLogger,
+  streamToArray,
+} from '@vulcan-sql/core';
 import { DuckDBDataSource } from '../src';
 import * as fs from 'fs';
 import * as duckdb from 'duckdb';
@@ -415,7 +419,7 @@ it('Should throw error when profile instance not found', async () => {
   ).rejects.toThrow(`Profile instance some-profile not found`);
 });
 
-it('Should throw error when exporting data to parquet file but profile instance not found', async () => {
+it('Should throw error when exporting data to "parquet" file but profile instance not found', async () => {
   // Arrange
   const dataSource = new DuckDBDataSource(null, 'duckdb', [
     {
@@ -431,11 +435,12 @@ it('Should throw error when exporting data to parquet file but profile instance 
       sql: 'some-sql-to-export',
       filepath: 'some-filepath',
       profileName: 'some-profile',
+      type: CacheLayerStoreFormatType.parquet,
     })
   ).rejects.toThrow(`Profile instance some-profile not found`);
 });
 
-it('Should throw error when importing parquet file to create table but profile instance not found', async () => {
+it('Should throw error when importing "parquet" file to create table but profile instance not found', async () => {
   // Arrange
   const dataSource = new DuckDBDataSource(null, 'duckdb', [
     {
@@ -452,11 +457,12 @@ it('Should throw error when importing parquet file to create table but profile i
       filepath: 'some-filepath',
       profileName: 'some-profile',
       schema: 'some-schema',
+      type: 'parquet',
     })
   ).rejects.toThrow(`Profile instance some-profile not found`);
 });
 
-it('Should succeed when exporting data to parquet file', async () => {
+it('Should succeed when exporting data to "parquet" file', async () => {
   // Arrange
   const dataSource = new MockDuckDBDataSource(null, 'duckdb', [
     {
@@ -475,16 +481,17 @@ it('Should succeed when exporting data to parquet file', async () => {
     sql: 'select * from users',
     filepath,
     profileName: 'mocked-profile',
+    type: CacheLayerStoreFormatType.parquet,
   });
   // Assert
   const db = dataSource.getInstance('mocked-profile')!;
   await waitForQuery(db);
   await expect(fs.existsSync(filepath)).toBe(true);
-  // rm created parquet file
+  // rm created cache files
   await fs.promises.rm(filepath, { force: true });
 });
 
-it('Should succeed when importing parquet file to create table', async () => {
+it('Should succeed when importing "parquet" file to create table', async () => {
   // Arrange
   const dataSource = new MockDuckDBDataSource(null, 'duckdb', [
     {
@@ -504,6 +511,7 @@ it('Should succeed when importing parquet file to create table', async () => {
     filepath,
     profileName: 'mocked-profile',
     schema: 'mocked_schema',
+    type: 'parquet',
   });
   // Assert
   const db = dataSource.getInstance('mocked-profile')!;
