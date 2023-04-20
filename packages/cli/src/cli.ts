@@ -6,6 +6,7 @@ import {
   handleVersion,
   handleBuild,
   handleServe,
+  handleCatalog,
 } from './commands';
 
 program.exitOverride();
@@ -77,6 +78,15 @@ program
   .option('-o --output <output>', 'package output type', 'node')
   .action(async (options) => {
     await handlePackage(options);
+  });
+
+program
+  .command('catalog')
+  .alias('catalog-server')
+  .description('serve Vulcan catalog server')
+  .option('-p --port <port>', 'catalog server port', '4200')
+  .action(async (options) => {
+    await handleCatalog(options);
   });
 
 export { program };

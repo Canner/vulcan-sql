@@ -54,6 +54,19 @@
       "options": {
         "lintFilePatterns": ["packages/catalog-server/**/*.{ts,tsx,js,jsx}"]
       }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
+        "cwd": "dist/packages/catalog-server"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
     }
   },
   "tags": []

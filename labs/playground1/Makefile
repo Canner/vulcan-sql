@@ -6,7 +6,7 @@ start: build test-data/moma.db ../../node_modules
 	@vulcan start
 
 # build the required packages
-build: pkg-core pkg-build pkg-serve pkg-cli pkg-extension-driver-duckdb
+build: pkg-core pkg-build pkg-serve pkg-catalog-server pkg-cli pkg-extension-driver-duckdb
 
 
 # build for core pakge
@@ -32,6 +32,14 @@ pkg-serve: ../../node_modules
 	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
 	rm -rf ./labs/playground1/node_modules/@vulcan-sql/serve; \
 	cp -R ./dist/packages/serve ./labs/playground1/node_modules/@vulcan-sql
+
+# build for catalog-server pakge
+pkg-catalog-server: ../../node_modules
+	@cd ../..; \
+	yarn nx build catalog-server; \
+	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
+	rm -rf ./labs/playground1/node_modules/@vulcan-sql/catalog-server; \
+	cp -R ./dist/packages/catalog-server ./labs/playground1/node_modules/@vulcan-sql
 
 # build for extension-driver-duckdb pakge
 pkg-extension-driver-duckdb: ../../node_modules
