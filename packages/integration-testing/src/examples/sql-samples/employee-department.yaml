@@ -1,0 +1,13 @@
+urlPath: /employees/:id/department
+request:
+  - fieldName: id
+    fieldIn: path
+    description: employee id
+    validators:
+      - uuid
+      - required
+profile: duck
+cache:
+  - cacheTableName: 'cache_employees'
+    sql: 'select * from employees'
+    profile: duck

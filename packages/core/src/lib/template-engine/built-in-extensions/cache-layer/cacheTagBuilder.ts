@@ -13,9 +13,42 @@ export class CacheTagBuilder extends TagBuilder {
     nodes: typeof nunjucks.nodes,
     lexer: typeof nunjucks.lexer
   ) {
-    // {% cache %} query {% endcache %}
+    // The cache tag could set variable name or not.
+    // Has variable name: we use the variable and keep the builder in the variable, and make user could use by xxx.value() like the req feature.
+    // Not has variable name: means you would like to get the result directly after query, then we will replace the original query main builder to the cache builder.
+    // {% cache (var) %} query {% endcache %}
     const cacheToken = parser.nextToken();
 
+    const peekToken = parser.peekToken();
+    // check if the next token is a block end or a symbol
+    if (![lexer.TOKEN_BLOCK_END, lexer.TOKEN_SYMBOL].includes(peekToken.type)) {
+      parser.fail(
+        `Expected a symbol or a block end, but got ${peekToken.type}`,
+        peekToken.lineno,
+        peekToken.colno
+      );
+    }
+
+    // prepare the arguments node to pass to runner for "run" method used.
+    const argsNodeToPass = new nodes.NodeList(
+      cacheToken.lineno,
+      cacheToken.colno
+    );
+
+    // if the next token is a symbol, it means the user set the variable name.
+    if (peekToken.type === lexer.TOKEN_SYMBOL) {
+      // parse to get and consume the variable token
+      const variable = parser.parseExpression();
+      // add variable name literal node for passing to "run" method used.
+      argsNodeToPass.addChild(
+        new nodes.Literal(
+          variable.lineno,
+          variable.colno,
+          (variable as nunjucks.nodes.Symbol).value
+        )
+      );
+    }
+    // consume the end token
     const endToken = parser.nextToken();
     if (endToken.type !== lexer.TOKEN_BLOCK_END) {
       parser.fail(
@@ -29,11 +62,6 @@ export class CacheTagBuilder extends TagBuilder {
     const queryToCache = parser.parseUntilBlocks('endcache');
     parser.advanceAfterBlockEnd();
 
-    // prepare the arguments node to pass to runner for "run" method used.
-    const argsNodeToPass = new nodes.NodeList(
-      cacheToken.lineno,
-      cacheToken.colno
-    );
     return this.createAsyncExtensionNode(argsNodeToPass, [queryToCache]);
   }
 

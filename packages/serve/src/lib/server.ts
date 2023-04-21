@@ -96,7 +96,7 @@ export class VulcanServer {
       logger.info(
         'Start to preload prefetched data result from data sources to cache layer...'
       );
-      cacheLayerLoader.preload(schemas);
+      await cacheLayerLoader.preload(schemas);
       logger.info('Preload done.');
     }
     // Create application

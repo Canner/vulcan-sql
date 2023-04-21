@@ -1,5 +1,5 @@
 import { TYPES } from '@vulcan-sql/core/types';
-import { IExecutor } from '@vulcan-sql/core/data-query';
+import { IDataQueryBuilder, IExecutor } from '@vulcan-sql/core/data-query';
 import { inject } from 'inversify';
 import {
   TagRunner,
@@ -9,6 +9,7 @@ import {
 import { FINIAL_BUILDER_NAME, PARAMETERIZER_VAR_NAME } from './constants';
 import { Parameterizer } from '@vulcan-sql/core/data-query';
 import { InternalError } from '../../../utils/errors';
+import { CACHE_DIRECTLY_QUERY_VAR_NAME } from '../cache-layer/constants';
 
 @VulcanInternalExtension()
 export class ReqTagRunner extends TagRunner {
@@ -44,12 +45,19 @@ export class ReqTagRunner extends TagRunner {
       .filter((line) => line.trim().length > 0)
       .join('\n');
 
-    const builder = await this.executor.createBuilder(
-      profileName,
-      query,
-      parameterizer
-    );
-    context.setVariable(name, builder);
+    let builder: IDataQueryBuilder | undefined;
+    // replace to put the directly query cache builder to original query main builder of  "__wrapper__builder"
+    // it means we can use the cache builder to execute the query directly and get result to be final result
+    builder = context.lookup(CACHE_DIRECTLY_QUERY_VAR_NAME);
+    if (builder) context.setVariable(name, builder);
+    else {
+      builder = await this.executor.createBuilder(
+        profileName,
+        query,
+        parameterizer
+      );
+      context.setVariable(name, builder);
+    }
 
     if (args[1] === 'true') {
       context.setVariable(FINIAL_BUILDER_NAME, builder);

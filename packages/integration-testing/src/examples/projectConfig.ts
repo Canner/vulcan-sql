@@ -10,12 +10,12 @@ import * as path from 'path';
 import faker from '@faker-js/faker';
 
 export default {
-  name: 'example project 1',
+  name: 'Integration Testing',
   description: 'Vulcan project for integration testing',
-  version: '0.0.1',
+  version: '0.0.2',
   template: {
     provider: TemplateProviderType.LocalFile,
-    folderPath: path.resolve(__dirname, 'sqls'),
+    folderPath: path.resolve(__dirname, 'sql-samples'),
   },
   artifact: {
     provider: ArtifactBuilderProviderType.LocalFile,
@@ -24,7 +24,7 @@ export default {
   },
   'schema-parser': {
     reader: SchemaReaderType.LocalFile,
-    folderPath: path.resolve(__dirname, 'sqls'),
+    folderPath: path.resolve(__dirname, 'sql-samples'),
   },
   document: {
     specs: [DocumentSpec.oas3],

@@ -38,7 +38,7 @@ export class CacheLayerLoader implements ICacheLayerLoader {
     const cacheStorage = this.dataSourceFactory(cacheProfileName);
     // traverse each cache table of each schema
     for (const schema of schemas) {
-      schema.cache.map(async (cache) => {
+      schema.cache?.map(async (cache) => {
         const { cacheTableName, sql, profile } = cache;
         const dataSource = this.dataSourceFactory(profile);
         // filename pattern: [schema.templateSource]#[profileName]#[cacheTableName].parquet
