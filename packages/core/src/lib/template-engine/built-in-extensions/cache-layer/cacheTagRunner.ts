@@ -8,7 +8,7 @@ import {
   cacheProfileName,
   vulcanCacheSchemaName,
 } from '@vulcan-sql/core/models';
-import { CACHE_DIRECTLY_QUERY_VAR_NAME } from './constants';
+import { CACHE_MAIN_BUILDER_VAR_NAME } from './constants';
 import { Parameterizer } from '@vulcan-sql/core/data-query';
 import { PARAMETERIZER_VAR_NAME } from '../query-builder/constants';
 // import { InternalError } from '../../../utils/errors';
@@ -30,7 +30,7 @@ export class CacheTagRunner extends TagRunner {
   public async run({ context, args, contentArgs }: TagRunnerOptions) {
     // Get the variable name, if the cache tag has variable name, then we use the variable and keep the builder in the variable, and make user could use by xxx.value() like the req feature.
     // However if the cache tag not has variable name, means you would like to get the result directly after query, then we will replace the original query main builder to the cache builder.
-    const name = String(args[0] || CACHE_DIRECTLY_QUERY_VAR_NAME);
+    const name = String(args[0]);
 
     // use cache profile name to create prepared statement by parameterizer query
     const parameterizer = new Parameterizer((param) =>

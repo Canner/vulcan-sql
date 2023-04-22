@@ -21,16 +21,6 @@ it('Extension compiled succeed when the token is end block after "cache" tag', a
   ).resolves.not.toThrow();
 });
 
-it('Extension compiled failed when the token is end block after "cache" tag', async () => {
-  // Arrange
-  const { compiler } = await createTestCompiler();
-
-  // Action, Assert
-  await expect(
-    compiler.compile(`{% cache %} some statement {% endcache %}`)
-  ).resolves.not.toThrow();
-});
-
 it('If argument have too many elements, extension should throw an error', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
@@ -59,7 +49,7 @@ select count(*) as count from user where user.id = '{{ params.userId }}';
   ).rejects.toThrow(`Expected a symbol or a block end, but got string`);
 });
 
-it('Extension compiled succeed even if exist multiple "cache" scope tags', async () => {
+it('Extension compiled failed when exist multiple "cache" without variable tags', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
 
@@ -68,6 +58,32 @@ it('Extension compiled succeed even if exist multiple "cache" scope tags', async
     compiler.compile(`
   {% cache %} some statement1 {% endcache %}
   {% cache %} some statement2 {% endcache %}
+    `)
+  ).rejects.toThrow();
+});
+
+it('Extension compiled failed when exist multiple "cache" with same variable tags', async () => {
+  // Arrange
+  const { compiler } = await createTestCompiler();
+
+  // Action, Assert
+  await expect(
+    compiler.compile(`
+  {% cache variable %} some statement1 {% endcache %}
+  {% cache variable %} some statement2 {% endcache %}
+    `)
+  ).rejects.toThrow();
+});
+
+it('Extension compiled succeed when exist multiple "cache" with different variable tags', async () => {
+  // Arrange
+  const { compiler } = await createTestCompiler();
+
+  // Action, Assert
+  await expect(
+    compiler.compile(`
+  {% cache variable1 %} some statement1 {% endcache %}
+  {% cache variable2 %} some statement2 {% endcache %}
     `)
   ).resolves.not.toThrow();
 });
@@ -82,7 +98,7 @@ it('Extension compiled succeed even if not have query statement body in "cache" 
   ).resolves.not.toThrow();
 });
 
-it('The metadata should include"isUsedTag" is true in "cache.vulcan.com" after compiled', async () => {
+it('The metadata should include "isUsedTag" is true in "cache.vulcan.com" after compiled', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
 

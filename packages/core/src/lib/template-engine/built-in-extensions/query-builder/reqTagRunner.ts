@@ -9,7 +9,7 @@ import {
 import { FINIAL_BUILDER_NAME, PARAMETERIZER_VAR_NAME } from './constants';
 import { Parameterizer } from '@vulcan-sql/core/data-query';
 import { InternalError } from '../../../utils/errors';
-import { CACHE_DIRECTLY_QUERY_VAR_NAME } from '../cache-layer/constants';
+import { CACHE_MAIN_BUILDER_VAR_NAME } from '../cache-layer/constants';
 
 @VulcanInternalExtension()
 export class ReqTagRunner extends TagRunner {
@@ -48,7 +48,7 @@ export class ReqTagRunner extends TagRunner {
     let builder: IDataQueryBuilder | undefined;
     // replace to put the directly query cache builder to original query main builder of  "__wrapper__builder"
     // it means we can use the cache builder to execute the query directly and get result to be final result
-    builder = context.lookup(CACHE_DIRECTLY_QUERY_VAR_NAME);
+    builder = context.lookup(CACHE_MAIN_BUILDER_VAR_NAME);
     if (builder) context.setVariable(name, builder);
     else {
       builder = await this.executor.createBuilder(
