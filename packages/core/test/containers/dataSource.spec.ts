@@ -2,7 +2,6 @@ import {
   DataResult,
   DataSource,
   dataSourceModule,
-  executorModule,
   Profile,
   TYPES,
   VulcanExtensionId,

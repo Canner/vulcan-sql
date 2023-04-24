@@ -33,7 +33,7 @@ export class ReqTagRunner extends TagRunner {
     const parameterizer = new Parameterizer((param) =>
       this.executor.prepare({ ...param, profileName })
     );
-    // parameterizer from parent, we should set it back after rendered our context.
+    // Parameterizer from parent, we should set it back after rendered our context.
     const parentParameterizer = context.lookup(PARAMETERIZER_VAR_NAME);
     context.setVariable(PARAMETERIZER_VAR_NAME, parameterizer);
     let query = '';
@@ -46,7 +46,7 @@ export class ReqTagRunner extends TagRunner {
       .join('\n');
 
     let builder: IDataQueryBuilder | undefined;
-    // replace to put the directly query cache builder to original query main builder of  "__wrapper__builder"
+    // Replace to put the directly query cache builder to original query main builder of  "__wrapper__builder",
     // it means we can use the cache builder to execute the query directly and get result to be final result
     builder = context.lookup(CACHE_MAIN_BUILDER_VAR_NAME);
     if (builder) context.setVariable(name, builder);

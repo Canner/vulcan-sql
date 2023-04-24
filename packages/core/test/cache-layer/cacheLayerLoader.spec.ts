@@ -205,3 +205,84 @@ it('Should preload success when export data to parquet file and load it', async 
     ])
   );
 }, 500000);
+
+it('Should preload failed when exist duplicate cache table name over than one API schema', async () => {
+  // Arrange
+  const schemas: Array<APISchema> = [
+    {
+      ...sinon.stubInterface<APISchema>(),
+      templateSource: 'template-1',
+      profiles: ['mock1-profile1', 'mock1-profile2'],
+      cache: [
+        {
+          cacheTableName: 'schema1_table1',
+          sql: sinon.default.stub() as any,
+          profile: 'mock1-profile1',
+        },
+        {
+          cacheTableName: 'schema1_table2',
+          sql: sinon.default.stub() as any,
+          profile: 'mock1-profile2',
+        },
+      ] as Array<CacheLayerInfo>,
+    },
+    {
+      ...sinon.stubInterface<APISchema>(),
+      templateSource: 'template-2',
+      profiles: ['mock2-profile1'],
+      cache: [
+        {
+          // duplicate cache table name
+          cacheTableName: 'schema1_table1',
+          sql: sinon.default.stub() as any,
+          profile: 'mock2-profile1',
+        },
+        {
+          cacheTableName: 'schema2_table1',
+          sql: sinon.default.stub() as any,
+          profile: 'mock2-profile1',
+        },
+      ] as Array<CacheLayerInfo>,
+    },
+  ];
+  const mockDataSource = new MockDataSource({}, '', [
+    {
+      name: schemas[0].profiles[0],
+      type: 'mock',
+      allow: '*',
+    },
+    {
+      name: schemas[0].profiles[1],
+      type: 'mock',
+      allow: '*',
+    },
+    {
+      name: schemas[1].profiles[0],
+      type: 'mock',
+      allow: '*',
+    },
+    {
+      name: cacheProfileName,
+      type: 'mock',
+      allow: '*',
+    },
+  ]);
+  const stubFactory = (profileName: string) => {
+    const dataSourceMap = {
+      [schemas[0].profiles[0]]: mockDataSource,
+      [schemas[0].profiles[1]]: mockDataSource,
+      [schemas[1].profiles[0]]: mockDataSource,
+      [cacheProfileName]: mockDataSource,
+    } as Record<string, DataSource>;
+    return dataSourceMap[profileName];
+  };
+  const options = new CacheLayerOptions({
+    folderPath,
+  });
+  const loader = new CacheLayerLoader(options, stubFactory as any);
+
+  // Act
+  await expect(() => loader.preload(schemas)).rejects.toThrow(
+    'Not allow to set same cache table name more than one API schema.'
+  );
+});

@@ -28,7 +28,7 @@ export class CacheTagBuilder extends TagBuilder {
     const cacheToken = parser.nextToken();
 
     const peekToken = parser.peekToken();
-    // check if the next token is a block end or a symbol
+    // Check if the next token is a block end or a symbol
     if (![lexer.TOKEN_BLOCK_END, lexer.TOKEN_SYMBOL].includes(peekToken.type)) {
       parser.fail(
         `Expected a symbol or a block end, but got ${peekToken.type}`,
@@ -37,7 +37,7 @@ export class CacheTagBuilder extends TagBuilder {
       );
     }
 
-    // prepare the arguments node to pass to runner for "run" method used.
+    // Prepare the arguments node to pass to runner for "run" method used.
     const argsNodeToPass = new nodes.NodeList(
       cacheToken.lineno,
       cacheToken.colno
@@ -45,9 +45,9 @@ export class CacheTagBuilder extends TagBuilder {
 
     // If the next token is a end block, it means the user use the cache main builder
     if (peekToken.type === lexer.TOKEN_BLOCK_END) {
-      // consume the end token
+      // Consume the end token
       parser.nextToken();
-      // add variable name literal node for passing to "run" method used.
+      // Add variable name literal node for passing to "run" method used.
       argsNodeToPass.addChild(
         new nodes.Literal(
           cacheToken.lineno,
@@ -58,9 +58,9 @@ export class CacheTagBuilder extends TagBuilder {
     }
     // If the next token is a symbol, it means the user set the variable name.
     if (peekToken.type === lexer.TOKEN_SYMBOL) {
-      // parse to get and consume the variable token
+      // Parse to get and consume the variable token
       const variable = parser.parseExpression();
-      // add variable name literal node for passing to "run" method used.
+      // Add variable name literal node for passing to "run" method used.
       argsNodeToPass.addChild(
         new nodes.Literal(
           variable.lineno,
@@ -68,7 +68,7 @@ export class CacheTagBuilder extends TagBuilder {
           (variable as nunjucks.nodes.Symbol).value
         )
       );
-      // consume the end token
+      // Consume the end token
       const endToken = parser.nextToken();
       if (endToken.type !== lexer.TOKEN_BLOCK_END) {
         parser.fail(
@@ -91,7 +91,7 @@ export class CacheTagBuilder extends TagBuilder {
       if (node.extName !== this.getName()) return;
       this.checkCacheTagBuilder(node);
       this.checkMainBuilder(node);
-      // mark used the isMainBuilder tag
+      // mark used cache tag
       this.isUsedTag = true;
     }
   }

@@ -1,5 +1,5 @@
 import { IExecutor, QueryExecutor } from '@vulcan-sql/core/data-query';
-import { AsyncContainerModule, interfaces } from 'inversify';
+import { AsyncContainerModule } from 'inversify';
 import { TYPES } from '../types';
 import 'reflect-metadata';
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Parameterized, SQLClauseOperation } from '@vulcan-sql/core/data-query';
 import { CacheLayerStoreFormatType, Profile } from '@vulcan-sql/core/models';
 import { TYPES } from '@vulcan-sql/core/types';

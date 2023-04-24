@@ -1,6 +1,6 @@
-import { APISchema, ICoreOptions } from '@vulcan-sql/core/models';
+import { ICoreOptions } from '@vulcan-sql/core/models';
 import { Container as InversifyContainer } from 'inversify';
-import { ArtifactBuilder, BuiltInArtifactKeys, ProfileLoader } from '..';
+import { ProfileLoader } from '..';
 import { ProjectOptions } from '../options';
 import { documentModule, extensionModule, profilesModule } from './modules';
 import {

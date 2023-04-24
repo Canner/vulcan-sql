@@ -8,10 +8,8 @@ import {
   cacheProfileName,
   vulcanCacheSchemaName,
 } from '@vulcan-sql/core/models';
-import { CACHE_MAIN_BUILDER_VAR_NAME } from './constants';
 import { Parameterizer } from '@vulcan-sql/core/data-query';
 import { PARAMETERIZER_VAR_NAME } from '../query-builder/constants';
-// import { InternalError } from '../../../utils/errors';
 
 @VulcanInternalExtension()
 export class CacheTagRunner extends TagRunner {
@@ -32,11 +30,11 @@ export class CacheTagRunner extends TagRunner {
     // However if the cache tag not has variable name, means you would like to get the result directly after query, then we will replace the original query main builder to the cache builder.
     const name = String(args[0]);
 
-    // use cache profile name to create prepared statement by parameterizer query
+    // Use cache profile name to create prepared statement by parameterizer query
     const parameterizer = new Parameterizer((param) =>
       this.executor.prepare({ ...param, profileName: cacheProfileName })
     );
-    // parameterizer from parent, we should set it back after rendered our context.
+    // Parameterizer from parent, we should set it back after rendered our context.
     const parentParameterizer = context.lookup(PARAMETERIZER_VAR_NAME);
     context.setVariable(PARAMETERIZER_VAR_NAME, parameterizer);
     let query = '';
@@ -47,9 +45,9 @@ export class CacheTagRunner extends TagRunner {
       .split(/\r?\n/)
       .filter((line) => line.trim().length > 0)
       .join('\n');
-    // set the default vulcan created cache table schema, so we could query the cache table directly, not need user to type schema in the SQL.
+    // Set the default vulcan created cache table schema, so we could query the cache table directly, not need user to type schema in the SQL.
     query = `set schema=${vulcanCacheSchemaName};`.concat('\n').concat(query);
-    // create the builder which access "vulcan.cache" data source for cache layer query
+    // Create the builder which access "vulcan.cache" data source for cache layer query
     const builder = await this.executor.createBuilder(
       cacheProfileName,
       query,
