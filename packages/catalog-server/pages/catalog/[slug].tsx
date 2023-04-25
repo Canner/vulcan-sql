@@ -20,8 +20,12 @@ export function CatalogDetail(props: CatalogDetailProps) {
   const slug = router.query.slug as string;
 
   const [fetchEndpoint, { data, loading }] = useEndpointLazyQuery();
-  const [fetchDataset, { data: datasetData, loading: datasetLoading }] =
-    useDatasetLazyQuery({ fetchPolicy: 'cache-and-network' });
+  const [
+    fetchDataset,
+    { data: datasetData, loading: datasetLoading, error: datasetError },
+  ] = useDatasetLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
 
   useEffect(() => {
     if (data?.endpoint) {
@@ -32,12 +36,14 @@ export function CatalogDetail(props: CatalogDetailProps) {
     };
   }, [setPathNames, data]);
 
+  // get endpoint data
   useEffect(() => {
     if (slug) {
       fetchEndpoint({ variables: { slug: encodeURIComponent(slug) } });
     }
   }, [fetchEndpoint, fetchDataset, slug]);
 
+  // get dataset data
   const onDatasetPreview = (filter?: Pick<DatasetQueryVariables, 'filter'>) => {
     if (data?.endpoint) {
       fetchDataset({
@@ -52,6 +58,7 @@ export function CatalogDetail(props: CatalogDetailProps) {
       loading={loading}
       dataset={datasetData?.dataset || {}}
       datasetLoading={datasetLoading}
+      datasetError={datasetError}
       onDatasetPreview={onDatasetPreview}
     />
   );

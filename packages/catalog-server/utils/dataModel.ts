@@ -1,3 +1,5 @@
+import { errorCode } from './errorCode';
+
 interface IParameter {
   name: string;
   key: string;
@@ -69,6 +71,8 @@ type Schema = APISchema & {
   actualUrl: string;
   // the search key included auth token
   shareKey: string;
+
+  responseFormat: { default: string; formats: string[] | null };
 };
 
 export class Endpoint implements IEndpoint {
@@ -78,11 +82,11 @@ export class Endpoint implements IEndpoint {
   }
 
   get slug() {
-    return encodeURIComponent(this.schema.sourceName);
+    return Buffer.from(this.schema.urlPath).toString('base64');
   }
 
   get name() {
-    return this.schema.sourceName;
+    return this.schema.urlPath.replace('/', '');
   }
 
   get description() {
@@ -137,6 +141,10 @@ export class Dataset implements IDataset {
     this.schema = schema;
     this.originalData = originalData;
 
+    if (!Array.isArray(this.originalData)) {
+      throw errorCode.RESPONSE_FORMAT_ERROR;
+    }
+
     // get the first 100 rows
     this.data = this.originalData.slice(0, 100);
   }
@@ -153,17 +161,27 @@ export class Dataset implements IDataset {
   }
 
   get csvDownloadUrl() {
+    const isSupportCsv = (this.schema.responseFormat.formats || []).includes(
+      'csv'
+    );
     const formatPath = this.getFormatPath(this.schema.actualPath, '.csv');
-    return `/api/download${formatPath}${this.getShareKey()}`;
+    return isSupportCsv
+      ? `/api/download${formatPath}${this.getShareKey()}`
+      : '';
   }
 
   get jsonDownloadUrl() {
+    const isSupportJson = (this.schema.responseFormat.formats || []).includes(
+      'json'
+    );
     const formatPath = this.getFormatPath(this.schema.actualPath, '.json');
-    return `/api/download${formatPath}${this.getShareKey()}`;
+    return isSupportJson
+      ? `/api/download${formatPath}${this.getShareKey()}`
+      : '';
   }
 
   get shareJsonUrl() {
-    const formatUrl = this.getFormatPath(this.schema.actualUrl, '.json');
+    const formatUrl = this.getFormatPath(this.schema.actualUrl, '');
     return `${formatUrl}${this.getShareKey()}`;
   }
 

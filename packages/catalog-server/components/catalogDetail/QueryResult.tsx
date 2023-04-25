@@ -3,6 +3,7 @@ import {
   DownOutlined,
   FilterOutlined,
 } from '@vulcan-sql/catalog-server/lib/icons';
+import { ApolloError } from '@apollo/client';
 import styled from 'styled-components';
 import { useMemo, useState } from 'react';
 import CustomizedTable from './CustomizedTable';
@@ -14,6 +15,7 @@ import {
   Dataset,
 } from '@vulcan-sql/catalog-server/lib/__generated__/types';
 import Link from 'next/link';
+import ErrorResult from './ErrorResult';
 
 const { Title } = Typography;
 
@@ -84,10 +86,12 @@ export interface QueryResultProps {
   dataset: Dataset;
   loading: boolean;
   onDatasetPreview: (options?: any) => void;
+  error?: ApolloError;
 }
 
 export default function QueryResult(props: QueryResultProps) {
-  const { dataset, parameters, columns, loading, onDatasetPreview } = props;
+  const { dataset, parameters, columns, loading, onDatasetPreview, error } =
+    props;
   const [parameterFormVisible, setParameterFormVisible] = useState(false);
   const [parameterCount, setParameterCount] = useState(0);
   const hasDataset = Object.keys(dataset).length > 0;
@@ -124,17 +128,18 @@ export default function QueryResult(props: QueryResultProps) {
 
   const resultData = useMemo(
     () =>
-      data.map((item, index) => ({
-        ...item,
-        key: `${JSON.stringify(item)}${index}`,
-      })),
-    [data]
+      hasCount
+        ? data.map((item, index) => ({
+            ...item,
+            key: `${JSON.stringify(item)}${index}`,
+          }))
+        : [],
+    [data, hasCount]
   );
 
   const onParameterFormReset = () => {
     setParameterCount(0);
     setParameterFormVisible(false);
-    onDatasetPreview();
   };
 
   const onParameterFormSubmit = (values) => {
@@ -158,26 +163,34 @@ export default function QueryResult(props: QueryResultProps) {
             navigator.clipboard.writeText(apiUrl);
           },
         },
-        {
-          label: (
-            <Link href={csvDownloadUrl}>
-              <a target="_blank" download>
-                Download as CSV
-              </a>
-            </Link>
-          ),
-          key: 'download-as-csv',
-        },
-        {
-          label: (
-            <Link href={jsonDownloadUrl}>
-              <a target="_blank" download>
-                Download as JSON
-              </a>
-            </Link>
-          ),
-          key: 'download-as-json',
-        },
+        ...(csvDownloadUrl
+          ? [
+              {
+                label: (
+                  <Link href={csvDownloadUrl}>
+                    <a target="_blank" download>
+                      Download as CSV
+                    </a>
+                  </Link>
+                ),
+                key: 'download-as-csv',
+              },
+            ]
+          : []),
+        ...(jsonDownloadUrl
+          ? [
+              {
+                label: (
+                  <Link href={jsonDownloadUrl}>
+                    <a target="_blank" download>
+                      Download as JSON
+                    </a>
+                  </Link>
+                ),
+                key: 'download-as-json',
+              },
+            ]
+          : []),
         { type: 'divider' },
         {
           label: 'Connect From',
@@ -258,7 +271,7 @@ export default function QueryResult(props: QueryResultProps) {
           <div>
             {/* May meet problem with `overlay` prop after 4.24.0, it changes to `menu` prop */}
             <Dropdown
-              disabled={!hasDataset}
+              disabled={!hasCount || !hasDataset}
               overlay={menu}
               placement="topRight"
               getPopupContainer={(trigger) => trigger.parentElement!}
@@ -274,20 +287,24 @@ export default function QueryResult(props: QueryResultProps) {
         </div>
       </div>
 
-      <CustomizedTable
-        className="queryResult-table"
-        tableLayout="auto"
-        showHeader={resultData.length > 0}
-        columns={tableColumns}
-        dataSource={resultData}
-        loading={loading}
-        scroll={{ y: 300, x: 'max-content' }}
-        renderUnit={() =>
-          metadata
-            ? `${metadata.currentCount} of ${metadata.totalCount} Results`
-            : ''
-        }
-      />
+      {error ? (
+        <ErrorResult subTitle={error?.message} style={{ marginBottom: 36 }} />
+      ) : (
+        <CustomizedTable
+          className="queryResult-table"
+          tableLayout="auto"
+          showHeader={resultData.length > 0}
+          columns={tableColumns}
+          dataSource={resultData}
+          loading={loading}
+          scroll={{ y: 300, x: 'max-content' }}
+          renderUnit={() =>
+            metadata
+              ? `${metadata.currentCount} of ${metadata.totalCount} Results`
+              : ''
+          }
+        />
+      )}
 
       <TutorialModal
         visible={tutorialModalProps.visible}

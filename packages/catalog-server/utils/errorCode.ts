@@ -12,4 +12,5 @@ export class HttpError extends Error {
 export const errorCode = {
   LOGIN_FAILED: new HttpError('LOGIN_FAILED', 401),
   UNAUTHORIZED_REQUEST: new HttpError('UNAUTHORIZED_REQUEST', 401),
+  RESPONSE_FORMAT_ERROR: new HttpError('RESPONSE_FORMAT_ERROR', 400),
 };

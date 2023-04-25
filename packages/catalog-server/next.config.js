@@ -3,7 +3,7 @@ const withNx = require('@nrwl/next/plugins/with-nx');
 const withAntdLess = require('next-plugin-antd-less');
 const path = require('path');
 
-const themeVariables = path.resolve(__dirname, './styles/antd-custom.less');
+const themeVariables = path.resolve(__dirname, './styles/antd-variables.less');
 
 /**
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}

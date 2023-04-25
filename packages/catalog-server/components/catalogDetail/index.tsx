@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
+import { ApolloError } from '@apollo/client';
 import { Tabs } from 'antd';
 import PageTitle from '@vulcan-sql/catalog-server/components/PageTitle';
 import QueryResult from './QueryResult';
@@ -15,10 +16,18 @@ export interface CatalogDetailProps {
   dataset: Dataset;
   datasetLoading: boolean;
   onDatasetPreview: (options?: any) => void;
+  datasetError?: ApolloError;
 }
 
 export default function CatalogDetail(props: CatalogDetailProps) {
-  const { data, loading, dataset, datasetLoading, onDatasetPreview } = props;
+  const {
+    data,
+    loading,
+    dataset,
+    datasetLoading,
+    onDatasetPreview,
+    datasetError,
+  } = props;
   const parameters = useMemo(() => data.parameters || [], [data.parameters]);
   const columns = useMemo(
     () =>
@@ -62,6 +71,7 @@ export default function CatalogDetail(props: CatalogDetailProps) {
         parameters={parameters}
         dataset={dataset}
         loading={datasetLoading}
+        error={datasetError}
         onDatasetPreview={onDatasetPreview}
       />
 
