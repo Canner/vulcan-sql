@@ -60,6 +60,7 @@ it('Should throw an error when both refreshTime and refreshExpression are define
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -85,6 +86,7 @@ it('Should throw an error when the value of "every" of "refreshTime" is a invali
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -108,6 +110,7 @@ it('Should throw an error when a converted value of "every" of "refreshTime" is 
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -130,6 +133,7 @@ it('Should throw an error when a converted value of "every" of "refreshTime" is 
 it('Should call next function when schemas have cache with valid refreshTime representation', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -152,6 +156,7 @@ it('Should throw an error when the value of "every" of "refreshExpression" is a 
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -177,6 +182,7 @@ it('Should throw an error when a negative refreshExpression interval is used', a
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -199,6 +205,7 @@ it('Should throw an error when a negative refreshExpression interval is used', a
 it('Should call next function when schemas have cache with valid refreshExpression representation', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -221,6 +228,7 @@ it('Should throw an error when cacheTableName is not defined', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -233,7 +241,7 @@ it('Should throw an error when cacheTableName is not defined', async () => {
     ],
   } as any;
   await expect(middleware.handle(schemas, next)).rejects.toThrow(
-    'The cacheTableName of cache in schema "/urlPath" is not defined.'
+    'The "cacheTableName" of cache in schema "/urlPath" is not defined.'
   );
   expect(next).not.toHaveBeenCalled();
 });
@@ -242,6 +250,7 @@ it('Should throw an error when cacheTableName is not unique', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -268,6 +277,7 @@ it('Should throw an error when cacheTableName does not match the regex', async (
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -301,6 +311,7 @@ it('Should throw an error when cacheTableName does not match the regex', async (
 it('Should call next function when schemas have cache with valid cacheTableName', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -336,6 +347,7 @@ it('Should throw an error when sql is not defined', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -348,7 +360,7 @@ it('Should throw an error when sql is not defined', async () => {
     ],
   } as any;
   await expect(middleware.handle(schemas, next)).rejects.toThrow(
-    'The sql of cache "cache_table_name" in schema "/urlPath" is not defined or is empty.'
+    'The "sql" of cache "cache_table_name" in schema "/urlPath" is not defined or is empty.'
   );
   expect(next).not.toHaveBeenCalled();
 });
@@ -357,6 +369,7 @@ it('Should throw an error when indexes is empty', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',
     urlPath: '/urlPath',
+    profiles: ['profile1'],
     metadata: {
       'cache.vulcan.com': {
         isUsedTag: true,
@@ -377,6 +390,29 @@ it('Should throw an error when indexes is empty', async () => {
 });
 
 // assign profile
+// should throw error if not profiles in schemas
+it('Should throw an error when there is no profile in schemas', async () => {
+  const schemas: RawAPISchema = {
+    sourceName: 'test',
+    urlPath: '/urlPath',
+    metadata: {
+      'cache.vulcan.com': {
+        isUsedTag: true,
+      },
+    },
+    cache: [
+      {
+        cacheTableName: 'cache_table_name',
+        sql: 'SELECT * FROM test_table',
+      },
+    ],
+  };
+  await expect(middleware.handle(schemas, next)).rejects.toThrow(
+    'The "profiles" of schema "/urlPath" is not defined.'
+  );
+  expect(next).not.toHaveBeenCalled();
+});
+
 it('Should assign the first profile in the schemas.profiles to the cache.profile if cache.profile is not defined', async () => {
   const schemas: RawAPISchema = {
     sourceName: 'test',

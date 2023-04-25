@@ -40,5 +40,5 @@ export const SchemaParserMiddlewares: ClassType<SchemaParserMiddleware>[] = [
   ExtractPaginationParams, // ExtractPaginationParams should be loaded after SetConstraints
   ResponseSampler,
   CheckProfile,
-  CheckCache, // checkCache should be loaded after checkProfile
+  CheckCache, // CheckCache should be loaded after checkProfile
 ];
