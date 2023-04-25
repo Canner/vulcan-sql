@@ -8,9 +8,9 @@ import { Packager, PackagerName } from '../../../models/extensions';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 
-@VulcanExtensionId(PackagerName.Docker)
-@VulcanInternalExtension('docker-packager')
-export class DockerPackager extends Packager {
+@VulcanExtensionId(PackagerName.Node)
+@VulcanInternalExtension('node-packager')
+export class NodePackager extends Packager {
   private logger = this.getLogger();
 
   public async package(option: IBuildOptions): Promise<void> {
@@ -46,13 +46,8 @@ export class DockerPackager extends Packager {
         path.resolve(distFolder, option.artifact.filePath)
       );
     }
-    // Dockerfile
-    await fs.copyFile(
-      path.resolve(__dirname, 'assets', 'Dockerfile'),
-      path.resolve(distFolder, 'Dockerfile')
-    );
     this.logger.info(
-      `Package successfully, you can go to "${folderPath}" folder and run "docker build ." to build the image.`
+      `Package successfully, you can go to "${folderPath}" folder and run "npm install && node index.js" to start the server`
     );
   }
 }

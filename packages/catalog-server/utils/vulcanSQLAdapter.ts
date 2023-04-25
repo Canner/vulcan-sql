@@ -1,7 +1,9 @@
 import { errorCode } from './errorCode';
 import axios from 'axios';
+import getConfig from 'next/config';
 
-const VULCAN_SQL_HOST = 'http://localhost:3000';
+const { serverRuntimeConfig } = getConfig();
+const VULCAN_SQL_HOST = serverRuntimeConfig.vulcanSQLHost;
 
 export const axiosInstance = axios.create({
   baseURL: VULCAN_SQL_HOST,

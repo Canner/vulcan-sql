@@ -76,6 +76,7 @@ program
     './vulcan.yaml'
   )
   .option('-o --output <output>', 'package output type', 'node')
+  .option('-t --target <target>', 'target package', 'vulcan-server')
   .action(async (options) => {
     await handlePackage(options);
   });

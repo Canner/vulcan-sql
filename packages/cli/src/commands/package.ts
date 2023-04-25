@@ -7,11 +7,13 @@ import { localModulePath } from '../utils';
 export interface PackageCommandOptions {
   config: string;
   output: string;
+  target: string;
 }
 
 const defaultOptions: PackageCommandOptions = {
   config: './vulcan.yaml',
   output: 'node',
+  target: 'vulcan-server',
 };
 
 export const packageVulcan = async (options: PackageCommandOptions) => {
@@ -25,7 +27,7 @@ export const packageVulcan = async (options: PackageCommandOptions) => {
   const spinner = ora('Packaging project...').start();
   try {
     const builder = new VulcanBuilder(config);
-    await builder.build(options.output);
+    await builder.build(options);
     spinner.succeed('Package successfully.');
   } catch (e) {
     spinner.fail();

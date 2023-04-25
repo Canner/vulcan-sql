@@ -11,6 +11,7 @@ const themeVariables = path.resolve(__dirname, './styles/antd-variables.less');
 const nextConfig = {
   serverRuntimeConfig: {
     // Will only be available on the server side
+    vulcanSQLHost: process.env.VULCAN_SQL_HOST || 'http://localhost:3000',
     tokenSecret: process.env.TOKEN_SECRET || 'tokenSecret',
     refreshTokenSecret:
       process.env.REFRESH_TOKEN_SECRET || 'refreshTokenSecret',

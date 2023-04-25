@@ -3,6 +3,7 @@ import * as path from 'path';
 import {
   IBuildOptions,
   PackagerType,
+  PackagerTarget,
   SchemaReaderType,
 } from '@vulcan-sql/build/models';
 import {
@@ -37,5 +38,9 @@ it('Builder.build should work', async () => {
   const builder = new VulcanBuilder(options);
 
   // Act, Assert
-  await expect(builder.build(PackagerType.Node)).resolves.not.toThrow();
+  const packageOptions = {
+    output: PackagerType.Node,
+    target: PackagerTarget.VulcanServer,
+  };
+  await expect(builder.build(packageOptions)).resolves.not.toThrow();
 });

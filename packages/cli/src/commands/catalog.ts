@@ -1,11 +1,16 @@
 import { localModulePath } from '../utils';
 import { createServer } from 'http';
+import { promises as fs } from 'fs';
+import * as path from 'path';
+import * as jsYAML from 'js-yaml';
 
 export interface CatalogCommandOptions {
+  config: string;
   port: number;
 }
 
 const defaultOptions: CatalogCommandOptions = {
+  config: './vulcan.yaml',
   port: 4200,
 };
 
@@ -17,11 +22,16 @@ const mergeCatalogDefaultOption = (options: Partial<CatalogCommandOptions>) => {
 };
 
 const serveCatalog = async (options: CatalogCommandOptions) => {
+  const configPath = path.resolve(process.cwd(), options.config);
+  const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
   const next = await import(localModulePath('next'));
   const dirPath = localModulePath('@vulcan-sql/catalog-server');
 
-  const hostname = 'localhost';
-  const port = Number(options.port);
+  process.env['VULCAN_SQL_HOST'] = `http://localhost:${config.port || 3000}`;
+
+  const catalogConfig = config.catalog || {};
+  const hostname = catalogConfig.hostname || 'localhost';
+  const port = catalogConfig.port || Number(options.port);
   const app = next({ dev: false, hostname, port, dir: dirPath });
 
   const handle = app.getRequestHandler();

@@ -1,20 +1,12 @@
-import {
-  ArtifactBuilderProviderType,
-  VulcanExtensionId,
-  VulcanInternalExtension,
-} from '@vulcan-sql/core';
-import { IBuildOptions } from '../../models/buildOptions';
-import { Packager, PackagerType } from '../../models/extensions';
+import { VulcanExtensionId, VulcanInternalExtension } from '@vulcan-sql/core';
+import { IBuildOptions } from '../../../models/buildOptions';
+import { Packager, PackagerName } from '../../../models/extensions';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 
-export interface NodePackagerConfig {
-  folderPath?: string;
-}
-
-@VulcanExtensionId(PackagerType.Node)
-@VulcanInternalExtension('node-packager')
-export class NodePackager extends Packager<NodePackagerConfig> {
+@VulcanExtensionId(PackagerName.NodeCatalog)
+@VulcanInternalExtension('node-catalog-packager')
+export class NodeCatalogPackager extends Packager {
   private logger = this.getLogger();
 
   public async package(option: IBuildOptions): Promise<void> {
@@ -25,7 +17,7 @@ export class NodePackager extends Packager<NodePackagerConfig> {
     // package.json
     await fs.writeFile(
       path.resolve(distFolder, 'package.json'),
-      JSON.stringify(await this.getPackageJson(), null, 4),
+      JSON.stringify(await this.getCatalogPackageJson(), null, 4),
       'utf-8'
     );
     // config.json (vulcan config)
@@ -37,19 +29,9 @@ export class NodePackager extends Packager<NodePackagerConfig> {
     // entrypoint
     await fs.writeFile(
       path.resolve(distFolder, 'index.js'),
-      await this.getEntryJS(),
+      await this.getCatalogEntryJS(),
       'utf-8'
     );
-    // result.json
-    if (
-      option.artifact.provider === ArtifactBuilderProviderType.LocalFile &&
-      option.artifact.filePath
-    ) {
-      await fs.copyFile(
-        path.resolve(process.cwd(), option.artifact.filePath),
-        path.resolve(distFolder, option.artifact.filePath)
-      );
-    }
     this.logger.info(
       `Package successfully, you can go to "${folderPath}" folder and run "npm install && node index.js" to start the server`
     );

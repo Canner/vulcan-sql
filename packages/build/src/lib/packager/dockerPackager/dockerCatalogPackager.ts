@@ -8,9 +8,9 @@ import { Packager, PackagerName } from '../../../models/extensions';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 
-@VulcanExtensionId(PackagerName.Docker)
-@VulcanInternalExtension('docker-packager')
-export class DockerPackager extends Packager {
+@VulcanExtensionId(PackagerName.DockerCatalog)
+@VulcanInternalExtension('docker-catalog-packager')
+export class DockerCatalogPackager extends Packager {
   private logger = this.getLogger();
 
   public async package(option: IBuildOptions): Promise<void> {
@@ -21,7 +21,7 @@ export class DockerPackager extends Packager {
     // package.json
     await fs.writeFile(
       path.resolve(distFolder, 'package.json'),
-      JSON.stringify(await this.getPackageJson(), null, 4),
+      JSON.stringify(await this.getCatalogPackageJson(), null, 4),
       'utf-8'
     );
     // config.json (vulcan config)
@@ -33,7 +33,7 @@ export class DockerPackager extends Packager {
     // entrypoint
     await fs.writeFile(
       path.resolve(distFolder, 'index.js'),
-      await this.getEntryJS(),
+      await this.getCatalogEntryJS(),
       'utf-8'
     );
     // result.json
@@ -48,7 +48,7 @@ export class DockerPackager extends Packager {
     }
     // Dockerfile
     await fs.copyFile(
-      path.resolve(__dirname, 'assets', 'Dockerfile'),
+      path.resolve(__dirname, 'assets', 'Dockerfile.catalog'),
       path.resolve(distFolder, 'Dockerfile')
     );
     this.logger.info(
