@@ -10,11 +10,13 @@ import {
   ICacheLayerOptions,
 } from '@vulcan-sql/core';
 import defaultConfig from './projectConfig';
+import { Server } from 'http';
 
-let server: VulcanServer;
 const folderPath = 'exported-parquets';
+let vulcanServer: VulcanServer;
+let httpServer: Server;
 
-beforeAll(() => {
+beforeAll(async () => {
   // create employees table
   MockDuckDBDataSource.runSQL(
     'CREATE TABLE employees(id VARCHAR, name VARCHAR, position VARCHAR)'
@@ -73,13 +75,23 @@ beforeAll(() => {
     ('131f201f-0db5-4d58-a30b-c73372d7cc19', 'ivan', 'fa6a4b6e-7944-4b81-86dd-38f67c5700da'),
     ('7fa6069d-533e-4c49-a7be-5725be66eb6c', 'coco', 'ebb9b1ac-052b-4819-b719-90fb61fa7899')`
   );
-});
 
-afterEach(async () => {
-  await server?.close();
-});
+  const projectConfig: ServeConfig & IBuildOptions = {
+    ...defaultConfig,
+    cache: {
+      type: CacheLayerStoreFormatType.parquet,
+      folderPath: path.resolve(__dirname, folderPath),
+      loader: CacheLayerStoreLoaderType.duckdb,
+    } as ICacheLayerOptions,
+  };
+  const builder = new VulcanBuilder(projectConfig);
+  await builder.build();
+  vulcanServer = new VulcanServer(projectConfig);
+  httpServer = (await vulcanServer.start())['http'];
+}, 50000);
 
-afterAll(() => {
+afterAll(async () => {
+  await vulcanServer?.close();
   fs.rmSync(path.resolve(__dirname, folderPath), { recursive: true });
 });
 
@@ -109,19 +121,6 @@ it.each([
 ])(
   'Example 4-1: use cache tag to export duckdb to parquet and load to duckdb cache layer to do the directly query',
   async ({ name, expected }) => {
-    // Arrange
-    const projectConfig: ServeConfig & IBuildOptions = {
-      ...defaultConfig,
-      cache: {
-        type: CacheLayerStoreFormatType.parquet,
-        folderPath: path.resolve(__dirname, folderPath),
-        loader: CacheLayerStoreLoaderType.duckdb,
-      } as ICacheLayerOptions,
-    };
-    const builder = new VulcanBuilder(projectConfig);
-    await builder.build();
-    server = new VulcanServer(projectConfig);
-    const httpServer = (await server.start())['http'];
     // Act
     const agent = supertest(httpServer);
     const result = await agent.get(`/api/departments?name=${name}`);
@@ -153,20 +152,6 @@ it.each([
 ])(
   'Example 4-2: use cache tag with variable to export duckdb to parquet and load to duckdb cache layer to execute cache builder to query',
   async ({ id, expected }) => {
-    // Arrange
-
-    const projectConfig: ServeConfig & IBuildOptions = {
-      ...defaultConfig,
-      cache: {
-        type: CacheLayerStoreFormatType.parquet,
-        folderPath: path.resolve(__dirname, folderPath),
-        loader: CacheLayerStoreLoaderType.duckdb,
-      } as ICacheLayerOptions,
-    };
-    const builder = new VulcanBuilder(projectConfig);
-    await builder.build();
-    server = new VulcanServer(projectConfig);
-    const httpServer = (await server.start())['http'];
     // Act
     const agent = supertest(httpServer);
     const result = await agent.get(`/api/employees/${id}/department`);
@@ -210,20 +195,6 @@ it.each([
 ])(
   'Example 4-3: use cache tag with variable and cache tag without variable to export duckdb to parquet and load to duckdb cache layer to execute cache builder to query',
   async ({ id, expected }) => {
-    // Arrange
-
-    const projectConfig: ServeConfig & IBuildOptions = {
-      ...defaultConfig,
-      cache: {
-        type: CacheLayerStoreFormatType.parquet,
-        folderPath: path.resolve(__dirname, folderPath),
-        loader: CacheLayerStoreLoaderType.duckdb,
-      } as ICacheLayerOptions,
-    };
-    const builder = new VulcanBuilder(projectConfig);
-    await builder.build();
-    server = new VulcanServer(projectConfig);
-    const httpServer = (await server.start())['http'];
     // Act
     const agent = supertest(httpServer);
     const result = await agent.get(`/api/stores/${id}/products`);
@@ -259,20 +230,6 @@ it.each([
 ])(
   'Example 4-4: use cache tag do sub-query and cache directly query to export duckdb to parquet and load to duckdb cache layer to get result',
   async ({ id, expected }) => {
-    // Arrange
-
-    const projectConfig: ServeConfig & IBuildOptions = {
-      ...defaultConfig,
-      cache: {
-        type: CacheLayerStoreFormatType.parquet,
-        folderPath: path.resolve(__dirname, folderPath),
-        loader: CacheLayerStoreLoaderType.duckdb,
-      } as ICacheLayerOptions,
-    };
-    const builder = new VulcanBuilder(projectConfig);
-    await builder.build();
-    server = new VulcanServer(projectConfig);
-    const httpServer = (await server.start())['http'];
     // Act
     const agent = supertest(httpServer);
     const result = await agent.get(`/api/classes/${id}/students`);

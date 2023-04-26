@@ -42,7 +42,9 @@ export class CacheLayerLoader implements ICacheLayerLoader {
     this.checkDuplicateCacheTableName(schemas);
     // traverse each cache table of each schema
     for (const schema of schemas) {
-      schema.cache?.map(async (cache) => {
+      // skip the schema if not set the cache
+      if (!schema.cache) continue;
+      for (const cache of schema.cache) {
         const { cacheTableName, sql, profile } = cache;
         const dataSource = this.dataSourceFactory(profile);
         // filename pattern: [schema.templateSource]#[profileName]#[cacheTableName].parquet
@@ -55,33 +57,34 @@ export class CacheLayerLoader implements ICacheLayerLoader {
           fs.mkdirSync(this.options.folderPath!);
 
         // 1. export to cache files according to each schema set the cache value
-        await dataSource.export({
+        const filepaths = await dataSource.export({
           sql,
           filepath,
           profileName: profile,
           type: this.options.type!,
         });
-
         // 2. preload the files to cache data source
         await cacheStorage.import({
           tableName: cacheTableName,
-          filepath,
+          filepaths,
           // use the "vulcan.cache" profile to import the cache data
           profileName: cacheProfileName,
           // default schema name for cache layer
           schema: vulcanCacheSchemaName,
           type: this.options.type!,
         });
-      });
+      }
     }
   }
 
   private checkDuplicateCacheTableName(schemas: APISchema[]) {
     const tableNames = schemas
-      // => [[table1, table2], [table1, table3]]
+      // => [[table1, table2], [table1, table3], [undefined, table4], undefined]
       .map((schema) => schema.cache?.map((cache) => cache.cacheTableName))
-      // => [table1, table2, table1, table3]
-      .flat();
+      // => [table1, table2, table1, table3, undefined, table4, undefined]
+      .flat()
+      // [table1, table2, table1, table3, table4]
+      .filter((tableName) => tableName);
     if (uniq(tableNames).length !== tableNames.length)
       throw new ConfigurationError(
         'Not allow to set same cache table name more than one API schema.'

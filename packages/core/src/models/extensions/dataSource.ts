@@ -23,8 +23,8 @@ export interface ExportOptions {
 export interface ImportOptions {
   // The table name to create from imported file data
   tableName: string;
-  // The full pathname to import data from file
-  filepath: string;
+  // The full pathname to import data from files
+  filepaths: string[];
   // The profile name to select to import data
   profileName: string;
   // default schema
@@ -91,7 +91,7 @@ export abstract class DataSource<
   /**
    * Export query result data to cache file for cache layer loader used
    */
-  public export(options: ExportOptions): Promise<void> {
+  public export(options: ExportOptions): Promise<string[]> {
     throw new Error(`Export method not implemented`);
   }
 

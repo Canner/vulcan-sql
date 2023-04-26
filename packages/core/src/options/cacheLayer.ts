@@ -5,6 +5,7 @@ import {
   CacheLayerStoreFormatType,
   CacheLayerStoreLoaderType,
   ICacheLayerOptions,
+  defaultCacheLayerFolderPath,
 } from '@vulcan-sql/core/models';
 import { ConfigurationError } from '../lib/utils/errors';
 
@@ -16,7 +17,7 @@ export class CacheLayerOptions implements ICacheLayerOptions {
 
   @IsString()
   @IsOptional()
-  public readonly folderPath!: string;
+  public readonly folderPath?: string = defaultCacheLayerFolderPath;
 
   @IsString()
   @IsOptional()

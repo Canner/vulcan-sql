@@ -1,3 +1,6 @@
+import { tmpdir } from 'os';
+import * as path from 'path';
+
 export enum CacheLayerStoreFormatType {
   parquet = 'parquet',
 }
@@ -18,3 +21,6 @@ export const cacheProfileName = 'vulcan.cache';
 
 // The schema name for vulcan used to create table when loading cache files to cache data source
 export const vulcanCacheSchemaName = 'vulcan';
+
+// The default folder path to store the cache files
+export const defaultCacheLayerFolderPath = path.join(tmpdir(), 'vulcan/cache');

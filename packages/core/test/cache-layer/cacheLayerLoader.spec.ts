@@ -49,7 +49,7 @@ class MockDataSource extends DataSource {
     return super.getProfile(name);
   }
 
-  public override async export(options: ExportOptions) {
+  public override async export(options: ExportOptions): Promise<string[]> {
     const { filepath } = options;
     const fakeTableName = faker.word.noun();
     const fakeColumns = [
@@ -76,23 +76,35 @@ class MockDataSource extends DataSource {
         `INSERT INTO ${fakeTableName} VALUES (${faker.random.numeric()}, '${faker.random.word()}', ${faker.datatype.boolean()})`
       );
     }
-    // export to parquet
-    db.run(`COPY ${fakeTableName} TO '${filepath}' (FORMAT 'parquet')`, () => {
-      this.logger.info(`Export to parquet file done, path = ${filepath}`);
+    // export to parquet file and if resolve done, return filepaths
+    return await new Promise((resolve, reject) => {
+      db.run(
+        `COPY ${fakeTableName} TO '${filepath}' (FORMAT 'parquet')`,
+        (err: any) => {
+          if (err) reject(err);
+          this.logger.debug(`Export to parquet file done, path = ${filepath}`);
+          resolve([filepath]);
+        }
+      );
     });
   }
 
-  public override async import(options: ImportOptions) {
-    const { tableName, filepath, schema } = options;
-
-    db.run(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
-    db.run(
-      `CREATE TABLE ${schema}.${tableName} AS SELECT * FROM read_parquet(?)`,
-      [filepath],
-      () => {
-        this.logger.info(`Table created, name = ${tableName}`);
-      }
-    );
+  public override async import(options: ImportOptions): Promise<void> {
+    const { tableName, filepaths, schema } = options;
+    // parametrized query string for filepaths => [filepath1, filepath2] => "'filepath1', 'filepath2'"
+    const parametrizedPaths = filepaths.map((path) => `'${path}'`).join(', ');
+    // create table and if resolve done, return
+    return await new Promise((resolve, reject) => {
+      db.run(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
+      db.run(
+        `CREATE OR REPLACE TABLE ${schema}.${tableName} AS SELECT * FROM read_parquet([${parametrizedPaths}])`,
+        (err: any) => {
+          if (err) reject(err);
+          this.logger.debug(`Table created, name = ${tableName}`);
+          resolve();
+        }
+      );
+    });
   }
 }
 

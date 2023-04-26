@@ -66,34 +66,44 @@ export class MockDuckDBDataSource extends DataSource {
     return `$${parameterIndex}`;
   }
 
-  public override async export(options: ExportOptions): Promise<void> {
+  public override async export(options: ExportOptions): Promise<string[]> {
     const { filepath, sql, type } = options;
     const formatTypeMapper = {
       [CacheLayerStoreFormatType.parquet.toString()]: 'parquet',
     };
-    // export to cache file
-    db.run(
-      `COPY (${sql}) TO '${filepath}' (FORMAT '${formatTypeMapper[type]}')`,
-      () => {
-        this.logger.debug(
-          `Export to ${formatTypeMapper[type]} file done, path = ${filepath}`
-        );
-      }
-    );
+    // export to parquet file and if resolve done, return filepaths
+    return await new Promise((resolve, reject) => {
+      db.run(
+        `COPY (${sql}) TO '${filepath}' (FORMAT '${formatTypeMapper[type]}')`,
+        (err: any) => {
+          if (err) reject(err);
+          this.logger.debug(
+            `Export to ${formatTypeMapper[type]} file done, path = ${filepath}`
+          );
+          resolve([filepath]);
+        }
+      );
+    });
   }
 
-  public override async import(options: ImportOptions) {
-    const { tableName, filepath, schema, type } = options;
+  public override async import(options: ImportOptions): Promise<void> {
+    const { tableName, filepaths, schema, type } = options;
+    // parametrized query string for filepaths => [filepath1, filepath2] => "'filepath1', 'filepath2'"
+    const parametrizedPaths = filepaths.map((path) => `'${path}'`).join(', ');
     const formatTypeMapper = {
-      [CacheLayerStoreFormatType.parquet.toString()]: 'read_parquet(?)',
+      [CacheLayerStoreFormatType.parquet.toString()]: `read_parquet([${parametrizedPaths}])`,
     };
-    db.run(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
-    db.run(
-      `CREATE TABLE ${schema}.${tableName} AS SELECT * FROM ${formatTypeMapper[type]}`,
-      [filepath],
-      () => {
-        this.logger.debug(`Table created, name = ${tableName}`);
-      }
-    );
+    // create table and if resolve done, return
+    return await new Promise((resolve, reject) => {
+      db.run(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
+      db.run(
+        `CREATE OR REPLACE TABLE ${schema}.${tableName} AS SELECT * FROM ${formatTypeMapper[type]}`,
+        (err: any) => {
+          if (err) reject(err);
+          this.logger.debug(`Table created, name = ${tableName}`);
+          resolve();
+        }
+      );
+    });
   }
 }

@@ -2,6 +2,7 @@ import {
   CacheLayerStoreFormatType,
   CacheLayerStoreLoaderType,
   ICacheLayerOptions,
+  defaultCacheLayerFolderPath,
 } from '@vulcan-sql/core/models';
 import { CacheLayerOptions } from '@vulcan-sql/core/options';
 import { TYPES } from '@vulcan-sql/core/types';
@@ -23,6 +24,7 @@ it('Should provide correct default option values', async () => {
   // Assert
   expect(options.type).toBe(CacheLayerStoreFormatType.parquet);
   expect(options.loader).toBe(CacheLayerStoreLoaderType.duckdb);
+  expect(options.folderPath).toBe(defaultCacheLayerFolderPath);
 });
 
 it('Can override some option properties', async () => {
@@ -42,10 +44,10 @@ it('Can override some option properties', async () => {
 it('Schema validation should work', async () => {
   // Arrange
   container.bind(TYPES.CacheLayerInputOptions).toConstantValue({
-    provider: null,
+    loader: true,
   });
-  // Act. Assert
+  // Act, Assert
   expect(() =>
     container.get<CacheLayerOptions>(TYPES.CacheLayerOptions)
-  ).not.toThrow();
+  ).toThrow();
 });

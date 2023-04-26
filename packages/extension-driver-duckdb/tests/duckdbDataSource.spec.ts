@@ -15,7 +15,7 @@ const runQuery = (db: duckdb.Database, sql: string) =>
   new Promise<void>((resolve, reject) => {
     db.run(sql, (err: any) => {
       if (err) reject(err);
-      else resolve();
+      resolve();
     });
   });
 
@@ -454,7 +454,7 @@ it('Should throw error when importing "parquet" file to create table but profile
   await expect(
     dataSource.import({
       tableName: 'some-table-name',
-      filepath: 'some-filepath',
+      filepaths: ['some-filepath'],
       profileName: 'some-profile',
       schema: 'some-schema',
       type: 'parquet',
@@ -503,12 +503,14 @@ it('Should succeed when importing "parquet" file to create table', async () => {
       allow: '*',
     },
   ]);
-  const filepath = path.resolve(__dirname, 'test-files/nation.parquet');
+  // import multiple files
+  const filepath1 = path.resolve(__dirname, 'test-files/userdata1.parquet');
+  const filepath2 = path.resolve(__dirname, 'test-files/userdata2.parquet');
   await dataSource.activate();
   // Act
   await dataSource.import({
-    tableName: 'nation',
-    filepath,
+    tableName: 'users',
+    filepaths: [filepath1, filepath2],
     profileName: 'mocked-profile',
     schema: 'mocked_schema',
     type: 'parquet',
@@ -525,7 +527,7 @@ it('Should succeed when importing "parquet" file to create table', async () => {
   });
 
   await expect(actual).toContainEqual({
-    table: 'nation',
+    table: 'users',
     schema: 'mocked_schema',
   });
 });
