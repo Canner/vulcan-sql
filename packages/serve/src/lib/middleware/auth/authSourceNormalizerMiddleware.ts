@@ -15,6 +15,7 @@ import {
 import { isBase64 } from 'class-validator';
 import { inject } from 'inversify';
 import { capitalize, chain } from 'lodash';
+import { checkIsPublicEndpoint } from './utils';
 
 const logger = getLogger({ scopeName: 'SERVE' });
 
@@ -62,18 +63,7 @@ export class AuthSourceNormalizerMiddleware extends BuiltInMiddleware<AuthSource
     };
 
     // The endpoint not need contains auth credentials
-    const docPrefix =
-      this.projectOptions?.['redoc']?.url
-        .replace(/\/$/, '')
-        .replace(/^\//, '') || 'doc';
-    const pathsWithoutAuth = [
-      '/auth/token',
-      '/auth/available-types',
-      `/${docPrefix}`,
-      `/${docPrefix}/spec`,
-      `/${docPrefix}/redoc`,
-    ];
-    if (pathsWithoutAuth.includes(context.path)) return next();
+    if (checkIsPublicEndpoint(this.projectOptions, context.path)) return next();
 
     try {
       // normalize auth source to header

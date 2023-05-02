@@ -13,6 +13,7 @@ import {
 import { BaseAuthMiddleware } from './authMiddleware';
 import { TYPES } from '@vulcan-sql/serve/containers';
 import { inject, multiInject } from 'inversify';
+import { checkIsPublicEndpoint } from './utils';
 
 /** The middleware responsible for checking request auth credentials.
  *  It seek the 'auth' module name to match data through built-in and customized authenticator by BaseAuthenticator
@@ -41,18 +42,7 @@ export class AuthCredentialsMiddleware extends BaseAuthMiddleware {
     if (!this.enabled) return next();
 
     // The endpoint not need contains auth credentials
-    const docPrefix =
-      this.projectOptions?.['redoc']?.url
-        .replace(/\/$/, '')
-        .replace(/^\//, '') || 'doc';
-    const pathsWithoutAuth = [
-      '/auth/token',
-      '/auth/available-types',
-      `/${docPrefix}`,
-      `/${docPrefix}/spec`,
-      `/${docPrefix}/redoc`,
-    ];
-    if (pathsWithoutAuth.includes(context.path)) return next();
+    if (checkIsPublicEndpoint(this.projectOptions, context.path)) return next();
 
     // pass current context to auth token for users
     for (const name of Object.keys(this.authenticators)) {

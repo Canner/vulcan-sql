@@ -24,6 +24,8 @@ const mergeCatalogDefaultOption = (options: Partial<CatalogCommandOptions>) => {
 const serveCatalog = async (options: CatalogCommandOptions) => {
   const configPath = path.resolve(process.cwd(), options.config);
   const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
+  // we need to use the "next" module in the same root with our "catalog-server" module
+  // or it may fail to get next.config.js variables in the app
   const next = await import(localModulePath('next'));
   const dirPath = localModulePath('@vulcan-sql/catalog-server');
 

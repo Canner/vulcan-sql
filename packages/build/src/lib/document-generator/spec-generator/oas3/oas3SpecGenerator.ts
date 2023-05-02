@@ -60,7 +60,7 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
 
   private getPath(schema: APISchema): oas3.PathItemObject {
     return {
-      get: this.getOperationObject(schema),
+      get: this.getOperationObject(schema, 'get'),
     };
   }
 
@@ -71,8 +71,13 @@ export class OAS3SpecGenerator extends SpecGenerator<oas3.OpenAPIObject> {
     });
   }
 
-  private getOperationObject(schema: APISchema): oas3.OperationObject {
+  private getOperationObject(
+    schema: APISchema,
+    operation: string
+  ): oas3.OperationObject {
     return {
+      operationId: `${operation}${schema.urlPath}`,
+      summary: schema.urlPath,
       description: schema.description,
       responses: this.getResponsesObject(schema),
       parameters: this.getParameterObject(schema),

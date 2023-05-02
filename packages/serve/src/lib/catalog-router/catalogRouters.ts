@@ -10,6 +10,7 @@ import { Next } from 'koa';
 import * as Router from 'koa-router';
 import { CatalogRouter } from '@vulcan-sql/serve/models';
 import { inject } from 'inversify';
+import { getDocUrlPrefix } from '../document-router/utils';
 @VulcanInternalExtension('catalog')
 @VulcanExtensionId('catalog')
 export class CatalogRouters extends CatalogRouter {
@@ -39,16 +40,15 @@ export class CatalogRouters extends CatalogRouter {
         return;
       }
 
-      const project = this.getProjectOptions();
-      const responseFormat = project?.['response-format'];
+      const responseFormatOption = this.getProjectOptions('response-format');
       const baseUrl = `${ctx.protocol}://${ctx.host}`;
       const result = {
         ...schema,
         url: `${baseUrl}/api${schema.urlPath}`,
         apiDocUrl: `${baseUrl}${this.getAPIDocUrl(schema)}`,
         shareKey: this.getShareKey(ctx.request.headers.authorization),
-        responseFormat: responseFormat.enabled
-          ? responseFormat?.options || []
+        responseFormat: responseFormatOption.enabled
+          ? responseFormatOption?.options || []
           : [],
       };
       ctx.response.body = result;
@@ -73,28 +73,23 @@ export class CatalogRouters extends CatalogRouter {
   private getShareKey(authorization: string | undefined) {
     if (!authorization) return '';
 
-    const project = this.getProjectOptions();
-    const authSource = project?.['auth-source'];
+    const authSourceOption = this.getProjectOptions('auth-source');
     const token = Buffer.from(
       JSON.stringify({ Authorization: authorization })
     ).toString('base64');
-    const key = (authSource && authSource?.options?.key) || 'auth';
+    const key = (authSourceOption && authSourceOption?.options?.key) || 'auth';
     return `?${key}=${token}`;
   }
 
+  // Make API doc(redoc) url for catalog
+  // redoc generated url path example: /artist/:id -> /doc#operation/get/artist/:id
   private getAPIDocUrl(schema: APISchema) {
-    const splitUrl = schema.urlPath.split('/');
-    const restructureUrl = splitUrl
-      .map((brick) =>
-        brick.startsWith(':') ? `{${brick.replace(':', '')}}` : brick
-      )
-      .join('~1');
-    const project = this.getProjectOptions();
-    const redoc = project?.['redoc'];
-    const docPath =
-      redoc?.url?.replace(/\/+$/, '').replace(/^\/+/, '') || 'doc';
+    const redocOption = this.getProjectOptions('redoc');
+    const docPath = getDocUrlPrefix(redocOption?.url || '');
+
     // currently vulcan-sql only support get method
-    return `/${docPath}#/paths/${encodeURI(restructureUrl)}/get`;
+    const operationPrefix = 'operation/get';
+    return `/${docPath}#${operationPrefix}${schema.urlPath}`;
   }
 
   public async handle(
