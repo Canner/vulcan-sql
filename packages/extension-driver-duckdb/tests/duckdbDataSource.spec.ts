@@ -433,7 +433,7 @@ it('Should throw error when exporting data to "parquet" file but profile instanc
   await expect(
     dataSource.export({
       sql: 'some-sql-to-export',
-      filepath: 'some-filepath',
+      directory: 'some-folder',
       profileName: 'some-profile',
       type: CacheLayerStoreFormatType.parquet,
     })
@@ -454,7 +454,7 @@ it('Should throw error when importing "parquet" file to create table but profile
   await expect(
     dataSource.import({
       tableName: 'some-table-name',
-      filepaths: ['some-filepath'],
+      directory: 'some-folder',
       profileName: 'some-profile',
       schema: 'some-schema',
       type: 'parquet',
@@ -474,21 +474,51 @@ it('Should succeed when exporting data to "parquet" file', async () => {
       allow: '*',
     },
   ]);
-  const filepath = path.resolve(__dirname, 'users.parquet');
+
+  const directory = path.resolve(__dirname, 'users');
+
+  // Create cache folder to make the download work
+  fs.mkdirSync(directory!, { recursive: true });
   await dataSource.activate();
   // Act
   await dataSource.export({
     sql: 'select * from users',
-    filepath,
+    directory,
     profileName: 'mocked-profile',
     type: CacheLayerStoreFormatType.parquet,
   });
   // Assert
   const db = dataSource.getInstance('mocked-profile')!;
   await waitForQuery(db);
-  await expect(fs.existsSync(filepath)).toBe(true);
-  // rm created cache files
-  await fs.promises.rm(filepath, { force: true });
+  await expect(fs.readdirSync(directory).length).toBe(1);
+  // rm created cache folder with files
+  await fs.promises.rm(directory, { recursive: true, force: true });
+});
+
+it('Should throw error when exporting data to "parquet" file, but directory not exists', async () => {
+  // Arrange
+  const dataSource = new MockDuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
+      allow: '*',
+    },
+  ]);
+
+  const directory = path.resolve(__dirname, 'users');
+  await dataSource.activate();
+  // Act, Assert
+  await expect(
+    dataSource.export({
+      sql: 'select * from users',
+      directory,
+      profileName: 'mocked-profile',
+      type: CacheLayerStoreFormatType.parquet,
+    })
+  ).rejects.toThrow(`The directory ${directory} not exists`);
 });
 
 it('Should succeed when importing "parquet" file to create table', async () => {
@@ -504,13 +534,13 @@ it('Should succeed when importing "parquet" file to create table', async () => {
     },
   ]);
   // import multiple files
-  const filepath1 = path.resolve(__dirname, 'test-files/userdata1.parquet');
-  const filepath2 = path.resolve(__dirname, 'test-files/userdata2.parquet');
+  const directory = path.resolve(__dirname, 'test-files/userdata');
+
   await dataSource.activate();
   // Act
   await dataSource.import({
     tableName: 'users',
-    filepaths: [filepath1, filepath2],
+    directory,
     profileName: 'mocked-profile',
     schema: 'mocked_schema',
     type: 'parquet',
@@ -530,4 +560,32 @@ it('Should succeed when importing "parquet" file to create table', async () => {
     table: 'users',
     schema: 'mocked_schema',
   });
+});
+
+it('Should throw error when importing "parquet" file to create table, but the directory not exist', async () => {
+  // Arrange
+  const dataSource = new MockDuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
+      allow: '*',
+    },
+  ]);
+  // import multiple files
+  const directory = path.resolve(__dirname, 'test-files/not-exist-folder');
+
+  await dataSource.activate();
+  // Act
+  await expect(
+    dataSource.import({
+      tableName: 'users',
+      directory,
+      profileName: 'mocked-profile',
+      schema: 'mocked_schema',
+      type: 'parquet',
+    })
+  ).rejects.toThrow(`The directory ${directory} not exists`);
 });

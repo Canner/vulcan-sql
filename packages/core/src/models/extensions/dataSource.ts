@@ -11,9 +11,7 @@ import { VulcanExtension } from './decorators';
 export interface ExportOptions {
   // The sql query result to export
   sql: string;
-  // The full pathname to export result to file
-  filepath: string;
-  // The full pathname to export result to file
+  // The directory to export result to file
   directory: string;
   // The profile name to select to export data
   profileName: string;
@@ -23,8 +21,8 @@ export interface ExportOptions {
 export interface ImportOptions {
   // The table name to create from imported file data
   tableName: string;
-  // The full pathname to import data from files
-  filepaths: string[];
+  // The directory to import cache files
+  directory: string;
   // The profile name to select to import data
   profileName: string;
   // default schema
@@ -91,7 +89,7 @@ export abstract class DataSource<
   /**
    * Export query result data to cache file for cache layer loader used
    */
-  public export(options: ExportOptions): Promise<string[]> {
+  public export(options: ExportOptions): Promise<void> {
     throw new Error(`Export method not implemented`);
   }
 

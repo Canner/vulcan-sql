@@ -1,4 +1,6 @@
 import * as duckdb from 'duckdb';
+import * as path from 'path';
+import * as uuid from 'uuid';
 import { Stream } from 'stream';
 import {
   CacheLayerStoreFormatType,
@@ -66,8 +68,9 @@ export class MockDuckDBDataSource extends DataSource {
     return `$${parameterIndex}`;
   }
 
-  public override async export(options: ExportOptions): Promise<string[]> {
-    const { filepath, sql, type } = options;
+  public override async export(options: ExportOptions): Promise<void> {
+    const { directory, sql, type } = options;
+    const filepath = path.resolve(directory, `${uuid.v4()}.parquet`);
     const formatTypeMapper = {
       [CacheLayerStoreFormatType.parquet.toString()]: 'parquet',
     };
@@ -80,18 +83,18 @@ export class MockDuckDBDataSource extends DataSource {
           this.logger.debug(
             `Export to ${formatTypeMapper[type]} file done, path = ${filepath}`
           );
-          resolve([filepath]);
+          resolve();
         }
       );
     });
   }
 
   public override async import(options: ImportOptions): Promise<void> {
-    const { tableName, filepaths, schema, type } = options;
-    // parametrized query string for filepaths => [filepath1, filepath2] => "'filepath1', 'filepath2'"
-    const parametrizedPaths = filepaths.map((path) => `'${path}'`).join(', ');
+    const { tableName, directory, schema, type } = options;
+    // read all parquet files in directory by *.parquet
+    const folderPath = path.resolve(directory, '*.parquet');
     const formatTypeMapper = {
-      [CacheLayerStoreFormatType.parquet.toString()]: `read_parquet([${parametrizedPaths}])`,
+      [CacheLayerStoreFormatType.parquet.toString()]: `read_parquet('${folderPath}')`,
     };
     // create table and if resolve done, return
     return await new Promise((resolve, reject) => {

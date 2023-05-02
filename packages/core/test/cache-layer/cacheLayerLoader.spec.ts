@@ -1,4 +1,6 @@
 import * as fs from 'fs';
+import * as uuid from 'uuid';
+import * as path from 'path';
 import faker from '@faker-js/faker';
 import * as duckdb from 'duckdb';
 import * as sinon from 'ts-sinon';
@@ -49,9 +51,10 @@ class MockDataSource extends DataSource {
     return super.getProfile(name);
   }
 
-  public override async export(options: ExportOptions): Promise<string[]> {
-    const { filepath } = options;
-    const fakeTableName = faker.word.noun();
+  public override async export(options: ExportOptions): Promise<void> {
+    const { directory } = options;
+    const filepath = path.resolve(directory, `${uuid.v4()}.parquet`);
+    const fakeTableName = 'table1';
     const fakeColumns = [
       {
         column: 'id',
@@ -76,6 +79,7 @@ class MockDataSource extends DataSource {
         `INSERT INTO ${fakeTableName} VALUES (${faker.random.numeric()}, '${faker.random.word()}', ${faker.datatype.boolean()})`
       );
     }
+
     // export to parquet file and if resolve done, return filepaths
     return await new Promise((resolve, reject) => {
       db.run(
@@ -83,21 +87,21 @@ class MockDataSource extends DataSource {
         (err: any) => {
           if (err) reject(err);
           this.logger.debug(`Export to parquet file done, path = ${filepath}`);
-          resolve([filepath]);
+          resolve();
         }
       );
     });
   }
 
   public override async import(options: ImportOptions): Promise<void> {
-    const { tableName, filepaths, schema } = options;
-    // parametrized query string for filepaths => [filepath1, filepath2] => "'filepath1', 'filepath2'"
-    const parametrizedPaths = filepaths.map((path) => `'${path}'`).join(', ');
+    const { tableName, directory, schema } = options;
+    // read all parquet files in directory by *.parquet
+    const folderPath = path.resolve(directory, '*.parquet');
     // create table and if resolve done, return
     return await new Promise((resolve, reject) => {
       db.run(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
       db.run(
-        `CREATE OR REPLACE TABLE ${schema}.${tableName} AS SELECT * FROM read_parquet([${parametrizedPaths}])`,
+        `CREATE OR REPLACE TABLE ${schema}.${tableName} AS SELECT * FROM read_parquet('${folderPath}')`,
         (err: any) => {
           if (err) reject(err);
           this.logger.debug(`Table created, name = ${tableName}`);

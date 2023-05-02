@@ -1,4 +1,6 @@
 import { Readable } from 'stream';
+import * as fs from 'fs';
+import * as uuid from 'uuid';
 import * as duckdb from 'duckdb';
 import {
   CacheLayerStoreFormatType,
@@ -140,11 +142,15 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     }
   }
 
-  public override async export(options: ExportOptions): Promise<string[]> {
-    const { filepath, sql, profileName, type } = options;
-    if (!this.dbMapping.has(profileName)) {
+  public override async export(options: ExportOptions): Promise<void> {
+    const { directory, sql, profileName, type } = options;
+    const filepath = path.resolve(directory, `${uuid.v4()}.parquet`);
+    if (!this.dbMapping.has(profileName))
       throw new InternalError(`Profile instance ${profileName} not found`);
-    }
+    // check the directory exists
+    if (!fs.existsSync(directory!))
+      throw new InternalError(`The directory ${directory} not exists`);
+
     const { db } = this.dbMapping.get(profileName)!;
     const formatTypeMapper = {
       [CacheLayerStoreFormatType.parquet.toString()]: 'parquet',
@@ -158,22 +164,25 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
           this.logger.debug(
             `Export to ${formatTypeMapper[type]} file done, path = ${filepath}`
           );
-          resolve([filepath]);
+          resolve();
         }
       );
     });
   }
 
   public override async import(options: ImportOptions): Promise<void> {
-    const { tableName, filepaths, profileName, schema, type } = options;
-    if (!this.dbMapping.has(profileName)) {
+    const { tableName, directory, profileName, schema, type } = options;
+    if (!this.dbMapping.has(profileName))
       throw new InternalError(`Profile instance ${profileName} not found`);
-    }
+    // check the directory exists
+    if (!fs.existsSync(directory!))
+      throw new InternalError(`The directory ${directory} not exists`);
+
     const { db } = this.dbMapping.get(profileName)!;
-    // parametrized query string for filepaths => [filepath1, filepath2] => "'filepath1', 'filepath2'"
-    const parametrizedPaths = filepaths.map((path) => `'${path}'`).join(', ');
+    // read all parquet files in directory by *.parquet
+    const folderPath = path.resolve(directory, '*.parquet');
     const formatTypeMapper = {
-      [CacheLayerStoreFormatType.parquet.toString()]: `read_parquet([${parametrizedPaths}])`,
+      [CacheLayerStoreFormatType.parquet.toString()]: `read_parquet('${folderPath}')`,
     };
     // create table and if resolve done, return
     return await new Promise((resolve, reject) => {

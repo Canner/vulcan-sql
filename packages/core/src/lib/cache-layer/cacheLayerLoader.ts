@@ -47,26 +47,26 @@ export class CacheLayerLoader implements ICacheLayerLoader {
       for (const cache of schema.cache) {
         const { cacheTableName, sql, profile } = cache;
         const dataSource = this.dataSourceFactory(profile);
-        // filename pattern: [schema.templateSource]#[profileName]#[cacheTableName].parquet
-        const filepath = this.generateFilePath(
+        // directory pattern:[folderPath]/[schema.templateSource]/[profileName]/[cacheTableName]
+        const directory = this.generateDirectory(
           schema.templateSource,
           profile,
           cacheTableName
         );
-        if (!fs.existsSync(this.options.folderPath!))
-          fs.mkdirSync(this.options.folderPath!);
+        if (!fs.existsSync(directory!))
+          fs.mkdirSync(directory!, { recursive: true });
 
         // 1. export to cache files according to each schema set the cache value
-        const filepaths = await dataSource.export({
+        await dataSource.export({
           sql,
-          filepath,
+          directory,
           profileName: profile,
           type: this.options.type!,
         });
         // 2. preload the files to cache data source
         await cacheStorage.import({
           tableName: cacheTableName,
-          filepaths,
+          directory,
           // use the "vulcan.cache" profile to import the cache data
           profileName: cacheProfileName,
           // default schema name for cache layer
@@ -93,24 +93,24 @@ export class CacheLayerLoader implements ICacheLayerLoader {
 
   /**
    * Generate the file path for cache file path to export.
-   * Filename pattern: [templateSource]#[profileName]#[cacheTableName].parquet
+   * Directory pattern: [folderPath]/[templateSource]/[profileName]/[cacheTableName]
    * @param templateSource The template source name
    * @param profileName The profile name
    * @param cacheTableName The cache table name
    */
-  private generateFilePath(
+  private generateDirectory(
     templateSource: string,
     profileName: string,
     cacheTableName: string
   ) {
     // replace the '/' tp '_' to avoid the file path issue for templateSource
     const templateName = templateSource.replace('/', '_');
-    const filename = `${templateName}#${profileName}#${cacheTableName}.parquet`;
-    const filepath = path
-      .join(this.options.folderPath!, filename)
-      // support the windows OS path
-      .split(path.sep)
-      .join('/');
-    return filepath;
+    const directory = path.resolve(
+      this.options.folderPath!,
+      templateName,
+      profileName,
+      cacheTableName
+    );
+    return directory;
   }
 }

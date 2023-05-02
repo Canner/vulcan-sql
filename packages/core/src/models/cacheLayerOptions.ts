@@ -23,4 +23,9 @@ export const cacheProfileName = 'vulcan.cache';
 export const vulcanCacheSchemaName = 'vulcan';
 
 // The default folder path to store the cache files
-export const defaultCacheLayerFolderPath = path.join(tmpdir(), 'vulcan/cache');
+// The path.resolve(tmpdir(), 'vulcan') could be the root if other places also need to create temp folder default in the future.
+export const defaultCacheLayerFolderPath = path.resolve(
+  tmpdir(),
+  'vulcan',
+  'cache'
+);
