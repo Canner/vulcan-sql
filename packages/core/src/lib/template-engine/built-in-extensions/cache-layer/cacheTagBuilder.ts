@@ -97,9 +97,10 @@ export class CacheTagBuilder extends TagBuilder {
   }
 
   public override getMetadata() {
-    return {
-      isUsedTag: this.isUsedTag,
-    };
+    const result = { isUsedTag: this.isUsedTag };
+    // reset used tag value after get metadata, could reset the value at reset method, because getMetadata called after the finish method.
+    this.isUsedTag = false;
+    return result;
   }
 
   public override finish() {

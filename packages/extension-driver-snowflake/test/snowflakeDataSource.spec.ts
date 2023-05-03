@@ -1,7 +1,11 @@
 import { SnowflakeServer } from './snowflakeServer';
 import { SnowflakeDataSource } from '../src';
 import * as fs from 'fs';
-import { ExportOptions, streamToArray } from '@vulcan-sql/core';
+import {
+  CacheLayerStoreFormatType,
+  ExportOptions,
+  streamToArray,
+} from '@vulcan-sql/core';
 
 const snow = new SnowflakeServer();
 let dataSource: SnowflakeDataSource;
@@ -73,6 +77,7 @@ it('Data source should throw internal error if directory is not exist', async ()
     LIMIT 100000`,
     directory,
     profileName: 'profile1',
+    type: CacheLayerStoreFormatType.parquet,
   };
   // Assert
   await expect(dataSource.export(exportOption)).rejects.toThrow(
@@ -103,6 +108,7 @@ it('Data source should throw error when error was throw in getCopyToStageSQL', a
     LIMIT 100000`,
     directory,
     profileName: 'profile1',
+    type: CacheLayerStoreFormatType.parquet,
   };
   // Assert
   await expect(dataSource.export(exportOption)).rejects.toThrow('mock error');
@@ -124,6 +130,7 @@ it('Data source should export parquet file correctly', async () => {
     ORDER BY 1`,
     profileName: 'profile1',
     directory,
+    type: CacheLayerStoreFormatType.parquet,
   };
   await dataSource.export(exportOption);
   // Assert
@@ -163,6 +170,7 @@ it('Data source should export multiple parquet files correctly', async () => {
     ORDER BY 1`,
     profileName: 'profile1',
     directory,
+    type: CacheLayerStoreFormatType.parquet,
   };
   await dataSource.export(exportOption);
   // Assert

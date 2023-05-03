@@ -110,7 +110,6 @@ export class CacheLayerInfo {
   profile!: string;
   // the sql to query the data from data source and put in cache by "cacheTableName"
   sql!: string;
-  profile!: string;
   refreshTime?: RefreshTime;
   refreshExpression?: RefreshExpression;
   // index key name -> index column

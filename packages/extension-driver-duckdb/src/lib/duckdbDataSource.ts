@@ -78,7 +78,9 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     }
     const { db, ...options } = this.dbMapping.get(profileName)!;
     const builtSQL = buildSQL(sql, operations);
-    const statement = db.prepare(builtSQL);
+    // create new connection for each query
+    const connection = db.connect();
+    const statement = connection.prepare(builtSQL);
     const parameters = Array.from(bindParams.values());
     this.logRequest(builtSQL, parameters, options);
 
@@ -152,12 +154,14 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
       throw new InternalError(`The directory ${directory} not exists`);
 
     const { db } = this.dbMapping.get(profileName)!;
+    // create new connection for export
+    const connection = db.connect();
     const formatTypeMapper = {
       [CacheLayerStoreFormatType.parquet.toString()]: 'parquet',
     };
     // export to parquet file and if resolve done, return filepaths
     return await new Promise((resolve, reject) => {
-      db.run(
+      connection.run(
         `COPY (${sql}) TO '${filepath}' (FORMAT '${formatTypeMapper[type]}')`,
         (err: any) => {
           if (err) reject(err);
@@ -179,6 +183,8 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
       throw new InternalError(`The directory ${directory} not exists`);
 
     const { db } = this.dbMapping.get(profileName)!;
+    // create new connection for import
+    const connection = db.connect();
     // read all parquet files in directory by *.parquet
     const folderPath = path.resolve(directory, '*.parquet');
     const formatTypeMapper = {
@@ -186,8 +192,8 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     };
     // create table and if resolve done, return
     return await new Promise((resolve, reject) => {
-      db.run(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
-      db.run(
+      connection.run(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
+      connection.run(
         `CREATE OR REPLACE TABLE ${schema}.${tableName} AS SELECT * FROM ${formatTypeMapper[type]}`,
         (err: any) => {
           if (err) reject(err);
