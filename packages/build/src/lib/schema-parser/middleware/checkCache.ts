@@ -39,49 +39,33 @@ export class CheckCache extends SchemaParserMiddleware {
 
   private checkRefreshSettings(schemas: RawAPISchema) {
     const { cache: caches, urlPath } = schemas;
-    caches?.forEach((cache): void => {
-      // refreshTime and refreshExpression can not be set at the same time
+    for (const cache of caches!) {
       const { refreshTime, refreshExpression, cacheTableName } = cache;
+      if (!refreshTime && !refreshExpression) continue;
+
       if (refreshTime && refreshExpression) {
         throw new ConfigurationError(
-          `Can not set "refreshTime" and "refreshExpression" at the same time in cache "${cache.cacheTableName}" of schema "${schemas.urlPath}"`
+          `Can not set "refreshTime" and "refreshExpression" at the same time in cache "${cacheTableName}" of schema "${urlPath}"`
         );
       }
-      // check "every" of "refreshTime" and "refreshExpression" are valid
-      if (refreshTime) {
-        const refreshOption: RefreshOption = {
-          intervalType: 'refreshTime',
-          timeInterval: refreshTime.every,
-          cacheTableName,
-          urlPath,
-        };
-        this.checkRefreshInterval(refreshOption);
-      }
-      if (refreshExpression) {
-        const refreshOption: RefreshOption = {
-          intervalType: 'refreshExpression',
-          timeInterval: refreshExpression.every,
-          cacheTableName,
-          urlPath,
-        };
-        this.checkRefreshInterval(refreshOption);
-      }
-    });
+      const options = refreshTime
+        ? { type: 'refreshTime', timeInterval: refreshTime!.every }
+        : { type: 'refreshExpression', timeInterval: refreshExpression!.every };
+      const message = this.checkRefreshInterval(options.timeInterval);
+      if (message)
+        throw new ConfigurationError(
+          `The "${options.type}.every" of cache "${cacheTableName}" in schema "${urlPath}" is invalid: ${message}`
+        );
+    }
   }
 
-  private checkRefreshInterval(checkOption: RefreshOption) {
-    const { intervalType, timeInterval, cacheTableName, urlPath } = checkOption;
+  private checkRefreshInterval(timeInterval?: string) {
+    if (!timeInterval) return 'Should have a value.';
+
     const interval = ms(timeInterval as StringValue);
-    if (isNaN(interval)) {
-      throw new ConfigurationError(
-        `The "every" of "${intervalType}" in cache "${cacheTableName}" of schema "${urlPath}" is invalid: Invalid time string to convert.`
-      );
-    }
-    if (interval < 0) {
-      throw new ConfigurationError(
-        `The "every" of "${intervalType}" in cache "${cacheTableName}" of schema "${urlPath}" is invalid: Time can not be negative.`
-      );
-    }
+    if (isNaN(interval)) return 'Invalid time string to convert.';
+    if (interval < 0) return 'Time can not be negative.';
+    return '';
   }
 
   private checkCacheTableName(schemas: RawAPISchema) {
@@ -105,9 +89,10 @@ export class CheckCache extends SchemaParserMiddleware {
       // table naming pattern
       // 1. start with a letter or underscore, and can only contain letters, numbers, and underscores
       // 2. the sub-characters contain letters, numbers, underscore, and dollar sign
-      if (!/^[a-zA-Z_][a-zA-Z0-9_$]+$/.test(cacheTableName)) {
+      const pattern = /^[a-zA-Z_][a-zA-Z0-9_$]+$/;
+      if (!pattern.test(cacheTableName)) {
         throw new ConfigurationError(
-          `The cacheTableName "${cacheTableName}" in schema "${schemas.urlPath}" should meet the pattern "/^[a-zA-Z_][a-zA-Z0-9_$]+$/".`
+          `The cacheTableName "${cacheTableName}" in schema "${schemas.urlPath}" should meet the pattern "${pattern}".`
         );
       }
       cacheTableNames.push(cacheTableName);
@@ -116,12 +101,12 @@ export class CheckCache extends SchemaParserMiddleware {
 
   // check sql is not empty
   private checkSQLHasValue(schemas: RawAPISchema) {
-    const caches = schemas?.cache;
+    const { cache: caches, urlPath } = schemas;
     caches?.forEach((cache) => {
-      const { sql } = cache;
+      const { sql, cacheTableName } = cache;
       if (!sql) {
         throw new ConfigurationError(
-          `The "sql" of cache "${cache.cacheTableName}" in schema "${schemas.urlPath}" is not defined or is empty.`
+          `The "sql" of cache "${cacheTableName}" in schema "${urlPath}" is not defined or is empty.`
         );
       }
     });

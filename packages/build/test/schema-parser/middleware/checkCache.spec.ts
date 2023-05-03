@@ -101,7 +101,7 @@ it('Should throw an error when the value of "every" of "refreshTime" is a invali
     ],
   };
   await expect(middleware.handle(schemas, next)).rejects.toThrow(
-    'The "every" of "refreshTime" in cache "cache_table_name" of schema "/urlPath" is invalid: Invalid time string to convert.'
+    'The "refreshTime.every" of cache "cache_table_name" in schema "/urlPath" is invalid: Invalid time string to convert.'
   );
   expect(next).not.toHaveBeenCalled();
 });
@@ -125,7 +125,7 @@ it('Should throw an error when a converted value of "every" of "refreshTime" is 
     ],
   };
   await expect(middleware.handle(schemas, next)).rejects.toThrow(
-    'The "every" of "refreshTime" in cache "cache_table_name" of schema "/urlPath" is invalid: Time can not be negative.'
+    'The "refreshTime.every" of cache "cache_table_name" in schema "/urlPath" is invalid: Time can not be negative.'
   );
   expect(next).not.toHaveBeenCalled();
 });
@@ -174,7 +174,7 @@ it('Should throw an error when the value of "every" of "refreshExpression" is a 
     ],
   };
   await expect(middleware.handle(schemas, next)).rejects.toThrow(
-    'The "every" of "refreshExpression" in cache "cache_table_name" of schema "/urlPath" is invalid: Invalid time string to convert.'
+    'The "refreshExpression.every" of cache "cache_table_name" in schema "/urlPath" is invalid: Invalid time string to convert.'
   );
   expect(next).not.toHaveBeenCalled();
 });
@@ -197,7 +197,7 @@ it('Should throw an error when a negative refreshExpression interval is used', a
     ],
   };
   await expect(middleware.handle(schemas, next)).rejects.toThrow(
-    'The "every" of "refreshExpression" in cache "cache_table_name" of schema "/urlPath" is invalid: Time can not be negative.'
+    'The "refreshExpression.every" of cache "cache_table_name" in schema "/urlPath" is invalid: Time can not be negative.'
   );
   expect(next).not.toHaveBeenCalled();
 });
