@@ -1,5 +1,6 @@
 import {
   APISchema,
+  CacheLayerInfo,
   FieldDataType,
   RequestSchema as RequestParameter,
   ResponseProperty,
@@ -17,14 +18,19 @@ export interface RawResponseProperty extends Omit<ResponseProperty, 'type'> {
   type: string | FieldDataType | Array<RawResponseProperty>;
 }
 
+export interface RawCacheLayerInfo extends Omit<CacheLayerInfo, 'profile'> {
+  profile?: string;
+}
+
 export interface RawAPISchema
-  extends DeepPartial<Omit<APISchema, 'request' | 'response'>> {
+  extends DeepPartial<Omit<APISchema, 'request' | 'response' | 'cache'>> {
   /** Indicate the identifier of this schema from the source, it might be uuid, file path, url ...etc, depend on the provider */
   sourceName: string;
   request?: DeepPartial<RawRequestParameter[]>;
   response?: DeepPartial<RawResponseProperty[]>;
   metadata?: Record<string, any>;
   profile?: string;
+  cache?: Array<RawCacheLayerInfo>;
 }
 
 @injectable()

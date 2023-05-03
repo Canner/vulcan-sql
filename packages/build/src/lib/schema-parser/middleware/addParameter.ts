@@ -1,5 +1,6 @@
 import { FieldInType, ValidatorDefinition } from '@vulcan-sql/core';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
+import { PARAMETER_METADATA_NAME } from './constants';
 
 interface Parameter {
   name: string;
@@ -14,9 +15,9 @@ export class AddParameter extends SchemaParserMiddleware {
 
     const metadata = schemas.metadata;
     // Skip validation if no metadata found
-    if (!metadata?.['parameter.vulcan.com']) return next();
+    if (!metadata?.[PARAMETER_METADATA_NAME]) return next();
 
-    const parameters: Parameter[] = metadata['parameter.vulcan.com'];
+    const parameters: Parameter[] = metadata[PARAMETER_METADATA_NAME];
     parameters.forEach((parameter) => {
       // We only check the first value of nested parameters
       const name = parameter.name.split('.')[0];

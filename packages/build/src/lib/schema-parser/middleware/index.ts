@@ -1,6 +1,7 @@
 import { ClassType } from '@vulcan-sql/core';
 import { GenerateUrl } from './generateUrl';
 import { CheckValidator } from './checkValidator';
+import { CheckCache } from './checkCache';
 import { TransformValidator } from './transformValidator';
 import { GenerateTemplateSource } from './generateTemplateSource';
 import { AddParameter } from './addParameter';
@@ -39,4 +40,5 @@ export const SchemaParserMiddlewares: ClassType<SchemaParserMiddleware>[] = [
   ExtractPaginationParams, // ExtractPaginationParams should be loaded after SetConstraints
   ResponseSampler,
   CheckProfile,
+  CheckCache, // CheckCache should be loaded after checkProfile
 ];
