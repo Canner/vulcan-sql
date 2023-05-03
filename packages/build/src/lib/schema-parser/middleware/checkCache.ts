@@ -3,12 +3,6 @@ import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 import { CACHE_METADATA_NAME } from './constants';
 import ms, { StringValue } from 'ms';
 
-interface RefreshOption {
-  intervalType?: string;
-  timeInterval?: string;
-  cacheTableName?: string;
-  urlPath?: string;
-}
 export class CheckCache extends SchemaParserMiddleware {
   public async handle(schemas: RawAPISchema, next: () => Promise<void>) {
     // check .yaml file has cache configuration
