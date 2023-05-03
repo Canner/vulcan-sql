@@ -7,7 +7,9 @@ it('NodePackager should create package.json, config.json, index.js, and result.j
   process.chdir(__dirname);
   const nodePackager = new NodePackager(
     {
-      folderPath: 'dist-node',
+      'vulcan-server': {
+        folderPath: 'dist-node',
+      },
     },
     ''
   );

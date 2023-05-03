@@ -1,20 +1,22 @@
-import {
-  ArtifactBuilderProviderType,
-  VulcanExtensionId,
-  VulcanInternalExtension,
-} from '@vulcan-sql/core';
+import { VulcanExtensionId, VulcanInternalExtension } from '@vulcan-sql/core';
 import { IBuildOptions } from '../../../models/buildOptions';
-import { Packager, PackagerName } from '../../../models/extensions';
+import {
+  Packager,
+  PackagerName,
+  PackagerTarget,
+} from '../../../models/extensions';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 
 @VulcanExtensionId(PackagerName.DockerCatalog)
-@VulcanInternalExtension('docker-catalog-packager')
+@VulcanInternalExtension('docker-packager')
 export class DockerCatalogPackager extends Packager {
   private logger = this.getLogger();
+  private readonly target = PackagerTarget.CatalogServer;
 
   public async package(option: IBuildOptions): Promise<void> {
-    const { folderPath = 'dist' } = this.getConfig() || {};
+    const config = this.getConfig() || {};
+    const { folderPath = 'dist' } = config[this.target] || {};
     const distFolder = path.resolve(process.cwd(), folderPath);
     await fs.rm(distFolder, { recursive: true, force: true });
     await fs.mkdir(distFolder, { recursive: true });
@@ -36,16 +38,6 @@ export class DockerCatalogPackager extends Packager {
       await this.getCatalogEntryJS(),
       'utf-8'
     );
-    // result.json
-    if (
-      option.artifact.provider === ArtifactBuilderProviderType.LocalFile &&
-      option.artifact.filePath
-    ) {
-      await fs.copyFile(
-        path.resolve(process.cwd(), option.artifact.filePath),
-        path.resolve(distFolder, option.artifact.filePath)
-      );
-    }
     // Dockerfile
     await fs.copyFile(
       path.resolve(__dirname, 'assets', 'Dockerfile.catalog'),

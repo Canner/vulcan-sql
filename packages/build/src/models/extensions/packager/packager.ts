@@ -27,7 +27,12 @@ export const PackagerName = {
 };
 
 export interface PackagerConfig {
-  folderPath?: string;
+  [PackagerTarget.VulcanServer]?: {
+    folderPath?: string;
+  };
+  [PackagerTarget.CatalogServer]?: {
+    folderPath?: string;
+  };
 }
 
 @VulcanExtension(TYPES.Extension_Packager, { enforcedId: true })

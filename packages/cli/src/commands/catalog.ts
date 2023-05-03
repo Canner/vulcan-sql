@@ -29,6 +29,7 @@ const serveCatalog = async (options: CatalogCommandOptions) => {
   const next = await import(localModulePath('next'));
   const dirPath = localModulePath('@vulcan-sql/catalog-server');
 
+  // provide catalog-server env variables for interacting with vulcan-server host
   process.env['VULCAN_SQL_HOST'] = `http://localhost:${config.port || 3000}`;
 
   const catalogConfig = config.catalog || {};

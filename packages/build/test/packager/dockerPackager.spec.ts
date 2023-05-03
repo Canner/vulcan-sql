@@ -7,7 +7,9 @@ it('DockerPackager should create package.json, config.json, index.js, result.jso
   process.chdir(__dirname);
   const dockerPackager = new DockerPackager(
     {
-      folderPath: 'dist-docker',
+      'vulcan-server': {
+        folderPath: 'dist-docker',
+      },
     },
     ''
   );
