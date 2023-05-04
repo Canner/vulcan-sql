@@ -1,22 +1,18 @@
 import { useMemo } from 'react';
-import styled from 'styled-components';
-import { ApolloError } from '@apollo/client';
-import { Tabs } from 'antd';
-import PageTitle from '@vulcan-sql/catalog-server/components/PageTitle';
+import { Tabs, Typography } from 'antd';
 import QueryResult from './QueryResult';
 import CustomizedTable from './CustomizedTable';
-import { Dataset } from '@vulcan-sql/catalog-server/lib/__generated__/types';
+import { Dataset } from './utils';
 
-const StyledCatalogDetail = styled.div``;
+const { Title } = Typography;
 
-/* eslint-disable-next-line */
 export interface CatalogDetailProps {
   data: any;
   loading: boolean;
   dataset: Dataset;
   datasetLoading: boolean;
   onDatasetPreview: (options?: any) => void;
-  datasetError?: ApolloError;
+  datasetError?: any;
 }
 
 export default function CatalogDetail(props: CatalogDetailProps) {
@@ -64,8 +60,8 @@ export default function CatalogDetail(props: CatalogDetailProps) {
   ];
 
   return (
-    <StyledCatalogDetail>
-      <PageTitle title={data.name} />
+    <div>
+      <Title level={3}>{data?.name}</Title>
       <QueryResult
         columns={columns}
         parameters={parameters}
@@ -82,6 +78,6 @@ export default function CatalogDetail(props: CatalogDetailProps) {
           </Tabs.TabPane>
         ))}
       </Tabs>
-    </StyledCatalogDetail>
+    </div>
   );
 }

@@ -1,7 +1,8 @@
-import { Parameter } from '@vulcan-sql/catalog-server/lib/__generated__/types';
+import React from 'react';
 import { Button, Form, Input } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
 import styled from 'styled-components';
+import { Parameter } from './utils';
 
 const StypeledParameterForm = styled.div`
   display: none;

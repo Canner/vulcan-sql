@@ -1,21 +1,17 @@
+import React, { useMemo, useState } from 'react';
 import { Typography, Button, Badge, Dropdown, Space, Menu } from 'antd';
-import {
-  DownOutlined,
-  FilterOutlined,
-} from '@vulcan-sql/catalog-server/lib/icons';
-import { ApolloError } from '@apollo/client';
 import styled from 'styled-components';
-import { useMemo, useState } from 'react';
 import CustomizedTable from './CustomizedTable';
 import ParameterForm from './ParameterForm';
 import TutorialModal, { TutorialType } from './TutorialModal';
+import ErrorResult from './ErrorResult';
 import {
-  Parameter,
   Column,
   Dataset,
-} from '@vulcan-sql/catalog-server/lib/__generated__/types';
-import Link from 'next/link';
-import ErrorResult from './ErrorResult';
+  Parameter,
+  DownOutlined,
+  FilterOutlined,
+} from './utils';
 
 const { Title } = Typography;
 
@@ -79,14 +75,13 @@ const StyledQueryResult = styled.div`
   }
 `;
 
-/* eslint-disable-next-line */
 export interface QueryResultProps {
   columns: Column[];
   parameters: Parameter[];
   dataset: Dataset;
   loading: boolean;
   onDatasetPreview: (options?: any) => void;
-  error?: ApolloError;
+  error?: any;
 }
 
 export default function QueryResult(props: QueryResultProps) {
@@ -167,11 +162,14 @@ export default function QueryResult(props: QueryResultProps) {
           ? [
               {
                 label: (
-                  <Link href={csvDownloadUrl}>
-                    <a target="_blank" download>
-                      Download as CSV
-                    </a>
-                  </Link>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={csvDownloadUrl}
+                    download
+                  >
+                    Download as CSV
+                  </a>
                 ),
                 key: 'download-as-csv',
               },
@@ -181,11 +179,14 @@ export default function QueryResult(props: QueryResultProps) {
           ? [
               {
                 label: (
-                  <Link href={jsonDownloadUrl}>
-                    <a target="_blank" download>
-                      Download as JSON
-                    </a>
-                  </Link>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={jsonDownloadUrl}
+                    download
+                  >
+                    Download as JSON
+                  </a>
                 ),
                 key: 'download-as-json',
               },

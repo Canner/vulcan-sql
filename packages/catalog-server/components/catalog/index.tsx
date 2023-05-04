@@ -1,23 +1,26 @@
+import React from 'react';
 import styled from 'styled-components';
-import PageTitle from '@vulcan-sql/catalog-server/components/PageTitle';
+import { Typography } from 'antd';
 import EndpointList from './EndpointList';
+
+const { Title } = Typography;
 
 const StyledCatalog = styled.div``;
 
-/* eslint-disable-next-line */
 export interface CatalogProps {
+  title?: string;
   data: any;
 }
 
 export default function Catalog(props: CatalogProps) {
-  const { data } = props;
+  const { title, data } = props;
 
   const Endpoint = () =>
     data.map((item) => <EndpointList key={item.slug} {...item} />);
 
   return (
     <StyledCatalog>
-      <PageTitle title="Catalog" />
+      {title && <Title level={3}>{title}</Title>}
       <Endpoint />
     </StyledCatalog>
   );

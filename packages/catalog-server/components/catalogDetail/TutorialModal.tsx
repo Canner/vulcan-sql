@@ -1,7 +1,7 @@
+import React from 'react';
 import { Modal, ModalProps, Typography } from 'antd';
 import styled from 'styled-components';
-import Image from 'next/image';
-import Link from 'next/link';
+import { tutorialImages } from './tutorialImages';
 
 const { Paragraph } = Typography;
 
@@ -86,17 +86,32 @@ function getTutorial(props) {
         <>Step 2: Open Excel</>,
         <>
           Step 3: In Excel, select Data {'>'} Get & Transform {'>'} From Web.
-          <Image src="/excel-step3.png" width="650" height="327" alt="excel" />
+          <img
+            src={tutorialImages.excelStep3}
+            width="650"
+            height="327"
+            alt="excel"
+          />
         </>,
         <>
           Step 4: Paste the Url and select OK
-          <Image src="/excel-step4.png" width="650" height="327" alt="excel" />
+          <img
+            src={tutorialImages.excelStep4}
+            width="650"
+            height="327"
+            alt="excel"
+          />
         </>,
         <>
           Step 5: In the Navigator pane, under Display Options, select the
           Results table. Power Query will preview it for you in the Table View
           pane on the right.
-          <Image src="/excel-step5.png" width="650" height="365" alt="excel" />
+          <img
+            src={tutorialImages.excelStep5}
+            width="650"
+            height="365"
+            alt="excel"
+          />
         </>,
         <>
           Step 6: Select Load. Power Query transforms the data and loads it as
@@ -121,8 +136,8 @@ function getTutorial(props) {
         <>Step 2: Open Google Spreadsheet</>,
         <>
           Step 3: Import data to Google Spreadsheet
-          <Image
-            src="/googleSpreadsheet-step3.jpg"
+          <img
+            src={tutorialImages.googleSpreadsheetStep3}
             width="650"
             height="278"
             alt="google spreadsheet"
@@ -146,11 +161,15 @@ function getTutorial(props) {
         </>,
         <>
           Step 2: Use it in{' '}
-          <Link href="https://zapier.com/apps/webhook/integrations#triggers-and-actions">
-            <a target="_blank">Zapier Webhook Integration</a>
-          </Link>
-          <Image
-            src="/zapier-step2.jpg"
+          <a
+            target="_blank"
+            href="https://zapier.com/apps/webhook/integrations#triggers-and-actions"
+            rel="noopener noreferrer"
+          >
+            Zapier Webhook Integration
+          </a>
+          <img
+            src={tutorialImages.zapierStep2}
             width="650"
             height="362"
             alt="zapier"
@@ -174,11 +193,15 @@ function getTutorial(props) {
         </>,
         <>
           Step 2: Connect to API from{' '}
-          <Link href="https://docs.retool.com/docs/connect-api-resource">
-            <a target="_blank">Retool</a>
-          </Link>
-          <Image
-            src="/retool-step2.jpg?v=1"
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://docs.retool.com/docs/connect-api-resource"
+          >
+            Retool
+          </a>
+          <img
+            src={tutorialImages.retoolStep2}
             width="650"
             height="340"
             alt="retool"

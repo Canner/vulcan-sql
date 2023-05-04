@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import CatalogDetailComponent from '@vulcan-sql/catalog-server/components/catalogDetail';
 import {
   DatasetQueryVariables,
@@ -9,12 +8,7 @@ import { useStore } from '@vulcan-sql/catalog-server/lib/store';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
-/* eslint-disable-next-line */
-export interface CatalogDetailProps {}
-
-const StyledCatalogDetail = styled(CatalogDetailComponent)``;
-
-export function CatalogDetail(props: CatalogDetailProps) {
+export function CatalogDetail() {
   const router = useRouter();
   const { setPathNames } = useStore();
   const slug = router.query.slug as string;
@@ -53,7 +47,7 @@ export function CatalogDetail(props: CatalogDetailProps) {
   };
 
   return (
-    <StyledCatalogDetail
+    <CatalogDetailComponent
       data={data?.endpoint || {}}
       loading={loading}
       dataset={datasetData?.dataset || {}}

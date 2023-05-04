@@ -1,15 +1,22 @@
-import styled from 'styled-components';
 import CatalogComponent from '@vulcan-sql/catalog-server/components/catalog';
 import { useEndpointsQuery } from '@vulcan-sql/catalog-server/graphQL/catalog.graphql.generated';
+import { useMemo } from 'react';
+import { useRouter } from 'next/router';
+import Path from '@vulcan-sql/catalog-server/lib/path';
 
-/* eslint-disable-next-line */
-export interface CatalogProps {}
-
-const StyledCatalog = styled(CatalogComponent)``;
-
-export function Catalog(props: CatalogProps) {
+export function Catalog() {
+  const router = useRouter();
   const { data } = useEndpointsQuery();
-  return <StyledCatalog data={data?.endpoints || []} />;
+
+  const endpoints = useMemo(() => {
+    return (data?.endpoints || []).map((endpoint) => ({
+      ...endpoint,
+      onConnect: () => {
+        router.push(`${Path.Catalog}/${endpoint.slug}`);
+      },
+    }));
+  }, [data?.endpoints]);
+  return <CatalogComponent title="Catalog" data={endpoints} />;
 }
 
 export default Catalog;

@@ -1,8 +1,7 @@
+import React from 'react';
 import styled from 'styled-components';
-import Path from '@vulcan-sql/catalog-server/lib/path';
 import { Card, Button } from 'antd';
-import { ApiOutlined } from '@vulcan-sql/catalog-server/lib/icons';
-import { useRouter } from 'next/router';
+import { ApiOutlined } from './utils';
 
 const StyledEndpointList = styled(Card)`
   .endpointList-footer {
@@ -30,21 +29,19 @@ const CardTitle = styled.div`
   }
 `;
 
-/* eslint-disable-next-line */
 export interface EndpointListProps {
   name: string;
   description: string;
-  slug: string;
   apiDocUrl: string;
+  onConnect: () => void;
 }
 
 export default function Endpoint(props: EndpointListProps) {
-  const router = useRouter();
   const {
     name = 'test',
     description = 'No description.',
-    slug,
     apiDocUrl,
+    onConnect,
   } = props;
   return (
     <StyledEndpointList>
@@ -54,9 +51,7 @@ export default function Endpoint(props: EndpointListProps) {
       </CardTitle>
       {description}
       <div className="endpointList-footer">
-        <Button onClick={() => router.push(`${Path.Catalog}/${slug}`)}>
-          Connect
-        </Button>
+        <Button onClick={onConnect}>Connect</Button>
         <Button
           type="primary"
           href={apiDocUrl}

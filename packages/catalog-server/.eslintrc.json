@@ -13,7 +13,8 @@
         "@next/next/no-html-link-for-pages": [
           "error",
           "packages/catalog-server/pages"
-        ]
+        ],
+        "@next/next/no-img-element": "off"
       }
     },
     {
