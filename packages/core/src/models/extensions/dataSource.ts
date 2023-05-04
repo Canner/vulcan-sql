@@ -7,6 +7,14 @@ import { InternalError } from '../../lib/utils/errors';
 import { ExtensionBase } from './base';
 import { VulcanExtension } from './decorators';
 
+export interface ExportOptions {
+  // The sql query result to export
+  sql: string;
+  // The full pathname to export result to file
+  directory: string;
+  // The profile name to select to export data
+  profileName: string;
+}
 // Original request parameters
 export interface RequestParameter {
   /** The index (starts from 1) of parameters, it's useful to generate parameter id like $1, $2 ...etc. */
@@ -60,6 +68,14 @@ export abstract class DataSource<
   abstract execute(options: ExecuteOptions): Promise<DataResult>;
   // prepare parameterized format for query later
   abstract prepare(param: RequestParameter): Promise<string>;
+
+  /**
+   * Export query result data to parquet file
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public export(options: ExportOptions): Promise<void> {
+    throw new Error(`Export method not implemented`);
+  }
 
   /** Get all the profiles which belong to this data source */
   protected getProfiles() {

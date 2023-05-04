@@ -14,7 +14,7 @@ it('Should generate specification without error', async () => {
   // Arrange
   const generator = await getGenerator();
   const schemas = await getSchemas();
-  // Act, Arrange
+  // Act, Assert
   expect(async () => {
     const spec = generator.getSpec(schemas);
     await fs.writeFile(

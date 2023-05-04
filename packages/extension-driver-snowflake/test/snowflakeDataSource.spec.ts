@@ -1,6 +1,7 @@
 import { SnowflakeServer } from './snowflakeServer';
 import { SnowflakeDataSource } from '../src';
-import { streamToArray } from '@vulcan-sql/core';
+import * as fs from 'fs';
+import { ExportOptions, streamToArray } from '@vulcan-sql/core';
 
 const snow = new SnowflakeServer();
 let dataSource: SnowflakeDataSource;
@@ -55,6 +56,126 @@ it('Data source should return correct rows and types', async () => {
   expect(columns[1]).toEqual({ name: 'B', type: 'string' });
   expect(columns[2]).toEqual({ name: 'C', type: 'boolean' });
 }, 10000);
+
+// should throw internal error if directory is not exist
+it('Data source should throw internal error if directory is not exist', async () => {
+  // Arrange
+  dataSource = new SnowflakeDataSource({}, '', [snow.getProfile('profile1')]);
+  await dataSource.activate();
+  const directory = `tmp`;
+  if (fs.existsSync(directory)) {
+    fs.rmdirSync(directory, { recursive: true });
+  }
+  // Act
+  const exportOption: ExportOptions = {
+    sql: `SELECT seq4() as seq, uniform(1, 10, RANDOM(12)) as rand
+    FROM TABLE(GENERATOR(ROWCOUNT => 100000)) v
+    LIMIT 100000`,
+    directory,
+    profileName: 'profile1',
+  };
+  // Assert
+  await expect(dataSource.export(exportOption)).rejects.toThrow(
+    `Directory tmp not exist`
+  );
+}, 10000);
+
+// should throw error when error was throw in getCopyToStageSQL, use sinon to stub getCopyToStageSQL
+it('Data source should throw error when error was throw in getCopyToStageSQL', async () => {
+  // Arrange
+  class MockSnowflakeDataSource extends SnowflakeDataSource {
+    protected override getCopyToStageSQL(): any {
+      throw new Error('mock error');
+    }
+  }
+  const dataSource = new MockSnowflakeDataSource({}, '', [
+    snow.getProfile('profile1'),
+  ]);
+  await dataSource.activate();
+  const directory = `tmp`;
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory);
+  }
+  // Act
+  const exportOption: ExportOptions = {
+    sql: `SELECT seq4() as seq, uniform(1, 10, RANDOM(12)) as rand
+    FROM TABLE(GENERATOR(ROWCOUNT => 100000)) v
+    LIMIT 100000`,
+    directory,
+    profileName: 'profile1',
+  };
+  // Assert
+  await expect(dataSource.export(exportOption)).rejects.toThrow('mock error');
+}, 10000);
+
+it('Data source should export parquet file correctly', async () => {
+  // Arrange
+  dataSource = new SnowflakeDataSource({}, '', [snow.getProfile('profile1')]);
+  await dataSource.activate();
+  const directory = `tmp`;
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory);
+  }
+  // Act
+  const rawCount = 10 * 10000;
+  const exportOption: ExportOptions = {
+    sql: `SELECT seq4() as seq, uniform(1, 10, RANDOM(12)) as rand
+    FROM TABLE(GENERATOR(ROWCOUNT => ${rawCount})) v 
+    ORDER BY 1`,
+    profileName: 'profile1',
+    directory,
+  };
+  await dataSource.export(exportOption);
+  // Assert
+  const files = fs.readdirSync(directory);
+  expect(files.length).toBe(1);
+  expect(files[0]).toMatch(/parquet$/);
+
+  // clean up
+  fs.rmdirSync(directory, { recursive: true });
+}, 15000);
+
+// should export multiple files correctly
+it('Data source should export multiple parquet files correctly', async () => {
+  // Arrange
+  class MockSnowflakeDataSource extends SnowflakeDataSource {
+    protected override getCopyToStageSQL(sql: string, stageFilePath: string) {
+      // MAX_FILE_SIZE is 2MB
+      return `COPY INTO ${stageFilePath} FROM (${sql}) FILE_FORMAT = (TYPE = 'parquet') HEADER=true INCLUDE_QUERY_ID=true MAX_FILE_SIZE=${
+        2 * 1024 * 1024
+      };`;
+    }
+  }
+  dataSource = new MockSnowflakeDataSource({}, '', [
+    snow.getProfile('profile1'),
+  ]);
+  await dataSource.activate();
+  const directory = `tmp`;
+
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory);
+  }
+  // Act
+  const rawCount = 100 * 10000; // 6.6MB
+  const exportOption: ExportOptions = {
+    sql: `SELECT seq4() as seq, uniform(1, 10, RANDOM(12)) as rand
+    FROM TABLE(GENERATOR(ROWCOUNT => ${rawCount})) v
+    ORDER BY 1`,
+    profileName: 'profile1',
+    directory,
+  };
+  await dataSource.export(exportOption);
+  // Assert
+  const files = fs.readdirSync(directory);
+  expect(files.length).toBe(4);
+  // check each file in the files exists
+  files.forEach((file) => {
+    expect(file).toMatch(/parquet$/);
+  });
+
+  // clean up
+  fs.rmdirSync(directory, { recursive: true });
+}, 30000);
 
 it('Data source should return correct rows with multiple chunks', async () => {
   // Arrange

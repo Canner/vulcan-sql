@@ -88,7 +88,7 @@ it('Data source factory should throw error with invalid profile name', async () 
   const factory = container.get<interfaces.Factory<any>>(
     TYPES.Factory_DataSource
   );
-  // Act, Arrange
+  // Act, Assert
   expect(() => factory('some-invalid-profile')).toThrow(
     `Profile some-invalid-profile not found`
   );
