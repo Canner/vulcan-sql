@@ -96,7 +96,7 @@ it('RegexConstraint constraint compose should throw error', async () => {
   // Arrange
   const constraint1: Constraint = Constraint.Regex('someExp');
   const constraint2 = Constraint.Regex('someExp');
-  // Act, Arrange
+  // Act, Assert
   expect(() => constraint1.compose(constraint2)).toThrow();
 });
 
@@ -115,6 +115,6 @@ it('TypeConstraint constraint compose should throw error', async () => {
   // Arrange
   const constraint1: Constraint = Constraint.Type('string');
   const constraint2 = Constraint.Type('number');
-  // Act, Arrange
+  // Act, Assert
   expect(() => constraint1.compose(constraint2)).toThrow();
 });

@@ -3,7 +3,7 @@ import { OAS3SpecGenerator } from '@vulcan-sql/build/doc-generator';
 it('Should throw error with invalid fieldIn', async () => {
   // Arrange
   const generator = new OAS3SpecGenerator({}, '', {});
-  // Act, Arrange
+  // Act, Assert
   expect(() =>
     generator.getSpec([
       {
@@ -22,7 +22,7 @@ it('Should throw error with invalid fieldIn', async () => {
 it('Should throw error with invalid FieldType', async () => {
   // Arrange
   const generator = new OAS3SpecGenerator({}, '', {});
-  // Act, Arrange
+  // Act, Assert
   expect(() =>
     generator.getSpec([
       {
