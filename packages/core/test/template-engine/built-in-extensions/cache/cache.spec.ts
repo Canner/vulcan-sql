@@ -1,7 +1,7 @@
 import { arrayToStream, streamToArray } from '@vulcan-sql/core/utils';
 import { createTestCompiler } from '../../testCompiler';
 
-it('Extension compiled succeed when exist symbol "variable" after "cache" tag', async () => {
+it('Extension should be compiled successfully when exist symbol "variable" after "cache" tag', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
 
@@ -11,7 +11,7 @@ it('Extension compiled succeed when exist symbol "variable" after "cache" tag', 
   ).resolves.not.toThrow();
 });
 
-it('Extension compiled succeed when the token is end block after "cache" tag', async () => {
+it('Extension should be compiled successfully when the token is end block after "cache" tag', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
 
@@ -21,7 +21,17 @@ it('Extension compiled succeed when the token is end block after "cache" tag', a
   ).resolves.not.toThrow();
 });
 
-it('If argument have too many elements, extension should throw an error', async () => {
+it('Extension should be compiled failed and throw error when the token is end block after "cache" tag', async () => {
+  // Arrange
+  const { compiler } = await createTestCompiler();
+
+  // Action, Assert
+  await expect(
+    compiler.compile(`{% cache %} some statement {% endcache variable %}`)
+  ).rejects.toThrow();
+});
+
+it('Extension should be compiled failed if there is more than one arguments after "cache" tag', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
 
@@ -35,7 +45,7 @@ select count(*) as count from user where user.id = '{{ params.userId }}';
   ).rejects.toThrow(`Expected a block end, but got symbol`);
 });
 
-it('If argument is not a symbol or end block, extension should throw', async () => {
+it('Extension should be compiled failed if argument is not a symbol or end block, ', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
 
@@ -49,7 +59,7 @@ select count(*) as count from user where user.id = '{{ params.userId }}';
   ).rejects.toThrow(`Expected a symbol or a block end, but got string`);
 });
 
-it('Extension compiled failed when exist multiple "cache" without variable tags', async () => {
+it('Extension should be compiled failed when exist multiple "cache" without variable tags', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
 
@@ -62,7 +72,7 @@ it('Extension compiled failed when exist multiple "cache" without variable tags'
   ).rejects.toThrow();
 });
 
-it('Extension compiled failed when exist multiple "cache" with same variable tags', async () => {
+it('Extension should be compiled failed when exist multiple "cache" with same variable tags', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
 
@@ -75,7 +85,7 @@ it('Extension compiled failed when exist multiple "cache" with same variable tag
   ).rejects.toThrow();
 });
 
-it('Extension compiled succeed when exist multiple "cache" with different variable tags', async () => {
+it('Extension should be compiled successfully when exist multiple "cache" with different variable tags', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
 
@@ -88,7 +98,7 @@ it('Extension compiled succeed when exist multiple "cache" with different variab
   ).resolves.not.toThrow();
 });
 
-it('Extension compiled succeed even if not have query statement body in "cache" scope tag', async () => {
+it('Extension should be compiled successfully even if not have query statement body in "cache" scope tag', async () => {
   // Arrange
   const { compiler } = await createTestCompiler();
 
@@ -98,20 +108,24 @@ it('Extension compiled succeed even if not have query statement body in "cache" 
   ).resolves.not.toThrow();
 });
 
-it('The metadata should include "isUsedTag" is true in "cache.vulcan.com" after compiled', async () => {
-  // Arrange
-  const { compiler } = await createTestCompiler();
+it.each([
+  ['{% cache %} some statement {% endcache %}'],
+  ['{% cache %}{% endcache %}'],
+])(
+  'The metadata should include "isUsedTag" is true in "cache.vulcan.com" after compiled "%s" SQL statement',
+  async (sql) => {
+    // Arrange
+    const { compiler } = await createTestCompiler();
 
-  // Action
-  const { metadata } = await compiler.compile(
-    `{% cache %} some statement {% endcache %}`
-  );
+    // Action
+    const { metadata } = await compiler.compile(sql);
 
-  // Action, Assert
-  await expect(metadata).toMatchObject({
-    'cache.vulcan.com': { isUsedTag: true },
-  });
-});
+    // Action, Assert
+    await expect(metadata).toMatchObject({
+      'cache.vulcan.com': { isUsedTag: true },
+    });
+  }
+);
 
 it('The metadata should include "isUsedTag" is false in "cache.vulcan.com" after compiled', async () => {
   // Arrange

@@ -14,7 +14,7 @@ beforeAll(() => {
 });
 
 afterEach(async () => {
-  await server?.close();
+  await server.close();
 });
 
 it.each([

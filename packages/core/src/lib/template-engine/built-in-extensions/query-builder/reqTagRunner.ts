@@ -9,7 +9,7 @@ import {
 import { FINIAL_BUILDER_NAME, PARAMETERIZER_VAR_NAME } from './constants';
 import { Parameterizer } from '@vulcan-sql/core/data-query';
 import { InternalError } from '../../../utils/errors';
-import { CACHE_MAIN_BUILDER_VAR_NAME } from '../cache-layer/constants';
+import { CACHE_MAIN_BUILDER_VAR_NAME } from '../cache/constants';
 
 @VulcanInternalExtension()
 export class ReqTagRunner extends TagRunner {

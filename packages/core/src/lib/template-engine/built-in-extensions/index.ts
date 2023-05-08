@@ -1,6 +1,6 @@
 import CustomError from './custom-error';
 import QueryBuilder from './query-builder';
-import CacheLayer from './cache-layer';
+import CacheLayer from './cache';
 import SqlHelper from './sql-helper';
 import Validator from './validator';
 import Masking from './masking';

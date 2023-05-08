@@ -41,49 +41,53 @@ export class CacheLayerLoader implements ICacheLayerLoader {
     // check if the cache table name is duplicated more than one API schemas
     this.checkDuplicateCacheTableName(schemas);
     // traverse each cache table of each schema
-    for (const schema of schemas) {
-      // skip the schema if not set the cache
-      if (!schema.cache) continue;
-      for (const cache of schema.cache) {
-        const { cacheTableName, sql, profile } = cache;
-        const dataSource = this.dataSourceFactory(profile);
-        // directory pattern:[folderPath]/[schema.templateSource]/[profileName]/[cacheTableName]
-        const directory = this.generateDirectory(
-          schema.templateSource,
-          profile,
-          cacheTableName
-        );
-        if (!fs.existsSync(directory!))
-          fs.mkdirSync(directory!, { recursive: true });
+    await Promise.all(
+      schemas.map(async (schema) => {
+        // skip the schema by return if not set the cache
+        if (!schema.cache) return;
+        return await Promise.all(
+          schema.cache.map(async (cache) => {
+            const { cacheTableName, sql, profile } = cache;
+            const dataSource = this.dataSourceFactory(profile);
+            // directory pattern:[folderPath]/[schema.templateSource]/[profileName]/[cacheTableName]
+            const directory = this.generateDirectory(
+              schema.templateSource,
+              profile,
+              cacheTableName
+            );
+            if (!fs.existsSync(directory!))
+              fs.mkdirSync(directory!, { recursive: true });
 
-        // 1. export to cache files according to each schema set the cache value
-        await dataSource.export({
-          sql,
-          directory,
-          profileName: profile,
-          type: this.options.type!,
-        });
-        // 2. preload the files to cache data source
-        await cacheStorage.import({
-          tableName: cacheTableName,
-          directory,
-          // use the "vulcan.cache" profile to import the cache data
-          profileName: cacheProfileName,
-          // default schema name for cache layer
-          schema: vulcanCacheSchemaName,
-          type: this.options.type!,
-        });
-      }
-    }
+            // 1. export to cache files according to each schema set the cache value
+            await dataSource.export({
+              sql,
+              directory,
+              profileName: profile,
+              type: this.options.type!,
+            });
+            // 2. preload the files to cache data source
+            await cacheStorage.import({
+              tableName: cacheTableName,
+              directory,
+              // use the "vulcan.cache" profile to import the cache data
+              profileName: cacheProfileName,
+              // default schema name for cache layer
+              schema: vulcanCacheSchemaName,
+              type: this.options.type!,
+            });
+          })
+        );
+      })
+    );
   }
 
   private checkDuplicateCacheTableName(schemas: APISchema[]) {
     const tableNames = schemas
-      // => [[table1, table2], [table1, table3], [undefined, table4], undefined]
+      // => [[table1, table2], [table1, table3], [table4]]
       .map((schema) => schema.cache?.map((cache) => cache.cacheTableName))
-      // => [table1, table2, table1, table3, undefined, table4, undefined]
+      // => [table1, table2, table1, table3, table4]
       .flat()
-      // [table1, table2, table1, table3, table4]
+      // use filter to make sure it has value and pick it.
       .filter((tableName) => tableName);
     if (uniq(tableNames).length !== tableNames.length)
       throw new ConfigurationError(
