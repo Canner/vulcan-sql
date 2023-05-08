@@ -31,6 +31,10 @@ export const TYPES = {
   Factory_ProfileReader: Symbol.for('Factory_ProfileReader'),
   ProfileLoader: Symbol.for('ProfileLoader'),
   Profile: Symbol.for('Profile'),
+  // Cache Layer
+  CacheLayerOptions: Symbol.for('CacheLayerOptions'),
+  CacheLayerInputOptions: Symbol.for('CacheLayerInputOptions'),
+  CacheLayerLoader: Symbol.for('CacheLayerLoader'),
   // Validator
   ValidatorLoader: Symbol.for('ValidatorLoader'),
   // Document

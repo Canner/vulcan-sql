@@ -1,9 +1,14 @@
 import { Readable } from 'stream';
+import * as fs from 'fs';
+import * as uuid from 'uuid';
 import * as duckdb from 'duckdb';
 import {
+  CacheLayerStoreFormatType,
   DataResult,
   DataSource,
   ExecuteOptions,
+  ExportOptions,
+  ImportOptions,
   InternalError,
   RequestParameter,
   VulcanExtensionId,
@@ -31,7 +36,8 @@ export interface DuckDBOptions {
 
 @VulcanExtensionId('duckdb')
 export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
-  private dbMapping = new Map<
+  // Use protected method for unit test
+  protected dbMapping = new Map<
     string,
     { db: duckdb.Database; logQueries: boolean; logParameters: boolean }
   >();
@@ -72,7 +78,9 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     }
     const { db, ...options } = this.dbMapping.get(profileName)!;
     const builtSQL = buildSQL(sql, operations);
-    const statement = db.prepare(builtSQL);
+    // create new connection for each query
+    const connection = db.connect();
+    const statement = connection.prepare(builtSQL);
     const parameters = Array.from(bindParams.values());
     this.logRequest(builtSQL, parameters, options);
 
@@ -134,5 +142,65 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
         this.logger.info(sql);
       }
     }
+  }
+
+  public override async export(options: ExportOptions): Promise<void> {
+    const { directory, sql, profileName, type } = options;
+    const filepath = path.resolve(directory, `${uuid.v4()}.parquet`);
+    if (!this.dbMapping.has(profileName))
+      throw new InternalError(`Profile instance ${profileName} not found`);
+    // check the directory exists
+    if (!fs.existsSync(directory!))
+      throw new InternalError(`The directory ${directory} not exists`);
+
+    const { db } = this.dbMapping.get(profileName)!;
+    // create new connection for export
+    const connection = db.connect();
+    const formatTypeMapper = {
+      [CacheLayerStoreFormatType.parquet.toString()]: 'parquet',
+    };
+    // export to parquet file and if resolve done, return filepaths
+    return await new Promise((resolve, reject) => {
+      connection.run(
+        `COPY (${sql}) TO '${filepath}' (FORMAT '${formatTypeMapper[type]}')`,
+        (err: any) => {
+          if (err) reject(err);
+          this.logger.debug(
+            `Export to ${formatTypeMapper[type]} file done, path = ${filepath}`
+          );
+          resolve();
+        }
+      );
+    });
+  }
+
+  public override async import(options: ImportOptions): Promise<void> {
+    const { tableName, directory, profileName, schema, type } = options;
+    if (!this.dbMapping.has(profileName))
+      throw new InternalError(`Profile instance ${profileName} not found`);
+    // check the directory exists
+    if (!fs.existsSync(directory!))
+      throw new InternalError(`The directory ${directory} not exists`);
+
+    const { db } = this.dbMapping.get(profileName)!;
+    // create new connection for import
+    const connection = db.connect();
+    // read all parquet files in directory by *.parquet
+    const folderPath = path.resolve(directory, '*.parquet');
+    const formatTypeMapper = {
+      [CacheLayerStoreFormatType.parquet.toString()]: `read_parquet('${folderPath}')`,
+    };
+    // create table and if resolve done, return
+    return await new Promise((resolve, reject) => {
+      connection.run(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
+      connection.run(
+        `CREATE OR REPLACE TABLE ${schema}.${tableName} AS SELECT * FROM ${formatTypeMapper[type]}`,
+        (err: any) => {
+          if (err) reject(err);
+          this.logger.debug(`Table created, name = ${tableName}`);
+          resolve();
+        }
+      );
+    });
   }
 }

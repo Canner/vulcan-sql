@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Parameterized, SQLClauseOperation } from '@vulcan-sql/core/data-query';
-import { Profile } from '@vulcan-sql/core/models';
+import { CacheLayerStoreFormatType, Profile } from '@vulcan-sql/core/models';
 import { TYPES } from '@vulcan-sql/core/types';
 import { inject, multiInject, optional } from 'inversify';
 import { Readable } from 'stream';
@@ -10,11 +11,26 @@ import { VulcanExtension } from './decorators';
 export interface ExportOptions {
   // The sql query result to export
   sql: string;
-  // The full pathname to export result to file
+  // The directory to export result to file
   directory: string;
   // The profile name to select to export data
   profileName: string;
+  // export file format type
+  type: CacheLayerStoreFormatType | string;
 }
+export interface ImportOptions {
+  // The table name to create from imported file data
+  tableName: string;
+  // The directory to import cache files
+  directory: string;
+  // The profile name to select to import data
+  profileName: string;
+  // default schema
+  schema: string;
+  // import file format type
+  type: CacheLayerStoreFormatType | string;
+}
+
 // Original request parameters
 export interface RequestParameter {
   /** The index (starts from 1) of parameters, it's useful to generate parameter id like $1, $2 ...etc. */
@@ -66,15 +82,22 @@ export abstract class DataSource<
   }
 
   abstract execute(options: ExecuteOptions): Promise<DataResult>;
+
   // prepare parameterized format for query later
   abstract prepare(param: RequestParameter): Promise<string>;
 
   /**
-   * Export query result data to parquet file
+   * Export query result data to cache file for cache layer loader used
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public export(options: ExportOptions): Promise<void> {
     throw new Error(`Export method not implemented`);
+  }
+
+  /**
+   * Import data to create table from cache file for cache layer loader used
+   */
+  public import(options: ImportOptions): Promise<void> {
+    throw new Error(`import method not implemented`);
   }
 
   /** Get all the profiles which belong to this data source */

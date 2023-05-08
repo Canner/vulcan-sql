@@ -1,0 +1,16 @@
+urlPath: /classes/:id/students
+request:
+  - fieldName: id
+    fieldIn: path
+    description: class id
+    validators:
+      - uuid
+      - required
+profile: duck
+cache:
+  - cacheTableName: 'cache_classes'
+    sql: 'select * from classes'
+    profile: duck
+  - cacheTableName: 'cache_students'
+    sql: 'select * from students'
+    profile: duck

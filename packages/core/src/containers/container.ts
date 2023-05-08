@@ -5,6 +5,8 @@ import { ProjectOptions } from '../options';
 import { documentModule, extensionModule, profilesModule } from './modules';
 import {
   artifactBuilderModule,
+  cacheLayerModule,
+  dataSourceModule,
   executorModule,
   templateEngineModule,
   validatorLoaderModule,
@@ -35,12 +37,18 @@ export class Container {
     await this.inversifyContainer.loadAsync(validatorLoaderModule());
     await this.inversifyContainer.loadAsync(extensionModule(options));
     await this.inversifyContainer.loadAsync(documentModule(options.document));
-    // executor module depends on extensionModule and profileModule.
+
+    // data source module depends on extensionModule and profileModule.
     const profileLoader = this.inversifyContainer.get<ProfileLoader>(
       TYPES.ProfileLoader
     );
     const profiles = await profileLoader.getProfiles();
-    await this.inversifyContainer.loadAsync(executorModule(profiles));
+
+    await this.inversifyContainer.loadAsync(
+      dataSourceModule(profiles, options.cache)
+    );
+    await this.inversifyContainer.loadAsync(executorModule());
+    await this.inversifyContainer.loadAsync(cacheLayerModule(options.cache));
   }
 
   public async unload() {

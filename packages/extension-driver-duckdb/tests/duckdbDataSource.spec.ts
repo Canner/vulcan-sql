@@ -1,4 +1,8 @@
-import { getLogger, streamToArray } from '@vulcan-sql/core';
+import {
+  CacheLayerStoreFormatType,
+  getLogger,
+  streamToArray,
+} from '@vulcan-sql/core';
 import { DuckDBDataSource } from '../src';
 import * as fs from 'fs';
 import * as duckdb from 'duckdb';
@@ -11,9 +15,33 @@ const runQuery = (db: duckdb.Database, sql: string) =>
   new Promise<void>((resolve, reject) => {
     db.run(sql, (err: any) => {
       if (err) reject(err);
+      resolve();
+    });
+  });
+
+const getQueryResults = (db: duckdb.Database, sql: string) =>
+  new Promise<any[]>((resolve, reject) => {
+    db.wait(() => {
+      db.all(sql, (err: any, result: any[]) => {
+        err ? reject(err) : resolve(result);
+      });
+    });
+  });
+
+const waitForQuery = (db: duckdb.Database) =>
+  new Promise<void>((resolve, reject) => {
+    db.wait((err: any) => {
+      if (err) reject(err);
       else resolve();
     });
   });
+
+// Mock duckdb data source for getting the duckdb instance for unit test
+class MockDuckDBDataSource extends DuckDBDataSource {
+  public getInstance(profileName: string) {
+    return this.dbMapping.get(profileName)?.db;
+  }
+}
 
 beforeAll(async () => {
   if (fs.existsSync(testFile)) fs.unlinkSync(testFile);
@@ -389,4 +417,175 @@ it('Should throw error when profile instance not found', async () => {
       profileName: 'some-profile',
     })
   ).rejects.toThrow(`Profile instance some-profile not found`);
+});
+
+it('Should throw error when exporting data to "parquet" file but profile instance not found', async () => {
+  // Arrange
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      allow: '*',
+    },
+  ]);
+  await dataSource.activate();
+  // Act, Assert
+  await expect(
+    dataSource.export({
+      sql: 'some-sql-to-export',
+      directory: 'some-folder',
+      profileName: 'some-profile',
+      type: CacheLayerStoreFormatType.parquet,
+    })
+  ).rejects.toThrow(`Profile instance some-profile not found`);
+});
+
+it('Should throw error when importing "parquet" file to create table but profile instance not found', async () => {
+  // Arrange
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      allow: '*',
+    },
+  ]);
+  await dataSource.activate();
+  // Act, Assert
+  await expect(
+    dataSource.import({
+      tableName: 'some-table-name',
+      directory: 'some-folder',
+      profileName: 'some-profile',
+      schema: 'some-schema',
+      type: 'parquet',
+    })
+  ).rejects.toThrow(`Profile instance some-profile not found`);
+});
+
+it('Should succeed when exporting data to "parquet" file', async () => {
+  // Arrange
+  const dataSource = new MockDuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
+      allow: '*',
+    },
+  ]);
+
+  const directory = path.resolve(__dirname, 'users');
+
+  // Create cache folder to make the download work
+  fs.mkdirSync(directory!, { recursive: true });
+  await dataSource.activate();
+  // Act
+  await dataSource.export({
+    sql: 'select * from users',
+    directory,
+    profileName: 'mocked-profile',
+    type: CacheLayerStoreFormatType.parquet,
+  });
+  // Assert
+  const db = dataSource.getInstance('mocked-profile')!;
+  await waitForQuery(db);
+  await expect(fs.readdirSync(directory).length).toBe(1);
+  // rm created cache folder with files
+  await fs.promises.rm(directory, { recursive: true, force: true });
+});
+
+it('Should throw error when exporting data to "parquet" file, but directory not exists', async () => {
+  // Arrange
+  const dataSource = new MockDuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
+      allow: '*',
+    },
+  ]);
+
+  const directory = path.resolve(__dirname, 'users');
+  await dataSource.activate();
+  // Act, Assert
+  await expect(
+    dataSource.export({
+      sql: 'select * from users',
+      directory,
+      profileName: 'mocked-profile',
+      type: CacheLayerStoreFormatType.parquet,
+    })
+  ).rejects.toThrow(`The directory ${directory} not exists`);
+});
+
+it('Should succeed when importing "parquet" file to create table', async () => {
+  // Arrange
+  const dataSource = new MockDuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
+      allow: '*',
+    },
+  ]);
+  // import multiple files
+  const directory = path.resolve(__dirname, 'test-files/userdata');
+
+  await dataSource.activate();
+  // Act
+  await dataSource.import({
+    tableName: 'users',
+    directory,
+    profileName: 'mocked-profile',
+    schema: 'mocked_schema',
+    type: 'parquet',
+  });
+  // Assert
+  const db = dataSource.getInstance('mocked-profile')!;
+  const actual = (
+    await getQueryResults(db, 'select * from information_schema.tables')
+  ).map((row) => {
+    return {
+      table: row['table_name'],
+      schema: row['table_schema'],
+    };
+  });
+
+  await expect(actual).toContainEqual({
+    table: 'users',
+    schema: 'mocked_schema',
+  });
+});
+
+it('Should throw error when importing "parquet" file to create table, but the directory not exist', async () => {
+  // Arrange
+  const dataSource = new MockDuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
+      allow: '*',
+    },
+  ]);
+  // import multiple files
+  const directory = path.resolve(__dirname, 'test-files/not-exist-folder');
+
+  await dataSource.activate();
+  // Act
+  await expect(
+    dataSource.import({
+      tableName: 'users',
+      directory,
+      profileName: 'mocked-profile',
+      schema: 'mocked_schema',
+      type: 'parquet',
+    })
+  ).rejects.toThrow(`The directory ${directory} not exists`);
 });

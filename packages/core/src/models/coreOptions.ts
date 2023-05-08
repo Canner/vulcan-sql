@@ -1,4 +1,5 @@
 import { IArtifactBuilderOptions } from './artifactBuilderOptions';
+import { ICacheLayerOptions } from './cacheLayerOptions';
 import { IDocumentOptions } from './documentOptions';
 import { IProfilesLookupOptions } from './profilesLookupOptions';
 import { ITemplateEngineOptions } from './templateEngineOptions';
@@ -23,5 +24,6 @@ export interface ICoreOptions {
   extensions?: ExtensionAliases;
   document?: IDocumentOptions;
   profiles?: IProfilesLookupOptions;
+  cache?: ICacheLayerOptions;
   [moduleAlias: string]: any;
 }

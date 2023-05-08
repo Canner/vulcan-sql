@@ -9,12 +9,12 @@ import { newDb } from 'pg-mem';
 import { Stream } from 'stream';
 
 const db = newDb();
-db.public.many(`create table users(id uuid, name varchar);
-insert into users values ('436193eb-f686-4105-ad7b-b5945276c14a','ivan');
-`);
 
 @VulcanExtensionId('pg-mem')
-export class MockDataSource extends DataSource {
+export class MockPGDataSource extends DataSource {
+  public static runSQL(sql: string) {
+    db.public.many(sql);
+  }
   public async execute(options: ExecuteOptions): Promise<DataResult> {
     const { statement, bindParams } = options;
     // handle parameterized query statement

@@ -1,7 +1,7 @@
 import {
   DataResult,
   DataSource,
-  executorModule,
+  dataSourceModule,
   Profile,
   TYPES,
   VulcanExtensionId,
@@ -55,7 +55,7 @@ it('Executor module should bind correct profiles to data sources and create a fa
   profiles.set('p3', { name: 'p3', type: 'ds2', allow: '*' });
   container.bind(TYPES.ExtensionConfig).toConstantValue({});
   container.bind(TYPES.ExtensionName).toConstantValue('');
-  await container.loadAsync(executorModule(profiles));
+  await container.loadAsync(dataSourceModule(profiles));
   const factory = container.get<interfaces.Factory<any>>(
     TYPES.Factory_DataSource
   );
@@ -82,7 +82,7 @@ it('Data source factory should throw error with invalid profile name', async () 
   // Arrange
   const container = new Container();
   const profiles = new Map<string, Profile>();
-  await container.loadAsync(executorModule(profiles));
+  await container.loadAsync(dataSourceModule(profiles));
   container.bind(TYPES.ExtensionConfig).toConstantValue({});
   container.bind(TYPES.ExtensionName).toConstantValue('');
   const factory = container.get<interfaces.Factory<any>>(
@@ -102,7 +102,7 @@ it('When the requestor is not a data source, container should return all profile
   profiles.set('p2', { name: 'p2', type: 'ds1', allow: '*' });
   profiles.set('p3', { name: 'p3', type: 'ds2', allow: '*' });
   container.bind(TYPES.Extension_DataSource).to(DataSource3);
-  await container.loadAsync(executorModule(profiles));
+  await container.loadAsync(dataSourceModule(profiles));
 
   // Act
   const ds3 = container.get<DataSource3>(TYPES.Extension_DataSource);

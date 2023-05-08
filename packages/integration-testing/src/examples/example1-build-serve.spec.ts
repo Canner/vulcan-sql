@@ -2,11 +2,19 @@ import { VulcanBuilder } from '@vulcan-sql/build';
 import { VulcanServer } from '@vulcan-sql/serve';
 import * as supertest from 'supertest';
 import projectConfig from './projectConfig';
+import { MockPGDataSource } from '../mockExtensions';
 
 let server: VulcanServer;
 
+beforeAll(() => {
+  MockPGDataSource.runSQL('create table users(id uuid, name varchar)');
+  MockPGDataSource.runSQL(
+    "insert into users values ('436193eb-f686-4105-ad7b-b5945276c14a','ivan')"
+  );
+});
+
 afterEach(async () => {
-  await server?.close();
+  await server.close();
 });
 
 it.each([
@@ -21,7 +29,7 @@ it.each([
   ],
   ['2dc839e0-0f65-4dba-ac38-4eaf023d0008', []],
 ])(
-  'Example1: Build and serve should work',
+  'Example 1: Build and serve should work',
   async (userId, expected) => {
     const builder = new VulcanBuilder(projectConfig);
     await builder.build();

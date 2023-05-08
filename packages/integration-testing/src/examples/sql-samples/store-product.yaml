@@ -1,0 +1,16 @@
+urlPath: /stores/:id/products
+request:
+  - fieldName: id
+    fieldIn: path
+    description: store id
+    validators:
+      - uuid
+      - required
+profile: duck
+cache:
+  - cacheTableName: 'cache_products'
+    sql: 'select * from products'
+    profile: duck
+  - cacheTableName: 'cache_stores'
+    sql: 'select * from stores'
+    profile: duck

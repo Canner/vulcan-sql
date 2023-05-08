@@ -5,3 +5,5 @@ export * from './validatorLoader';
 export * from './extension';
 export * from './document';
 export * from './profiles';
+export * from './cacheLayer';
+export * from './dataSource';

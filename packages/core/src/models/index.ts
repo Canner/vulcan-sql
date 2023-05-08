@@ -6,4 +6,5 @@ export * from './templateEngineOptions';
 export * from './extensions';
 export * from './documentOptions';
 export * from './profilesLookupOptions';
+export * from './cacheLayerOptions';
 export * from './profile';

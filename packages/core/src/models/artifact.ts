@@ -104,9 +104,12 @@ export class RefreshExpression {
 }
 
 export class CacheLayerInfo {
+  // the table name kept in cache
   cacheTableName!: string;
-  sql!: string;
+  // the used profile to query the data from data source
   profile!: string;
+  // the sql to query the data from data source and put in cache by "cacheTableName"
+  sql!: string;
   refreshTime?: RefreshTime;
   refreshExpression?: RefreshExpression;
   // index key name -> index column
@@ -132,7 +135,7 @@ export class APISchema {
   pagination?: PaginationSchema;
   sample?: Sample;
   profiles!: Array<string>;
-  cache?: Array<CacheLayerInfo>;
+  cache!: Array<CacheLayerInfo>;
 }
 
 export class BuiltArtifact {

@@ -1,0 +1,13 @@
+urlPath: /departments
+request:
+  - fieldName: name
+    fieldIn: query
+    description: department name
+    validators:
+      - string
+      - required
+profile: duck
+cache:
+  - cacheTableName: 'cache_departments'
+    sql: 'select * from departments'
+    profile: duck

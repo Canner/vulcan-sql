@@ -1,5 +1,5 @@
 import { TYPES } from '@vulcan-sql/core/types';
-import { IExecutor } from '@vulcan-sql/core/data-query';
+import { IDataQueryBuilder, IExecutor } from '@vulcan-sql/core/data-query';
 import { inject } from 'inversify';
 import {
   TagRunner,
@@ -9,6 +9,7 @@ import {
 import { FINIAL_BUILDER_NAME, PARAMETERIZER_VAR_NAME } from './constants';
 import { Parameterizer } from '@vulcan-sql/core/data-query';
 import { InternalError } from '../../../utils/errors';
+import { CACHE_MAIN_BUILDER_VAR_NAME } from '../cache/constants';
 
 @VulcanInternalExtension()
 export class ReqTagRunner extends TagRunner {
@@ -32,7 +33,7 @@ export class ReqTagRunner extends TagRunner {
     const parameterizer = new Parameterizer((param) =>
       this.executor.prepare({ ...param, profileName })
     );
-    // parameterizer from parent, we should set it back after rendered our context.
+    // Parameterizer from parent, we should set it back after rendered our context.
     const parentParameterizer = context.lookup(PARAMETERIZER_VAR_NAME);
     context.setVariable(PARAMETERIZER_VAR_NAME, parameterizer);
     let query = '';
@@ -44,12 +45,19 @@ export class ReqTagRunner extends TagRunner {
       .filter((line) => line.trim().length > 0)
       .join('\n');
 
-    const builder = await this.executor.createBuilder(
-      profileName,
-      query,
-      parameterizer
-    );
-    context.setVariable(name, builder);
+    let builder: IDataQueryBuilder | undefined;
+    // Replace to put the directly query cache builder to original query main builder of  "__wrapper__builder",
+    // it means we can use the cache builder to execute the query directly and get result to be final result
+    builder = context.lookup(CACHE_MAIN_BUILDER_VAR_NAME);
+    if (builder) context.setVariable(name, builder);
+    else {
+      builder = await this.executor.createBuilder(
+        profileName,
+        query,
+        parameterizer
+      );
+      context.setVariable(name, builder);
+    }
 
     if (args[1] === 'true') {
       context.setVariable(FINIAL_BUILDER_NAME, builder);
