@@ -1,0 +1,38 @@
+# Response Format
+The Response Format plugin allows you to configure the supported API response formats and set the preferred format based on the HTTP Header - [Accept](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept). You can customize the settings using the project configuration file (`vulcan.yaml` by default) to meet your specific needs.
+
+## Usage
+```yaml title="vulcan.yaml"
+response-format:
+  enabled: true
+  options:
+    default: json
+    formats:
+      - json
+      - csv
+```
+
+## Settings
+
+| Name     | Default | Type    | Description                                                                 |
+| -------- | ------- | ------- | --------------------------------------------------------------------------- |
+| enabled  | true    | boolean | Enable or disable the response-format service. Set to `false` to stop it.  |
+
+## Options
+
+| Name     | Default | Type   | Description                                                                                          |
+| -------- | ------- | ------ | ---------------------------------------------------------------------------------------------------- |
+| default  | json    | string | The default format used when the request path doesn't specify a format type. Must be `json` or `csv`. |
+| formats  | -       | list   | A list of supported response format types. Include the format type if you need to use it in the path. |
+
+## Example Scenarios
+| Accept                                   | API URL Path        | options.default | options.formats  | response format type |
+| ---------------------------------------- | ----------------- | --------------- | ---------------- | -------------------- |
+| `q=0.9;application/json`                 | `/api/data`      | `json`          | `["json","csv"]` | json                 |
+| `q=0.8;application/json, q=0.9;text/csv` | `/api/data`      | `json`          | `["json","csv"]` | csv                  |
+| Not set                                  | `/api/data`      | `json`          | `["json","csv"]` | json                 |
+| Not set                                  | `/api/data`      | `json`          | `["csv","json"]` | csv                  |
+| Not set                                  | `/api/data`      | `json`          | Not set          | json                 |
+| `q=0.9;application/json`                 | `/api/data.csv`  | `json`          | `["json","csv"]` | csv                  |
+| `q=0.9;application/json, q=0.9;text/csv` | `/api/data.json` | `csv`           | `["csv"]`        | Error                |
+| `q=0.9;application/json, q=0.9;text/csv` | `/api/data`      | Not set         | Not set          | json                 |

@@ -1,0 +1,27 @@
+# Rate Limit
+Rate limiting is a crucial plugin for ensuring the stability and security of your API. By implementing rate limiting, you can prevent abuse and excessive requests to your server.
+
+## Usage
+```yaml title="vulcan.yaml"
+rate-limit:
+  enabled: true
+  options:
+    interval:
+      min: 1
+    max: 10000
+```
+
+## Settings
+
+| Setting  | Default | Type    | Description                                                 |
+| -------- | ------- | ------- | ----------------------------------------------------------- |
+| enabled  | true    | boolean | Enable or disable rate limit service (true to enable).     |
+
+## Options
+
+| Option   | Default | Type  | Description                                                            |
+| -------- | ------- | ----- | ---------------------------------------------------------------------- |
+| interval | null    | time  | Length of time request records are kept in memory (default: 1 minute). |
+| max      | 60      | number| Maximum number of connections during `interval` before sending a 429.  |
+
+This plugin is based on [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) and it has reasonable default settings, but you can still customize it in `vulcan.yaml`.
