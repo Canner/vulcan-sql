@@ -89,19 +89,15 @@ const config = {
             items: [
               {
                 label: 'Get Started',
-                to: '/docs/get-started',
+                to: '/docs/get-started/installation',
               },
               {
-                label: 'Installation',
-                to: '/docs/installation',
+                label: 'Analytics API',
+                to: '/docs/connect/overview',
               },
               {
-                label: 'Build VulcanSQL projects',
-                to: '/docs/api-building/configuration',
-              },
-              {
-                label: 'Connectors',
-                to: '/docs/connectors',
+                label: 'API Plugins',
+                to: '/docs/api-plugin/overview',
               },
             ],
           },

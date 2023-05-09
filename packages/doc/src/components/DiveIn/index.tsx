@@ -31,7 +31,7 @@ const diveInActions = [
     takeActions: (
       <Link
         className={`button button--primary ${styles.actionButton}`}
-        to="./docs/quickstart"
+        to="./docs/get-started/installation"
       >
         Get started now
       </Link>

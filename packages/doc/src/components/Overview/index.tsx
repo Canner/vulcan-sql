@@ -39,7 +39,7 @@ export default function Overview(): JSX.Element {
       </h1>
       <Link
         className={`button button--primary ${styles.getStartButton}`}
-        to="./docs/quickstart"
+        to="./docs/get-started/installation"
       >
         Get started now
       </Link>
