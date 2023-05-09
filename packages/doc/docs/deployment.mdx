@@ -1,37 +1,30 @@
 # Production
 
-After development and testing, time to ship our code to production servers. VulcanSQL server only needs a few resources to run, to generate these resources, use `vulcan package` command.
+Once your development and testing phases are complete, it's time to deploy your code to production servers. VulcanSQL server requires only a few assets to run, and you can generate these assets using the vulcan `package` command.
 
-## Run production servers with Node JS
+## Running Production Servers with Node.js
 
-If your production servers have Node JS ( ≥ 16 ) installed, you can use the following command to generate resources:
+If your production servers have Node.js (version 16 or higher) installed, use the following command to generate resources:
 
 ```bash
 vulcan package --output node
 ```
 
-After a successful build, you can copy the files in `./dist` folder to production servers. Then run `npm install && node index.js` to start the server.
+After a successful build, copy the files in the ./dist folder to your production servers. Then run npm install && node index.js to start the server.
 
-:::info
-To keep the server online 24/7, you can use [PM2](https://pm2.keymetrics.io/) to manage the process.
-
+:::caution
+External resources and configurations, such as profile.yaml, are not copied to the dist folder. You'll need to copy them manually. We strongly recommend using a separate profile instead of the one used for development.
 :::
 
-:::info
-External resources and configurations like `profile.yaml` are not copied to the dist folder. You'll need to copy them manually. It's strongly recommended that use a separate profile instead of the profile which was used for development.
+## Running Production Servers with Docker (or other [container runtimes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/))
 
-:::
-
-## Run production server with Docker (or other [container runtimes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/))
-
-If you'd like to run servers with Docker, Kubernetes, or other container platforms …, you can build an image for them by the following command:
+If you prefer to run your servers using Docker, Kubernetes, or other container platforms, you can build an image for them with the following command:
 
 ```bash
 vulcan package --output docker
 docker build -t <tag> ./dist
 ```
 
-:::info
-External resources and configurations like `profile.yaml` are not wrapped into images, you should mount these resources at runtime.
-
+:::caution
+External resources and configurations, such as profile.yaml, are not copied to the dist folder. You'll need to copy them manually. We strongly recommend using a separate profile instead of the one used for development.
 :::
