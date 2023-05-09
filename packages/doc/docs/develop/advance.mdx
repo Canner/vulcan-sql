@@ -1,0 +1,261 @@
+# Advance Techniques
+In this section, we will cover some advanced techniques that can be employed when working with VulcanSQL. These techniques will help you write more efficient and flexible SQL templates, making your development process more effective.
+
+## Marco
+Macros allow you to define reusable code snippets that can be included in multiple SQL templates. To create a macro, use the `{% macro <macro-name>(<parameters>) %}` syntax.
+
+Using Macros in SQL Templates
+For example, you can define a macro function to convert cents to dollars:
+
+```sql
+-- Define the macro function
+{% macro cents_to_dollars(column_name, precision=2) %}
+    ({{ column_name }} / 100)
+{% endmacro %}
+```
+
+You can then use the macro function in your SQL query:
+
+```sql
+-- Define the macro function
+{% macro cents_to_dollars(column_name, precision=2) %}
+    ({{ column_name }} / 100)
+{% endmacro %}
+
+-- Use macro function
+select
+  id as payment_id,
+  {{ cents_to_dollars('amount') }} as amount_usd,
+  ...
+from app_data.payments
+```
+
+Please note that the macro function must be defined at the top of the SQL query file. Currently, importing macro functions from other files is not supported, but VulcanSQL plans to enhance the macro functionality in future versions.
+
+By using macros, you can avoid writing repetitive code and create more maintainable SQL templates.
+
+## Set variables
+VulcanSQL allows you to set variables with primitive values, such as integers, strings, and arrays, as well as dynamic parameters. Use the set tag and {% ... %} syntax to declare a variable and assign a value:
+
+```sql
+{% set <variable-name> = <value or dynamic parameter> %}
+```
+
+Here are some examples:
+
+```sql
+-- Example 1: set variables with primitive values
+{% set myArray = [1,2,3,4,4] %}
+{% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
+
+-- Example 2: set dynamic parameter
+{% set someVar = context.params.age %}
+```
+
+## Debugging and Returning Pure Values
+In some cases, you may want to return pure values as responses from your API requests. In such cases, you can use the set tag and `SELECT` statement to display the variable value and return it as part of the API response. This approach is useful not only for debugging purposes but also for returning simple values as responses.
+
+```sql
+-- Display the variable value
+{% set myArray = [1,2,3,4,4] %}
+SELECT {{ myArray }}
+```
+
+When you make an API request to the endpoint, the variable value will be displayed in the terminal or returned as a response:
+
+```bash
+------
+# The response by sending the request which used curl command
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ...
+[{"$1":"1,2,3,4,4"}]%
+```
+
+
+## Filters
+Filters in VulcanSQL allow you to apply functions to variables using the pipe operator (`|`). These functions can accept arguments and can be chained together for more complex operations. Filters in VulcanSQL are based on the nunjucks template engine's built-in filters.
+
+### Basic Usage
+To use a filter, simply apply it to a variable using the pipe operator (`|`). Here's an example:
+
+```sql
+-- make the parameter uppercase
+SELECT {{ context.params.name | upper }} AS name_upper
+```
+
+When you make an API request to the endpoint, the variable value will be transformed by the filter:
+
+```bash
+------
+# The response by sending the request which used curl command
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ...
+[{"name_upper":"CANNER"}]%
+```
+
+### Chaining Filters
+You can chain multiple filters together to perform more complex operations:
+
+```sql
+{% set items = ['foo', 'bar', 'bear'] %}
+SELECT {{ items | join(",") | upper }} AS items_joined_upper
+```
+
+### Built-in Filters
+VulcanSQL supports nunjucks built-in filters, which can be used in your SQL templates. For a full list of available filters, refer to the [nunjucks filters documentation](https://mozilla.github.io/nunjucks/templating.html#builtin-filters).
+
+Here are some examples of using built-in filters:
+
+#### Example 1: `default` filter
+```sql
+-- context.params.name is null
+SELECT {{ context.params.name | default('canner') }} AS name
+```
+
+#### Example 2: `join` filter
+```sql
+{% set items = ['foo', 'bar', 'bear'] %}
+SELECT {{ items | join(",") }} AS items_joined
+```
+
+#### Example 3: `length` filter
+```sql
+{% set items = ['foo', 'bar', 'bear'] %}
+SELECT {{ items | length }} AS items_length
+```
+
+### Custom Filters
+Besides the nunjucks built-in filters, VulcanSQL also provides some custom filters that are useful for SQL templates.
+
+#### Raw Filter
+The `raw` filter is a custom filter in VulcanSQL that allows you to output the actual value of a variable or dynamic parameter directly, bypassing the `$<number>` placeholder. If there are additional filters after the `raw` filter, they will be applied to the output value.
+
+Consider the following example:
+
+```sql
+-- context.params.name is 'canner'
+SELECT {{ context.params.name | raw | upper }} AS name_upper
+```
+
+The response to the API request will be:
+```sql
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ...
+[{"name_upper":"CANNER"}]%
+```
+
+At first glance, it might not seem that different from not using the `raw` filter. However, the `raw` filter becomes particularly useful when you need to access the actual value of a variable or dynamic parameter for logical calculations or condition checks.
+
+Here's an example that demonstrates the usefulness of the `raw` filter:
+
+```sql
+{% set gender = (context.params.gender | upper | raw) %}
+{% if gender in ['MALE', 'FEMALE'] %}
+    SELECT CONCAT('Yes, ', {{ context.params.name }}, ' is ', {{ gender }}) AS message;
+{% endif %}
+```
+
+The response to the API request will be:
+```bash
+< HTTP/1.1 200 OK
+< Vary: Origin
+< ...
+[{"message":"Yes, user1 is MALE"}]%
+```
+
+In this case, the raw filter allows you to obtain the actual value of the gender variable to check whether it matches the specified conditions. By using the raw filter, you can perform conditional checks more effectively in your SQL templates.
+
+#### Unique Filter
+The `unique` filter helps you get unique values from a list stored in a variable:
+
+```sql
+{% set array = [1,2,3,4,4] %}
+SELECT {{ array | unique }} AS unique_values
+```
+
+You can also provide an argument for selecting a specific field or column to apply the `unique` filter to when working with a list of objects.
+
+#### Void Filter
+The `void` filter discards your input data and is useful when you don't want a value to be part of a SQL query. For instance, the `Array.push` function returns the element you pushed, causing the following SQL template to fail:
+```sql
+{% set arr = [] %}
+{{ arr.push(1) }}
+SELECT {{ arr[0] }}
+```
+
+Using the `void` filter, you can prevent the failure:
+```sql
+{% set arr = [] %}
+{{ arr.push(1) | void }}
+SELECT {{ arr[0] }}
+```
+
+This filter is particularly helpful for ensuring that your SQL queries execute as expected, even when working with functions that return values you don't want to include in the query.
+
+
+## If-else Statement
+You can use Nunjucks' built-in [`if`](https://mozilla.github.io/nunjucks/templating.html#tags) tag to conditionally execute parts of your SQL query based on specific conditions. The basic structure of an if-else block in a SQL template looks like this:
+
+```sql
+{% if [condition] %}
+    -- SQL code to execute if the condition is true
+{% elif [another_condition] %}
+    -- SQL code to execute if another_condition is true
+{% else %}
+    -- SQL code to execute if none of the conditions are true
+{% endif %}
+```
+
+Here's an example that demonstrates how to use if-else statements in a SQL query:
+
+```sql
+{% set gender = (context.params.gender | upper | raw) %}
+{% if gender == 'MALE' %}
+    SELECT concat({{ context.params.name }}, ' is male.') as msg;
+{% elif gender == 'FEMALE' %}
+    SELECT concat({{ context.params.name }}, ' is female.') as msg;
+{% else %}
+    SELECT concat({{ context.params.name }}, ' unknown gender.') as msg;
+{% endif %}
+```
+
+## For Loop
+To loop through a variable's elements, you can use Nunjucks' built-in `for` tag. The `for` tag is used with `{% ... %}` and ends with `{% endfor %}`. Here's an example:
+
+```sql
+{% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
+# provide by argument to unique
+{% for item in array | unique(by="name") %}
+{{ item.name }} # result is 'Tom', 'Joy'
+{% endfor %}
+```
+
+To use a `SELECT` statement in a loop and display the result, you can write the following:
+
+```sql
+{% set array = [{name: "Tom"}, {name: "Tom"}, {name: "Joy"}] %}
+# Use the loop to select multiple item names and be multiple columns
+SELECT {% for item in array | unique(by="name") %} {{ item.name }}, {% endfor %}
+```
+
+## Comment
+To add comments in your SQL templates, you can use the general `--` sign:
+
+```sql
+-- This is an array sample and use unique filter
+{% set array = [1,2,3,4,4] %}
+SELECT {{ array | unique }}
+```
+
+However, if your comment contains templating syntax or non-existent dynamic parameters, it may cause errors. To avoid this issue, use Nunjucks' comment tags `{# ... #}` instead:
+
+```sql
+{# {{ context.params.value }} #}
+{% set array = [1,2,3,4,4] %}
+SELECT {{ array | unique }}
+```
+
+This way, you can safely add comments to your SQL templates without causing any issues during execution.

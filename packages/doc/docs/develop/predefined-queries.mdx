@@ -1,0 +1,63 @@
+# Predefined Queries
+VulcanSQL offers even more flexibility by allowing you to predefine queries, retrieve their results, and use them in your SQL using the `req` tag.
+
+## Using the `req` tag
+To use the `req` tag, wrap it with` {% ... %}` and follow this syntax:
+
+```sql
+-- <variable-name> represents the name of your predefined query.
+{% req <variable-name> %}
+    -- Your SQL query statement
+{% endreq %}
+```
+
+Here's an example to illustrate its usage:
+
+```sql
+-- Example 1: Store the statement 'SELECT * FROM users' in a variable 'user'
+{% req user %}
+SELECT * FROM users;
+{% endreq %}
+
+SELECT * FROM group
+WHERE gender = {{ user.value()[0].gender }} AND blacklist = {{ user.value()[0].blacklist }}
+```
+
+In this example, we store the` SELECT * FROM users;` statement in the user variable and use it in the following SQL statement. **Beware that when you call the `value()` method, it sends a query request.** That's why it's referred to as the `req` (request) tag. This approach allows you to use the results of one query as input for another, making your SQL more dynamic and efficient.
+
+## Optimizing Query Execution
+In the previous example, it might seem like we're sending the same request twice, which could be inefficient. To avoid this, you can store the results of the predefined query:
+
+```sql
+{% req user %}
+SELECT * FROM users;
+{% endreq %}
+
+-- `set` the predefined query results
+{% set userData = user.value() %}
+
+SELECT * FROM group
+WHERE gender = {{ userData[0].gender }} AND blacklist = {{ userData[0].blacklist }}
+```
+
+## Combining Templating Language with `req` Tag
+You can also combine the templating language and `req` tag for more advanced use cases:
+
+```sql
+{% req artist %}
+  SELECT COUNT(*) AS count FROM "artists" WHERE ConstituentID = {{ context.params.id }}
+{% endreq %}
+
+{% if artist.value()[0].count == 0 %}
+  {% error "Artist not found" %}
+{% endif %}
+
+SELECT * FROM "artworks"
+WHERE CONCAT(', ', ConstituentID, ',') LIKE CONCAT('%, ', {{ context.params.id }}, ',%');
+```
+
+In the example above, we use the `{% req artist %}` tag to create a predefined query for artist, which counts the number of artists based on the dynamic parameter id from the request.
+
+Next, we use the if tag to check the count of artists and employ the [Error Response](./error) to throw an error if the count is zero.
+
+If the count of artists is not zero, we proceed to select all artworks that match the specified condition. This approach allows you to seamlessly integrate conditional logic and error handling into your queries while minimizing the number of requests sent.

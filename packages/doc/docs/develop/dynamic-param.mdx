@@ -1,0 +1,59 @@
+# Dynamic Parameter
+## Defining Parameters
+The dynamic parameter is a crucial feature that allows you to use request parameters in your SQL files, making your query results change according to your API request parameters.
+
+You can use `{{ context.params.parameter }}` to get the request parameter. Here's a basic SQL syntax example:
+
+```sql
+SELECT * FROM public.users
+WHERE age >= {{ context.params.age }};
+```
+
+With parameters set in SQL template, you can dynamically filter the results based on the `age` parameter provided in the querystring
+
+```bash
+curl -X GET "http://localhost:3000/api/users?age=18"
+```
+
+## Using Parameters in URL Path
+You can also use parameters in the URL path. For example, if you want to get a specific user by its ID, you can use the following SQL template:
+
+```sql
+SELECT * FROM public.users
+WHERE id = {{ context.params.id }};
+```
+
+and define the request fields in the configuration file:
+
+```yaml
+urlPath: /users/:id
+request:
+  // highlight-start
+  - fieldName: id
+    fieldIn: path
+  // highlight-end
+```
+
+Now, you can send a request with the `id` parameter in the URL path.
+
+```bash
+curl -X GET "http://localhost:3000/api/users/1"
+```
+
+## Using Parameters in Header
+You can also use parameters in the request header with the following configuration.
+
+```yaml
+urlPath: /users/:id
+request:
+  // highlight-start
+  - fieldName: id
+    fieldIn: header
+  // highlight-end
+```
+
+Now, you can send a request with the `id` parameter in the header.
+
+```bash
+curl -X GET "http://localhost:3000/api/users" -H "id: 1"
+```
