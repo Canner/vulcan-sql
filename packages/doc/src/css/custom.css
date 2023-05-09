@@ -1,9 +1,16 @@
 :root {
   --docusaurus-highlighted-code-line-bg: rgb(233, 233, 233);
+  --ifm-font-family-base: 'Source Sans Pro', sans-serif;
 }
 
 /* If you have a different syntax highlighting theme for dark mode. */
 [data-theme='dark'] {
   /* Color which works with dark mode syntax highlighting theme */
   --docusaurus-highlighted-code-line-bg: rgb(58, 53, 77);
+}
+
+.sidebar-title {
+  margin-top: 1.5rem;
+  padding: 0 var(--ifm-menu-link-padding-horizontal);
+  color: var(--ifm-color-gray-600);
 }
