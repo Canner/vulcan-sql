@@ -1,0 +1,10 @@
+# Overview
+Data privacy is a crucial aspect of any application or system that handles sensitive information, and VulcanSQL is no exception. Ensuring the confidentiality, integrity, and availability of data is not only a best practice but often a legal requirement. In this section, we will discuss various techniques and features that can be implemented in VulcanSQL to enhance data privacy.
+
+* [**Authentication**](./authn): The process of verifying the identity of users, devices, or systems trying to access your VulcanSQL application. Proper authentication mechanisms help ensure that only authorized entities have access to sensitive data.
+* [**Authorization**](./authz): After authentication, authorization determines the level of access granted to a user, device, or system in VulcanSQL. Implementing robust authorization controls can help protect sensitive data from unauthorized access.
+* [**Dynamic Data Masking**](./data-masking): A technique used to obfuscate sensitive information in VulcanSQL by replacing it with fictional or scrambled data. data masking is useful when sharing datasets with third parties or displaying data in user interfaces, ensuring sensitive data remains confidential.
+* [**Column-Level Security**](./cls): A security feature in VulcanSQL that restricts access to specific columns within a database table. This allows you to grant users access to only the data they need, minimizing the risk of unauthorized access to sensitive information.
+* [**Row-Level Security**](./rls): A security measure in VulcanSQL that limits access to specific rows within a database table based on a user's permissions or criteria. Row-level security helps protect sensitive data by ensuring that users can only access the information they are authorized to view.
+
+By implementing these techniques and features in VulcanSQL, you can build a secure and compliant system that safeguards sensitive data while providing the necessary access to authorized users.

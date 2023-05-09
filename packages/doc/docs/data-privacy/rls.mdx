@@ -1,0 +1,19 @@
+# Row Level Security
+Row Level Security (RLS) is a feature in VulcanSQL that allows you to control access to individual rows in a table based on the characteristics of the user who is accessing the data. With RLS, you can define a set of rules that determine which users can see which rows in a table.
+
+To implement RLS in VulcanSQL, user attributes can be conveniently included in the `WHERE` clause to constrain the data a user can access. For instance, if you wish to permit a user to access only data associated with their department, the following query can be utilized:
+
+```sql
+SELECT * FROM employees
+WHERE department = {{ context.user.attr.department }}
+```
+
+Moreover, you can generate an error if a user attempts to access data they are not authorized to view:
+
+For example, to prevent interns from accessing data after 2023, the following query can be employed:
+
+```sql
+{% if context.user.attr.department = 'intern' and context.params.year < 2023 %}
+    {% error "OUT_OF_LIMITED" %}
+{% endif %}
+```
