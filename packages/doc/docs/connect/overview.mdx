@@ -1,0 +1,41 @@
+# Overview
+
+We support the following data warehouses to connect with, you can choose multiple connectors in a single project, please check the connectors’ document for the installation guide.
+* [PostgreSQL](./postgresql)
+* [DuckDB](./duckdb)
+* [Snowflake](./snowflake)
+* [BigQuery](./bigquery)
+
+## How to use
+Setting up a data warehouse connector is easy, you can follow the steps below to set up a connector.
+
+1. Once you install the connector package, update the `extensions` section in `vulcan.yaml` to include the connector package. For example:
+    ```yaml
+   extensions:
+     ...
+     // highlight-next-line
+     pg: '@vulcan-sql/extension-driver-pg' # Add this line
+   ```
+
+2. Create a new profile in `profiles.yaml` or in your profile files.
+
+   ```yaml
+   - name: pg # profile name
+     type: pg
+     connection:
+       host: example.com
+       port: 5432
+       user: postgres
+       password: some-secret
+       database: postgres
+   ```
+
+3. Specify the profile name in the configuration file of APIs.
+
+   ```yaml
+   profiles:
+   // highlight-next-line
+    - pg # profile name
+   ```
+
+  Then, you can query the data warehouse in your APIs.

@@ -1,0 +1,36 @@
+# DuckDB
+## Installation
+
+1. Install package.
+
+  **If you are developing with binary, the package is already bundled in the binary. You can skip this step.**
+
+   ```bash
+   npm i @vulcan-sql/extension-driver-duckdb
+   ```
+
+
+2. Update `vulcan.yaml`, and enable the extension.
+
+   ```yaml
+   extensions:
+     ...
+     duckdb: '@vulcan-sql/extension-driver-duckdb' # Add this line
+   ```
+
+3. Create a new profile in `profiles.yaml` or in your profile files. For example:
+
+   ```yaml
+   - name: duckdb # profile name
+     type: duckdb
+     connection:
+       persistent-path: 'path-to-a-db-file'
+   ```
+
+## Configuration
+
+| Name            | Required | Default     | Description                                                                                                                                                      |
+| --------------- | -------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| persistent-path | N        | :in-memory: | Path to your persistent DB, if this value is not set, we use an in-memory database.<br/>This path is relative to the work directory, which is your project root. |
+| log-queries     | N        | false       | Whether log query requests                                                                                                                                       |
+| log-parameters  | N        | false       | Whether log query requests' parameters, please be aware that query parameters might contain sensitive data.                                                      |
