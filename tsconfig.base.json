@@ -32,6 +32,7 @@
       "@vulcan-sql/build/schema-parser/*": [
         "packages/build/src/lib/schema-parser/*"
       ],
+      "@vulcan-sql/catalog-server/*": ["packages/catalog-server/*"],
       "@vulcan-sql/cli": ["packages/cli/src/index"],
       "@vulcan-sql/core": ["packages/core/src/index"],
       "@vulcan-sql/core/artifact-builder": [
@@ -117,8 +118,7 @@
       "@vulcan-sql/serve/types": ["packages/serve/src/containers/types"],
       "@vulcan-sql/serve/utils": ["packages/serve/src/lib/utils/index"],
       "@vulcan-sql/serve/utils/*": ["packages/serve/src/lib/utils/*"],
-      "@vulcan-sql/test-utility": ["packages/test-utility/src/index"],
-      "@vulcan-sql/catalog-server/*": ["packages/catalog-server/*"]
+      "@vulcan-sql/test-utility": ["packages/test-utility/src/index"]
     }
   },
   "exclude": ["node_modules", "tmp"]

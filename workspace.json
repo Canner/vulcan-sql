@@ -3,7 +3,6 @@
   "projects": {
     "build": "packages/build",
     "catalog-server": "packages/catalog-server",
-    "catalog-server-e2e": "packages/catalog-server-e2e",
     "cli": "packages/cli",
     "core": "packages/core",
     "doc": "packages/doc",
