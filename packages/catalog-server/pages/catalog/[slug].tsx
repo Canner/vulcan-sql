@@ -48,9 +48,9 @@ export function CatalogDetail() {
 
   return (
     <CatalogDetailComponent
-      data={data?.endpoint || {}}
+      data={data?.endpoint}
       loading={loading}
-      dataset={datasetData?.dataset || {}}
+      dataset={datasetData?.dataset}
       datasetLoading={datasetLoading}
       datasetError={datasetError}
       onDatasetPreview={onDatasetPreview}

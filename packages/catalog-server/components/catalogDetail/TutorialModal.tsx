@@ -94,7 +94,7 @@ function getTutorial(props) {
           />
         </>,
         <>
-          Step 4: Paste the Url and select OK
+          Step 4: Paste the URL and select OK
           <img
             src={tutorialImages.excelStep4}
             width="650"

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Typography } from 'antd';
-import EndpointList from './EndpointList';
+import Endpoint, { EndpointProps } from './Endpoint';
 
 const { Title } = Typography;
 
@@ -9,19 +9,24 @@ const StyledCatalog = styled.div``;
 
 export interface CatalogProps {
   title?: string;
-  data: any;
+  data: EndpointProps[];
 }
 
 export default function Catalog(props: CatalogProps) {
   const { title, data } = props;
 
-  const Endpoint = () =>
-    data.map((item) => <EndpointList key={item.slug} {...item} />);
+  const EndpointList = () => (
+    <>
+      {data.map((item) => (
+        <Endpoint key={item.slug} {...item} />
+      ))}
+    </>
+  );
 
   return (
     <StyledCatalog>
       {title && <Title level={3}>{title}</Title>}
-      <Endpoint />
+      <EndpointList />
     </StyledCatalog>
   );
 }

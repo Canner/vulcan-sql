@@ -5,13 +5,9 @@ import CustomizedTable from './CustomizedTable';
 import ParameterForm from './ParameterForm';
 import TutorialModal, { TutorialType } from './TutorialModal';
 import ErrorResult from './ErrorResult';
-import {
-  Column,
-  Dataset,
-  Parameter,
-  DownOutlined,
-  FilterOutlined,
-} from './utils';
+import { Column, Dataset, Parameter } from './utils';
+import FilterOutlined from '@ant-design/icons/FilterOutlined';
+import DownOutlined from '@ant-design/icons/DownOutlined';
 
 const { Title } = Typography;
 
@@ -89,7 +85,7 @@ export default function QueryResult(props: QueryResultProps) {
     props;
   const [parameterFormVisible, setParameterFormVisible] = useState(false);
   const [parameterCount, setParameterCount] = useState(0);
-  const hasDataset = Object.keys(dataset).length > 0;
+  const hasDataset = Object.keys(dataset || {}).length > 0;
   const hasCount = parameterCount > 0;
   const {
     data = [],
@@ -97,7 +93,7 @@ export default function QueryResult(props: QueryResultProps) {
     csvDownloadUrl = '',
     jsonDownloadUrl = '',
     metadata,
-  } = dataset;
+  } = dataset || {};
   const [tutorialModalProps, setTutorialModalProps] = useState({
     type: null,
     visible: false,
@@ -279,7 +275,7 @@ export default function QueryResult(props: QueryResultProps) {
             >
               <Button type="primary">
                 <Space align="center">
-                  Connects
+                  Connect
                   <DownOutlined />
                 </Space>
               </Button>
@@ -310,7 +306,7 @@ export default function QueryResult(props: QueryResultProps) {
       <TutorialModal
         visible={tutorialModalProps.visible}
         type={tutorialModalProps.type}
-        codeContent={dataset.shareJsonUrl}
+        codeContent={dataset?.shareJsonUrl}
         onCancel={closeTutorialModal}
         onOk={closeTutorialModal}
         destroyOnClose={true}

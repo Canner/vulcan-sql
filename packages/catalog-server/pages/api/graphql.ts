@@ -23,46 +23,46 @@ const typeDefs = gql`
   }
 
   type Parameter {
-    name: String
-    key: String
-    type: ColumnType
+    name: String!
+    key: String!
+    type: ColumnType!
     description: String
-    required: Boolean
+    required: Boolean!
   }
 
   type Column {
-    name: String
-    type: ColumnType
+    name: String!
+    type: ColumnType!
     description: String
   }
 
   type Endpoint {
-    slug: String
-    name: String
+    slug: String!
+    name: String!
     description: String
-    apiDocUrl: String
-    parameters: [Parameter]
-    columns: [Column]
+    apiDocUrl: String!
+    parameters: [Parameter]!
+    columns: [Column]!
   }
 
   type DatasetMetadata {
-    currentCount: Int
-    totalCount: Int
+    currentCount: Int!
+    totalCount: Int!
   }
 
   type Dataset {
-    data: JSON
-    metadata: DatasetMetadata
-    apiUrl: String
+    data: JSON!
+    metadata: DatasetMetadata!
+    apiUrl: String!
     csvDownloadUrl: String
     jsonDownloadUrl: String
-    shareJsonUrl: String
+    shareJsonUrl: String!
   }
 
   type Query {
-    endpoint(slug: String): Endpoint
-    endpoints: [Endpoint]
-    dataset(endpointSlug: String, filter: JSON): Dataset
+    endpoint(slug: String): Endpoint!
+    endpoints: [Endpoint]!
+    dataset(endpointSlug: String, filter: JSON): Dataset!
   }
 `;
 

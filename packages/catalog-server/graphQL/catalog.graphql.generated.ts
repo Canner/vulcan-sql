@@ -6,14 +6,14 @@ const defaultOptions = {} as const;
 export type EndpointsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type EndpointsQuery = { __typename?: 'Query', endpoints?: Array<{ __typename?: 'Endpoint', slug?: string | null, name?: string | null, description?: string | null, apiDocUrl?: string | null } | null> | null };
+export type EndpointsQuery = { __typename?: 'Query', endpoints: Array<{ __typename?: 'Endpoint', slug: string, name: string, description?: string | null, apiDocUrl: string } | null> };
 
 export type EndpointQueryVariables = Types.Exact<{
   slug?: Types.InputMaybe<Types.Scalars['String']>;
 }>;
 
 
-export type EndpointQuery = { __typename?: 'Query', endpoint?: { __typename?: 'Endpoint', slug?: string | null, name?: string | null, description?: string | null, apiDocUrl?: string | null, parameters?: Array<{ __typename?: 'Parameter', name?: string | null, key?: string | null, type?: Types.ColumnType | null, description?: string | null, required?: boolean | null } | null> | null, columns?: Array<{ __typename?: 'Column', name?: string | null, type?: Types.ColumnType | null, description?: string | null } | null> | null } | null };
+export type EndpointQuery = { __typename?: 'Query', endpoint: { __typename?: 'Endpoint', slug: string, name: string, description?: string | null, apiDocUrl: string, parameters: Array<{ __typename?: 'Parameter', name: string, key: string, type: Types.ColumnType, description?: string | null, required: boolean } | null>, columns: Array<{ __typename?: 'Column', name: string, type: Types.ColumnType, description?: string | null } | null> } };
 
 export type DatasetQueryVariables = Types.Exact<{
   endpointSlug?: Types.InputMaybe<Types.Scalars['String']>;
@@ -21,7 +21,7 @@ export type DatasetQueryVariables = Types.Exact<{
 }>;
 
 
-export type DatasetQuery = { __typename?: 'Query', dataset?: { __typename?: 'Dataset', data?: any | null, apiUrl?: string | null, csvDownloadUrl?: string | null, jsonDownloadUrl?: string | null, shareJsonUrl?: string | null, metadata?: { __typename?: 'DatasetMetadata', currentCount?: number | null, totalCount?: number | null } | null } | null };
+export type DatasetQuery = { __typename?: 'Query', dataset: { __typename?: 'Dataset', data: any, apiUrl: string, csvDownloadUrl?: string | null, jsonDownloadUrl?: string | null, shareJsonUrl: string, metadata: { __typename?: 'DatasetMetadata', currentCount: number, totalCount: number } } };
 
 
 export const EndpointsDocument = gql`

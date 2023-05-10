@@ -17,8 +17,8 @@ export type Scalars = {
 export type Column = {
   __typename?: 'Column';
   description?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  type?: Maybe<ColumnType>;
+  name: Scalars['String'];
+  type: ColumnType;
 };
 
 export enum ColumnType {
@@ -31,44 +31,44 @@ export enum ColumnType {
 
 export type Dataset = {
   __typename?: 'Dataset';
-  apiUrl?: Maybe<Scalars['String']>;
+  apiUrl: Scalars['String'];
   csvDownloadUrl?: Maybe<Scalars['String']>;
-  data?: Maybe<Scalars['JSON']>;
+  data: Scalars['JSON'];
   jsonDownloadUrl?: Maybe<Scalars['String']>;
-  metadata?: Maybe<DatasetMetadata>;
-  shareJsonUrl?: Maybe<Scalars['String']>;
+  metadata: DatasetMetadata;
+  shareJsonUrl: Scalars['String'];
 };
 
 export type DatasetMetadata = {
   __typename?: 'DatasetMetadata';
-  currentCount?: Maybe<Scalars['Int']>;
-  totalCount?: Maybe<Scalars['Int']>;
+  currentCount: Scalars['Int'];
+  totalCount: Scalars['Int'];
 };
 
 export type Endpoint = {
   __typename?: 'Endpoint';
-  apiDocUrl?: Maybe<Scalars['String']>;
-  columns?: Maybe<Array<Maybe<Column>>>;
+  apiDocUrl: Scalars['String'];
+  columns: Array<Maybe<Column>>;
   description?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  parameters?: Maybe<Array<Maybe<Parameter>>>;
-  slug?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  parameters: Array<Maybe<Parameter>>;
+  slug: Scalars['String'];
 };
 
 export type Parameter = {
   __typename?: 'Parameter';
   description?: Maybe<Scalars['String']>;
-  key?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  required?: Maybe<Scalars['Boolean']>;
-  type?: Maybe<ColumnType>;
+  key: Scalars['String'];
+  name: Scalars['String'];
+  required: Scalars['Boolean'];
+  type: ColumnType;
 };
 
 export type Query = {
   __typename?: 'Query';
-  dataset?: Maybe<Dataset>;
-  endpoint?: Maybe<Endpoint>;
-  endpoints?: Maybe<Array<Maybe<Endpoint>>>;
+  dataset: Dataset;
+  endpoint: Endpoint;
+  endpoints: Array<Maybe<Endpoint>>;
 };
 
 

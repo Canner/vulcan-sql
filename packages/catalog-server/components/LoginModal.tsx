@@ -1,14 +1,11 @@
 import styled from 'styled-components';
 import { Form, Input, Modal, Button, Typography, Alert } from 'antd';
-import {
-  UserOutlined,
-  LockOutlined,
-} from '@vulcan-sql/catalog-server/lib/icons';
+import UserOutlined from '@ant-design/icons/UserOutlined';
+import LockOutlined from '@ant-design/icons/LockOutlined';
 import Image from 'next/image';
 
 const { Title } = Typography;
 
-/* eslint-disable-next-line */
 export interface LoginModalProps {
   visible: boolean;
   onClose: () => void;

@@ -1,6 +1,3 @@
-export { default as FilterOutlined } from '@ant-design/icons/FilterOutlined';
-export { default as DownOutlined } from '@ant-design/icons/DownOutlined';
-
 enum ColumnType {
   Boolean = 'BOOLEAN',
   Date = 'DATE',
@@ -9,10 +6,19 @@ enum ColumnType {
   String = 'STRING',
 }
 
+export interface Endpoint {
+  slug: string;
+  name: string;
+  description?: string;
+  apiDocUrl: string;
+  parameters: Parameter[];
+  columns: Column[];
+}
+
 export interface Column {
   description?: string;
   name: string;
-  type: ColumnType;
+  type: ColumnType | string;
 }
 
 export interface Parameter {
@@ -20,7 +26,7 @@ export interface Parameter {
   key: string;
   name: string;
   required: boolean;
-  type: ColumnType;
+  type: ColumnType | string;
 }
 
 export interface DatasetMetadata {
@@ -30,9 +36,9 @@ export interface DatasetMetadata {
 
 export interface Dataset {
   apiUrl: string;
-  csvDownloadUrl: string;
+  csvDownloadUrl?: string;
+  jsonDownloadUrl?: string;
   data: any;
-  jsonDownloadUrl: string;
   metadata: DatasetMetadata;
   shareJsonUrl: string;
 }

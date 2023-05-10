@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 import { Tabs, Typography } from 'antd';
 import QueryResult from './QueryResult';
 import CustomizedTable from './CustomizedTable';
-import { Dataset } from './utils';
+import { Dataset, Endpoint } from './utils';
 
 const { Title } = Typography;
 
 export interface CatalogDetailProps {
-  data: any;
+  data: Endpoint;
   loading: boolean;
   dataset: Dataset;
   datasetLoading: boolean;
@@ -24,14 +24,14 @@ export default function CatalogDetail(props: CatalogDetailProps) {
     onDatasetPreview,
     datasetError,
   } = props;
-  const parameters = useMemo(() => data.parameters || [], [data.parameters]);
+  const parameters = useMemo(() => data?.parameters || [], [data?.parameters]);
   const columns = useMemo(
     () =>
-      (data.columns || []).map((item: any) => ({
+      (data?.columns || []).map((item) => ({
         ...item,
         key: item.name,
       })),
-    [data.columns]
+    [data?.columns]
   );
 
   const tabItems = [

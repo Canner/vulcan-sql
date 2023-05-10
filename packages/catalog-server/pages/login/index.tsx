@@ -6,12 +6,9 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import styled from 'styled-components';
 
-/* eslint-disable-next-line */
-export interface LoginProps {}
-
 const StyledLogin = styled.div``;
 
-export default function Login(props: LoginProps) {
+export default function Login() {
   const router = useRouter();
   const { loginModal, setLoginModal } = useStore();
   const { token, login } = useAuth();

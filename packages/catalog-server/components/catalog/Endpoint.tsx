@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Card, Button } from 'antd';
-import { ApiOutlined } from './utils';
+import ApiOutlined from '@ant-design/icons/ApiOutlined';
 
-const StyledEndpointList = styled(Card)`
-  .endpointList-footer {
+const StyledEndpoint = styled(Card)`
+  .endpoint-footer {
     display: flex;
     justify-content: flex-end;
     flex-wrap: wrap;
@@ -29,28 +29,26 @@ const CardTitle = styled.div`
   }
 `;
 
-export interface EndpointListProps {
+export interface EndpointProps {
+  slug: string;
   name: string;
-  description: string;
+  description?: string;
   apiDocUrl: string;
   onConnect: () => void;
 }
 
-export default function Endpoint(props: EndpointListProps) {
-  const {
-    name = 'test',
-    description = 'No description.',
-    apiDocUrl,
-    onConnect,
-  } = props;
+export default function Endpoint(props: EndpointProps) {
+  const { name = 'test', description, apiDocUrl, onConnect } = props;
   return (
-    <StyledEndpointList>
+    <StyledEndpoint>
       <CardTitle>
         <ApiOutlined />
         {name}
       </CardTitle>
-      {description}
-      <div className="endpointList-footer">
+      {description || (
+        <span style={{ color: 'var(--gray-6)' }}>No Description</span>
+      )}
+      <div className="endpoint-footer">
         <Button onClick={onConnect}>Connect</Button>
         <Button
           type="primary"
@@ -61,6 +59,6 @@ export default function Endpoint(props: EndpointListProps) {
           View API Docs
         </Button>
       </div>
-    </StyledEndpointList>
+    </StyledEndpoint>
   );
 }

@@ -1,9 +1,17 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import { Avatar, Dropdown, Layout as AntdLayout, Menu, Row, Col } from 'antd';
+import {
+  Avatar,
+  Dropdown,
+  Layout as AntdLayout,
+  Menu,
+  Row,
+  Col,
+  Space,
+} from 'antd';
 import Breadcrumb from './Breadcrumb';
 import { useRouter } from 'next/router';
-import { UserOutlined } from '@vulcan-sql/catalog-server/lib/icons';
+import UserOutlined from '@ant-design/icons/UserOutlined';
 import { useStore } from '@vulcan-sql/catalog-server/lib/store';
 import Path from '@vulcan-sql/catalog-server/lib/path';
 import { useAuth } from '@vulcan-sql/catalog-server/lib/auth';
@@ -18,11 +26,14 @@ const StyledAntdLayout = styled(AntdLayout)`
   }
 `;
 
-const StyledAvatar = styled(Avatar)`
+const StyledAvatar = styled(Space)`
   cursor: pointer;
+
+  .ant-avatar {
+    margin-top: -3px;
+  }
 `;
 
-/* eslint-disable-next-line */
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -45,22 +56,18 @@ export default function Layout(props: LayoutProps) {
     getProfile({ redirectTo: Path.Login });
   }, []);
 
-  const menu = (
+  const menu = isLogin ? (
     <Menu
       items={[
         {
-          key: 'profile',
-          label: isLogin ? user.name : 'Guest',
+          key: 'logout',
+          label: 'Log Out',
+          onClick: onLogout,
         },
-        isLogin
-          ? {
-              key: 'logout',
-              label: 'Log out',
-              onClick: onLogout,
-            }
-          : null,
       ]}
     />
+  ) : (
+    <></>
   );
 
   return (
@@ -74,14 +81,20 @@ export default function Layout(props: LayoutProps) {
             <Col>
               <Dropdown overlay={menu} placement="bottomRight">
                 {isLogin ? (
-                  <StyledAvatar
-                    size={25}
-                    style={{ backgroundColor: 'var(--geekblue-6)' }}
-                  >
-                    {user.name.charAt(0).toUpperCase()}
+                  <StyledAvatar>
+                    <Avatar
+                      size={25}
+                      style={{ backgroundColor: 'var(--geekblue-6)' }}
+                    >
+                      {user.name.charAt(0).toUpperCase()}
+                    </Avatar>
+                    <span>{user.name}</span>
                   </StyledAvatar>
                 ) : (
-                  <StyledAvatar size={25} icon={<UserOutlined />} />
+                  <StyledAvatar>
+                    <Avatar size={25} icon={<UserOutlined />} />
+                    <span>Guest</span>
+                  </StyledAvatar>
                 )}
               </Dropdown>
             </Col>
