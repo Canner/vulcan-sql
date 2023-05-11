@@ -1,4 +1,8 @@
-# Pagination
+---
+pagination_next: develop/pagination/offset
+---
+
+# Introduction
 ## Why use pagination?
 
 In some cases, we execute SQL queries to list all entities, which may result in a large amount of data. Instead of sending all the data to our clients, we can paginate the results and send only the necessary portion. This approach is a common design in modern API servers.
@@ -9,9 +13,9 @@ You can implement your own pagination strategies by modifying your SQL queries. 
 
 ```sql
 SELECT * FROM users
--- highlight-next-line
+// highlight-next-line
 LIMIT {{ context.params.limit }}
--- highlight-next-line
+// highlight-next-line
 OFFSET {{ context.params.offset }}
 ```
 
@@ -22,6 +26,6 @@ For more information about each pagination mode, please refer to the correspondi
 
 | Mode                          | Description                                            |
 | ----------------------------- | ------------------------------------------------------ |
-| offset | Offset-based pagination e.g. `/path?offset=10&limit=100` |
+| [offset](../develop/pagination/offset) | Offset-based pagination e.g. `/path?offset=10&limit=100` |
 | cursor                        | TBD                                                    |
 | keyset                        | TBD                                                    |
