@@ -1,14 +1,6 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  Avatar,
-  Dropdown,
-  Layout as AntdLayout,
-  Menu,
-  Row,
-  Col,
-  Space,
-} from 'antd';
+import { Avatar, Dropdown, Layout as AntdLayout, Menu, Row, Col } from 'antd';
 import Breadcrumb from './Breadcrumb';
 import { useRouter } from 'next/router';
 import UserOutlined from '@ant-design/icons/UserOutlined';
@@ -26,11 +18,12 @@ const StyledAntdLayout = styled(AntdLayout)`
   }
 `;
 
-const StyledAvatar = styled(Space)`
+const StyledAvatar = styled.div`
   cursor: pointer;
 
   .ant-avatar {
     margin-top: -3px;
+    margin-right: 8px;
   }
 `;
 
@@ -66,9 +59,7 @@ export default function Layout(props: LayoutProps) {
         },
       ]}
     />
-  ) : (
-    <></>
-  );
+  ) : null;
 
   return (
     <StyledAntdLayout>
@@ -79,8 +70,8 @@ export default function Layout(props: LayoutProps) {
               <Breadcrumb pathNames={pathNames} />
             </Col>
             <Col>
-              <Dropdown overlay={menu} placement="bottomRight">
-                {isLogin ? (
+              {isLogin ? (
+                <Dropdown overlay={menu} placement="bottomRight">
                   <StyledAvatar>
                     <Avatar
                       size={25}
@@ -90,13 +81,13 @@ export default function Layout(props: LayoutProps) {
                     </Avatar>
                     <span>{user.name}</span>
                   </StyledAvatar>
-                ) : (
-                  <StyledAvatar>
-                    <Avatar size={25} icon={<UserOutlined />} />
-                    <span>Guest</span>
-                  </StyledAvatar>
-                )}
-              </Dropdown>
+                </Dropdown>
+              ) : (
+                <StyledAvatar>
+                  <Avatar size={25} icon={<UserOutlined />} />
+                  <span>Guest</span>
+                </StyledAvatar>
+              )}
             </Col>
           </Row>
         </Header>

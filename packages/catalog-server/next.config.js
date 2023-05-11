@@ -9,6 +9,9 @@ const themeVariables = path.resolve(__dirname, './styles/antd-variables.less');
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
  **/
 const nextConfig = {
+  compiler: {
+    styledComponents: true,
+  },
   serverRuntimeConfig: {
     // Will only be available on the server side
     vulcanSQLHost: process.env.VULCAN_SQL_HOST || 'http://localhost:3000',
