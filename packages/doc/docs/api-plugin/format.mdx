@@ -28,11 +28,11 @@ response-format:
 ## Example Scenarios
 | Accept                                   | API URL Path        | options.default | options.formats  | response format type |
 | ---------------------------------------- | ----------------- | --------------- | ---------------- | -------------------- |
-| `q=0.9;application/json`                 | `/api/data`      | `json`          | `["json","csv"]` | json                 |
-| `q=0.8;application/json, q=0.9;text/csv` | `/api/data`      | `json`          | `["json","csv"]` | csv                  |
+| `application/json;q=0.9`                 | `/api/data`      | `json`          | `["json","csv"]` | json                 |
+| `application/json;q=0.8, text/csv;q=0.9` | `/api/data`      | `json`          | `["json","csv"]` | csv                  |
 | Not set                                  | `/api/data`      | `json`          | `["json","csv"]` | json                 |
 | Not set                                  | `/api/data`      | `json`          | `["csv","json"]` | csv                  |
 | Not set                                  | `/api/data`      | `json`          | Not set          | json                 |
-| `q=0.9;application/json`                 | `/api/data.csv`  | `json`          | `["json","csv"]` | csv                  |
-| `q=0.9;application/json, q=0.9;text/csv` | `/api/data.json` | `csv`           | `["csv"]`        | Error                |
-| `q=0.9;application/json, q=0.9;text/csv` | `/api/data`      | Not set         | Not set          | json                 |
+| `application/json;q=0.9`                 | `/api/data.csv`  | `json`          | `["json","csv"]` | csv                  |
+| `application/json;q=0.9, text/csv;q=0.9` | `/api/data.json` | `csv`           | `["csv"]`        | Error                |
+| `application/json;q=0.9, text/csv;q=0.9` | `/api/data`      | Not set         | Not set          | json                 |

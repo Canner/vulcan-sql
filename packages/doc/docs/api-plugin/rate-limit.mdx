@@ -22,6 +22,6 @@ rate-limit:
 | Option   | Default | Type  | Description                                                            |
 | -------- | ------- | ----- | ---------------------------------------------------------------------- |
 | interval | null    | time  | Length of time request records are kept in memory (default: 1 minute). |
-| max      | 60      | number| Maximum number of connections during `interval` before sending a 429.  |
+| max      | 60      | number| Maximum number of connections during `interval` before sending a HTTP 429.  |
 
 This plugin is based on [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) and it has reasonable default settings, but you can still customize it in `vulcan.yaml`.
