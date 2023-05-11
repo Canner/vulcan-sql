@@ -207,9 +207,3 @@ Visit [the documentation](https://vulcansql.com/docs/installation) for installat
 
 - Welcome to our [Discord](https://discord.gg/dMcfT5vfzr) to give us feedback!
 - If any issues, please visit [Github Issues](https://github.com/Canner/vulcan-sql/issues)
-
-## Special Thanks
-
-<a href="https://vercel.com/?utm_source=vulcan-sql-document&utm_campaign=oss">
-  <img src="https://user-images.githubusercontent.com/9553914/193729375-e242584f-95c5-49d4-b064-3892aa427117.svg">
-</a>

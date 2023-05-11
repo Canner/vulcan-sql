@@ -1,7 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
 import type { Props } from '@theme/Footer/Layout';
-import Sponsors from '@site/src/components/Sponsors';
 
 export default function FooterLayout({
   style,
@@ -17,7 +16,6 @@ export default function FooterLayout({
     >
       <div className="container container-fluid">
         {links}
-        <Sponsors />
         {(logo || copyright) && (
           <div className="footer__bottom text--center">
             {logo && <div className="margin-bottom--sm">{logo}</div>}
