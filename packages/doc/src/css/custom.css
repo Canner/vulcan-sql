@@ -12,5 +12,19 @@
 .sidebar-title {
   margin-top: 1.5rem;
   padding: 0 var(--ifm-menu-link-padding-horizontal);
-  color: var(--ifm-color-gray-600);
+  color: var(--ifm-color-gray-700);
+  font-weight: var(--ifm-font-weight-bold)
+}
+
+.menu__caret:before {
+  background: var(--ifm-menu-link-sublist-icon) 50% / 1.2rem 1.2rem;
+}
+
+.menu__link--sublist-caret:after {
+  background: var(--ifm-menu-link-sublist-icon) 50% / 1.2rem 1.2rem;
+}
+
+.menu_icon {
+  vertical-align: middle;
+  margin: -0.3em 0.2em 0em 0em;
 }

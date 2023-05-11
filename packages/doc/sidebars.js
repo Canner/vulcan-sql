@@ -20,24 +20,30 @@ const sidebars = {
 
   tutorialSidebar: [
     {
-      type: 'category',
-      label: 'Getting Started',
-      link: { type: 'doc', id: 'get-started/installation' },
-      items: [
-        {
-          type: 'doc',
-          id: 'get-started/installation',
-        },
-        {
-          type: 'doc',
-          id: 'get-started/first-api',
-        }
-      ],
+      type: 'html',
+      value: '<img src="/img/launch.svg" width="20em" class="menu_icon" /> Getting Started',
+      className: 'sidebar-title',
+    },
+    {
+      type: 'doc',
+      id: 'intro',
+    },
+    {
+      type: 'doc',
+      id: 'get-started/installation',
+    },
+    {
+      type: 'doc',
+      id: 'get-started/first-api',
     },
     {
       type: 'html',
-      value: 'Analytics API',
+      value: '<img src="/img/lightning.svg" width="20em" class="menu_icon" /> Building Analytics API',
       className: 'sidebar-title',
+    },
+    {
+      type: 'doc',
+      id: 'develop/init',
     },
     {
       type: 'category',
@@ -68,16 +74,12 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Develop',
+      label: 'Writing SQL Templates',
       link: { type: 'doc', id: 'develop/overview' },
       items: [
         {
           type: 'doc',
           id: 'develop/overview',
-        },
-        {
-          type: 'doc',
-          id: 'develop/init',
         },
         {
           type: 'doc',
@@ -93,25 +95,25 @@ const sidebars = {
         },
         {
           type: 'doc',
-          id: 'develop/error',
-        },
-        {
-          type: 'doc',
-          id: 'develop/validator',
-        },
-        {
-          type: 'doc',
-          id: 'develop/api-doc',
-        },
-        {
-          type: 'doc',
           id: 'develop/advance',
         },
       ]
     },
     {
+      type: 'doc',
+      id: 'develop/cache',
+    },
+    {
+      type: 'doc',
+      id: 'develop/error',
+    },
+    {
+      type: 'doc',
+      id: 'develop/validator',
+    },
+    {
       type: 'category',
-      label: 'Data Privacy',
+      label: 'Handling Data Privacy',
       link: { type: 'doc', id: 'data-privacy/overview' },
       items: [
         {
@@ -142,39 +144,63 @@ const sidebars = {
     },
     {
       type: 'html',
-      value: 'API Configuration',
+      value: '<img src="/img/doc.svg" width="20em" class="menu_icon" /> API Catalog & Documentation',
       className: 'sidebar-title',
     },
     {
       type: 'category',
-      label: 'API Plugins',
-      link: { type: 'doc', id: 'api-plugin/overview' },
+      label: 'Catalog',
+      link: { type: 'doc', id: 'catalog/catalog-intro' },
       items: [
         {
           type: 'doc',
-          id: 'api-plugin/overview',
+          id: 'catalog/catalog-intro',
         },
-        {
-          type: 'doc',
-          id: 'api-plugin/format',
-        },
+      ],
+    },
+    {
+      type: 'doc',
+      id: 'develop/api-doc',
+    },
+    {
+      type: 'html',
+      value: '<img src="/img/settings.svg" width="20em" class="menu_icon" /> API Configuration',
+      className: 'sidebar-title',
+    },
+    {
+      type: 'doc',
+      id: 'api-plugin/overview',
+    },
+    {
+      type: 'doc',
+      id: 'api-plugin/format',
+    },
+    {
+      type: 'category',
+      label: 'Pagination',
+      link: { type: 'doc', id: 'api-plugin/pagination' },
+      items: [
         {
           type: 'doc',
           id: 'api-plugin/pagination',
         },
         {
           type: 'doc',
-          id: 'api-plugin/cors',
+          id: 'develop/pagination/offset',
         },
-        {
-          type: 'doc',
-          id: 'api-plugin/rate-limit',
-        },
-        {
-          type: 'doc',
-          id: 'api-plugin/access-log',
-        },
-      ]
+      ],
+    },
+    {
+      type: 'doc',
+      id: 'api-plugin/cors',
+    },
+    {
+      type: 'doc',
+      id: 'api-plugin/rate-limit',
+    },
+    {
+      type: 'doc',
+      id: 'api-plugin/access-log',
     },
     // {
     //   type: 'category',
@@ -293,23 +319,7 @@ const sidebars = {
     // },
     {
       type: 'html',
-      value: 'UI & Documentation',
-      className: 'sidebar-title',
-    },
-    {
-      type: 'category',
-      label: 'Catalog',
-      link: { type: 'doc', id: 'catalog/catalog-intro' },
-      items: [
-        {
-          type: 'doc',
-          id: 'catalog/catalog-intro',
-        },
-      ],
-    },
-    {
-      type: 'html',
-      value: 'Deployment and Maintenance',
+      value: '<img src="/img/deploy.svg" width="20em" class="menu_icon" /> Deployment and Maintenance',
       className: 'sidebar-title',
     },
     'deployment',
@@ -446,6 +456,10 @@ const sidebars = {
     //     },
     //   ],
     // },
+    {
+      type: 'html',
+      value: '<br/><br/>',
+    },
   ],
 };
 
