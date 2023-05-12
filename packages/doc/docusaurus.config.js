@@ -60,7 +60,7 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'get-started/installation',
+            docId: 'intro',
             position: 'left',
             label: 'Docs',
           },
@@ -89,7 +89,7 @@ const config = {
             items: [
               {
                 label: 'Get Started',
-                to: '/docs/get-started/installation',
+                to: '/docs/intro',
               },
               {
                 label: 'Analytics API',
