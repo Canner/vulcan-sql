@@ -1,11 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Typography } from 'antd';
 import Endpoint, { EndpointProps } from './Endpoint';
 
 const { Title } = Typography;
-
-const StyledCatalog = styled.div``;
 
 export interface CatalogProps {
   title?: string;
@@ -24,9 +21,9 @@ export default function Catalog(props: CatalogProps) {
   );
 
   return (
-    <StyledCatalog>
+    <div>
       {title && <Title level={3}>{title}</Title>}
       <EndpointList />
-    </StyledCatalog>
+    </div>
   );
 }

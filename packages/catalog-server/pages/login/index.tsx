@@ -4,9 +4,6 @@ import Path from '@vulcan-sql/catalog-server/lib/path';
 import { useStore } from '@vulcan-sql/catalog-server/lib/store';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import styled from 'styled-components';
-
-const StyledLogin = styled.div``;
 
 export default function Login() {
   const router = useRouter();
@@ -43,14 +40,12 @@ export default function Login() {
   }, [router, token]);
 
   return (
-    <StyledLogin>
-      <LoginModal
-        canClose={loginModal.canClose}
-        hasError={loginModal.hasError}
-        visible={loginModal.visible}
-        onSubmit={onLogin}
-        onClose={onLoginModalClose}
-      />
-    </StyledLogin>
+    <LoginModal
+      canClose={loginModal.canClose}
+      hasError={loginModal.hasError}
+      visible={loginModal.visible}
+      onSubmit={onLogin}
+      onClose={onLoginModalClose}
+    />
   );
 }
