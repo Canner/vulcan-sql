@@ -8,7 +8,7 @@ import { TYPES as CORE_TYPES, VulcanInternalExtension } from '@vulcan-sql/core';
 import { inject } from 'inversify';
 import { TYPES } from '@vulcan-sql/serve/types';
 
-@VulcanInternalExtension('catalog')
+@VulcanInternalExtension()
 export class CatalogRouterMiddleware extends BuiltInMiddleware {
   private catalogRouter: CatalogRouter;
 

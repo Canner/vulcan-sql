@@ -29,8 +29,8 @@ export abstract class CatalogRouter<C = any> extends ExtensionBase<C> {
 
   public abstract handle(context: KoaContext, next: Next): Promise<void>;
 
-  protected getProjectOptions(key?: string) {
-    return key ? this.projectOptions[key] : this.projectOptions;
+  protected getProjectOptionsByKey(key: string) {
+    return this.projectOptions[key];
   }
 
   protected async getArtifactSchemas() {

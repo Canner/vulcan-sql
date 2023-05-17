@@ -1,7 +1,6 @@
 import {
   TYPES as CORE_TYPES,
   VulcanArtifactBuilder,
-  VulcanExtensionId,
   VulcanInternalExtension,
   ICoreOptions,
   APISchema,
@@ -11,8 +10,7 @@ import * as Router from 'koa-router';
 import { CatalogRouter } from '@vulcan-sql/serve/models';
 import { inject } from 'inversify';
 import { getDocUrlPrefix } from '../document-router/utils';
-@VulcanInternalExtension('catalog')
-@VulcanExtensionId('catalog')
+@VulcanInternalExtension()
 export class CatalogRouters extends CatalogRouter {
   private router = new Router();
 
@@ -40,7 +38,8 @@ export class CatalogRouters extends CatalogRouter {
         return;
       }
 
-      const responseFormatOption = this.getProjectOptions('response-format');
+      const responseFormatOption =
+        this.getProjectOptionsByKey('response-format');
       const baseUrl = `${ctx.protocol}://${ctx.host}`;
       const result = {
         ...schema,
@@ -73,7 +72,7 @@ export class CatalogRouters extends CatalogRouter {
   private getShareKey(authorization: string | undefined) {
     if (!authorization) return '';
 
-    const authSourceOption = this.getProjectOptions('auth-source');
+    const authSourceOption = this.getProjectOptionsByKey('auth-source');
     const token = Buffer.from(
       JSON.stringify({ Authorization: authorization })
     ).toString('base64');
@@ -84,7 +83,7 @@ export class CatalogRouters extends CatalogRouter {
   // Make API doc(redoc) url for catalog
   // redoc generated url path example: /artist/:id -> /doc#operation/get/artist/:id
   private getAPIDocUrl(schema: APISchema) {
-    const redocOption = this.getProjectOptions('redoc');
+    const redocOption = this.getProjectOptionsByKey('redoc');
     const docPath = getDocUrlPrefix(redocOption?.url || '');
 
     // currently vulcan-sql only support get method
