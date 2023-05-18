@@ -1,7 +1,7 @@
 import {
   IBuildOptions,
   Packager,
-  PackagerType,
+  PackagerOptions,
 } from '@vulcan-sql/build/models';
 import { Container, TYPES } from '@vulcan-sql/build/containers';
 import { SchemaParser } from '@vulcan-sql/build/schema-parser';
@@ -24,7 +24,7 @@ export class VulcanBuilder {
     this.options = options;
   }
 
-  public async build(packagerName?: PackagerType | string) {
+  public async build(packagerOptions?: PackagerOptions) {
     const container = new Container();
     await container.load(this.options);
     const schemaParser = container.get<SchemaParser>(TYPES.SchemaParser);
@@ -57,7 +57,8 @@ export class VulcanBuilder {
     await artifactBuilder.build();
 
     // Package
-    if (packagerName) {
+    if (packagerOptions) {
+      const packagerName = `${packagerOptions.output}_${packagerOptions.target}`;
       const packagerFactory = container.get<
         interfaces.AutoNamedFactory<Packager>
       >(TYPES.Factory_Packager);

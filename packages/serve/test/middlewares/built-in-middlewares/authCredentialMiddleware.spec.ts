@@ -12,6 +12,7 @@ import {
   PasswordFileAuthenticator,
   SimpleTokenAuthenticator,
 } from '@vulcan-sql/serve';
+import { ProjectOptions } from '@vulcan-sql/core';
 
 describe('Test auth credential middleware', () => {
   afterEach(() => {
@@ -25,7 +26,8 @@ describe('Test auth credential middleware', () => {
         enabled: false,
       },
       '',
-      []
+      [],
+      new ProjectOptions()
     );
     // spy the async function to do test
     const spy = jest.spyOn(lodash, 'isEmpty');
@@ -48,7 +50,8 @@ describe('Test auth credential middleware', () => {
       const middleware = new AuthCredentialsMiddleware(
         { options: options },
         '',
-        []
+        [],
+        new ProjectOptions()
       );
       const activateFunc = async () => await middleware.activate();
 
@@ -93,7 +96,8 @@ describe('Test auth credential middleware', () => {
       const middleware = new AuthCredentialsMiddleware(
         { options: { [type]: options } },
         '',
-        [authenticator]
+        [authenticator],
+        new ProjectOptions()
       );
       await middleware.activate();
       await middleware.handle(ctx, async () => Promise.resolve());
@@ -135,7 +139,8 @@ describe('Test auth credential middleware', () => {
       const middleware = new AuthCredentialsMiddleware(
         { options: { [type]: options } },
         '',
-        [authenticator]
+        [authenticator],
+        new ProjectOptions()
       );
       await middleware.activate();
       await middleware.handle(ctx, async () => Promise.resolve());
@@ -174,7 +179,8 @@ describe('Test auth credential middleware', () => {
       const middleware = new AuthCredentialsMiddleware(
         { options: { [type]: options } },
         '',
-        [authenticator]
+        [authenticator],
+        new ProjectOptions()
       );
       await middleware.activate();
       const handle = async () =>

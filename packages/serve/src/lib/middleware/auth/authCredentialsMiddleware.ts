@@ -1,12 +1,38 @@
-import { UserError, VulcanInternalExtension } from '@vulcan-sql/core';
-import { Next, KoaContext, AuthStatus } from '@vulcan-sql/serve/models';
+import {
+  ICoreOptions,
+  TYPES as CORE_TYPES,
+  UserError,
+  VulcanInternalExtension,
+} from '@vulcan-sql/core';
+import {
+  Next,
+  KoaContext,
+  AuthStatus,
+  BaseAuthenticator,
+} from '@vulcan-sql/serve/models';
 import { BaseAuthMiddleware } from './authMiddleware';
+import { TYPES } from '@vulcan-sql/serve/containers';
+import { inject, multiInject } from 'inversify';
+import { checkIsPublicEndpoint } from './utils';
 
 /** The middleware responsible for checking request auth credentials.
  *  It seek the 'auth' module name to match data through built-in and customized authenticator by BaseAuthenticator
  * */
 @VulcanInternalExtension('auth')
 export class AuthCredentialsMiddleware extends BaseAuthMiddleware {
+  private projectOptions: Partial<ICoreOptions>;
+
+  constructor(
+    @inject(CORE_TYPES.ExtensionConfig) config: any,
+    @inject(CORE_TYPES.ExtensionName) name: string,
+    @multiInject(TYPES.Extension_Authenticator)
+    authenticators: BaseAuthenticator<any>[],
+    @inject(CORE_TYPES.ProjectOptions) projectOptions: Partial<ICoreOptions>
+  ) {
+    super(config, name, authenticators);
+    this.projectOptions = projectOptions;
+  }
+
   public override async onActivate() {
     await this.initialize();
   }
@@ -15,8 +41,8 @@ export class AuthCredentialsMiddleware extends BaseAuthMiddleware {
     // return to stop the middleware, if disabled
     if (!this.enabled) return next();
 
-    // The /auth/token endpoint not need contains auth credentials
-    if (context.path === '/auth/token') return next();
+    // The endpoint not need contains auth credentials
+    if (checkIsPublicEndpoint(this.projectOptions, context.path)) return next();
 
     // pass current context to auth token for users
     for (const name of Object.keys(this.authenticators)) {

@@ -2,6 +2,12 @@ import { VulcanExtension, ExtensionBase } from '@vulcan-sql/core';
 import { KoaContext } from '@vulcan-sql/serve/models';
 import { TYPES } from '../../containers/types';
 
+export enum AuthType {
+  Basic = 'basic',
+  PasswordFile = 'password-file',
+  SimpleToken = 'simple-token',
+}
+
 export interface AuthUserInfo {
   name: string;
   attr: {

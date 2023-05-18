@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "build": "packages/build",
+    "catalog-server": "packages/catalog-server",
     "cli": "packages/cli",
     "core": "packages/core",
     "doc": "packages/doc",

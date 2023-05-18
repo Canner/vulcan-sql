@@ -4,21 +4,23 @@ import {
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
 import { IBuildOptions } from '../../../models/buildOptions';
-import { Packager, PackagerType } from '../../../models/extensions';
+import {
+  Packager,
+  PackagerName,
+  PackagerTarget,
+} from '../../../models/extensions';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 
-export interface DockerPackagerConfig {
-  folderPath?: string;
-}
-
-@VulcanExtensionId(PackagerType.Docker)
+@VulcanExtensionId(PackagerName.Docker)
 @VulcanInternalExtension('docker-packager')
-export class DockerPackager extends Packager<DockerPackagerConfig> {
+export class DockerPackager extends Packager {
   private logger = this.getLogger();
+  private readonly target = PackagerTarget.VulcanServer;
 
   public async package(option: IBuildOptions): Promise<void> {
-    const { folderPath = 'dist' } = this.getConfig() || {};
+    const config = this.getConfig() || {};
+    const { folderPath = 'dist' } = config[this.target] || {};
     const distFolder = path.resolve(process.cwd(), folderPath);
     await fs.rm(distFolder, { recursive: true, force: true });
     await fs.mkdir(distFolder, { recursive: true });

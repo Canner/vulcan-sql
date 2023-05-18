@@ -3,6 +3,7 @@ import {
   KoaContext,
   AuthResult,
   AuthStatus,
+  AuthType,
 } from '@vulcan-sql/serve/models';
 import {
   UserError,
@@ -35,7 +36,7 @@ type UserCredentialsMap = {
  * Token could be any format e.g: md5, base64 encode, sha..., but must set it in the token field of "simple-token" list too.
  *  */
 @VulcanInternalExtension('auth')
-@VulcanExtensionId('simple-token')
+@VulcanExtensionId(AuthType.SimpleToken)
 export class SimpleTokenAuthenticator extends BaseAuthenticator<SimpleTokenOptions> {
   private options: SimpleTokenOptions = [];
   private usersCredentials: UserCredentialsMap = {};

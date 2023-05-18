@@ -16,4 +16,5 @@ export const TYPES = {
   Extension_Authenticator: Symbol.for('Extension_Authenticator'),
   Extension_Formatter: Symbol.for('Extension_Formatter'),
   Extension_DocumentRouter: Symbol.for('Extension_DocumentRouter'),
+  Extension_CatalogRouter: Symbol.for('Extension_CatalogRouter'),
 };

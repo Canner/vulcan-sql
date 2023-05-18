@@ -4,3 +4,4 @@ export * from './version';
 export * from './build';
 export * from './package';
 export * from './serve';
+export * from './catalog';

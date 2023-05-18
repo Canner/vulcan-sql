@@ -10,7 +10,7 @@ import { KoaContext, Next } from '@vulcan-sql/serve/models';
 import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { inject } from 'inversify';
 
-@VulcanExtension(TYPES.Extension_DocumentRouter)
+@VulcanExtension(TYPES.Extension_DocumentRouter, { enforcedId: true })
 export abstract class DocumentRouter<C = any> extends ExtensionBase<C> {
   private artifactBuilder: ArtifactBuilder;
 

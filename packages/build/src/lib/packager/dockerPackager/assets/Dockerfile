@@ -16,4 +16,4 @@ COPY index.js .
 COPY result.json .
 ENV NODE_ENV production
 
-CMD [ "node", "index.js" ] 
+CMD [ "node", "index.js" ]

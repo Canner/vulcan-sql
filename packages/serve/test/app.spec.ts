@@ -17,6 +17,10 @@ import {
   TYPES as CORE_TYPES,
   DataSource,
   DocumentOptions,
+  ProjectOptions,
+  VulcanArtifactBuilder,
+  LocalFilePersistentStore,
+  JSONSerializer,
 } from '@vulcan-sql/core';
 import {
   RouteGenerator,
@@ -37,11 +41,14 @@ describe('Test vulcan server for practicing middleware', () => {
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
   let stubDataSource: sinon.StubbedInstance<DataSource>;
   let stubEvaluator: sinon.StubbedInstance<Evaluator>;
+  let mockPersistentStore: sinon.StubbedInstance<LocalFilePersistentStore>;
+
   beforeEach(async () => {
     container = new Container();
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
     stubDataSource = sinon.stubInterface<DataSource>();
     stubEvaluator = sinon.stubInterface<Evaluator>();
+    mockPersistentStore = sinon.stubInterface();
 
     await container.loadAsync(
       coreExtensionModule({
@@ -86,6 +93,17 @@ describe('Test vulcan server for practicing middleware', () => {
         })
     );
     container.bind(TYPES.Evaluator).toConstantValue(stubEvaluator);
+    container
+      .bind(CORE_TYPES.ProjectOptions)
+      .toDynamicValue(() => new ProjectOptions());
+    container
+      .bind(CORE_TYPES.PersistentStore)
+      .toConstantValue(mockPersistentStore);
+    container
+      .bind(CORE_TYPES.Serializer)
+      .toConstantValue(new JSONSerializer({}, ''));
+    container.bind(CORE_TYPES.ArtifactBuilderOptions).toConstantValue({});
+    container.bind(CORE_TYPES.ArtifactBuilder).to(VulcanArtifactBuilder);
   });
 
   afterEach(() => {
@@ -127,6 +145,7 @@ describe('Test vulcan server for calling restful APIs', () => {
   let stubTemplateEngine: sinon.StubbedInstance<TemplateEngine>;
   let stubDataSource: sinon.StubbedInstance<DataSource>;
   let stubEvaluator: sinon.StubbedInstance<Evaluator>;
+  let mockPersistentStore: sinon.StubbedInstance<LocalFilePersistentStore>;
   let server: http.Server;
   const fakeSchemas: Array<APISchema> = [
     {
@@ -280,6 +299,7 @@ describe('Test vulcan server for calling restful APIs', () => {
     stubTemplateEngine = sinon.stubInterface<TemplateEngine>();
     stubDataSource = sinon.stubInterface<DataSource>();
     stubEvaluator = sinon.stubInterface<Evaluator>();
+    mockPersistentStore = sinon.stubInterface();
 
     stubTemplateEngine.execute.callsFake(async (_: string, data: any) => {
       return {
@@ -330,6 +350,17 @@ describe('Test vulcan server for calling restful APIs', () => {
         })
     );
     container.bind(TYPES.Evaluator).toConstantValue(stubEvaluator);
+    container
+      .bind(CORE_TYPES.ProjectOptions)
+      .toDynamicValue(() => new ProjectOptions());
+    container
+      .bind(CORE_TYPES.PersistentStore)
+      .toConstantValue(mockPersistentStore);
+    container
+      .bind(CORE_TYPES.Serializer)
+      .toConstantValue(new JSONSerializer({}, ''));
+    container.bind(CORE_TYPES.ArtifactBuilderOptions).toConstantValue({});
+    container.bind(CORE_TYPES.ArtifactBuilder).to(VulcanArtifactBuilder);
   });
 
   afterEach(() => {

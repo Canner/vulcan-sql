@@ -2,6 +2,8 @@ import {
   ConfigurationError,
   getLogger,
   VulcanInternalExtension,
+  TYPES as CORE_TYPES,
+  ICoreOptions,
 } from '@vulcan-sql/core';
 import {
   AuthSourceOptions,
@@ -11,7 +13,9 @@ import {
   Next,
 } from '@vulcan-sql/serve/models';
 import { isBase64 } from 'class-validator';
+import { inject } from 'inversify';
 import { capitalize, chain } from 'lodash';
+import { checkIsPublicEndpoint } from './utils';
 
 const logger = getLogger({ scopeName: 'SERVE' });
 
@@ -21,6 +25,16 @@ const logger = getLogger({ scopeName: 'SERVE' });
 @VulcanInternalExtension('auth-source')
 export class AuthSourceNormalizerMiddleware extends BuiltInMiddleware<AuthSourceOptions> {
   private options = (this.getOptions() as AuthSourceOptions) || {};
+  private projectOptions: Partial<ICoreOptions>;
+
+  constructor(
+    @inject(CORE_TYPES.ExtensionConfig) config: any,
+    @inject(CORE_TYPES.ExtensionName) name: string,
+    @inject(CORE_TYPES.ProjectOptions) projectOptions: Partial<ICoreOptions>
+  ) {
+    super(config, name);
+    this.projectOptions = projectOptions;
+  }
 
   public override async onActivate() {
     if (this.enabled) {
@@ -48,8 +62,8 @@ export class AuthSourceNormalizerMiddleware extends BuiltInMiddleware<AuthSource
       [AuthSourceTypes.PAYLOAD]: context.request.body as Record<string, any>,
     };
 
-    // The /auth/token endpoint not need contains auth credentials
-    if (context.path === '/auth/token') return next();
+    // The endpoint not need contains auth credentials
+    if (checkIsPublicEndpoint(this.projectOptions, context.path)) return next();
 
     try {
       // normalize auth source to header

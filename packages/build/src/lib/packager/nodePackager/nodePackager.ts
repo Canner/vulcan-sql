@@ -3,22 +3,24 @@ import {
   VulcanExtensionId,
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
-import { IBuildOptions } from '../../models/buildOptions';
-import { Packager, PackagerType } from '../../models/extensions';
+import { IBuildOptions } from '../../../models/buildOptions';
+import {
+  Packager,
+  PackagerName,
+  PackagerTarget,
+} from '../../../models/extensions';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 
-export interface NodePackagerConfig {
-  folderPath?: string;
-}
-
-@VulcanExtensionId(PackagerType.Node)
+@VulcanExtensionId(PackagerName.Node)
 @VulcanInternalExtension('node-packager')
-export class NodePackager extends Packager<NodePackagerConfig> {
+export class NodePackager extends Packager {
   private logger = this.getLogger();
+  private readonly target = PackagerTarget.VulcanServer;
 
   public async package(option: IBuildOptions): Promise<void> {
-    const { folderPath = 'dist' } = this.getConfig() || {};
+    const config = this.getConfig() || {};
+    const { folderPath = 'dist' } = config[this.target] || {};
     const distFolder = path.resolve(process.cwd(), folderPath);
     await fs.rm(distFolder, { recursive: true, force: true });
     await fs.mkdir(distFolder, { recursive: true });

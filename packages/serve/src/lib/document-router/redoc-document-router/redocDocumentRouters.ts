@@ -14,6 +14,7 @@ import { DocumentRouter } from '@vulcan-sql/serve/models';
 import * as fs from 'fs';
 import * as path from 'path';
 import { inject } from 'inversify';
+import { getDocUrlPrefix } from '../utils';
 
 @VulcanInternalExtension('redoc')
 @VulcanExtensionId(DocumentRouterType.redoc)
@@ -22,8 +23,7 @@ export class RedocDocumentRouters extends DocumentRouter {
   private docContent = '';
   private projectOption: ProjectOptions;
   // remove leading, trailing slashes
-  private urlPrefix =
-    this.getConfig()?.url?.replace(/\/+$/, '').replace(/^\/+/, '') || 'doc';
+  private urlPrefix = getDocUrlPrefix(this.getConfig()?.url || '');
 
   constructor(
     @inject(CORE_TYPES.ExtensionConfig) config: any,

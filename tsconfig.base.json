@@ -32,6 +32,7 @@
       "@vulcan-sql/build/schema-parser/*": [
         "packages/build/src/lib/schema-parser/*"
       ],
+      "@vulcan-sql/catalog-server/*": ["packages/catalog-server/*"],
       "@vulcan-sql/cli": ["packages/cli/src/index"],
       "@vulcan-sql/core": ["packages/core/src/index"],
       "@vulcan-sql/core/artifact-builder": [
