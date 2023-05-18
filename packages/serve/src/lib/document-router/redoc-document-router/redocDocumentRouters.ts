@@ -53,8 +53,8 @@ export class RedocDocumentRouters extends DocumentRouter {
     // redoc's package.json point to bundles/redoc.lib.js file which we can't use directly
     // we should use the file redoc.standalone.js at the same folder instead.
     const redocPath = path.resolve(
-      require.resolve('redoc'),
-      '..',
+      __dirname,
+      'template',
       'redoc.standalone.js'
     );
     // TODO: it should be redoc.js but extension will be removed by response-format/middleware, wait for fixing
