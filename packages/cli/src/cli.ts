@@ -27,11 +27,22 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
     });
 
   program
+    .command('hello')
+    .argument('[path]', 'folder path to initialize Vulcan project')
+    .description('quick-start to try VulcanSQL')
+    .option('-p --project-name <project-name>', 'specify project name')
+    .action(async (path: string | undefined, options) => {
+      options = options || {};
+      await handleInit(path, {...options, template: 'quick-start-from-binary'});
+    });
+
+  program
     .command('init')
     .argument('[path]', 'folder path to initialize Vulcan project')
     .description('create a new Vulcan project')
     .option('-p --project-name <project-name>', 'specify project name')
     .option('-v --version <version>', 'specify Vulcan version')
+    .option('-t --template <template>', 'specify template to start with')
     .action(async (path: string | undefined, options) => {
       await handleInit(path, options || {});
     });

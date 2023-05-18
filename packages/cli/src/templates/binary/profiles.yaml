@@ -1,0 +1,3 @@
+- name: duckdb
+  type: duckdb
+  allow: "*"

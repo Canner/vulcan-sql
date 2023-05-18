@@ -30,7 +30,7 @@
         "outputPath": "dist/packages/cli",
         "main": "packages/cli/src/index.ts",
         "tsConfig": "packages/cli/tsconfig.lib.json",
-        "assets": ["packages/cli/*.md", "packages/cli/src/schemas/**/*.*"],
+        "assets": ["packages/cli/*.md", "packages/cli/src/templates/**/*.*"],
         "buildableProjectDepsInPackageJsonType": "dependencies"
       },
       "dependsOn": [
