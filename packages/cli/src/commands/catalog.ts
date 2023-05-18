@@ -1,4 +1,4 @@
-import { localModulePath } from '../utils';
+import { modulePath } from '../utils';
 import { createServer } from 'http';
 import { promises as fs } from 'fs';
 import * as path from 'path';
@@ -7,6 +7,7 @@ import * as jsYAML from 'js-yaml';
 export interface CatalogCommandOptions {
   config: string;
   port: number;
+  requireFromLocal?: boolean;
 }
 
 const defaultOptions: CatalogCommandOptions = {
@@ -26,8 +27,8 @@ const serveCatalog = async (options: CatalogCommandOptions) => {
   const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
   // we need to use the "next" module in the same root with our "catalog-server" module
   // or it may fail to get next.config.js variables in the app
-  const next = await import(localModulePath('next'));
-  const dirPath = localModulePath('@vulcan-sql/catalog-server');
+  const next = await import(modulePath('next', options.requireFromLocal));
+  const dirPath = modulePath('@vulcan-sql/catalog-server', options.requireFromLocal);
 
   // provide catalog-server env variables for interacting with vulcan-server host
   process.env['VULCAN_SQL_HOST'] = `http://localhost:${config.port || 3000}`;

@@ -11,8 +11,14 @@ const cliVersion = async () => {
   ).version;
 };
 
-const localModuleVersion = async (moduleName: string): Promise<string> => {
+const moduleVersion = async (moduleName: string, local: boolean): Promise<string> => {
   try {
+    if (!local) {
+      // directly require the package.json file if we don't want to require from local node_modules
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      return require(`${moduleName}/package.json`).version;
+    }
+
     const packageJson = path.resolve(
       process.cwd(),
       'node_modules',
@@ -25,11 +31,11 @@ const localModuleVersion = async (moduleName: string): Promise<string> => {
   }
 };
 
-export const handleVersion = async (): Promise<void> => {
+export const handleVersion = async (requireFromLocal = true): Promise<void> => {
   logger.info(`cli version: ${await cliVersion()}`);
   for (const pkg of ['core', 'build', 'serve']) {
     logger.info(
-      `${pkg} version: ${await localModuleVersion(`@vulcan-sql/${pkg}`)}`
+      `${pkg} version: ${await moduleVersion(`@vulcan-sql/${pkg}`, requireFromLocal)}`
     );
   }
 };
