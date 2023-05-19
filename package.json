@@ -10,6 +10,7 @@
   "dependencies": {
     "@apollo/client": "^3.6.9",
     "@google-cloud/bigquery": "^6.0.3",
+    "@google-cloud/storage": "^6.10.1",
     "@koa/cors": "^3.3.0",
     "antd": "4.22.6",
     "apollo-server-micro": "^3.10.2",
@@ -41,9 +42,9 @@
     "koa2-ratelimit": "^1.1.1",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
-    "ms": "3.0.0-canary.1",
     "micro": "^9.4.1",
     "micro-cors": "^0.1.1",
+    "ms": "3.0.0-canary.1",
     "next": "12.1.5",
     "next-plugin-antd-less": "^1.8.0",
     "nunjucks": "^3.2.3",
