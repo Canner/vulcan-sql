@@ -6,18 +6,18 @@ import OverviewImageUrl from '@site/static/img/vulcan-concept-light.png';
 const featureList = [
   {
     icon: require('@site/static/img/feature-1-icon.svg').default,
-    title: 'Build APIs from SQL',
-    description: 'Use only SQL to build your scalable and flexible APIs.',
+    title: 'Create Robust APIs with SQL',
+    description: 'Harness the simplicity of SQL to develop scalable and flexible APIs, tailor-made for your needs.',
   },
   {
     icon: require('@site/static/img/feature-2-icon.svg').default,
     title: 'Dynamic SQL generation',
     description:
-      'Generate corresponding SQL based on personas and context on the fly.',
+      'Generate context-specific SQL tailored to various personas in real time.',
   },
   {
     icon: require('@site/static/img/feature-3-icon.svg').default,
-    title: 'Scalable and Extendable',
+    title: 'Extendable and Scalable',
     description:
       'Modular and extendable with your custom business logic at scale.',
   },
