@@ -5,22 +5,38 @@ import {
   InternalError,
   RequestParameter,
   VulcanExtensionId,
+  ExportOptions,
+  ConfigurationError,
 } from '@vulcan-sql/core';
 import { Readable } from 'stream';
 import { buildSQL } from './bqlSqlBuilder';
 import { mapFromBQTypeId } from './typeMapper';
 import { BigQuery, Query, Job, BigQueryOptions } from '@google-cloud/bigquery';
 import bigquery from '@google-cloud/bigquery/build/src/types';
-
+import { Storage, StorageOptions } from '@google-cloud/storage';
+import * as fs from 'fs';
+import * as path from 'path';
+export interface BQCache {
+  bucketName: string;
+}
 export interface BQOptions extends BigQueryOptions {
   chunkSize?: number;
   location?: string;
+  cache?: BQCache;
 }
 
 @VulcanExtensionId('bq')
 export class BQDataSource extends DataSource<any, BQOptions> {
   private logger = this.getLogger();
-  private bqMapping = new Map<string, { bq: BigQuery; options?: BQOptions }>();
+  private bqMapping = new Map<
+    string,
+    {
+      bigQuery: BigQuery;
+      storage: Storage;
+      options?: BQOptions;
+      cache?: BQCache;
+    }
+  >();
 
   public override async onActivate() {
     const profiles = this.getProfiles().values();
@@ -30,15 +46,66 @@ export class BQDataSource extends DataSource<any, BQOptions> {
       );
       const bigqueryClient = new BigQuery(profile.connection);
       // https://cloud.google.com/nodejs/docs/reference/bigquery/latest
-
+      const storage = new Storage(profile.connection as StorageOptions);
       this.bqMapping.set(profile.name, {
-        bq: bigqueryClient,
+        bigQuery: bigqueryClient,
+        storage: storage,
         options: profile.connection,
+        cache: profile.cache as BQCache,
       });
 
       // Testing connection
       await bigqueryClient.query('SELECT 1;');
       this.logger.debug(`Profile ${profile.name} initialized`);
+    }
+  }
+
+  public override async export({
+    sql: statement,
+    profileName,
+    directory,
+  }: ExportOptions): Promise<void> {
+    // Use "EXPORT DATA" statement to store query result in the GCS bucket {specified in profile.cache.bucketName} temporarily, and will remove the stored data after download.
+    // EXPORT DATA ref: https://cloud.google.com/bigquery/docs/reference/standard-sql/other-statements#export_data_statement
+    this.checkProfileExist(profileName);
+    if (!fs.existsSync(directory)) {
+      throw new Error(`Directory "${directory}" does not exist`);
+    }
+
+    const { bigQuery, storage, options, cache } =
+      this.bqMapping.get(profileName)!;
+    const bucketName = cache?.bucketName;
+    if (!bucketName)
+      throw new ConfigurationError(
+        `cache.bucketName in profile "${profileName}" is required when using cache feature.`
+      );
+    // Use the directory to avoid filename collision,
+    // The wildcard indicates the partition,
+    // ref: https://cloud.google.com/bigquery/docs/reference/standard-sql/other-statements#export_option_list
+    const uri = `gs://${bucketName}/${directory}/part*.parquet`;
+    const queryOptions = {
+      query: `EXPORT DATA OPTIONS( uri="${uri}", format='PARQUET') AS ${statement}`,
+      location: options?.location || 'US',
+    };
+    try {
+      const [job] = await bigQuery.createQueryJob(queryOptions);
+      await this.runJobAndWait(job);
+      const getFilesResponse = await storage.bucket(bucketName).getFiles({
+        prefix: directory,
+      });
+      await Promise.all(
+        getFilesResponse[0].map(async (file) => {
+          const fileName = `${file.name.split('/').pop()}`;
+          await file.download({
+            destination: path.resolve(process.cwd(), directory, fileName),
+          });
+          // delete file from GCS bucket
+          await file.delete();
+        })
+      );
+    } catch (e: any) {
+      this.logger.debug(`Error when exporting parquet "${directory}"`, e);
+      throw e;
     }
   }
 
@@ -48,10 +115,8 @@ export class BQDataSource extends DataSource<any, BQOptions> {
     profileName,
     operations,
   }: ExecuteOptions): Promise<DataResult> {
-    if (!this.bqMapping.has(profileName)) {
-      throw new InternalError(`Profile instance ${profileName} not found`);
-    }
-    const { bq: client, options } = this.bqMapping.get(profileName)!;
+    this.checkProfileExist(profileName);
+    const { bigQuery, options } = this.bqMapping.get(profileName)!;
 
     const params: Record<string, any> = {};
     bindParams.forEach((value, key) => {
@@ -67,7 +132,7 @@ export class BQDataSource extends DataSource<any, BQOptions> {
         maxResults: options?.chunkSize || 100,
       };
 
-      const [job] = await client.createQueryJob(queryOptions);
+      const [job] = await bigQuery.createQueryJob(queryOptions);
 
       return await this.getResultFromQueryJob(job, options);
     } catch (e: any) {
@@ -155,5 +220,19 @@ export class BQDataSource extends DataSource<any, BQOptions> {
         }
       );
     });
+  }
+
+  private checkProfileExist(profileName: string): void {
+    if (!this.bqMapping.has(profileName)) {
+      throw new InternalError(`Profile instance ${profileName} not found`);
+    }
+  }
+
+  private async runJobAndWait(job: any): Promise<void> {
+    // Wait for the job to complete
+    let [jobResult] = await job.getMetadata();
+    while (jobResult.status.state !== 'DONE') {
+      [jobResult] = await job.getMetadata();
+    }
   }
 }

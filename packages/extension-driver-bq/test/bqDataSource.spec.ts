@@ -1,9 +1,17 @@
 import { BQDataSource } from '../src';
 import { BQflakeServer } from './bqServer';
-import { streamToArray } from '@vulcan-sql/core';
+import { ExportOptions, streamToArray } from '@vulcan-sql/core';
+import * as fs from 'fs';
 
 const bigQuery = new BQflakeServer();
 let dataSource: BQDataSource;
+
+const tmpDir = 'tmp';
+afterEach(async () => {
+  if (fs.existsSync(tmpDir)) {
+    fs.rmdirSync(tmpDir, { recursive: true });
+  }
+});
 
 it('Data source should be activate without any error when all profiles are valid', async () => {
   // Arrange
@@ -126,3 +134,60 @@ it('Data source should return correct column types', async () => {
   expect(column[0]).toEqual({ name: 'a', type: 'number' });
   expect(column[1]).toEqual({ name: 'b', type: 'boolean' });
 }, 30000);
+
+it('Data source should export data successfully if profile is valid', async () => {
+  // Arrange
+  dataSource = new BQDataSource({}, '', [bigQuery.getProfile('profile1')]);
+  await dataSource.activate();
+  // Act, Assert
+  if (!fs.existsSync(tmpDir)) {
+    fs.mkdirSync(tmpDir, { recursive: true });
+  }
+  await expect(
+    dataSource.export({
+      sql: `SELECT num FROM UNNEST(GENERATE_ARRAY(1, 5)) AS num`,
+      directory: 'tmp',
+      profileName: 'profile1',
+    } as ExportOptions)
+  ).resolves.not.toThrow();
+  const files = fs.readdirSync(tmpDir);
+  expect(files.length).toBe(1);
+  files.forEach((file) => {
+    expect(file).toMatch(/.parquet$/);
+  });
+}, 50000);
+
+it('Data source should throw error if not directory', async () => {
+  // Arrange
+  dataSource = new BQDataSource({}, '', [bigQuery.getProfile('profile1')]);
+  await dataSource.activate();
+  // Act, Assert
+  await expect(
+    dataSource.export({
+      sql: `SOME STATEMENT`,
+      directory: 'dir_not_exist',
+      profileName: 'profile1',
+    } as ExportOptions)
+  ).rejects.toThrow('Directory "dir_not_exist" does not exist');
+}, 50000);
+
+it('Data source should throw error if bucketName is not provided', async () => {
+  // Arrange
+  const profile = bigQuery.getProfile('profile1');
+  profile.cache.bucketName = '';
+  dataSource = new BQDataSource({}, '', [profile]);
+  await dataSource.activate();
+  if (!fs.existsSync(tmpDir)) {
+    fs.mkdirSync(tmpDir, { recursive: true });
+  }
+  // Act, Assert
+  await expect(
+    dataSource.export({
+      sql: `SOME STATEMENT`,
+      directory: 'tmp',
+      profileName: 'profile1',
+    } as ExportOptions)
+  ).rejects.toThrow(
+    'cache.bucketName in profile "profile1" is required when using cache feature.'
+  );
+}, 50000);

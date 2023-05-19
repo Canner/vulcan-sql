@@ -36,6 +36,9 @@
     projectId: 'your-project-id'
     # Full path to the a .json, .pem, or .p12 key downloaded from the Google Developers Console. If you provide a path to a JSON file, the `projectId` option above is not necessary. NOTE: .pem and .p12 require you to specify the `email` option as well.
     keyFilename: '/path/to/keyfile.json'
+  cache:
+    # The GCS bucket name for vulcan to store query result that will be used in cache feature
+    bucketName: 'your-bucket-name'
 ```
 
 ## Testing
@@ -52,3 +55,4 @@ To run test, the following environment variables are required:
 - BQ_PROJECT_ID
 - BQ_CLIENT_EMAIL
 - BQ_PRIVATE_KEY
+- GCS_BUCKET_NAME

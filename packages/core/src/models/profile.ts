@@ -25,6 +25,8 @@ export interface Profile<C = Record<string, any>> {
   type: string;
   /** Connection info, which depends on drivers */
   connection?: C;
+  /** Cache Layer setting parameters, which depends on drivers */
+  cache?: C;
   /** What users have access to this profile */
   allow: ProfileAllowConstraints;
 }

@@ -2,7 +2,10 @@
   type: db1-type
   connection:
     foo: bar
+  cache:
+    foo: bar
 - name: db2
   type: db2-type
   connection:
     foo: bar
+  
