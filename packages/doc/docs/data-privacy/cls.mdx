@@ -1,0 +1,20 @@
+# Column Level Security
+Column Level Security (CLS) is a data security measure that provides fine-grained control over access to specific columns of a database table. With CLS, database administrators can restrict access to sensitive data by allowing only authorized users or roles to access specific columns. This helps to protect against data leaks or unauthorized access to sensitive information.
+
+In the VulcanSQL system, CLS can be achieved by utilizing if-else conditions in conjunction with user attributes, which are accessible through `{{ context.user.attr }}` in VulcanSQL. For instance, to limit access to the salary column in the employees table, you may use the following query:
+
+```sql
+SELECT
+  employee_id,
+  first_name,
+  last_name,
+  {% if context.user.attr.department = 'intern' %}
+    NULL AS salary
+  {% else %}
+    salary
+  {% endif %}
+FROM
+  employees;
+```
+Additionally, you can refer to the [Dynamic Data Masking](./data-masking) section to learn how to effectively mask sensitive information.
+

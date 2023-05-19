@@ -2,12 +2,13 @@ import * as jsYAML from 'js-yaml';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import * as ora from 'ora';
-import { localModulePath } from '../utils';
+import { modulePath } from '../utils';
 
 export interface PackageCommandOptions {
   config: string;
   output: string;
   target: string;
+  requireFromLocal?: boolean;
 }
 
 const defaultOptions: PackageCommandOptions = {
@@ -21,7 +22,7 @@ export const packageVulcan = async (options: PackageCommandOptions) => {
   const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
 
   // Import dependencies. We use dynamic import here to import dependencies at runtime.
-  const { VulcanBuilder } = await import(localModulePath('@vulcan-sql/build'));
+  const { VulcanBuilder } = await import(modulePath('@vulcan-sql/build', options.requireFromLocal));
 
   // Build project
   const spinner = ora('Packaging project...').start();

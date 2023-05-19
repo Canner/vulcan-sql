@@ -1,0 +1,51 @@
+# Caching Datasets
+
+The caching layer feature in VulcanSQL allows you to leverage caching to improve the performance and efficiency of your API queries. With the `{% cache %}` tag, you can query results directly from the cache layer storage, reducing the need for repeated queries to the data source. Let's explore how to use this feature effectively.
+
+## Caching with DuckDB
+To provide efficient caching functionality, VulcanSQL utilizes [DuckDB](https://duckdb.org/) as the underlying storage engine. This ensures high-performance caching and improves the overall query execution speed.
+
+:::info
+Please note that in order to use the caching layer feature, you need to have the [DuckDB extension](../connect/duckdb) installed. If you are using VulcanSQL CLI binary, the DuckDB extension is already pre-bundled, so no additional installation is required. However, if you are using VulcanSQL in a NodeJS project, make sure to install the DuckDB extension separately to enable the caching functionality.
+:::
+
+## Caching Query Results
+To utilize the caching layer, you can enclose your SQL query inside the `{% cache %}` and `{% endcache %}` tags. For example:
+
+```sql title="dept.sql"
+{% cache %}
+SELECT * FROM cache_departments
+WHERE "name" = {{ context.params.name }};
+{% endcache %}
+```
+
+This tag enables the query to fetch the result from the cache layer storage. You can define which queries are preloaded into the cache layer by specifying cache settings in the configuration file. Here's an example configuration:
+
+```yaml title="dept.yaml"
+urlPath: /departments
+profile: pg
+// highlight-start
+cache:
+  - cacheTableName: 'cache_departments' # The name of the table in the cache layer storage
+    sql: 'SELECT * FROM departments' # The SQL query to preload into the cache layer
+    profile: pg # The data source profile to use for the SQL query
+// highlight-end
+```
+
+In this configuration, the `cache_departments` table will be utilized within the `{% cache %}` tag.
+
+
+## Reusing Cached Results
+VulcanSQL provides the ability to keep the query result from the cache layer in a variable, which can be reused in subsequent queries. For example:
+
+```sql title="dept.sql"
+-- The cached result is stored in the variable named "employee"
+{% cache employee %}
+SELECT * FROM cache_employees WHERE "id" = {{ context.params.id }};
+{% endcache %}
+
+-- The cached result can be reused in subsequent queries by referencing the variable name "employee"
+SELECT * FROM departments WHERE "employee_id" = {{ employee.value()[0].id }};
+```
+
+By assigning the result of the `{% cache %}` tag to the `employee` variable, you can access its value in subsequent queries. This allows you to build complex queries by utilizing the cached results. Note that when the `{% cache %}` tag does not have a variable assigned, it retrieves the result directly from the cache builder.

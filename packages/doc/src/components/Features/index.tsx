@@ -54,17 +54,17 @@ options:
 
 const FeatureList: FeatureData[] = [
   {
-    title: 'Parameterized your SQL',
+    title: 'Parameterized Your SQL',
     schematic: <img src={'./img/build-api-with-sql.png'} />,
     description: (
       <span className={styles.cardDescription}>
-        Build APIs with just parameterized your SQL and with extendability.  Learn about{' '}
-        <Link to="docs/api-building/configuration">building API</Link>.
+        Build APIs with parameterized SQL for seamless extendability.
+        Discover more about <Link to="docs/get-started/first-api">API creation</Link>.
       </span>
     ),
   },
   {
-    title: 'Comprehensive API methods',
+    title: 'Comprehensive API Methods',
     schematic: (
       <div className={styles.bestPracticesCodeContainer}>
         <Tabs
@@ -93,44 +93,43 @@ const FeatureList: FeatureData[] = [
     ),
     description: (
       <span className={styles.cardDescription}>
-        Included{' '}
-        <Link to="docs/api-building/sql-syntax#dynamic-parameter">
-          dynamic parameters
+        Our built-in methods include{' '}
+        <Link to="docs/develop/dynamic-param">
+          Dynamic Parameters
         </Link>
-        , <Link to="docs/api-building/api-validation">validation</Link>,{' '}
-        <Link to="docs/api-building/error-response">error response</Link>,{' '}
-        <Link to="docs/api-building/response-format">response format</Link>,
+        , <Link to="docs/develop/validator">API Validation</Link>,{' '}
+        <Link to="docs/develop/error">Error Handling</Link>,{' '}
+        <Link to="docs/api-plugin/format">Various Response Formats</Link>,
         etc.
       </span>
     ),
   },
   {
-    title: 'Access control in SQL',
+    title: 'Access Control in SQL',
     schematic: <CodeBlock language="sql">{AccessControlCode}</CodeBlock>,
     description: (
       <span className={styles.cardDescription}>
         SQL knows who you are and what you can retrieve. Learn about{' '}
-        <Link to="docs/api-building/access-control">access control</Link>.
+        <Link to="docs/data-privacy/overview">Data Privacy</Link>.
       </span>
     ),
   },
   {
-    title: 'API docs & catalog',
+    title: 'Automated API Docs & Catalog',
     schematic: <img src={'./img/catalog-api-list.png'} />,
     description: (
       <span className={styles.cardDescription}>
-        Automatically build complete API documentation(OpenAPI) and catalog for data
-        consumers and web engineer. Learn about{' '}
-        <Link to="docs/api-building/api-document">API documentation</Link>.
+        Generate complete API documentation (OpenAPI) and catalogs automatically, providing a valuable resource for data consumers and web engineers alike. Learn about{' '}
+        <Link to="docs/develop/api-doc">API documentation</Link>.
       </span>
     ),
   },
   {
-    title: 'Connect from business applications',
+    title: 'Connect from Business Applications',
     schematic: <img src={'./img/catalog-connect-page.png'} />,
     description: (
       <span className={styles.cardDescription}>
-        Preview data and self-serve interface to read from your own business applications or export into files.
+        Preview data through our user-friendly interface, which allows you to easily read from your own business applications or export data into files.
       </span>
     ),
   },
@@ -140,7 +139,7 @@ export default function HomepageFeatures(): JSX.Element {
   return (
     <section className={styles.section}>
       <h1 className={`text--center ${styles.title}`}>What is VulcanSQL?</h1>
-      <h3 className={`text--center ${styles.cardDescription}`} style={{maxWidth: '900px', marginBottom: '100px'}}>VulcanSQL is an Analytics API generator that helps data engineers to build scalable analytics APIs using only SQL without writing any backend code.</h3>
+      <h3 className={`text--center ${styles.cardDescription}`} style={{maxWidth: '900px', marginBottom: '100px'}}>VulcanSQL is an Analytics API framework that helps data analysts to build scalable analytics APIs using only SQL without writing any backend experience.</h3>
       <FeatureCard featureList={FeatureList} />
     </section>
   );

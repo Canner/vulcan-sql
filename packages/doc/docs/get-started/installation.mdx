@@ -1,0 +1,58 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Installation
+
+To begin using VulcanSQL, you first need to install the VulcanSQL CLI. The VulcanSQL CLI is a command-line tool that assists in initializing a VulcanSQL project, building your analytics API server, and starting the server.
+
+## Install From Binary
+We provide pre-built binaries for Linux, macOS, and Windows. The binary includes all dependencies, so you don't need to install any additional dependencies.
+
+You can find all versions on [GitHub Releases](https://github.com/Canner/vulcan-sql/releases)
+
+<Tabs groupId="install-os">
+<TabItem value="osx" label="MacOS">
+
+Let's go ahead and grab the newest version of VulcanSQL CLI from this link: [vulcan](https://d3jr9lxbk67t5c.cloudfront.net/bin/vulcan.osx.0.4.0.tar.gz).
+Once the download is complete, you'll need to extract the file and move it to `/usr/local/bin`:
+
+```bash
+tar zxvf vulcan.osx.0.4.0.tar.gz
+mv vulcan /usr/local/bin
+```
+
+</TabItem>
+<TabItem value="linux" label="Linux">
+
+Let's go ahead and grab the newest version of VulcanSQL CLI from this link: [vulcan](https://d3jr9lxbk67t5c.cloudfront.net/bin/vulcan.linux.0.4.0.tar.gz).
+Once the download is complete, you'll need to extract the file and move it to `/usr/local/bin`:
+
+```bash
+tar zxvf vulcan.linux.0.4.0.tar.gz
+mv vulcan /usr/local/bin
+```
+
+</TabItem>
+
+<TabItem value="win" label="Windows">
+
+1. **Downloading the File**: Download the latest version of VulcanSQL CLI from: [vulcan.exe](https://d3jr9lxbk67t5c.cloudfront.net/bin/vulcan.win.0.4.0.zip).
+1. **Extracting the File**: Once the download is complete, locate the zip folder in your 'Downloads' directory. Extract the zip folder.
+1. **Moving the `vulcan.exe` File**: Inside the extracted folder, find the `vulcan.exe` file. Cut or copy this file and navigate to the location where you want to store it. This could be a specific directory or your desktop for easy access.
+
+</TabItem>
+</Tabs>
+
+## Install from NPM
+### Preparing the installation
+Before installing the VulcanSQL CLI from NPM, make sure the following requirements are installed on your computer:
+* [Node.js](https://nodejs.org): Only versions above v16 are supported.
+* Your preferred Node.js package manager: [NPM](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/)
+
+### NPM Install
+```bash
+npm i -g @vulcan-sql/cli
+```
+
+## Next Step
+After installing VulcanSQL CLI, you can start initializing your project. Head to [Create Your First Analytics API](./first-api) to learn how to create your first API.

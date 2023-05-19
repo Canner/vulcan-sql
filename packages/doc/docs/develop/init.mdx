@@ -1,0 +1,46 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Initializing Your Project
+
+Starting a new project with VulcanSQL is simple and straightforward. In this section, we will guide you through the process of initializing and setting up your VulcanSQL project to help you build your API efficiently.
+
+Follow these steps to initialize your project:
+
+1. Follow the [installation guide](../get-started/installation) to install VulcanSQL.
+2. Create a new project: Once the CLI tool is installed, you can create a new VulcanSQL project using the following command:
+
+  The guide will be different depending on your VulcanSQL CLI installation method, please select the correct one:
+    * If you installed VulcanSQL CLI [from NPM](../get-started/installation#install-from-npm), please select `NodeJS Project`
+    * If you installed VulcanSQL CLI [from binary](../get-started/installation#install-from-binary), please select `Binary`
+
+  <Tabs groupId="install-method">
+  <TabItem value="binary" label="Binary">
+
+  ```bash
+  vulcan init my-api-project --template=binary
+  ```
+
+  </TabItem>
+  <TabItem value="nodejs" label="NodeJS Project">
+
+  ```bash
+  vulcan init my-api-project --template=nodejs
+  ```
+
+  </TabItem>
+  </Tabs>
+
+  Replace `my-api-project` with the name of your project. This command will create a new directory with the given name and set up the necessary files and folders for your API project.
+3. Change directory to the project folder
+  ```bash
+  cd my-api-project
+  ```
+4. Follow the connection guide to [connect to your database](../connect/overview).
+5. Create SQL templates: In the `/sql` folder, you can create SQL template files (.sql files) and a configuration file (.yaml) that define your API endpoints, request parameters, response properties. These templates serve as the building blocks for your API.
+
+   Follow other guides in this section to learn more about creating SQL templates. You can start from the [Dynamic Parameter](./dynamic-param) guide to learn how to create a simple SQL template.
+6. Start the VulcanSQL server: Once you have configured your project and created the necessary SQL templates, you can start the VulcanSQL server using the following command:
+  ```bash
+  vulcan start --watch
+  ```

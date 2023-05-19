@@ -1,4 +1,5 @@
-import { program } from '../src/cli';
+import { program } from 'commander';
+import { initializeProgram } from '../src/cli';
 import { promises as fs } from 'fs';
 import * as jsYAML from 'js-yaml';
 import * as path from 'path';
@@ -12,6 +13,8 @@ const testingServerPort = faker.datatype.number({ min: 20000, max: 30000 });
 
 const workspaceRoot = path.resolve(__dirname, '..', '..', '..');
 const projectRoot = path.resolve(workspaceRoot, projectName);
+
+initializeProgram(program);
 
 beforeAll(async () => {
   await fs.rm(projectRoot, { recursive: true, force: true });

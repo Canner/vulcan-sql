@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-
+import { program } from 'commander';
 import { logger } from './utils';
-import { program } from './cli';
+import { initializeProgram } from './cli';
 
 (async () => {
   try {
+    initializeProgram(program);
     await program.parseAsync();
   } catch (e: any) {
     // Ignore error with exit code = 0, e.g. commander.helpDisplayed error

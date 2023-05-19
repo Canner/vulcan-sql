@@ -1,0 +1,18 @@
+# Access HTTP Request Properties
+You can effortlessly access data from the HTTP request or custom headers as query conditions using the `{{ context.req.xxx }}` syntax in your SQL file.
+
+Here's an example:
+```sql
+SELECT
+  *
+FROM
+  "artists"
+WHERE
+  {{ context.req.method }} = 'GET'
+AND
+  {{ context.req.header.customParameters }} = 'custom parameters'
+```
+
+In this example, the query checks if the request method is 'GET' and if the custom header 'customParameters' has the expected value. You can use this approach to access various request properties and integrate them into your query conditions.
+
+For more information on available parameters, please refer to: [Koa.js Request](https://koajs.com/#request)

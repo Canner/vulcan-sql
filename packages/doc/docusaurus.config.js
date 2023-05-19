@@ -60,7 +60,7 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: 'quickstart',
+            docId: 'intro',
             position: 'left',
             label: 'Docs',
           },
@@ -88,20 +88,16 @@ const config = {
             title: 'Documentation',
             items: [
               {
-                label: 'Quickstart',
-                to: '/docs/quickstart',
+                label: 'Get Started',
+                to: '/docs/intro',
               },
               {
-                label: 'Installation',
-                to: '/docs/installation',
+                label: 'Analytics API',
+                to: '/docs/connect/overview',
               },
               {
-                label: 'Build VulcanSQL projects',
-                to: '/docs/api-building/configuration',
-              },
-              {
-                label: 'Connectors',
-                to: '/docs/connectors',
+                label: 'API Plugins',
+                to: '/docs/api-plugin/overview',
               },
             ],
           },

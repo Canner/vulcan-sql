@@ -1,0 +1,45 @@
+# Authorization
+In VulcanSQL, we manage user access to specific data sources by applying authorization policies to individual profiles associated with each data source. We use an attribute-based access control (ABAC) approach to control access based on user attributes provided by `Authenticator`. This allows for a clear and flexible way to control which users can access the data sources.
+
+## Defining Policies For Each Data Source
+The configurations for each data source are defined in the `profiles.yaml` file. To configure authorization policies for each data source, you will need to set the `allow` property for each profile. The `allow` property can be a string, an array of strings, or an array of constraints. A constraint can have the following structure:
+
+| Property   | Type           | Description                                                                                       |
+|------------|----------------|---------------------------------------------------------------------------------------------------|
+| name       | string         | Set a name constraint, with wildcard support. For example, `"admin"`, `"admin*"`, etc.                |
+| attributes | Map<string, any> | Set an attributes constraint, with wildcard support for both keys and values. For example, `{"group": "admin*", "enabled": true}`. |
+
+
+### Example 1: Allow everyone to access the data source
+```yaml title="profiles.yaml"
+- name: pg
+  type: pg
+  allow: '*'
+```
+
+### Example 2: Allow only users whose names match the pattern "admin*"
+```yaml title="profiles.yaml"
+- name: pg
+  type: pg
+  allow: 'admin*'
+```
+
+### Example 3: Allow only users who have the attribute "group" set to "admin"
+```yaml title="profiles.yaml"
+- name: pg
+  type: pg
+  allow:
+    - attributes:
+        group: admin
+```
+
+### Example 4: Allow only users who have the attribute "group" set to "admin" and the attribute "enabled" set to true
+```yaml title="profiles.yaml"
+- name: pg
+  type: pg
+  allow:
+    - name: 'admin*'
+      attributes:
+        group: 'admin*'
+        enabled: 'true'
+```

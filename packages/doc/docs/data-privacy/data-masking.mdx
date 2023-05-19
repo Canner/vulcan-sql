@@ -1,0 +1,39 @@
+# Dynamic Data Masking
+Dynamic Data Masking is a [Column-level Security](./cls) feature that uses `masking` tag to selectively mask plain-text data in a query result set. It can be used to hide sensitive data in the result set of a query over designated fields, while the data in the database is not changed.
+
+## Using `masking` tag
+You can use the `masking` tag with `{% ... %}`.
+
+```sql
+{% masking <column-name> <masking-function> %}
+```
+
+  Where:
+* `<column-name>` is the name of the column to mask.
+* `<masking-function>` is the masking function to use. Currently, VulcanSQL supports `partial` masking function.
+
+## Masking Data With `partial` Function
+
+```js
+partial(prefixTotal, padding, suffixTotal);
+```
+
+* `prefixTotal` is the number of characters to display at the beginning of the string.
+* `padding` is the custom string to use for masking.
+* `suffixTotal` is the number of characters to display at the end of the string.
+
+Here is an example of how to use the `partial` function with the `masking` tag. Assuming we have a `users` table with an `id` column, and we want to partially mask the first two and last two characters of each `id` value:
+
+```sql
+SELECT
+  {% masking id partial(2, 'xxxxxxx', 2) %} as id,
+  name
+FROM users;
+```
+
+This will return a result where the first two and last two characters of each `id` value are replaced with `x`:
+
+| id          | name    |
+| ----------- | ------- |
+| ABxxxxxxxCD | Ivan    |
+| EFxxxxxxxGH | William |

@@ -1,4 +1,5 @@
-import { program } from '../src/cli';
+import { program } from 'commander';
+import { initializeProgram } from '../src/cli';
 import { promises as fs } from 'fs';
 import * as jsYAML from 'js-yaml';
 import * as path from 'path';
@@ -9,6 +10,8 @@ const testingVersion = '0.1.2-dev.20220913.0';
 
 const workspaceRoot = path.resolve(__dirname, '..', '..', '..');
 const projectRoot = path.resolve(workspaceRoot, `${projectName}-with-path`);
+
+initializeProgram(program);
 
 beforeAll(async () => {
   await fs.rm(projectRoot, { recursive: true, force: true });

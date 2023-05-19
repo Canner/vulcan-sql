@@ -7,10 +7,12 @@ import { exec } from 'child_process';
 import * as nunjucks from 'nunjucks';
 import * as glob from 'glob';
 import { logger } from '../utils';
+import { initTemplates } from '../templates';
 
-interface InitCommandOptions {
+export interface InitCommandOptions {
   projectName: string;
   version: string;
+  template?: string;
 }
 
 const validators: Record<
@@ -45,39 +47,49 @@ export const createProject = async (
   await fs.mkdir(projectPath, { recursive: true });
   const existedFiles = await fs.readdir(projectPath);
   if (existedFiles.length > 0)
-    throw new Error(`Path ${projectPath} is not empty`);
+    throw new Error(`The directory ${projectPath} is not empty.`);
 
-  const installSpinner = ora('Creating project...').start();
+  const template = options.template || 'default';
+  // based on template, we can have different init process
+  const initTasks = initTemplates[template];
+  if (!initTasks) {
+    throw new Error(`Template ${template} is not supported.`);
+  }
+
+  const installSpinner = ora('Initializing project...').start();
   try {
-    await fs.writeFile(
-      path.resolve(projectPath, 'package.json'),
-      JSON.stringify(
-        {
-          name: options.projectName,
-          dependencies: {
-            '@vulcan-sql/core': options.version,
-            '@vulcan-sql/serve': options.version,
-          },
-          devDependencies: {
-            '@vulcan-sql/build': options.version,
-          },
-        },
-        null,
-        2
-      ),
-      'utf-8'
-    );
-    installSpinner.succeed('Project has been created.');
-    installSpinner.start('Installing dependencies...');
-    await execAndWait(`npm install --silent`, projectPath);
-    installSpinner.succeed(`Dependencies have been installed.`);
-    installSpinner.start('Writing initial content...');
-    await addInitFiles(projectPath, options);
-    installSpinner.succeed('Initial done.');
-
-    logger.info(
-      `Project has been initialized. Set the profiles and run "cd ${projectPath} && vulcan start" to start the server.`
-    );
+    for (const task of initTasks) {
+      switch (task.type) {
+        case 'file':
+          installSpinner.start(task.startMessage);
+          await fs.writeFile(
+            path.resolve(projectPath, task.filepath),
+            task.content(options),
+            'utf-8'
+          );
+          installSpinner.succeed(task.successMessage);
+          break;
+        case 'exec':
+          installSpinner.start(task.startMessage);
+          await execAndWait(task.command, projectPath);
+          installSpinner.succeed(task.successMessage);
+          break;
+        case 'copyFiles':
+          installSpinner.start(task.startMessage);
+          await copyFiles(
+            projectPath,
+            task.templateName,
+            options
+          );
+          installSpinner.succeed(task.successMessage);
+          break;
+        case 'info':
+          logger.info(task.message(projectPath));
+          break;
+        default:
+          throw new Error(`Task type ${task.type} is not supported.`);
+      }
+    }
   } catch (e) {
     installSpinner.fail();
     throw e;
@@ -97,16 +109,22 @@ export const execAndWait = async (command: string, cwd: string) => {
   });
 };
 
-const addInitFiles = async (
+const copyFiles = async (
   projectPath: string,
+  templateName: string,
   options: InitCommandOptions
 ) => {
+  if (!templateName) {
+    throw new Error(`Template name is required.`);
+  }
+
   const files = await listFiles(
-    path.resolve(__dirname, '..', 'schemas', 'init', '**/*.*')
+    path.resolve(__dirname, '..', 'templates', templateName, '**/*.*')
   );
+
   for (const file of files) {
     const relativePath = path.relative(
-      path.resolve(__dirname, '..', 'schemas', 'init'),
+      path.resolve(__dirname, '..', 'templates', templateName),
       file
     );
     let templateContent = await fs.readFile(file, 'utf8');

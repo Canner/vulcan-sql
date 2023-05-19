@@ -1,0 +1,26 @@
+# CORS (Cross-Origin Resource Sharing)
+CORS, or Cross-Origin Resource Sharing, is an important web security feature that allows servers to control which domains can access their resources. It mitigates potential security risks by restricting unauthorized access to server resources.
+
+## Usage
+```yaml title="vulcan.yaml"
+cors:
+  enabled: true
+  options:
+    origin: 'http://google.com'
+    allowMethods: 'GET,HEAD,PUT'
+```
+
+## Settings
+| Setting | Default | Type    | Description                          |
+|---------|---------|---------|--------------------------------------|
+| enabled | true    | boolean | Enable or disable the `cors` service |
+
+## Options
+| Option      | Default                         | Type                    | Description                                           |
+|-------------|---------------------------------|-------------------------|-------------------------------------------------------|
+| origin      | {request Origin header}         | string or Function(ctx) | Origin for `Access-Control-Allow-Origin`              |
+| allowMethods | 'GET,HEAD,PUT,POST,DELETE,PATCH' | string            | Allowed methods in the string: `GET`, `HEAD`, `PUT`, `POST`, `DELETE`, and `PATCH` |
+
+VulcanSQL uses [`@koa/cors`](https://github.com/koajs/cors) to handle CORS. While it comes with reasonable default settings, you can customize the settings in `vulcan.yaml` to better suit your needs.
+
+You may refer to the [@koa/cors](https://github.com/koajs/cors#corsoptions) documentation.

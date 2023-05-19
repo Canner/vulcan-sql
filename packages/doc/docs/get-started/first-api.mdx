@@ -1,0 +1,132 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Create Your First Analytics API
+In this tutorial, you will learn how to create an analytics API server with SQL using VulcanSQL. Make sure you have followed the [installation guide](./installation) to install the VulcanSQL CLI before proceeding.
+
+## Step 1: Initializing Your Quick-Start Project
+
+The following steps will differ depending on your installation method:
+* If you installed VulcanSQL CLI [from NPM](./installation#install-from-npm), select `NodeJS Project`
+* If you installed VulcanSQL CLI [from a binary](./installation#install-from-binary), select `Binary`
+
+
+  <Tabs groupId="install-method">
+  <TabItem value="binary" label="Binary">
+
+  ```bash
+  vulcan hello
+  ```
+
+  </TabItem>
+  <TabItem value="nodejs" label="NodeJS Project">
+
+  ```bash
+  vulcan init --template=quick-start-from-nodejs
+  ```
+
+  </TabItem>
+  </Tabs>
+
+  Once the quick-start project is initialized, start the server with the following command:
+
+  ```bash
+  vulcan start --watch
+  ```
+
+  In this quick-start project, we query the flights data from a CSV file with DuckDB. To test the API endpoint, try the following query in your browser or with curl:
+
+  ```bash
+  curl http://localhost:3000/api/user
+  ```
+
+  You should see the response:
+
+  ```json
+  [
+    {
+      "FlightDate": "1988-01-01T00:00:00.000Z",
+      "UniqueCarrier": "AA",
+      "OriginCityName": "New York, NY",
+      "DestCityName": "Los Angeles, CA"
+    },
+    {
+      "FlightDate": "1988-01-02T00:00:00.000Z",
+      "UniqueCarrier": "AA",
+      "OriginCityName": "New York, NY",
+      "DestCityName": "Los Angeles, CA"
+    },
+    {
+      "FlightDate": "1988-01-03T00:00:00.000Z",
+      "UniqueCarrier": "BB",
+      "OriginCityName": "New York, NY",
+      "DestCityName": "Taipei, TW"
+    },
+    {
+      "FlightDate": "1988-01-04T00:00:00.000Z",
+      "UniqueCarrier": "CC",
+      "OriginCityName": "New York, NY",
+      "DestCityName": "Taipei, TW"
+    },
+    {
+      "FlightDate": "1988-01-04T00:00:00.000Z",
+      "UniqueCarrier": "CC",
+      "OriginCityName": "Los Angeles, CA",
+      "DestCityName": "Taipei, TW"
+    }
+  ]
+  ```
+
+You can also open the API documentation in your browser by going to [http://localhost:3000/doc](http://localhost:3000/doc)
+
+![the screenshot of VulcanSQL API document](../img/doc-screenshot.png)
+
+## Step 2: Creating a New API Endpoint
+In this step, we will create a new API endpoint to query flights with a specific `UniqueCarrier`. Create a new file `sqls/flight.sql` with the following content:
+
+```sql title="sqls/flight.sql"
+SELECT * FROM read_csv_auto('flights.csv')
+  where UniqueCarrier= {{ context.params.UniqueCarrier | is_required }}
+```
+
+In the above query:
+* `read_csv_auto` is a duckdb built-in function to read CSV file.
+* `{{ context.params.UniqueCarrier | is_required }}` is a VulcanSQL syntax that will be replaced with the actual value in the query. Additionally, with `is_required` filter, we can ensure the `UniqueCarrier` parameter is required.
+
+Next, create another file named `sqls/flight.yaml` with the following content. This YAML file defines the API endpoint, specifies the URL path, and specifies which database profile to use.
+
+```yaml title="sqls/flight.yaml"
+urlPath: /flight
+profiles:
+  - duckdb
+```
+
+
+## Step 3: Test the New API Endpoint
+
+Try the following query in your browser or with curl.
+
+  ```bash
+  curl http://localhost:3000/api/flight?UniqueCarrier=AA
+  ```
+
+You should see the following response.
+
+  ```json
+  [
+    {
+      "FlightDate": "1988-01-01T00:00:00.000Z",
+      "UniqueCarrier": "AA",
+      "OriginCityName": "New York, NY",
+      "DestCityName": "Los Angeles, CA"
+    },
+    {
+      "FlightDate": "1988-01-02T00:00:00.000Z",
+      "UniqueCarrier": "AA",
+      "OriginCityName": "New York, NY",
+      "DestCityName": "Los Angeles, CA"
+    }
+  ]
+  ```
+
+Congratulations! You have successfully created a new API endpoint to query flights with a specific `UniqueCarrier`. You can modify the query and the URL path to suit your specific needs.

@@ -1,0 +1,22 @@
+# Authentication
+To ensure that only authorized users access your VulcanSQL application, it's essential to identify who sends the request. This process, called authentication, typically involves validating credentials such as tokens, cookies, or other forms of identification.
+
+In VulcanSQL, `Authenticators` handle this process, either by validating the credentials themselves or by querying third-party authentication providers. Once the authentication process is complete, additional user attributes are also added to the request for further processing. These attributes can include user names, departments, groups, statuses, and more, depending on the specific authenticator used.
+
+## Authenticators
+To enable authenticators in VulcanSQL, set `auth.enabled` to true in your `vulcan.yaml` configuration file:
+
+```yaml
+auth:
+  enabled: true
+```
+
+VulcanSQL offers a range of built-in authenticators, each with its unique method of validation. You can find more information about how to enable and configure these authenticators in their respective documentation. Note that you can enable multiple authenticators if they validate different credentials.
+
+Here is a list of built-in authenticators available in VulcanSQL:
+
+* **HTTP Basic**: Authenticate users via HTTP basic authentication. This method requires users to provide a username and password, which are transmitted as headers in each request.
+* **Password File**: Validate users' credentials using a password file. This method involves comparing the provided username and password against a pre-defined list of authorized users stored in a file.
+* **Simple Token**: Authenticate users with a static token. This method involves checking the provided token against a pre-configured token value.
+
+By implementing the appropriate authenticators for your VulcanSQL application, you can ensure that only authorized users access your system and protect sensitive data from unauthorized access.

@@ -3,7 +3,7 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import {
   addShutdownJob,
-  localModulePath,
+  modulePath,
   logger,
   removeShutdownJob,
 } from '../utils';
@@ -11,6 +11,7 @@ import {
 export interface ServeCommandOptions {
   config: string;
   port: number;
+  requireFromLocal?: boolean;
 }
 
 const defaultOptions: ServeCommandOptions = {
@@ -32,7 +33,7 @@ export const serveVulcan = async (options: ServeCommandOptions) => {
   const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
 
   // Import dependencies. We use dynamic import here to import dependencies at runtime.
-  const { VulcanServer } = await import(localModulePath('@vulcan-sql/serve'));
+  const { VulcanServer } = await import(modulePath('@vulcan-sql/serve', options.requireFromLocal));
 
   // Start server
   logger.info(`Starting server...`);

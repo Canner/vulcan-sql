@@ -1,0 +1,3 @@
+urlPath: /flights
+profiles:
+  - duckdb
