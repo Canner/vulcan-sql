@@ -11,7 +11,7 @@ const featureList = [
   },
   {
     icon: require('@site/static/img/feature-2-icon.svg').default,
-    title: 'Dynamic SQL generation',
+    title: 'Dynamic SQL Generation',
     description:
       'Generate context-specific SQL tailored to various personas in real time.',
   },
@@ -35,7 +35,7 @@ export default function Overview(): JSX.Element {
         title="GitHub"
       ></iframe>
       <h1 className={`text--center ${styles.title}`}>
-        Build Analytics APIs from parameterized SQL
+        Build Analytics APIs From Parameterized SQL
       </h1>
       <Link
         className={`button button--primary ${styles.getStartButton}`}
