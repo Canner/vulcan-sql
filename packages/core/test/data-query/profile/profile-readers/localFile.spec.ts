@@ -25,6 +25,9 @@ it('Should load the correct profiles when there is no issue', async () => {
     connection: {
       foo: 'bar',
     },
+    cache: {
+      foo: 'bar',
+    },
   });
 });
 
