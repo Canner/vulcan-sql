@@ -1,7 +1,7 @@
 import Link from '@docusaurus/Link';
 import React from 'react';
 import styles from './styles.module.css';
-import OverviewImageUrl from '@site/static/img/vulcan-overview.png';
+import OverviewImageUrl from '@site/static/img/vulcan-concept-light.png';
 
 const featureList = [
   {
@@ -44,7 +44,7 @@ export default function Overview(): JSX.Element {
         Get started now
       </Link>
       <div className="container">
-        <img src={OverviewImageUrl} alt="Overview of VulcanSQL" />
+        <img src={OverviewImageUrl} style={{ marginTop: '20px' }} alt="Overview of VulcanSQL" />
         <div className={`row ${styles.featureContainer}`}>
           {featureList.map((feature) => (
             <div
