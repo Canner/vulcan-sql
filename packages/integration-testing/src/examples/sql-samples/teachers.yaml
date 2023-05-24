@@ -1,0 +1,8 @@
+urlPath: /teachers
+profile: duck
+cache:
+  - cacheTableName: 'cache_teachers'
+    sql: 'select * from teachers'
+    profile: duck
+    refreshTime:
+      every: 5s

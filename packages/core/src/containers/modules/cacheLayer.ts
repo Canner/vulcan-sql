@@ -3,7 +3,12 @@ import { AsyncContainerModule } from 'inversify';
 import { CacheLayerOptions } from '../../options/cacheLayer';
 import 'reflect-metadata';
 import { ICacheLayerOptions } from '@vulcan-sql/core/models';
-import { CacheLayerLoader } from '@vulcan-sql/core/cache-layer';
+import {
+  CacheLayerLoader,
+  ICacheLayerLoader,
+  ICacheLayerRefresher,
+  CacheLayerRefresher,
+} from '@vulcan-sql/core/cache-layer';
 
 export const cacheLayerModule = (options: ICacheLayerOptions = {}) =>
   new AsyncContainerModule(async (bind) => {
@@ -16,7 +21,12 @@ export const cacheLayerModule = (options: ICacheLayerOptions = {}) =>
       .inSingletonScope();
 
     // Cache Layer Loader
-    bind<CacheLayerLoader>(TYPES.CacheLayerLoader)
+    bind<ICacheLayerLoader>(TYPES.CacheLayerLoader)
       .to(CacheLayerLoader)
+      .inSingletonScope();
+
+    // Cache Layer Refresher
+    bind<ICacheLayerRefresher>(TYPES.CacheLayerRefresher)
+      .to(CacheLayerRefresher)
       .inSingletonScope();
   });

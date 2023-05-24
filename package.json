@@ -44,6 +44,7 @@
     "md5": "^2.3.0",
     "micro": "^9.4.1",
     "micro-cors": "^0.1.1",
+    "moment": "^2.29.4",
     "ms": "3.0.0-canary.1",
     "next": "12.1.5",
     "next-plugin-antd-less": "^1.8.0",
@@ -60,6 +61,7 @@
     "regenerator-runtime": "0.13.7",
     "semver": "^7.3.7",
     "styled-components": "5.3.5",
+    "toad-scheduler": "^2.2.0",
     "tslib": "^2.3.0",
     "tslog": "^3.3.3",
     "uuid": "^9.0.0"

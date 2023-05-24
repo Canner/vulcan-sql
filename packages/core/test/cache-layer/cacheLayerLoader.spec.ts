@@ -1,172 +1,30 @@
 import * as fs from 'fs';
-import * as uuid from 'uuid';
-import * as path from 'path';
-import faker from '@faker-js/faker';
-import * as duckdb from 'duckdb';
 import * as sinon from 'ts-sinon';
 import {
-  APISchema,
   CacheLayerInfo,
   CacheLayerLoader,
   CacheLayerOptions,
-  DataResult,
   DataSource,
-  ExportOptions,
-  ImportOptions,
-  RequestParameter,
-  VulcanExtensionId,
   cacheProfileName,
   vulcanCacheSchemaName,
 } from '@vulcan-sql/core';
+import { MockDataSource, getQueryResults } from './mockDataSource';
 
-let db: duckdb.Database;
-const folderPath = 'test-exported-parquets';
-
-const getQueryResults = async (sql: string): Promise<Record<string, any>[]> =>
-  new Promise((resolve, reject) => {
-    db.wait(() => {
-      db.all(sql, (err: any, result: any[]) =>
-        err ? reject(err) : resolve(result)
-      );
-    });
-  });
-
-@VulcanExtensionId('mock')
-class MockDataSource extends DataSource {
-  private logger = this.getLogger();
-
-  public async execute(): Promise<DataResult> {
-    return {} as any;
-  }
-
-  public async prepare({ parameterIndex }: RequestParameter) {
-    return `$${parameterIndex}`;
-  }
-
-  public override getProfiles() {
-    return super.getProfiles();
-  }
-
-  public override getProfile(name: string) {
-    return super.getProfile(name);
-  }
-
-  public override async export(options: ExportOptions): Promise<void> {
-    const { directory } = options;
-    const filepath = path.resolve(directory, `${uuid.v4()}.parquet`);
-    const fakeTableName = 'table1';
-    const fakeColumns = [
-      {
-        column: 'id',
-        type: 'INTEGER',
-      },
-      {
-        column: 'username',
-        type: 'VARCHAR',
-      },
-      {
-        column: 'is_active',
-        type: 'BOOLEAN',
-      },
-    ];
-
-    // create table by fake columns with types
-    db.run(
-      `CREATE TABLE ${fakeTableName}(${fakeColumns[0].column} ${fakeColumns[0].type}, ${fakeColumns[1].column} ${fakeColumns[1].type}, ${fakeColumns[2].column} ${fakeColumns[2].type})`
-    );
-    for (let i = 0; i < 10000; i++) {
-      db.run(
-        `INSERT INTO ${fakeTableName} VALUES (${faker.random.numeric()}, '${faker.random.word()}', ${faker.datatype.boolean()})`
-      );
-    }
-
-    // export to parquet file and if resolve done, return filepaths
-    return await new Promise((resolve, reject) => {
-      db.run(
-        `COPY ${fakeTableName} TO '${filepath}' (FORMAT 'parquet')`,
-        (err: any) => {
-          if (err) reject(err);
-          this.logger.debug(`Export to parquet file done, path = ${filepath}`);
-          resolve();
-        }
-      );
-    });
-  }
-
-  public override async import(options: ImportOptions): Promise<void> {
-    const { tableName, directory, schema } = options;
-    // read all parquet files in directory by *.parquet
-    const folderPath = path.resolve(directory, '*.parquet');
-    // create table and if resolve done, return
-    return await new Promise((resolve, reject) => {
-      db.run(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
-      db.run(
-        `CREATE OR REPLACE TABLE ${schema}.${tableName} AS SELECT * FROM read_parquet('${folderPath}')`,
-        (err: any) => {
-          if (err) reject(err);
-          this.logger.debug(`Table created, name = ${tableName}`);
-          resolve();
-        }
-      );
-    });
-  }
-}
-
-beforeAll(async () => {
-  db = new duckdb.Database(':memory:');
-});
-
-afterAll(async () => {
-  fs.rmSync(folderPath, { recursive: true, force: true });
-});
-
-it('Should preload success when export data to parquet file and load it', async () => {
-  // Arrange
-  const schemas: Array<APISchema> = [
+describe('Test cache layer loader', () => {
+  const folderPath = 'loader-test-exported-parquets';
+  const profiles = [
     {
-      ...sinon.stubInterface<APISchema>(),
-      templateSource: 'template-1',
-      profiles: ['mock1-profile1', 'mock1-profile2'],
-      cache: [
-        {
-          cacheTableName: 'schema1_table1',
-          sql: sinon.default.stub() as any,
-          profile: 'mock1-profile1',
-        },
-        {
-          cacheTableName: 'schema1_table2',
-          sql: sinon.default.stub() as any,
-          profile: 'mock1-profile2',
-        },
-      ] as Array<CacheLayerInfo>,
-    },
-    {
-      ...sinon.stubInterface<APISchema>(),
-      templateSource: 'template-2',
-      profiles: ['mock2-profile1'],
-      cache: [
-        {
-          cacheTableName: 'schema2_table1',
-          sql: sinon.default.stub() as any,
-          profile: 'mock2-profile1',
-        },
-      ] as Array<CacheLayerInfo>,
-    },
-  ];
-
-  const mockDataSource = new MockDataSource({}, '', [
-    {
-      name: schemas[0].profiles[0],
+      name: 'mock1-profile1',
       type: 'mock',
       allow: '*',
     },
     {
-      name: schemas[0].profiles[1],
+      name: 'mock1-profile2',
       type: 'mock',
       allow: '*',
     },
     {
-      name: schemas[1].profiles[0],
+      name: 'mock2-profile1',
       type: 'mock',
       allow: '*',
     },
@@ -175,119 +33,13 @@ it('Should preload success when export data to parquet file and load it', async 
       type: 'mock',
       allow: '*',
     },
-  ]);
-  const stubFactory = (profileName: string) => {
-    const dataSourceMap = {
-      [schemas[0].profiles[0]]: mockDataSource,
-      [schemas[0].profiles[1]]: mockDataSource,
-      [schemas[1].profiles[0]]: mockDataSource,
-      [cacheProfileName]: mockDataSource,
-    } as Record<string, DataSource>;
-    return dataSourceMap[profileName];
-  };
-  const options = new CacheLayerOptions({
-    folderPath,
-  });
-  const loader = new CacheLayerLoader(options, stubFactory as any);
-
-  // Act
-  await loader.preload(schemas);
-
-  // Assert
-  const actual = (
-    await getQueryResults(
-      "select * from information_schema.tables where table_schema = 'vulcan'"
-    )
-  ).map((row) => {
-    return {
-      table: row['table_name'],
-      schema: row['table_schema'],
-    };
-  });
-  expect(actual).toEqual(
-    expect.arrayContaining([
-      {
-        table: schemas[0].cache[0].cacheTableName,
-        schema: vulcanCacheSchemaName,
-      },
-      {
-        table: schemas[0].cache[1].cacheTableName,
-        schema: vulcanCacheSchemaName,
-      },
-      {
-        table: schemas[1].cache[0].cacheTableName,
-        schema: vulcanCacheSchemaName,
-      },
-    ])
-  );
-}, 500000);
-
-it('Should preload failed when exist duplicate cache table name over than one API schema', async () => {
-  // Arrange
-  const schemas: Array<APISchema> = [
-    {
-      ...sinon.stubInterface<APISchema>(),
-      templateSource: 'template-1',
-      profiles: ['mock1-profile1', 'mock1-profile2'],
-      cache: [
-        {
-          cacheTableName: 'schema1_table1',
-          sql: sinon.default.stub() as any,
-          profile: 'mock1-profile1',
-        },
-        {
-          cacheTableName: 'schema1_table2',
-          sql: sinon.default.stub() as any,
-          profile: 'mock1-profile2',
-        },
-      ] as Array<CacheLayerInfo>,
-    },
-    {
-      ...sinon.stubInterface<APISchema>(),
-      templateSource: 'template-2',
-      profiles: ['mock2-profile1'],
-      cache: [
-        {
-          // duplicate cache table name
-          cacheTableName: 'schema1_table1',
-          sql: sinon.default.stub() as any,
-          profile: 'mock2-profile1',
-        },
-        {
-          cacheTableName: 'schema2_table1',
-          sql: sinon.default.stub() as any,
-          profile: 'mock2-profile1',
-        },
-      ] as Array<CacheLayerInfo>,
-    },
   ];
-  const mockDataSource = new MockDataSource({}, '', [
-    {
-      name: schemas[0].profiles[0],
-      type: 'mock',
-      allow: '*',
-    },
-    {
-      name: schemas[0].profiles[1],
-      type: 'mock',
-      allow: '*',
-    },
-    {
-      name: schemas[1].profiles[0],
-      type: 'mock',
-      allow: '*',
-    },
-    {
-      name: cacheProfileName,
-      type: 'mock',
-      allow: '*',
-    },
-  ]);
+  const mockDataSource = new MockDataSource({}, '', profiles);
   const stubFactory = (profileName: string) => {
     const dataSourceMap = {
-      [schemas[0].profiles[0]]: mockDataSource,
-      [schemas[0].profiles[1]]: mockDataSource,
-      [schemas[1].profiles[0]]: mockDataSource,
+      [profiles[0].name]: mockDataSource,
+      [profiles[1].name]: mockDataSource,
+      [profiles[2].name]: mockDataSource,
       [cacheProfileName]: mockDataSource,
     } as Record<string, DataSource>;
     return dataSourceMap[profileName];
@@ -295,10 +47,65 @@ it('Should preload failed when exist duplicate cache table name over than one AP
   const options = new CacheLayerOptions({
     folderPath,
   });
-  const loader = new CacheLayerLoader(options, stubFactory as any);
 
-  // Act
-  await expect(() => loader.preload(schemas)).rejects.toThrow(
-    'Not allow to set same cache table name more than one API schema.'
+  afterAll(async () => {
+    fs.rmSync(folderPath, { recursive: true, force: true });
+  });
+
+  it.each([
+    {
+      templateName: 'template-1',
+      cache: {
+        cacheTableName: 'employees',
+        sql: sinon.default.stub() as any,
+        profile: profiles[0].name,
+      } as CacheLayerInfo,
+    },
+    {
+      templateName: 'template-1',
+      cache: {
+        cacheTableName: 'departments',
+        sql: sinon.default.stub() as any,
+        profile: profiles[1].name,
+      } as CacheLayerInfo,
+    },
+    {
+      templateName: 'template-2',
+      cache: {
+        cacheTableName: 'jobs',
+        sql: sinon.default.stub() as any,
+        profile: profiles[2].name,
+      } as CacheLayerInfo,
+    },
+  ])(
+    'Should export and load $cache.cacheTableName successful when start loader with cache settings for $templateName',
+    async ({ templateName, cache }) => {
+      // Arrange
+      // Act
+      const loader = new CacheLayerLoader(options, stubFactory as any);
+      await loader.load(templateName, cache);
+
+      // Assert
+      const actual = (
+        await getQueryResults(
+          "select * from information_schema.tables where table_schema = 'vulcan'"
+        )
+      ).map((row) => {
+        return {
+          table: row['table_name'],
+          schema: row['table_schema'],
+        };
+      });
+      expect(actual).toEqual(
+        expect.arrayContaining([
+          {
+            table: cache.cacheTableName,
+            schema: vulcanCacheSchemaName,
+          },
+        ])
+      );
+    },
+    // Set 50s timeout to test cache loader export and load data
+    50 * 10000
   );
 });

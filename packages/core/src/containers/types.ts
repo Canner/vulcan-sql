@@ -35,6 +35,7 @@ export const TYPES = {
   CacheLayerOptions: Symbol.for('CacheLayerOptions'),
   CacheLayerInputOptions: Symbol.for('CacheLayerInputOptions'),
   CacheLayerLoader: Symbol.for('CacheLayerLoader'),
+  CacheLayerRefresher: Symbol.for('CacheLayerRefresher'),
   // Validator
   ValidatorLoader: Symbol.for('ValidatorLoader'),
   // Document

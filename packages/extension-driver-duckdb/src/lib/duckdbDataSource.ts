@@ -165,9 +165,7 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
         `COPY (${sql}) TO '${filepath}' (FORMAT '${formatTypeMapper[type]}')`,
         (err: any) => {
           if (err) reject(err);
-          this.logger.debug(
-            `Export to ${formatTypeMapper[type]} file done, path = ${filepath}`
-          );
+          this.logger.debug(`Export file to "${filepath}" done`);
           resolve();
         }
       );
