@@ -33,6 +33,8 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
   ): Promise<void> {
     // check if the cache table name is duplicated more than one API schemas
     this.checkDuplicateCacheTableName(schemas);
+    // check if the index name is duplicated more than one API schemas
+    this.checkDuplicateIndex(schemas);
     // traverse each cache table of each schema
     await Promise.all(
       schemas.map(async (schema) => {
@@ -86,6 +88,24 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
     if (uniq(tableNames).length !== tableNames.length)
       throw new ConfigurationError(
         'Not allow to set same cache table name more than one API schema.'
+      );
+  }
+
+  private checkDuplicateIndex(schemas: APISchema[]) {
+    const indexNames = schemas
+      // => [[table1_idx, table1_idx2, table2_idx], [table1_idx, table3_idx], [table4_idx]]
+      .map((schema) =>
+        schema.cache
+          ?.map((cache) => (cache.indexes ? Object.keys(cache.indexes) : []))
+          .flat()
+      )
+      // => [table1_idx, table1_idx2, table2_idx, table1_idx, table3_idx, table4_idx]
+      .flat()
+      // use filter to make sure it has value and pick it.
+      .filter((indexName) => indexName);
+    if (uniq(indexNames).length !== indexNames.length)
+      throw new ConfigurationError(
+        'Not allow to set same index name more than one API schema.'
       );
   }
 }

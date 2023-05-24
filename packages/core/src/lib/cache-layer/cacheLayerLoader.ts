@@ -43,7 +43,7 @@ export class CacheLayerLoader implements ICacheLayerLoader {
     templateName: string,
     cache: CacheLayerInfo
   ): Promise<void> {
-    const { cacheTableName, sql, profile } = cache;
+    const { cacheTableName, sql, profile, indexes } = cache;
     const type = this.options.type!;
     const dataSource = this.dataSourceFactory(profile);
 
@@ -78,6 +78,7 @@ export class CacheLayerLoader implements ICacheLayerLoader {
       // default schema name for cache layer
       schema: vulcanCacheSchemaName,
       type,
+      indexes,
     });
   }
 }

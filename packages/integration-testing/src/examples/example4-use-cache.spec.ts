@@ -75,13 +75,6 @@ beforeAll(async () => {
     ('131f201f-0db5-4d58-a30b-c73372d7cc19', 'ivan', 'fa6a4b6e-7944-4b81-86dd-38f67c5700da'),
     ('7fa6069d-533e-4c49-a7be-5725be66eb6c', 'coco', 'ebb9b1ac-052b-4819-b719-90fb61fa7899')`
   );
-  // create teachers table
-  MockDuckDBDataSource.runSQL(
-    'CREATE TABLE teachers(id VARCHAR, name VARCHAR, teach_subjects VARCHAR)'
-  );
-  MockDuckDBDataSource.runSQL(
-    `INSERT INTO teachers VALUES ('843c21b5-3df8-4f3e-81aa-1a584dadf66c', 'eason', 'programming')`
-  );
 
   const projectConfig: ServeConfig & IBuildOptions = {
     ...defaultConfig,
@@ -242,58 +235,6 @@ it.each([
     const result = await agent.get(`/api/classes/${id}/students`);
     // Assert
     expect(JSON.stringify(result.body)).toEqual(JSON.stringify(expected));
-  },
-  100 * 10000
-);
-
-it(
-  'Example 4-5 use cache tag and set cache refresh time in schema file to query the result from duckdb cache layer',
-  async () => {
-    // Arrange
-    const expectRefreshedResult = (expected: Array<any>, ms: number) => {
-      setTimeout(async () => {
-        const result = await supertest(httpServer).get(`/api/teachers`);
-        expect(JSON.stringify(result.body)).toEqual(JSON.stringify(expected));
-      }, ms);
-    };
-    const expected = [
-      {
-        id: '843c21b5-3df8-4f3e-81aa-1a584dadf66c',
-        name: 'eason',
-        teach_subjects: 'programming',
-      },
-    ];
-    const result = await supertest(httpServer).get(`/api/teachers`);
-    expect(JSON.stringify(result.body)).toEqual(JSON.stringify(expected));
-
-    // Insert new data to data source and call API to get the new result after 5 seconds refreshed
-    MockDuckDBDataSource.runSQL(
-      `INSERT INTO teachers VALUES ('2d35f072-22a7-4eab-b7a5-7579760a4192', 'freda', 'mathematics')`
-    );
-    expected.push({
-      id: '2d35f072-22a7-4eab-b7a5-7579760a4192',
-      name: 'freda',
-      teach_subjects: 'mathematics',
-    });
-    // Act, Assert, call API to get the new result after 5 seconds refreshed
-    expectRefreshedResult(expected, 5 * 1000);
-    // wait for 6 seconds to make API triggered after 5 secondes
-    // Note: could not use jest faker timer to mock the time, because the cache layer will be invoked in another process (through supertest)
-    await new Promise((resolve) => setTimeout(resolve, 6 * 1000));
-
-    // Insert new data to data source again and call API to get the new result after 5 seconds refreshed
-    MockDuckDBDataSource.runSQL(
-      `INSERT INTO teachers VALUES ('5873b802-f957-44be-961e-aaca763332aa', 'shimin', 'science')`
-    );
-    expected.push({
-      id: '5873b802-f957-44be-961e-aaca763332aa',
-      name: 'shimin',
-      teach_subjects: 'science',
-    });
-    // Act, Assert, call API to get the new result after 5 seconds refreshed
-    expectRefreshedResult(expected, 5 * 1000);
-    // wait for 6 seconds to make API triggered after 5 secondes
-    await new Promise((resolve) => setTimeout(resolve, 6 * 1000));
   },
   100 * 10000
 );

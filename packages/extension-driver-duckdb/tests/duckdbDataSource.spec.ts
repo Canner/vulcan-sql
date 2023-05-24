@@ -589,3 +589,51 @@ it('Should throw error when importing "parquet" file to create table, but the di
     })
   ).rejects.toThrow(`The directory ${directory} not exists`);
 });
+
+it('Should succeed when importing "parquet" file to create table with index', async () => {
+  // Arrange
+  const dataSource = new MockDuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
+      allow: '*',
+    },
+  ]);
+  // import multiple files
+  const directory = path.resolve(__dirname, 'test-files/userdata');
+
+  await dataSource.activate();
+  // Act
+  await dataSource.import({
+    tableName: 'users',
+    directory,
+    profileName: 'mocked-profile',
+    schema: 'mocked_schema',
+    type: 'parquet',
+    indexes: { user_idx1: 'id', user_idx2: 'email' },
+  });
+  // Assert
+  const db = dataSource.getInstance('mocked-profile')!;
+  const actual = (
+    await getQueryResults(
+      db,
+      'select schema_name, table_name, index_name from duckdb_indexes()'
+    )
+  ).map((row) => {
+    return {
+      schema: row['schema_name'],
+      table: row['table_name'],
+      index: row['index_name'],
+    };
+  });
+
+  await expect(JSON.stringify(actual)).toEqual(
+    JSON.stringify([
+      { schema: 'mocked_schema', table: 'users', index: 'user_idx2' },
+      { schema: 'mocked_schema', table: 'users', index: 'user_idx1' },
+    ])
+  );
+});

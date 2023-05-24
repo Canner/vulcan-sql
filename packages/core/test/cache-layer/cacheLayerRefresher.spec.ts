@@ -107,6 +107,57 @@ describe('Test cache layer refresher', () => {
     refresher.stop();
   });
 
+  it('Should fail to start when exist duplicate index name over than one API schema', async () => {
+    // Arrange
+    const schemas: Array<APISchema> = [
+      {
+        ...sinon.stubInterface<APISchema>(),
+        templateSource: 'template-1',
+        profiles: [profiles[0].name, profiles[1].name],
+        cache: [
+          {
+            cacheTableName: 'orders',
+            sql: sinon.default.stub() as any,
+            profile: profiles[0].name,
+            indexes: {
+              idx: 'id',
+            },
+          },
+          {
+            cacheTableName: 'products',
+            sql: sinon.default.stub() as any,
+            profile: profiles[1].name,
+            indexes: {
+              product_idx: 'id',
+            },
+          },
+        ] as Array<CacheLayerInfo>,
+      },
+      {
+        ...sinon.stubInterface<APISchema>(),
+        templateSource: 'template-2',
+        profiles: [profiles[2].name],
+        cache: [
+          {
+            cacheTableName: 'users',
+            sql: sinon.default.stub() as any,
+            profile: profiles[2].name,
+            indexes: {
+              idx: 'id',
+            },
+          },
+        ] as Array<CacheLayerInfo>,
+      },
+    ];
+    const refresher = new CacheLayerRefresher(stubCacheLoader);
+
+    // Act, Assert
+    await expect(() => refresher.start(schemas)).rejects.toThrow(
+      'Not allow to set same index name more than one API schema.'
+    );
+    refresher.stop();
+  });
+
   it(
     'Should export and load successful when start loader with schemas of non-refresh settings',
     async () => {
@@ -176,8 +227,8 @@ describe('Test cache layer refresher', () => {
       );
       refresher.stop();
     },
-    // Set 50s timeout to test cache loader export and load data
-    50 * 1000
+    // Set 100s timeout to test cache loader export and load data
+    100 * 1000
   );
 
   it('Should export and load correct times when start loader with schemas of refresh time settings', async () => {

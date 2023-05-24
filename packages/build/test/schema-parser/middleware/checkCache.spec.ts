@@ -273,75 +273,82 @@ it('Should throw an error when cacheTableName is not unique', async () => {
   expect(next).not.toHaveBeenCalled();
 });
 
-it('Should throw an error when cacheTableName does not match the regex', async () => {
-  const schemas: RawAPISchema = {
-    sourceName: 'test',
-    urlPath: '/urlPath',
-    profiles: ['profile1'],
-    metadata: {
-      'cache.vulcan.com': {
-        isUsedTag: true,
+it.each([
+  ['1start_with_digit'],
+  ['!start_with_special_char'],
+  ['/start_with_special_char'],
+  ['*start_with_special_char'],
+  ['table name with space'],
+  ['table_name_with_special_char_!'],
+  ['table_name_with_special_char_/'],
+])(
+  'Should throw an error when cacheTableName "%s" does not match the regex',
+  async () => {
+    const schemas: RawAPISchema = {
+      sourceName: 'test',
+      urlPath: '/urlPath',
+      profiles: ['profile1'],
+      metadata: {
+        'cache.vulcan.com': {
+          isUsedTag: true,
+        },
       },
-    },
-    cache: [
-      {
-        cacheTableName: '!cache_table_name',
-        sql: 'SELECT * FROM test_table',
-      },
-    ],
-  };
-  const invalidCacheTableNames = [
-    '1start_with_digit',
-    '!start_with_special_char',
-    '/start_with_special_char',
-    '*start_with_special_char',
-    'table name with space',
-    'table_name_with_special_char_!',
-    'table_name_with_special_char_/',
-  ];
-  for (const cacheTableName of invalidCacheTableNames) {
-    schemas['cache']![0]['cacheTableName'] = cacheTableName;
-    await expect(middleware.handle(schemas, next)).rejects.toThrow(
-      `The cacheTableName "${cacheTableName}" in schema "/urlPath" should meet the pattern "/^[a-zA-Z_][a-zA-Z0-9_$]+$/`
-    );
-    expect(next).not.toHaveBeenCalled();
+      cache: [
+        {
+          cacheTableName: '!cache_table_name',
+          sql: 'SELECT * FROM test_table',
+        },
+      ],
+    };
+    const invalidCacheTableNames = [
+      '1start_with_digit',
+      '!start_with_special_char',
+      '/start_with_special_char',
+      '*start_with_special_char',
+      'table name with space',
+      'table_name_with_special_char_!',
+      'table_name_with_special_char_/',
+    ];
+    for (const cacheTableName of invalidCacheTableNames) {
+      schemas['cache']![0]['cacheTableName'] = cacheTableName;
+      await expect(middleware.handle(schemas, next)).rejects.toThrow(
+        `The cacheTableName "${cacheTableName}" in schema "/urlPath" should meet the pattern "/^[a-zA-Z_][a-zA-Z0-9_$]+$/`
+      );
+      expect(next).not.toHaveBeenCalled();
+    }
   }
-});
-// should pass test if cacheTableName is valid and meet the regex
-it('Should call next function when schemas have cache with valid cacheTableName', async () => {
-  const schemas: RawAPISchema = {
-    sourceName: 'test',
-    profiles: ['profile1'],
-    metadata: {
-      'cache.vulcan.com': {
-        isUsedTag: true,
+);
+// should pass test if cacheTableName is valid and meet the regex, pattern: /^[a-zA-Z_][a-zA-Z0-9_$]+$/
+it.each([
+  ['start_with_lower_case_letter'],
+  ['_start_with_underscore'],
+  ['Start_with_lower_case_letter'],
+  ['does_not_contain_special_char'],
+  ['contain_digit_1234567890'],
+  ['contain_upper_case_LETTER'],
+  [Array(1000).fill('a').join('')],
+])(
+  'Should call next function when schemas have cache with valid cacheTableName "%s"',
+  async () => {
+    const schemas: RawAPISchema = {
+      sourceName: 'test',
+      profiles: ['profile1'],
+      metadata: {
+        'cache.vulcan.com': {
+          isUsedTag: true,
+        },
       },
-    },
-    cache: [
-      {
-        cacheTableName: 'cache_table_name',
-        sql: 'SELECT * FROM test_table',
-      },
-    ],
-  };
-  const longString = Array(1000).fill('a').join('');
-  // pattern: /^[a-zA-Z_][a-zA-Z0-9_$]+$/
-  const validCacheTableNames = [
-    'start_with_lower_case_letter',
-    '_start_with_underscore',
-    'Start_with_lower_case_letter',
-    'does_not_contain_special_char',
-    'contain_digit_1234567890',
-    'contain_upper_case_LETTER',
-    longString,
-  ];
-
-  for (const cacheTableName of validCacheTableNames) {
-    schemas['cache']![0]['cacheTableName'] = cacheTableName;
+      cache: [
+        {
+          cacheTableName: 'cache_table_name',
+          sql: 'SELECT * FROM test_table',
+        },
+      ],
+    };
     await middleware.handle(schemas, next);
     expect(next).toHaveBeenCalled();
   }
-});
+);
 // checkSql
 it('Should throw an error when sql is not defined', async () => {
   const schemas: RawAPISchema = {
@@ -388,6 +395,102 @@ it('Should throw an error when indexes is empty', async () => {
   );
   expect(next).not.toHaveBeenCalled();
 });
+it('Should throw an error when index name is not unique', async () => {
+  const schemas: RawAPISchema = {
+    sourceName: 'test',
+    urlPath: '/urlPath',
+    profiles: ['profile1'],
+    metadata: {
+      'cache.vulcan.com': {
+        isUsedTag: true,
+      },
+    },
+    cache: [
+      {
+        cacheTableName: 'cache_table_name1',
+        sql: 'SELECT * FROM test_table_1',
+        indexes: { duplicate_idx_column: 'column_1' },
+      },
+      {
+        cacheTableName: 'cache_table_name2',
+        sql: 'SELECT * FROM test_table_2',
+        indexes: { duplicate_idx_column: 'column_2' },
+      },
+    ],
+  };
+  await expect(middleware.handle(schemas, next)).rejects.toThrow(
+    'The indexName "duplicate_idx_column" of cache in schema "/urlPath" is not unique.'
+  );
+  expect(next).not.toHaveBeenCalled();
+});
+
+it.each([
+  ['1start_with_digit'],
+  ['!start_with_special_char'],
+  ['/start_with_special_char'],
+  ['*start_with_special_char'],
+  ['table name with space'],
+  ['table_name_with_special_char_!'],
+  ['table_name_with_special_char_/'],
+])(
+  'Should throw an error when index name "%s" does not match the regex',
+  async (indexName) => {
+    const schemas: RawAPISchema = {
+      sourceName: 'test',
+      urlPath: '/urlPath',
+      profiles: ['profile1'],
+      metadata: {
+        'cache.vulcan.com': {
+          isUsedTag: true,
+        },
+      },
+      cache: [
+        {
+          cacheTableName: 'cache_table_name',
+          sql: 'SELECT * FROM test_table',
+          indexes: { [indexName]: 'column' },
+        },
+      ],
+    };
+    await expect(middleware.handle(schemas, next)).rejects.toThrow(
+      `The index name "${indexName}" in schema "/urlPath" should meet the pattern "/^[a-zA-Z_][a-zA-Z0-9_$]+$/`
+    );
+    expect(next).not.toHaveBeenCalled();
+  }
+);
+// should pass test if index name is valid and meet the regex, pattern: /^[a-zA-Z_][a-zA-Z0-9_$]+$/
+it.each([
+  ['start_with_lower_case_letter'],
+  ['_start_with_underscore'],
+  ['Start_with_lower_case_letter'],
+  ['does_not_contain_special_char'],
+  ['contain_digit_1234567890'],
+  ['contain_upper_case_LETTER'],
+  [Array(1000).fill('a').join('')],
+])(
+  'Should call next function when schemas have cache with valid index name "%s"',
+  async () => {
+    // Arrange
+    const schemas: RawAPISchema = {
+      sourceName: 'test',
+      profiles: ['profile1'],
+      metadata: {
+        'cache.vulcan.com': {
+          isUsedTag: true,
+        },
+      },
+      cache: [
+        {
+          cacheTableName: 'cache_table_name',
+          sql: 'SELECT * FROM test_table',
+        },
+      ],
+    };
+    // Act, Assert
+    await middleware.handle(schemas, next);
+    expect(next).toHaveBeenCalled();
+  }
+);
 
 // assign profile
 // should throw error if not profiles in schemas
