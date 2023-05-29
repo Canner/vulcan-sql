@@ -13,7 +13,7 @@ import {
   InternalError,
   ConfigurationError,
   VulcanError,
-  CacheLayerLoader,
+  ICacheLayerRefresher,
 } from '@vulcan-sql/core';
 import { Container, TYPES } from '../containers';
 import { ServeConfig, sslFileOptions } from '../models';
@@ -33,6 +33,8 @@ export class VulcanServer {
     http: http.Server;
     https?: https.Server;
   };
+  private cacheRefresher?: ICacheLayerRefresher;
+
   constructor(config: ServeConfig) {
     this.config = config;
     this.container = new Container();
@@ -88,16 +90,15 @@ export class VulcanServer {
       logger.debug(`Data source ${dataSource.getExtensionId()} initialized`);
     }
 
-    // Preload query result and keep to cache data source
+    // load and schedule query results and keep to cache data source
     if (this.config.cache) {
-      const cacheLayerLoader = this.container.get<CacheLayerLoader>(
-        CORE_TYPES.CacheLayerLoader
+      this.cacheRefresher = this.container.get<ICacheLayerRefresher>(
+        CORE_TYPES.CacheLayerRefresher
       );
       logger.info(
-        'Start to preload prefetched data result from data sources to cache layer...'
+        'Start to load and schedule prefetched data results from data sources to cache layer...'
       );
-      await cacheLayerLoader.preload(schemas);
-      logger.info('Preload done.');
+      await this.cacheRefresher.start(schemas);
     }
     // Create application
     const app = this.container.get<VulcanApplication>(TYPES.VulcanApplication);
@@ -115,8 +116,10 @@ export class VulcanServer {
       this.servers = undefined;
       // remove 'uncaughtException' listener
       process.off('uncaughtException', this.uncaughtErrorHandler);
+      process.off('SIGINT', async () => await this.close());
+      process.off('SIGTERM', async () => await this.close());
     }
-
+    this.cacheRefresher?.stop();
     this.container.unload();
   }
 
@@ -134,6 +137,9 @@ export class VulcanServer {
 
     // Listen the all uncaught errors (including event emitter errors) to prevent server stop.
     process.on('uncaughtException', this.uncaughtErrorHandler);
+    // Listen the Ctrl-C and terminated signals to close the server smoothly.
+    process.on('SIGINT', async () => await this.close());
+    process.on('SIGTERM', async () => await this.close());
 
     if (enabled && options['type'] === ResolverType.LOCAL) {
       const httpsServer = this.createHttpsServer(

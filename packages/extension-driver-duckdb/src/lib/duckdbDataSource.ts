@@ -165,9 +165,7 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
         `COPY (${sql}) TO '${filepath}' (FORMAT '${formatTypeMapper[type]}')`,
         (err: any) => {
           if (err) reject(err);
-          this.logger.debug(
-            `Export to ${formatTypeMapper[type]} file done, path = ${filepath}`
-          );
+          this.logger.debug(`Export file to "${filepath}" done`);
           resolve();
         }
       );
@@ -175,7 +173,8 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
   }
 
   public override async import(options: ImportOptions): Promise<void> {
-    const { tableName, directory, profileName, schema, type } = options;
+    const { tableName, directory, profileName, schema, type, indexes } =
+      options;
     if (!this.dbMapping.has(profileName))
       throw new InternalError(`Profile instance ${profileName} not found`);
     // check the directory exists
@@ -198,8 +197,27 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
         (err: any) => {
           if (err) reject(err);
           this.logger.debug(`Table created, name = ${tableName}`);
+          // create indexes if set the options
+          if (indexes)
+            this.createIndexes(connection, schema, tableName, indexes);
           resolve();
         }
+      );
+    });
+  }
+
+  // create indexes for table
+  private createIndexes(
+    connection: duckdb.Connection,
+    schema: string,
+    tableName: string,
+    indexes: Record<string, string>
+  ) {
+    Object.entries(indexes).forEach(([index, column]) => {
+      // duckdb could not create duplicate index, so here should drop index if exists and create again.
+      connection.run(`DROP INDEX IF EXISTS ${index}`);
+      connection.run(
+        `CREATE INDEX ${index} ON ${schema}.${tableName} (${column})`
       );
     });
   }

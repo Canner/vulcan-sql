@@ -29,6 +29,8 @@ export interface ImportOptions {
   schema: string;
   // import file format type
   type: CacheLayerStoreFormatType | string;
+  // table indexing, index key name -> index column
+  indexes?: Record<string, string>;
 }
 
 // Original request parameters

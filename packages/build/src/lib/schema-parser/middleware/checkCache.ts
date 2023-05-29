@@ -108,6 +108,7 @@ export class CheckCache extends SchemaParserMiddleware {
   // check indexes value is not empty
   private checkIndexesHasValue(schemas: RawAPISchema) {
     const { cache: caches, urlPath } = schemas;
+    const indexNames = [] as string[];
     caches?.forEach(({ indexes, cacheTableName }) => {
       if (indexes) {
         Object.entries(indexes).forEach(([indexName, columnName]) => {
@@ -116,6 +117,22 @@ export class CheckCache extends SchemaParserMiddleware {
               `The index "${indexName}" of cache "${cacheTableName}" in schema "${urlPath}" should be a string.`
             );
           }
+          // index name should be unique even in different cache table name (duckdb could not create same index name on different table)
+          if (indexNames.includes(indexName)) {
+            throw new ConfigurationError(
+              `The indexName "${indexName}" of cache in schema "${schemas.urlPath}" is not unique.`
+            );
+          }
+          // index naming pattern
+          // 1. start with a letter or underscore, and can only contain letters, numbers, and underscores
+          // 2. the sub-characters contain letters, numbers, underscore, and dollar sign
+          const pattern = /^[a-zA-Z_][a-zA-Z0-9_$]+$/;
+          if (!pattern.test(indexName)) {
+            throw new ConfigurationError(
+              `The index name "${indexName}" in schema "${schemas.urlPath}" should meet the pattern "${pattern}".`
+            );
+          }
+          indexNames.push(indexName);
         });
       }
     });

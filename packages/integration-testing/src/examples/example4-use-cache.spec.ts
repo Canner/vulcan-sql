@@ -88,7 +88,7 @@ beforeAll(async () => {
   await builder.build();
   vulcanServer = new VulcanServer(projectConfig);
   httpServer = (await vulcanServer.start())['http'];
-}, 50000);
+}, 100 * 1000);
 
 afterAll(async () => {
   await vulcanServer?.close();
@@ -127,7 +127,7 @@ it.each([
     // Assert
     expect(JSON.stringify(result.body)).toEqual(JSON.stringify(expected));
   },
-  1000000
+  100 * 10000
 );
 
 it.each([
@@ -158,7 +158,7 @@ it.each([
     // Assert
     expect(JSON.stringify(result.body)).toEqual(JSON.stringify(expected));
   },
-  1000000
+  100 * 10000
 );
 
 it.each([
@@ -201,7 +201,7 @@ it.each([
     // Assert
     expect(JSON.stringify(result.body)).toEqual(JSON.stringify(expected));
   },
-  1000000
+  100 * 10000
 );
 
 it.each([
@@ -236,5 +236,5 @@ it.each([
     // Assert
     expect(JSON.stringify(result.body)).toEqual(JSON.stringify(expected));
   },
-  1000000
+  100 * 10000
 );

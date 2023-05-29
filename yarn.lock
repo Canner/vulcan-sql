@@ -11888,7 +11888,7 @@ mobx-react@^7.2.0:
   dependencies:
     mobx-react-lite "^3.4.0"
 
-moment@^2.24.0, moment@^2.27.0, moment@^2.29.2:
+moment@^2.24.0, moment@^2.27.0, moment@^2.29.2, moment@^2.29.4:
   version "2.29.4"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
@@ -15774,6 +15774,11 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     extend-shallow "^3.0.2"
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
+
+toad-scheduler@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/toad-scheduler/-/toad-scheduler-2.2.0.tgz#e24dd009f3a5566a89555b0e811f1e56af528395"
+  integrity sha512-o/3na7CMVfW40x8H/Vw078GNIR6F7jNmPnuSRY2yVqFIPXRrQttcfRlkQk0dwFiw7fQCqpCGXoC/vo7QtoQMhw==
 
 toggle-selection@^1.0.6:
   version "1.0.6"
