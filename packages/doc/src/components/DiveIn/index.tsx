@@ -15,7 +15,7 @@ const diveInActions = [
     takeActions: (
       <div className={styles.actionLinks}>
         <Link to="https://github.com/Canner/vulcan-sql">Go to Github &gt;</Link>
-        <Link to="https://discord.gg/dMcfT5vfzr">Join Discord &gt;</Link>
+        <Link to="https://discord.gg/ztDz8DCmG4">Join Discord &gt;</Link>
       </div>
     ),
   },
