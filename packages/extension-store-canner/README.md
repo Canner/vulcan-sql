@@ -1,6 +1,8 @@
 # extension-store-canner
 
-The canner persistence store could allow VulcanSQL integrating with [Canner Enterprise](https://cannerdata.com/product).
+The extension make VulcanSQL integrating with [Canner Enterprise](https://cannerdata.com/product).
+
+The extension contains Canner persistence store to connect the storage of Canner Enterprise, and Canner profile reader to create a connecting Canner driver used profiles.
 
 ## Install
 
@@ -19,22 +21,55 @@ The canner persistence store could allow VulcanSQL integrating with [Canner Ente
      canner-store: '@vulcan-sql/extension-store-canner'
    ```
 
-3. Update `vulcan.yaml` to make `artifact` use canner persistence store loading data.
+3. Update `vulcan.yaml` to make `artifact` use Canner persistence store be the provider to load data.
 
    ```yaml
    artifact:
-     provider: Canner # use canner persistence store to be provider
+     provider: Canner # Use Canner persistence store to be provider
      serializer: JSON
      filePath: 000000-0000-0000-000000 # The canner root path
    ```
 
+4. Update `vulcan.yaml` to make `profiles` use Canner profile reader to get profiles info.
+
+   ```yaml
+   profiles:
+     - type: Canner # Use Canner profile reader to get profiles info
+       options:
+         path: 000000-0000-0000-000000 # The canner root path
+   ```
+
 ## Set environment variables to connect Canner Enterprise for Integration
 
-For integrating to Canner Enterprise, need to connect Canner Enterprise used storage.
+For integrating to Canner Enterprise, there are two parts environment variables need to set:
+
+1. Canner Enterprise driver.
+2. Connect Canner Enterprise used storage.
+
+### Canner Enterprise driver
+
+Here the Canner Enterprise driver means the `@vulcan-sql/extension-driver-canner`.
+
+The environments variables may used to be the partly connection for `@vulcan-sql/extension-driver-canner` needed profiles options.
+
+Need to set by environment variables to make Canner Enterprise driver work if the `profiles` options of the Canner Enterprise driver not created by hand in `profiles.yaml`.
+
+```bash
+# The user to canner connect canner enterprise driver, default is canner.
+CANNER_DRIVER_USERNAME=<username>
+# Password to connect to canner enterprise driver. should be the user PAT
+CANNER_DRIVER_PASSWORD=<password>
+# Canner enterprise driver host.
+CANNER_DRIVER_HOST=<host>
+# Canner enterprise driver port, the default is 7432
+CANNER_DRIVER_PORT=<port>
+```
+
+### Connect Canner Enterprise used storage.
 
 Canner Enterprise use different type storage to keep data when deploying to different environment. (Azure, AWS, GCP cloud or standalone).
 
-### Canner Enterprise deployed on Standalone
+#### Connect to MINIO Storage
 
 When Canner Enterprise deployed on standalone, canner used MINIO storage, so please set connecting MINIO storage needed environments
 
@@ -50,7 +85,7 @@ export MINIO_ACCESS_KEY=<minio-access-key>
 export MINIO_SECRET_KEY=<minio-secret-key>
 ```
 
-### Connect to AWS S3 Storage
+#### Connect to AWS S3 Storage
 
 When Canner Enterprise deployed on AWS, canner used S3 storage, so please set connecting S3 storage needed environments
 
@@ -61,7 +96,7 @@ export AWS_ACCESS_KEY_ID=<aws-access-key-id>
 export AWS_SECRET_ACCESS_KEY=<aws-secret-access-key>
 ```
 
-### Connect to Azure Blob Storage
+#### Connect to Azure Blob Storage
 
 When Canner Enterprise deployed on Azure, canner used Azure Blob storage, so please set connecting Azure Blob storage needed environments
 

@@ -21,7 +21,7 @@ export const createStorageService = async (options: StorageServiceOptions) => {
     throw new Error(
       `Provider should be ${Object.keys(CloudProvider).join(',')}`
     );
-
+  // other options will be checked when creating storage service by "getStorageService" function
   const storageService = await getStorageServiceMapper[provider!](options);
   return storageService;
 };

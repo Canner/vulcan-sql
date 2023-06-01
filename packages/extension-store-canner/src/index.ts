@@ -3,6 +3,6 @@
 // setting it to a string value of 1 should work
 process.env['AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE'] = '1';
 
-export * from './lib/cannerPersistenceStore';
-import { CannerPersistenceStore } from './lib/cannerPersistenceStore';
-export default [CannerPersistenceStore];
+export * from './lib/canner';
+import { CannerPersistenceStore, CannerProfileReader } from './lib/canner';
+export default [CannerPersistenceStore, CannerProfileReader];

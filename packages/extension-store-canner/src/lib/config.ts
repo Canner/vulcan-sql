@@ -1,13 +1,25 @@
 export interface CannerStoreConfig {
   storage: StorageServiceOptions;
-  profiles: string[];
+  profile: CannerDriverProfileOptions;
+}
+
+export interface CannerDriverProfileOptions {
+  // user to connect to canner enterprise. Default is canner
+  user?: string;
+  // password to connect to canner enterprise. should be the user PAT in canner enterprise
+  password?: string;
+  host?: string;
+  // port to connect to canner enterprise. Default is 7432
+  port?: number;
 }
 
 export interface StorageServiceOptions {
   provider?: string;
   // MINIO Provider options
   minioUrl?: string;
+  // use https to connect to minio server or not, default is false
   minioSSL?: boolean;
+  // minio port, default is 9000
   minioPort?: number;
   minioBucket?: string;
   minioAccessKey?: string;
@@ -42,9 +54,13 @@ export interface StorageServiceOptions {
 export const getEnvConfig = (): CannerStoreConfig => {
   // Get the config from env, because the a lot of settings for storage service needed from env e.g: AWS, GCP, AZURE of their SDK.
   return {
-    profiles: process.env['CANNER_STORE_ARTIFACTS_PROFILES']?.split(',') || [
-      'canner',
-    ],
+    profile: {
+      user: process.env['CANNER_DRIVER_USERNAME'] || 'canner',
+      password: process.env['CANNER_DRIVER_PASSWORD'],
+      host: process.env['CANNER_DRIVER_HOST'],
+      // port 7432 is the PG Wire Protocol port, which is the default port for connecting canner enterprise driver
+      port: Number(process.env['CANNER_DRIVER_PORT']) || 7432,
+    },
     storage: {
       provider: process.env['CANNER_STORAGE_PROVIDER'],
       // MINIO Provider options

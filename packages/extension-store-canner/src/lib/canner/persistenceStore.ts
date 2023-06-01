@@ -7,11 +7,13 @@ import {
   VulcanInternalExtension,
 } from '@vulcan-sql/core';
 import { inject } from 'inversify';
-import { chain } from 'lodash';
 import * as oas3 from 'openapi3-ts';
-import { createStorageService } from './storageService';
-import { BaseStorageService, ObjectBasicInfo } from '@canner/canner-storage';
-import { CannerStoreConfig, getEnvConfig } from './config';
+import { createStorageService } from '../storageService';
+import { BaseStorageService } from '@canner/canner-storage';
+import { CannerStoreConfig, getEnvConfig } from '../config';
+import { geIndicatorFilesOfWorkspaces } from './utils';
+import { ArtifactIndicator } from './models';
+
 export interface RawBuiltInArtifact {
   // key is source name, value is combined sql js executable code
   templates: Record<string, string>;
@@ -25,24 +27,6 @@ export type BuiltInArtifact = RawBuiltInArtifact & {
     oas3: oas3.OpenAPIObject;
   };
 };
-
-/**
- * The indicator file record the workspace sql name, every deployed and latest deployed version of artifact folder name
- */
-interface ArtifactIndicator {
-  /**
-   * {
-   *  "master": "711c034c",
-   *  "3f051d57": "1685207455869_3f051d57",
-   *  "711c034c": "1685213384299_711c034c",
-   *  "d9e3aa9f-fb6c-4a85-aaf2-bb766a66df83": "w05228",
-   * }
-   */
-  // The latest deployed artifact folder sha name
-  master: string;
-  // The every deployed artifact folder name and workspace sql name
-  [key: string]: string;
-}
 
 // key is workspaceSqlName, value is artifact buffer content
 interface WorkspaceArtifact {
@@ -59,8 +43,7 @@ interface WorkspaceArtifact {
 export class CannerPersistenceStore extends PersistentStore {
   private filePath: string;
   private logger = this.getLogger();
-  private vulcanFolderPathPattern = new RegExp('([a-zA-Z0-9-]+)/vulcansql');
-  private indicatorPathPattern: RegExp;
+
   private envConfig: CannerStoreConfig = getEnvConfig();
 
   constructor(
@@ -70,11 +53,9 @@ export class CannerPersistenceStore extends PersistentStore {
   ) {
     super(config, moduleName);
     this.filePath = options.filePath;
-    this.indicatorPathPattern = new RegExp(
-      `${this.vulcanFolderPathPattern.source.replace('\\', '')}/indicator.json`
-    );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async save(data: Buffer): Promise<void> {
     throw new Error(
       'The extension not provide the save method, it only use to load the data from the storage'
@@ -89,7 +70,8 @@ export class CannerPersistenceStore extends PersistentStore {
       recursive: true,
     });
     // get the indicator files path of each workspaces
-    const files = await this.geIndicatorFilesOfWorkspaces(filesInfo);
+    const files = await geIndicatorFilesOfWorkspaces(filesInfo);
+    this.logger.debug('Succeed to get the indicator files of each workspaces');
     // get the latest artifacts of each workspaces
     const artifacts = await this.getLatestArtifactsOfWorkspaces(
       storageService,
@@ -98,20 +80,6 @@ export class CannerPersistenceStore extends PersistentStore {
     // merge the artifacts of each workspaces to one artifact
     const artifact = await this.mergeArtifactsOfWorkspaces(artifacts);
     return Buffer.from(JSON.stringify(artifact), 'utf-8');
-  }
-
-  private async geIndicatorFilesOfWorkspaces(filesInfo: ObjectBasicInfo[]) {
-    const filePaths = chain(filesInfo)
-      .filter((fileInfo) => this.indicatorPathPattern.test(fileInfo.name))
-      .map((fileInfo) => {
-        return {
-          name: fileInfo.name,
-          workspaceId: this.vulcanFolderPathPattern.exec(fileInfo.name)![1],
-        };
-      })
-      .value();
-    this.logger.debug('Succeed to get the indicator files of each workspaces');
-    return filePaths;
   }
 
   private async getLatestArtifactsOfWorkspaces(
@@ -171,8 +139,8 @@ export class CannerPersistenceStore extends PersistentStore {
           schema.urlPath = `${workspaceSqlName}${schema.urlPath}`;
           // concat the workspace sql name prefix to template source, so it could find the "sourceName" in templates
           schema.templateSource = `${workspaceSqlName}/${schema.templateSource}`;
-          // normalize the schema profiles to the same for canner enterprise integration used
-          schema.profiles = this.envConfig.profiles;
+          // replace the profile to the canner enterprise integration used profile name, it will match to the profiles from canner profile reader.
+          schema.profiles = [`canner-${workspaceSqlName}`];
           merged.schemas.push(schema);
         });
         // Specs, only support the oas3 specification for canner enterprise integration used

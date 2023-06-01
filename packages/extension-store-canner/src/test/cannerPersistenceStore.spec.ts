@@ -1,8 +1,6 @@
 import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
 import * as oas3 from 'openapi3-ts';
-import * as dotenv from 'dotenv';
-import * as path from 'path';
 import { BaseStorageService } from '@canner/canner-storage';
 import { APISchema, ArtifactBuilderOptions } from '@vulcan-sql/core';
 import * as storageServiceModule from '../lib/storageService';
@@ -10,14 +8,9 @@ import {
   BuiltInArtifact,
   CannerPersistenceStore,
   RawBuiltInArtifact,
-} from '../lib/cannerPersistenceStore';
-import { getEnvConfig } from '../lib/config';
+} from '../lib/canner/persistenceStore';
 
 describe('Test CannerPersistenceStore', () => {
-  // support reading the env from .env file if exited when running test case
-  dotenv.config({ path: path.resolve(__dirname, '.env') });
-  const config = getEnvConfig();
-
   // fake workspaceId
   const fakeWorkspaces = {
     // fake workspace id and sql name
@@ -199,12 +192,12 @@ describe('Test CannerPersistenceStore', () => {
         {
           urlPath: `${fakeWorkspaces.ws1.sqlName}/orders`,
           templateSource: `${fakeWorkspaces.ws1.sqlName}/sales/orders`,
-          profiles: config.profiles,
+          profiles: [`canner-${fakeWorkspaces.ws1.sqlName}`],
         },
         {
           urlPath: `${fakeWorkspaces.ws2.sqlName}/products/:id`,
           templateSource: `${fakeWorkspaces.ws2.sqlName}/marketing/products`,
-          profiles: config.profiles,
+          profiles: [`canner-${fakeWorkspaces.ws2.sqlName}`],
         },
       ],
       specs: {
