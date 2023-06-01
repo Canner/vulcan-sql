@@ -11,6 +11,10 @@
         {
           "projects": "self",
           "target": "tsc"
+        },
+        {
+          "projects": "self",
+          "target": "install-dependencies"
         }
       ]
     },
@@ -28,6 +32,10 @@
         {
           "projects": "dependencies",
           "target": "build"
+        },
+        {
+          "projects": "self",
+          "target": "install-dependencies"
         }
       ]
     },
@@ -44,7 +52,13 @@
       "options": {
         "jestConfig": "packages/extension-store-canner/jest.config.ts",
         "passWithNoTests": true
-      }
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "install-dependencies"
+        }
+      ]
     },
     "publish": {
       "executor": "@nrwl/workspace:run-commands",
@@ -58,6 +72,13 @@
           "target": "build"
         }
       ]
+    },
+    "install-dependencies": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn",
+        "cwd": "packages/extension-store-canner"
+      }
     }
   },
   "tags": []

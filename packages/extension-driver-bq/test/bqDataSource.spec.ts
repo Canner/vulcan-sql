@@ -9,7 +9,7 @@ let dataSource: BQDataSource;
 const tmpDir = 'tmp';
 afterEach(async () => {
   if (fs.existsSync(tmpDir)) {
-    fs.rmdirSync(tmpDir, { recursive: true });
+    fs.rmSync(tmpDir, { recursive: true, force: true });
   }
 });
 

@@ -55,14 +55,14 @@ export const getEnvConfig = (): CannerStoreConfig => {
   // Get the config from env, because the a lot of settings for storage service needed from env e.g: AWS, GCP, AZURE of their SDK.
   return {
     profile: {
-      user: process.env['CANNER_DRIVER_USERNAME'] || 'canner',
-      password: process.env['CANNER_DRIVER_PASSWORD'],
-      host: process.env['CANNER_DRIVER_HOST'],
+      user: process.env['PROFILE_DRIVER_USERNAME'] || 'canner',
+      password: process.env['PROFILE_DRIVER_PASSWORD'],
+      host: process.env['PROFILE_DRIVER_HOST'],
       // port 7432 is the PG Wire Protocol port, which is the default port for connecting canner enterprise driver
-      port: Number(process.env['CANNER_DRIVER_PORT']) || 7432,
+      port: Number(process.env['PROFILE_DRIVER_PORT']) || 7432,
     },
     storage: {
-      provider: process.env['CANNER_STORAGE_PROVIDER'],
+      provider: process.env['STORAGE_PROVIDER'],
       // MINIO Provider options
       minioSSL: process.env['MINIO_SSL'] === 'true',
       minioUrl: process.env['MINIO_URL'],

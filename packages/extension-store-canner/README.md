@@ -27,7 +27,7 @@ The extension contains Canner persistence store to connect the storage of Canner
    artifact:
      provider: Canner # Use Canner persistence store to be provider
      serializer: JSON
-     filePath: 000000-0000-0000-000000 # The canner root path
+     filePath: <rootPath> # The root path for the canner storage
    ```
 
 4. Update `vulcan.yaml` to make `profiles` use Canner profile reader to get profiles info.
@@ -36,7 +36,7 @@ The extension contains Canner persistence store to connect the storage of Canner
    profiles:
      - type: Canner # Use Canner profile reader to get profiles info
        options:
-         path: 000000-0000-0000-000000 # The canner root path
+         path: <rootPath> # The root path for the canner storage
    ```
 
 ## Set environment variables to connect Canner Enterprise for Integration
@@ -56,13 +56,13 @@ Need to set by environment variables to make Canner Enterprise driver work if th
 
 ```bash
 # The user to canner connect canner enterprise driver, default is canner.
-CANNER_DRIVER_USERNAME=<username>
+PROFILE_DRIVER_USERNAME=<username>
 # Password to connect to canner enterprise driver. should be the user PAT
-CANNER_DRIVER_PASSWORD=<password>
+PROFILE_DRIVER_PASSWORD=<password>
 # Canner enterprise driver host.
-CANNER_DRIVER_HOST=<host>
+PROFILE_DRIVER_HOST=<host>
 # Canner enterprise driver port, the default is 7432
-CANNER_DRIVER_PORT=<port>
+PROFILE_DRIVER_PORT=<port>
 ```
 
 ### Connect Canner Enterprise used storage.
@@ -74,7 +74,7 @@ Canner Enterprise use different type storage to keep data when deploying to diff
 When Canner Enterprise deployed on standalone, canner used MINIO storage, so please set connecting MINIO storage needed environments
 
 ```bash
-export CANNER_STORAGE_PROVIDER=MINIO
+export STORAGE_PROVIDER=MINIO
 # Optional, default is false
 export MINIO_SSL=<true-or-false>
 export MINIO_URL=<minio-url>
@@ -90,7 +90,7 @@ export MINIO_SECRET_KEY=<minio-secret-key>
 When Canner Enterprise deployed on AWS, canner used S3 storage, so please set connecting S3 storage needed environments
 
 ```bash
-export CANNER_STORAGE_PROVIDER=AWS
+export STORAGE_PROVIDER=AWS
 export AWS_BUCKET_NAME=<aws-bucket-name>
 export AWS_ACCESS_KEY_ID=<aws-access-key-id>
 export AWS_SECRET_ACCESS_KEY=<aws-secret-access-key>
@@ -101,7 +101,7 @@ export AWS_SECRET_ACCESS_KEY=<aws-secret-access-key>
 When Canner Enterprise deployed on Azure, canner used Azure Blob storage, so please set connecting Azure Blob storage needed environments
 
 ```bash
-export CANNER_STORAGE_PROVIDER=AZURE
+export STORAGE_PROVIDER=AZURE
 export AZURE_TENANT_ID=<azure-tenant-id>
 export AZURE_CLIENT_ID=<azure-client-id>
 export AZURE_CLIENT_SECRET=<azure-client-secret>
@@ -114,7 +114,7 @@ export AZURE_BUCKET_NAME=<bucket-name-in-the-storage-account-name>
 When Canner Enterprise deployed on GCP, canner used GCP storage, so please set connecting GCP storage needed environments
 
 ```bash
-export CANNER_STORAGE_PROVIDER=GCP
+export STORAGE_PROVIDER=GCP
 export GCP_BUCKET_NAME=<gcp-storage-bucket-name>
 # Suggest to use the absolute path, or you could provide the related path in your project
 export GOOGLE_APPLICATION_CREDENTIALS=<credentials-file-path-location>
