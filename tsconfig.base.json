@@ -83,6 +83,9 @@
       "@vulcan-sql/extension-driver-pg": [
         "packages/extension-driver-pg/src/index.ts"
       ],
+      "@vulcan-sql/extension-driver-canner": [
+        "packages/extension-driver-canner/src/index.ts"
+      ],
       "@vulcan-sql/extension-driver-snowflake": [
         "packages/extension-driver-snowflake/src/index.ts"
       ],
