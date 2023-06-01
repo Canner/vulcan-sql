@@ -1,0 +1,4 @@
+# @canner/canner-storage used files for running test cases
+.env
+# GCP key file
+gcp-ci-sa.json

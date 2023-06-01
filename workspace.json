@@ -13,6 +13,7 @@
     "extension-driver-pg": "packages/extension-driver-pg",
     "extension-driver-snowflake": "packages/extension-driver-snowflake",
     "extension-driver-canner": "packages/extension-driver-canner",
+    "extension-store-canner": "packages/extension-store-canner",
     "integration-testing": "packages/integration-testing",
     "serve": "packages/serve",
     "test-utility": "packages/test-utility"

@@ -41,13 +41,13 @@
       "@vulcan-sql/core/artifact-builder/*": [
         "packages/core/src/lib/artifact-builder/*"
       ],
-      "@vulcan-sql/core/containers": ["packages/core/src/containers/index"],
-      "@vulcan-sql/core/data-query": ["packages/core/src/lib/data-query/index"],
-      "@vulcan-sql/core/data-query/*": ["packages/core/src/lib/data-query/*"],
       "@vulcan-sql/core/cache-layer": [
         "packages/core/src/lib/cache-layer/index"
       ],
       "@vulcan-sql/core/cache-layer/*": ["packages/core/src/lib/cache-layer/*"],
+      "@vulcan-sql/core/containers": ["packages/core/src/containers/index"],
+      "@vulcan-sql/core/data-query": ["packages/core/src/lib/data-query/index"],
+      "@vulcan-sql/core/data-query/*": ["packages/core/src/lib/data-query/*"],
       "@vulcan-sql/core/data-source": [
         "packages/core/src/lib/data-source/index"
       ],
@@ -89,6 +89,9 @@
       "@vulcan-sql/extension-driver-snowflake": [
         "packages/extension-driver-snowflake/src/index.ts"
       ],
+      "@vulcan-sql/extension-store-canner": [
+        "packages/extension-store-canner/src/index.ts"
+      ],
       "@vulcan-sql/integration-testing": [
         "packages/integration-testing/src/index"
       ],
@@ -115,7 +118,6 @@
       "@vulcan-sql/serve/response-formatter/*": [
         "packages/serve/src/lib/response-formatter/*"
       ],
-
       "@vulcan-sql/serve/route": ["packages/serve/src/lib/route/index"],
       "@vulcan-sql/serve/route/*": ["packages/serve/src/lib/route/*"],
       "@vulcan-sql/serve/types": ["packages/serve/src/containers/types"],
