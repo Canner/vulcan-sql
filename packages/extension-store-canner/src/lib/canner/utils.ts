@@ -13,7 +13,7 @@ export const indicatorPathPattern = new RegExp(
  * @param filesInfo files info from storage service
  * @returns the indicator files path of each workspaces
  */
-export const geIndicatorFilesOfWorkspaces = async (
+export const getIndicatorFilesOfWorkspaces = async (
   filesInfo: ObjectBasicInfo[]
 ) => {
   const filePaths = chain(filesInfo)

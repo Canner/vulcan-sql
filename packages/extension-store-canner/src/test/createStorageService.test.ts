@@ -38,7 +38,7 @@ it('Should create storage service for connecting MINIO successfully when provide
   // Arrange, the field of config.storage from environment variables
   const options = {
     provider: CloudProvider.MINIO,
-    minioSSL: false,
+    minioSSL: config.storage.minioSSL!,
     minioUrl: config.storage.minioUrl!,
     minioPort: config.storage.minioPort!,
     minioBucket: config.storage.minioBucket!,

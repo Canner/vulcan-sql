@@ -11,7 +11,7 @@ import * as oas3 from 'openapi3-ts';
 import { createStorageService } from '../storageService';
 import { BaseStorageService } from '@canner/canner-storage';
 import { CannerStoreConfig, getEnvConfig } from '../config';
-import { geIndicatorFilesOfWorkspaces } from './utils';
+import { getIndicatorFilesOfWorkspaces } from './utils';
 import { ArtifactIndicator } from './models';
 
 export interface RawBuiltInArtifact {
@@ -34,9 +34,8 @@ interface WorkspaceArtifact {
   artifact: RawBuiltInArtifact;
 }
 /**
- * Used the string to identify the extension Id not by the enum "ArtifactBuilderProviderType" because the enum is define in the "core" package,
- * and the canner extensions is only used for Canner integration, so we could add the "Canner" type in the "ArtifactBuilderProviderType",
- * If we use the create an other enum and union "ArtifactBuilderProviderType", the enum is only has "Canner" type, so it seems define a other enum is unnecessary,
+ * Used the string to identify the extension Id not by the enum "ArtifactBuilderProviderType".
+ * Because if we create another enum to extend the 'ArtifactBuilderProviderType', it seems unnecessary to give the new enum only has 'Canner' as its type."
  *  */
 @VulcanInternalExtension()
 @VulcanExtensionId('Canner')
@@ -70,7 +69,7 @@ export class CannerPersistenceStore extends PersistentStore {
       recursive: true,
     });
     // get the indicator files path of each workspaces
-    const files = await geIndicatorFilesOfWorkspaces(filesInfo);
+    const files = await getIndicatorFilesOfWorkspaces(filesInfo);
     this.logger.debug('Succeed to get the indicator files of each workspaces');
     // get the latest artifacts of each workspaces
     const artifacts = await this.getLatestArtifactsOfWorkspaces(

@@ -7,7 +7,7 @@ import {
 import { ConfigurationError } from '@vulcan-sql/core/utils';
 import { CannerStoreConfig, getEnvConfig } from '../config';
 import { createStorageService } from '../storageService';
-import { geIndicatorFilesOfWorkspaces } from './utils';
+import { getIndicatorFilesOfWorkspaces } from './utils';
 import { ArtifactIndicator } from './models';
 
 export interface CannerProfileReaderOptions {
@@ -16,9 +16,8 @@ export interface CannerProfileReaderOptions {
 }
 
 /**
- * Used the string to identify the extension Id not by the enum "LocalFileProfileReader" because the enum is define in the "core" package,
- * and the canner extensions is only used for Canner integration, so we could add the "Canner" type in the "LocalFileProfileReader",
- * If we use the create an other enum and union "LocalFileProfileReader", the enum is only has "Canner" type, so it seems define a other enum is unnecessary,
+ * Used the string to identify the extension Id not by the enum "LocalFileProfileReader".
+ * Because if we create another enum to extend the 'LocalFileProfileReader', it seems unnecessary to give the new enum only has 'Canner' as its type."
  *  */
 @VulcanInternalExtension()
 @VulcanExtensionId('Canner')
@@ -38,7 +37,7 @@ export class CannerProfileReader extends ProfileReader {
       recursive: true,
     });
     // get the indicator files path of each workspaces
-    const files = await geIndicatorFilesOfWorkspaces(filesInfo);
+    const files = await getIndicatorFilesOfWorkspaces(filesInfo);
     this.logger.debug('Succeed to get the indicator files of each workspaces');
 
     // generate profiles from the indicator files of each workspaces

@@ -50,19 +50,19 @@ For integrating to Canner Enterprise, there are two parts environment variables 
 
 Here the Canner Enterprise driver means the `@vulcan-sql/extension-driver-canner`.
 
-The environments variables may used to be the partly connection for `@vulcan-sql/extension-driver-canner` needed profiles options.
+The environments variables may used to be the partly connection information for `@vulcan-sql/extension-driver-canner` needed profiles options.
 
 Need to set by environment variables to make Canner Enterprise driver work if the `profiles` options of the Canner Enterprise driver not created by hand in `profiles.yaml`.
 
 ```bash
 # The user to canner connect canner enterprise driver, default is canner.
-PROFILE_DRIVER_USERNAME=<username>
+export PROFILE_CANNER_DRIVER_USERNAME=<username>
 # Password to connect to canner enterprise driver. should be the user PAT
-PROFILE_DRIVER_PASSWORD=<password>
+export PROFILE_CANNER_DRIVER_PASSWORD=<password>
 # Canner enterprise driver host.
-PROFILE_DRIVER_HOST=<host>
+export PROFILE_CANNER_DRIVER_HOST=<host>
 # Canner enterprise driver port, the default is 7432
-PROFILE_DRIVER_PORT=<port>
+export PROFILE_CANNER_DRIVER_PORT=<port>
 ```
 
 ### Connect Canner Enterprise used storage.

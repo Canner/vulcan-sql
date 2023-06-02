@@ -136,6 +136,14 @@ jobs:
           keys:
             - codecov-0.1.0_4653
       - run: rm -rf ./coverage
+      # Set the NPM Registry with NPM TOKEN for installing our private packages
+      - run: npm set //registry.npmjs.org/:_authToken=${PRIVATE_PACKAGE_NPM_TOKEN}
+      - run:
+          # Because CircleCI could not set the JSON content like Github, so we encode the credentials JSON content to the base64 in env.
+          # Then decode the env to the JSON content and write to "GOOGLE_APPLICATION_CREDENTIALS" env indicated location "gcp-ci-sa.json" to make the GCP storage service test cases work in "extension-store-canner" package.
+          name: decode GOOGLE_CREDENTIALS_BASE64_DATA and save to gcp-ci-sa.json for GOOGLE_APPLICATION_CREDENTIALS
+          command: |
+            echo "$GOOGLE_CREDENTIALS_BASE64_DATA" | base64 --decode > gcp-ci-sa.json
         # Clear coverage folder
       - run: yarn nx affected --target=test --ci --coverage --coverageReporters=lcov ${AFFECTED_ARGS}
       - run:
