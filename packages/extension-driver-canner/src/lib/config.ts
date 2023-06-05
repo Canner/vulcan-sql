@@ -7,6 +7,9 @@ export interface IEnvConfig {
 
 export const createEnvConfig = (): IEnvConfig => {
   return {
+    // when integrate with the Canner Enterprise, the vulcan server and canner server will be deployed in k8s in the same cluster
+    // so the protocol and host might be different from the user provided.
+    // e.g. the user provided host is "my-canner.web.com" with "https", but the actual host is "vulcan-server:3000" with protocol "http"
     isOnKubernetes: Boolean(process.env['IS_ON_KUBERNETES']) || false,
     webServiceHost: process.env['WEB_SERVICE_HOST'],
   } as IEnvConfig;

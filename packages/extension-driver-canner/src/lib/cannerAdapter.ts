@@ -2,6 +2,7 @@ import axios from 'axios';
 import { PGOptions } from './cannerDataSource';
 import { ConnectionOptions } from 'tls';
 import { createEnvConfig } from './config';
+import { InternalError, getLogger } from '@vulcan-sql/core';
 
 const envConfig = createEnvConfig();
 
@@ -11,6 +12,7 @@ export class CannerAdapter {
   public readonly PAT: string | (() => string | Promise<string>);
   public readonly ssl: boolean | ConnectionOptions;
   private baseUrl: string | undefined;
+  private logger = getLogger({ scopeName: 'CORE' });
 
   constructor(options?: PGOptions) {
     if (!options) {
@@ -30,6 +32,7 @@ export class CannerAdapter {
   // and store them in S3. This method will return the S3 urls of the query result.
   // For more Canner API ref: https://docs.cannerdata.com/reference/restful
   public async createAsyncQueryResultUrls(sql: string): Promise<string[]> {
+    this.logger.debug(`Create async request to Canner.`);
     let data = await this.getWorkspaceRequestData('post', '/v2/async-queries', {
       data: {
         sql,
@@ -39,6 +42,7 @@ export class CannerAdapter {
     });
 
     const { id: requestId } = data;
+    this.logger.debug(`Wait Async request to finished.`);
     await this.waitAsyncQueryToFinish(requestId);
 
     // get the query result after the query finished
@@ -46,7 +50,10 @@ export class CannerAdapter {
     if (data.error?.message) {
       throw new Error(data.error.message);
     }
+
+    this.logger.debug(`Get Query result urls.`);
     const urls = await this.getAsyncQueryResultUrls(requestId);
+    this.logger.debug(`Query result urls: \n${urls.join('\n')}`);
     return urls;
   }
 
@@ -56,25 +63,28 @@ export class CannerAdapter {
     options?: Record<string, any>
   ) {
     await this.prepare();
-    const response = await axios({
-      headers: {
-        Authorization: `Token ${this.PAT}`,
-      },
-      params: {
-        workspaceSqlName: this.workspaceSqlName,
-      },
-      url: `${this.baseUrl}${urlPath}`,
-      method,
-      ...options,
-    });
-    if (response.status !== 200) {
-      throw new Error(
-        `Failed to get workspace request "${urlPath}" data, status: ${
-          response.status
-        }, data: ${JSON.stringify(response.data)}`
+    try {
+      const response = await axios({
+        headers: {
+          Authorization: `Token ${this.PAT}`,
+        },
+        params: {
+          workspaceSqlName: this.workspaceSqlName,
+        },
+        url: `${this.baseUrl}${urlPath}`,
+        method,
+        ...options,
+      });
+      return response.data;
+    } catch (error: any) {
+      const message = error.response
+        ? `response: ${JSON.stringify(error.response)}`
+        : `remote server does not response. request ${error.request}`;
+
+      throw new InternalError(
+        `Failed to get workspace request "${urlPath}" data, ${message}`
       );
     }
-    return response.data;
   }
 
   private async prepare() {
@@ -118,11 +128,10 @@ export class CannerAdapter {
   }
 
   private async getRequestInfo(requestId: string) {
-    const data = await this.getWorkspaceRequestData(
+    return await this.getWorkspaceRequestData(
       'get',
       `/v2/async-queries/${requestId}`
     );
-    return data;
   }
 
   private async getAsyncQueryResultUrls(requestId: string): Promise<string[]> {

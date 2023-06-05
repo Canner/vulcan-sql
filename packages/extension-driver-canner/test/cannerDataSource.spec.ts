@@ -1,6 +1,6 @@
 import { CannerServer } from './cannerServer';
 import { CannerDataSource, PGOptions } from '../src';
-import { ExportOptions, streamToArray } from '@vulcan-sql/core';
+import { ExportOptions, InternalError, streamToArray } from '@vulcan-sql/core';
 import { Writable } from 'stream';
 import * as sinon from 'ts-sinon';
 import * as fs from 'fs';
@@ -62,11 +62,14 @@ it('Data source should export successfully', async () => {
 
 it('Data source should throw when fail to export data', async () => {
   // Arrange
+  // stub the private function to manipulate getting error from the remote server
   sinon.default
     .stub(CannerAdapter.prototype, 'createAsyncQueryResultUrls')
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .callsFake(async (sql) => {
-      throw new Error('mock error');
+      throw new InternalError(
+        'Failed to get workspace request "mock/url" data'
+      );
     });
 
   fs.mkdirSync('tmp', { recursive: true });
