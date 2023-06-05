@@ -78,9 +78,8 @@ export class CannerAdapter {
       return response.data;
     } catch (error: any) {
       const message = error.response
-        ? `response: ${JSON.stringify(error.response)}`
-        : `remote server does not response. request ${error.request}`;
-
+        ? `response status: ${error.response.status}, response data: ${error.response.data}`
+        : `remote server does not response. request ${error.toJSON()}}`;
       throw new InternalError(
         `Failed to get workspace request "${urlPath}" data, ${message}`
       );
