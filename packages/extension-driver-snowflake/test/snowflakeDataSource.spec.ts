@@ -68,7 +68,7 @@ it('Data source should throw internal error if directory is not exist', async ()
   await dataSource.activate();
   const directory = `tmp`;
   if (fs.existsSync(directory)) {
-    fs.rmdirSync(directory, { recursive: true });
+    fs.rmSync(directory, { recursive: true, force: true });
   }
   // Act
   const exportOption: ExportOptions = {
@@ -139,7 +139,7 @@ it('Data source should export parquet file correctly', async () => {
   expect(files[0]).toMatch(/parquet$/);
 
   // clean up
-  fs.rmdirSync(directory, { recursive: true });
+  fs.rmSync(directory, { recursive: true, force: true });
 }, 15000);
 
 // should export multiple files correctly
@@ -182,7 +182,7 @@ it('Data source should export multiple parquet files correctly', async () => {
   });
 
   // clean up
-  fs.rmdirSync(directory, { recursive: true });
+  fs.rmSync(directory, { recursive: true, force: true });
 }, 30000);
 
 it('Data source should return correct rows with multiple chunks', async () => {

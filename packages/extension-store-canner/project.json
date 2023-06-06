@@ -1,0 +1,85 @@
+{
+  "root": "packages/extension-store-canner",
+  "sourceRoot": "packages/extension-store-canner/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts extension-store-canner"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "tsc"
+        },
+        {
+          "projects": "self",
+          "target": "install-dependencies"
+        }
+      ]
+    },
+    "tsc": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/extension-store-canner",
+        "main": "packages/extension-store-canner/src/index.ts",
+        "tsConfig": "packages/extension-store-canner/tsconfig.lib.json",
+        "assets": ["packages/extension-store-canner/*.md"],
+        "buildableProjectDepsInPackageJsonType": "dependencies"
+      },
+      "dependsOn": [
+        {
+          "projects": "dependencies",
+          "target": "build"
+        },
+        {
+          "projects": "self",
+          "target": "install-dependencies"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/extension-store-canner/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/extension-store-canner"],
+      "options": {
+        "jestConfig": "packages/extension-store-canner/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "install-dependencies"
+        }
+      ]
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
+        "cwd": "dist/packages/extension-store-canner"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "install-dependencies": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn",
+        "cwd": "packages/extension-store-canner"
+      }
+    }
+  },
+  "tags": []
+}
