@@ -1,5 +1,5 @@
-name: User
-url: /user/:id
+name: UserRole
+urlPath: /roles
 request:
   - name: id
     fieldIn: query

@@ -12,9 +12,11 @@ import {
   TYPES as CORE_TYPES,
   VulcanArtifactBuilder,
   getLogger,
+  ConfigurationError,
 } from '@vulcan-sql/core';
 import { DocumentGenerator } from './document-generator';
 import { interfaces } from 'inversify';
+import { uniq } from 'lodash';
 
 const logger = getLogger({ scopeName: 'BUILD' });
 
@@ -49,6 +51,13 @@ export class VulcanBuilder {
 
     const { metadata, templates } = await templateEngine.compile();
     const { schemas } = await schemaParser.parse({ metadata });
+
+    // check if exist duplicate url paths in schemas, before generating API document and build artifact.
+    const urlPaths = schemas.map((schema) => schema.urlPath);
+    if (uniq(urlPaths).length !== urlPaths.length)
+      throw new ConfigurationError(
+        'Duplicate "urlPath" found in schemas, please check your definition of each schemas.'
+      );
 
     artifactBuilder.addArtifact(BuiltInArtifactKeys.Templates, templates);
     artifactBuilder.addArtifact(BuiltInArtifactKeys.Schemas, schemas);

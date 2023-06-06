@@ -1,0 +1,176 @@
+{
+  "templates": {
+    "role": "(() => {function root(env, context, frame, runtime, cb) {\nvar lineno = 0;\nvar colno = 0;\nvar output = \"\";\ntry {\nvar parentTemplate = null;\nenv.getExtension(\"req\")[\"__run\"](context,\"__wrapped__builder\",\"true\",function(cb) {\nif(!cb) { cb = function(err) { if(err) { throw err; }}}\nvar t_1 = \"\";t_1 += \"select * from public.role\\nwhere id = \";\ncb(null, t_1);\n;\nreturn t_1;\n}\n,function(cb) {\nif(!cb) { cb = function(err) { if(err) { throw err; }}}\nvar t_2 = \"\";env.getFilter(\"sanitize\").call(context, runtime.memberLookup((runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, \"context\")),\"params\")),\"id\"), function(t_3,hole_0) {\nif(t_3) { cb(t_3); return; }\nt_2 += runtime.suppressValue(hole_0, env.opts.autoescape);\ncb(null, t_2);\n});\nreturn t_2;\n}\n, function(t_5,t_4) {\nif(t_5) { cb(t_5); return; }\noutput += runtime.suppressValue(t_4, true && env.opts.autoescape);\nif(parentTemplate) {\nparentTemplate.rootRenderFunc(env, context, frame, runtime, cb);\n} else {\ncb(null, output);\n}\n});\n} catch (e) {\n  cb(runtime.handleError(e, lineno, colno));\n}\n}\nreturn {\nroot: root\n};\n})()",
+    "user": "(() => {function root(env, context, frame, runtime, cb) {\nvar lineno = 0;\nvar colno = 0;\nvar output = \"\";\ntry {\nvar parentTemplate = null;\nenv.getExtension(\"req\")[\"__run\"](context,\"__wrapped__builder\",\"true\",function(cb) {\nif(!cb) { cb = function(err) { if(err) { throw err; }}}\nvar t_1 = \"\";t_1 += \"select * from public.user where id = '\";\ncb(null, t_1);\n;\nreturn t_1;\n}\n,function(cb) {\nif(!cb) { cb = function(err) { if(err) { throw err; }}}\nvar t_2 = \"\";env.getFilter(\"sanitize\").call(context, runtime.memberLookup((runtime.memberLookup((runtime.contextOrFrameLookup(context, frame, \"context\")),\"params\")),\"id\"), function(t_3,hole_1) {\nif(t_3) { cb(t_3); return; }\nt_2 += runtime.suppressValue(hole_1, env.opts.autoescape);\ncb(null, t_2);\n});\nreturn t_2;\n}\n,function(cb) {\nif(!cb) { cb = function(err) { if(err) { throw err; }}}\nvar t_4 = \"\";t_4 += \"';\";\ncb(null, t_4);\n;\nreturn t_4;\n}\n, function(t_6,t_5) {\nif(t_6) { cb(t_6); return; }\noutput += runtime.suppressValue(t_5, true && env.opts.autoescape);\nif(parentTemplate) {\nparentTemplate.rootRenderFunc(env, context, frame, runtime, cb);\n} else {\ncb(null, output);\n}\n});\n} catch (e) {\n  cb(runtime.handleError(e, lineno, colno));\n}\n}\nreturn {\nroot: root\n};\n})()"
+  },
+  "schemas": [
+    {
+      "sourceName": "role",
+      "name": "Role",
+      "urlPath": "/roles",
+      "request": [
+        {
+          "name": "id",
+          "fieldIn": "QUERY",
+          "description": "role id",
+          "validators": [
+            { "name": "uuid", "args": {} },
+            { "name": "required", "args": {} }
+          ],
+          "constraints": [
+            { "type": "string", "__type": "Type" },
+            { "__type": "Required" }
+          ],
+          "type": "STRING"
+        },
+        {
+          "fieldName": "id",
+          "fieldIn": "QUERY",
+          "validators": [],
+          "constraints": [],
+          "type": "STRING"
+        }
+      ],
+      "profile": "test",
+      "metadata": {
+        "error.vulcan.com": { "errorCodes": [] },
+        "builder.vulcan.com": { "finalBuilderName": "FINAL_BUILDER" },
+        "parameter.vulcan.com": [
+          {
+            "name": "id",
+            "locations": [{ "lineNo": 1, "columnNo": 28 }],
+            "validators": []
+          }
+        ],
+        "filter.vulcan.com": ["sanitize"],
+        "cache.vulcan.com": { "isUsedTag": false }
+      },
+      "templateSource": "role",
+      "errors": [],
+      "profiles": ["test"]
+    },
+    {
+      "sourceName": "user",
+      "name": "UserRole",
+      "urlPath": "/roles",
+      "request": [
+        {
+          "name": "id",
+          "fieldIn": "QUERY",
+          "description": "user id",
+          "validators": [
+            { "name": "uuid", "args": {} },
+            { "name": "required", "args": {} }
+          ],
+          "constraints": [
+            { "type": "string", "__type": "Type" },
+            { "__type": "Required" }
+          ],
+          "type": "STRING"
+        },
+        {
+          "fieldName": "id",
+          "fieldIn": "QUERY",
+          "validators": [],
+          "constraints": [],
+          "type": "STRING"
+        }
+      ],
+      "error": [
+        {
+          "code": "Forbidden",
+          "message": "You are not allowed to access this resource"
+        }
+      ],
+      "profile": "test",
+      "metadata": {
+        "error.vulcan.com": { "errorCodes": [] },
+        "builder.vulcan.com": { "finalBuilderName": "FINAL_BUILDER" },
+        "parameter.vulcan.com": [
+          {
+            "name": "id",
+            "locations": [{ "lineNo": 0, "columnNo": 55 }],
+            "validators": []
+          }
+        ],
+        "filter.vulcan.com": ["sanitize"],
+        "cache.vulcan.com": { "isUsedTag": false }
+      },
+      "templateSource": "user",
+      "errors": [],
+      "profiles": ["test"]
+    }
+  ],
+  "specs": {
+    "oas3": {
+      "openapi": "3.0.3",
+      "info": { "title": "API Server", "version": "0.0.1" },
+      "paths": {
+        "/roles": {
+          "get": {
+            "operationId": "get/roles",
+            "summary": "/roles",
+            "responses": {
+              "200": {
+                "description": "The default response",
+                "content": {
+                  "application/json": {
+                    "schema": { "type": "object", "properties": {} }
+                  },
+                  "text/csv": { "schema": { "type": "string" } }
+                }
+              },
+              "5XX": { "description": "Server error" }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "schema": { "type": "string" },
+                "required": true,
+                "description": "role id"
+              },
+              {
+                "name": "id",
+                "in": "query",
+                "schema": { "type": "string" },
+                "required": false
+              }
+            ]
+          }
+        },
+        "/users": {
+          "get": {
+            "operationId": "get/users",
+            "summary": "/users",
+            "responses": {
+              "200": {
+                "description": "The default response",
+                "content": {
+                  "application/json": {
+                    "schema": { "type": "object", "properties": {} }
+                  },
+                  "text/csv": { "schema": { "type": "string" } }
+                }
+              },
+              "5XX": { "description": "Server error" }
+            },
+            "parameters": [
+              {
+                "in": "query",
+                "schema": { "type": "string" },
+                "required": true,
+                "description": "user id"
+              },
+              {
+                "name": "id",
+                "in": "query",
+                "schema": { "type": "string" },
+                "required": false
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
