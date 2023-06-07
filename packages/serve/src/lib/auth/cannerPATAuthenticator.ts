@@ -13,7 +13,7 @@ import {
   AuthType,
 } from '@vulcan-sql/serve/models';
 import { isEmpty } from 'lodash';
-import * as axios from 'axios';
+import axios from 'axios';
 
 export interface CannerPATOptions {
   host: string;
@@ -29,9 +29,6 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
 
   public override async onActivate() {
     this.options = this.getOptions() as CannerPATOptions;
-    // const { host, port } = this.options;
-    // if (this.options && (!host || !port))
-    //   throw new ConfigurationError('please provide canner "host" and "port".');
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -64,8 +61,6 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
     try {
       return await this.validate(token);
     } catch (err) {
-      // if not found matched user credential, add WWW-Authenticate and return failed
-      context.set('WWW-Authenticate', this.getExtensionId()!);
       return {
         status: AuthStatus.FAIL,
         type: this.getExtensionId()!,
@@ -97,13 +92,13 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
   private async fetchCannerUser(token: string) {
     const graphqlUrl = this.getCannerUrl('/web/graphql');
     try {
-      return await axios.default.post(
+      return await axios.post(
         graphqlUrl,
         {
           operationName: 'UserMe',
           variables: {},
           query:
-            'query UserMe{\n  userMe {\n    accountRole\n    attributes\n    createdAt\n    email\n    groups {\n      id\n      name\n    }\n    lastName\n    firstName\n    username\n  }\n}',
+            'query UserMe{userMe {accountRole attributes createdAt email groups {id name} lastName firstName username',
         },
         {
           headers: {
@@ -111,15 +106,20 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
           },
         }
       );
-    } catch (error) {
+    } catch (error: any) {
+      const message = error.response
+        ? `response status: ${
+            error.response.status
+          }, response data: ${JSON.stringify(error.response.data)}`
+        : `remote server does not response. request ${error.toJSON()}}`;
       throw new InternalError(
-        `Failed to fetch user info from canner server: ${error}`
+        `Failed to fetch user info from canner server: ${message}`
       );
     }
   }
   private getCannerUrl = (path = '/') => {
     const { host, port, ssl = false } = this.options;
-    if (process.env['IS_IN_K8S'])
+    if (process.env['IS_ON_KUBERNETES'])
       return `http://${process.env['WEB_SERVICE_HOST']}${path}`; // for internal usage, we don't need to specify port
     else {
       const protocol = ssl ? 'https' : 'http';

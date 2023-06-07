@@ -50,7 +50,7 @@ describe('Example3: get user profile by GET /auth/user-profile API with Authoriz
       groups: [{ id: 1, name: 'group1' }],
     },
   };
-  // stub fetchCannerUser method in class CannerPATAuthenticator using sinon
+  // stub the private function to manipulate getting user info from remote server
   const stubFetchCannerUser = (user: any) => {
     const stub = sinon.default.stub(
       CannerPATAuthenticator.prototype,

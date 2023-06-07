@@ -2,16 +2,10 @@ import { IBuildOptions, VulcanBuilder } from '@vulcan-sql/build';
 import { ServeConfig, VulcanServer } from '@vulcan-sql/serve';
 import * as supertest from 'supertest';
 import * as md5 from 'md5';
-import * as sinon from 'ts-sinon';
 import defaultConfig from './projectConfig';
 import faker from '@faker-js/faker';
 
 let server: VulcanServer;
-
-// clear stub after each test
-afterEach(() => {
-  sinon.default.restore();
-});
 
 const users = [
   {

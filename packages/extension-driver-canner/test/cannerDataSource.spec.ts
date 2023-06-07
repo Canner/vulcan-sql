@@ -62,6 +62,7 @@ it('Data source should export successfully', async () => {
 
 it('Data source should throw when fail to export data', async () => {
   // Arrange
+  // TODO: refactor to avoid stubbing private method
   // stub the private function to manipulate getting error from the remote server
   sinon.default
     .stub(CannerAdapter.prototype, 'createAsyncQueryResultUrls')

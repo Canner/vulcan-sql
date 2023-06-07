@@ -1,31 +1,27 @@
 import * as sinon from 'ts-sinon';
+import axios from 'axios';
 import { IncomingHttpHeaders } from 'http';
 import { Request, BaseResponse } from 'koa';
 import { CannerPATAuthenticator } from '@vulcan-sql/serve/auth';
 import { AuthResult, AuthStatus, KoaContext } from '@vulcan-sql/serve/models';
 
-const wrappedAuthCredential = async (
-  ctx: KoaContext,
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+const getStubAuthenticator = async (
   options: any,
-  resolveValue: any = null
-): Promise<AuthResult> => {
+  stubValue: any = null
+): Promise<CannerPATAuthenticator> => {
   const authenticator = new CannerPATAuthenticator({ options }, '');
-  if (resolveValue) {
+  if (stubValue) {
+    // TODO: refactor to avoid stubbing private method
+    // stub the private method fetchCannerUser to simulate the response from remote server
     sinon.default
       .stub(authenticator, <any>'fetchCannerUser')
-      .resolves(resolveValue);
+      .resolves(stubValue);
   }
   await authenticator.activate();
-  return await authenticator.authCredential(ctx);
-};
-
-const getTokenInfo = async (
-  ctx: KoaContext,
-  options: any
-): Promise<Record<string, any>> => {
-  const authenticator = new CannerPATAuthenticator({ options }, '');
-  await authenticator.activate();
-  return await authenticator.getTokenInfo(ctx);
+  return authenticator;
 };
 
 const expectIncorrect = {
@@ -64,12 +60,54 @@ it.each([
       },
     },
   } as KoaContext;
+  const authenticator = await getStubAuthenticator(options);
 
   // Act, Assert
-  await expect(wrappedAuthCredential(ctx, options)).rejects.toThrow(
+  await expect(authenticator.authCredential(ctx)).rejects.toThrow(
     'please provide correct connection information to Canner Enterprise, including "host" and "port".'
   );
 });
+
+it('Should throw error when catch error when fetching the remote server for user info', async () => {
+  // Arrange
+  const ctx = {
+    ...sinon.stubInterface<KoaContext>(),
+    request: {
+      ...sinon.stubInterface<Request>(),
+      headers: {
+        ...sinon.stubInterface<IncomingHttpHeaders>(),
+        authorization: `Canner-PAT eyValidToken`,
+      },
+    },
+  } as KoaContext;
+  // mock axios.post method get non 200 response from remote server then axios throw error
+  mockedAxios.post.mockRejectedValue({
+    request: 'mock request',
+    response: {
+      data: { error: 'mock response error' },
+      status: 500,
+      statusText: 'string',
+      headers: {},
+      config: {},
+    } as any,
+    isAxiosError: true,
+    toJSON: () => ({}),
+    message: 'An error occurred!',
+    name: 'Error',
+  });
+  const authenticator = await getStubAuthenticator(mockOptions);
+
+  // Act
+  const res = await authenticator.authCredential(ctx);
+
+  // Assert
+  await expect(res).toEqual(
+    expectFailed(
+      'Failed to fetch user info from canner server: response status: 500, response data: {"error":"mock response error"}'
+    )
+  );
+}, 10000);
+
 it('Test to auth credential failed when request header not exist "authorization" key', async () => {
   // Arrange
   const ctx = {
@@ -81,9 +119,10 @@ it('Test to auth credential failed when request header not exist "authorization"
       },
     },
   } as KoaContext;
+  const authenticator = await getStubAuthenticator(mockOptions);
 
   // Act
-  const result = await wrappedAuthCredential(ctx, mockOptions);
+  const result = await authenticator.authCredential(ctx);
 
   // Assert
   expect(result).toEqual(expectIncorrect);
@@ -101,9 +140,10 @@ it('Should auth credential failed when request header "authorization" not start 
       },
     },
   } as KoaContext;
+  const authenticator = await getStubAuthenticator(mockOptions);
 
   // Act
-  const result = await wrappedAuthCredential(ctx, mockOptions);
+  const result = await authenticator.authCredential(ctx);
 
   // Assert
   expect(result).toEqual(expectIncorrect);
@@ -122,16 +162,17 @@ it('Should auth credential failed when the PAT token in the authorization header
     },
     set: sinon.stubInterface<BaseResponse>().set,
   };
-  // Act
   const mockResolveValue = {
     status: 401,
     data: { error: 'invalid token from canner' },
   };
-  const result = await wrappedAuthCredential(
-    ctx,
+  const authenticator = await getStubAuthenticator(
     mockOptions,
     mockResolveValue
   );
+
+  // Act
+  const result = await authenticator.authCredential(ctx);
 
   // Assert
   expect(result).toEqual(expectFailed('invalid token'));
@@ -155,13 +196,13 @@ it('Should auth credential failed when the canner host does not return the userM
     // the expected response data should be { data: { userMe: { attrs... } } }
     data: { data: { notUserMe: null } },
   };
-
-  // Act
-  const result = await wrappedAuthCredential(
-    ctx,
+  const authenticator = await getStubAuthenticator(
     mockOptions,
     mockResolveValue
   );
+
+  // Act
+  const result = await authenticator.authCredential(ctx);
 
   // Assert
   expect(result).toEqual(
@@ -194,7 +235,6 @@ it('Should auth credential successful when request header "authorization" pass t
       },
     },
   };
-
   const expected = {
     status: AuthStatus.SUCCESS,
     type: 'canner-pat',
@@ -207,13 +247,13 @@ it('Should auth credential successful when request header "authorization" pass t
       },
     },
   } as AuthResult;
-
-  // Act
-  const result = await wrappedAuthCredential(
-    ctx,
+  const authenticator = await getStubAuthenticator(
     mockOptions,
     mockResolveValue
   );
+
+  // Act
+  const result = await authenticator.authCredential(ctx);
 
   // Assert
   expect(result).toEqual(expected);
@@ -229,9 +269,9 @@ it('Should throw when use getTokenInfo with cannerPATAuthenticator', async () =>
       body: {},
     },
   };
-
+  const authenticator = await getStubAuthenticator(mockOptions);
   // Act Assert
-  await expect(getTokenInfo(ctx, mockOptions)).rejects.toThrow(
+  await expect(authenticator.getTokenInfo(ctx)).rejects.toThrow(
     'canner-pat does not support token generate.'
   );
 });
