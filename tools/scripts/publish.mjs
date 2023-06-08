@@ -3,6 +3,11 @@ import { getReleaseTag, getVersionByArguments } from './version.mjs';
 import path from 'path';
 import fs from 'fs';
 
+// targetProject: ./packages/xxx
+const workspaceRoot = process.env.NX_WORKSPACE_ROOT;
+const targetProject = process.env.NX_TASK_TARGET_PROJECT
+const targetProjectPath = path.resolve(workspaceRoot, `packages/${targetProject}`)
+
 // node publish.mjs <tag> <version>
 // CWD: ./dist/packages/xxx
 const packageJSONPath = path.resolve(process.cwd(), 'package.json');
@@ -32,5 +37,14 @@ fs.writeFileSync(
   '//registry.npmjs.org/:_authToken=${NPM_TOKEN}',
   'utf-8'
 );
+
+// Replace the README.md from target project
+const readme = fs.readFileSync(`${targetProjectPath}/README.md`, 'utf-8');
+fs.writeFileSync(
+  'README.md',
+  readme,
+  'utf-8'
+)
+
 // Execute "npm publish" to publish
 execSync(`npm publish --tag ${tag}`);

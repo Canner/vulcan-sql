@@ -27,6 +27,5 @@
         "linter": "eslint"
       }
     }
-  },
-  "defaultProject": "catalog-server"
+  }
 }
