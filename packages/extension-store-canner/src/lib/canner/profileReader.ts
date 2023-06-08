@@ -3,8 +3,8 @@ import {
   ProfileReader,
   VulcanExtensionId,
   VulcanInternalExtension,
-} from '@vulcan-sql/core/models';
-import { ConfigurationError } from '@vulcan-sql/core/utils';
+  ConfigurationError
+} from '@vulcan-sql/core';
 import { CannerStoreConfig, getEnvConfig } from '../config';
 import { createStorageService } from '../storageService';
 import { getIndicatorFilesOfWorkspaces } from './utils';

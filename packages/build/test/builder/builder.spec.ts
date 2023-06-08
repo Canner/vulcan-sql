@@ -13,34 +13,70 @@ import {
   TemplateProviderType,
 } from '@vulcan-sql/core';
 
-it('Builder.build should work', async () => {
-  // Arrange
-  process.chdir(__dirname);
-  const options: IBuildOptions = {
-    'schema-parser': {
-      reader: SchemaReaderType.LocalFile,
-      folderPath: 'source',
-    },
-    document: {
-      specs: [DocumentSpec.oas3],
-    },
-    artifact: {
-      provider: ArtifactBuilderProviderType.LocalFile,
-      serializer: ArtifactBuilderSerializerType.JSON,
-      filePath: 'result.json',
-    },
-    template: {
-      provider: TemplateProviderType.LocalFile,
-      folderPath: 'source',
-    },
-    profiles: [path.resolve(__dirname, 'profile.yaml')],
-  };
-  const builder = new VulcanBuilder(options);
+describe('Test VulcanBuilder', () => {
+  it('Should build successfully', async () => {
+    // Arrange
+    process.chdir(__dirname);
+    const options: IBuildOptions = {
+      'schema-parser': {
+        reader: SchemaReaderType.LocalFile,
+        folderPath: 'source/valid',
+      },
+      document: {
+        specs: [DocumentSpec.oas3],
+      },
+      artifact: {
+        provider: ArtifactBuilderProviderType.LocalFile,
+        serializer: ArtifactBuilderSerializerType.JSON,
+        filePath: 'result.json',
+      },
+      template: {
+        provider: TemplateProviderType.LocalFile,
+        folderPath: 'source/valid',
+      },
+      profiles: [path.resolve(__dirname, 'profile.yaml')],
+    };
+    const builder = new VulcanBuilder(options);
 
-  // Act, Assert
-  const packageOptions = {
-    output: PackagerType.Node,
-    target: PackagerTarget.VulcanServer,
-  };
-  await expect(builder.build(packageOptions)).resolves.not.toThrow();
+    // Act, Assert
+    const packageOptions = {
+      output: PackagerType.Node,
+      target: PackagerTarget.VulcanServer,
+    };
+    await expect(builder.build(packageOptions)).resolves.not.toThrow();
+  });
+
+  it('Should build failed when duplicate urlPath existed in schemas', async () => {
+    // Arrange
+    process.chdir(__dirname);
+    const options: IBuildOptions = {
+      'schema-parser': {
+        reader: SchemaReaderType.LocalFile,
+        folderPath: 'source/invalid',
+      },
+      document: {
+        specs: [DocumentSpec.oas3],
+      },
+      artifact: {
+        provider: ArtifactBuilderProviderType.LocalFile,
+        serializer: ArtifactBuilderSerializerType.JSON,
+        filePath: 'result.json',
+      },
+      template: {
+        provider: TemplateProviderType.LocalFile,
+        folderPath: 'source/invalid',
+      },
+      profiles: [path.resolve(__dirname, 'profile.yaml')],
+    };
+    const builder = new VulcanBuilder(options);
+
+    // Act, Assert
+    const packageOptions = {
+      output: PackagerType.Node,
+      target: PackagerTarget.VulcanServer,
+    };
+    await expect(builder.build(packageOptions)).rejects.toThrow(
+      'Duplicate "urlPath" found in schemas, please check your definition of each schemas.'
+    );
+  });
 });

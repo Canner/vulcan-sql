@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, uniq } from 'lodash';
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
@@ -72,6 +72,13 @@ export class VulcanServer {
     const schemas = artifactBuilder.getArtifact<APISchema[]>(
       BuiltInArtifactKeys.Schemas
     );
+
+    // check if exist duplicate url paths in "schemas" field of artifact
+    const urlPaths = schemas.map((schema) => schema.urlPath);
+    if (uniq(urlPaths).length !== urlPaths.length)
+      throw new ConfigurationError(
+        'Duplicate "urlPath" found in "schemas" field of artifact, please check your artifact or original schemas before running build.'
+      );
 
     // Initialized template engine
     const codeLoader = this.container.get<CodeLoader>(

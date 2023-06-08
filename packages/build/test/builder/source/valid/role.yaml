@@ -1,0 +1,10 @@
+name: Role
+urlPath: /roles
+request:
+  - name: id
+    fieldIn: query
+    description: role id
+    validators:
+      - uuid
+      - required
+profile: test

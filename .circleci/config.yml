@@ -89,6 +89,12 @@ codecov_install: &codecov_install
     chmod +x codecov
     fi
 
+set_private_npm_token: &set_private_npm_token
+  name: Set the NPM Registry with PRIVATE_PACKAGE_NPM_TOKEN to install private packages
+  # Set the NPM Registry with NPM TOKEN to install our private packages
+  command: |
+    npm set //registry.npmjs.org/:_authToken=${PRIVATE_PACKAGE_NPM_TOKEN}
+
 jobs:
   install:
     executor: node-executor
@@ -136,8 +142,8 @@ jobs:
           keys:
             - codecov-0.1.0_4653
       - run: rm -rf ./coverage
-      # Set the NPM Registry with NPM TOKEN for installing our private packages
-      - run: npm set //registry.npmjs.org/:_authToken=${PRIVATE_PACKAGE_NPM_TOKEN}
+      - run:
+          <<: *set_private_npm_token
       - run:
           # Because CircleCI could not set the JSON content like Github, so we encode the credentials JSON content to the base64 in env.
           # Then decode the env to the JSON content and write to "GOOGLE_APPLICATION_CREDENTIALS" env indicated location "gcp-ci-sa.json" to make the GCP storage service test cases work in "extension-store-canner" package.
@@ -172,6 +178,8 @@ jobs:
           <<: *set_env
       - restore_cache:
           <<: *yarn_cache
+      - run:
+          <<: *set_private_npm_token
       - run:
           name: NPM publish
           # running with yarn nx causes npm config issues
