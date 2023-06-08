@@ -71,19 +71,13 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
 
   private async validate(token: string) {
     const res = await this.fetchCannerUser(token);
-    if (res.status == 401) throw new UserError('invalid token');
-    if (!res.data.data?.userMe) {
-      throw new InternalError('Can not retrieve user info from canner server');
-    }
     const cannerUser = res.data.data?.userMe;
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { username, ...restAttrs } = cannerUser;
     return {
       status: AuthStatus.SUCCESS,
       type: this.getExtensionId()!, // method name
       user: {
-        name: cannerUser.username,
+        name: username,
         attr: restAttrs,
       },
     } as AuthResult;
@@ -98,7 +92,7 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
           operationName: 'UserMe',
           variables: {},
           query:
-            'query UserMe{userMe {accountRole attributes createdAt email groups {id name} lastName firstName username',
+            'query UserMe{userMe {accountRole attributes createdAt email groups {id name} lastName firstName username}',
         },
         {
           headers: {
@@ -117,7 +111,7 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
       );
     }
   }
-  private getCannerUrl = (path = '/') => {
+  private getCannerUrl(path = '/') {
     const { host, port, ssl = false } = this.options;
     if (process.env['IS_ON_KUBERNETES'])
       return `http://${process.env['WEB_SERVICE_HOST']}${path}`; // for internal usage, we don't need to specify port
@@ -125,5 +119,5 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
       const protocol = ssl ? 'https' : 'http';
       return `${protocol}://${host}:${port}${path}`;
     }
-  };
+  }
 }

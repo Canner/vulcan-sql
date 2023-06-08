@@ -50,6 +50,7 @@ describe('Example3: get user profile by GET /auth/user-profile API with Authoriz
       groups: [{ id: 1, name: 'group1' }],
     },
   };
+  // TODO: refactor to avoid stubbing private method
   // stub the private function to manipulate getting user info from remote server
   const stubFetchCannerUser = (user: any) => {
     const stub = sinon.default.stub(
