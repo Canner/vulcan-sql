@@ -39,7 +39,22 @@ This package serves as a catalog page for VulcanSQL.
 
 ## Configurations (optional)
 
+These are some configurations related with catalog in `vulcan.yaml`.
+- The listen `port` can be change or just directly use `vulcan catalog -p 4200`.
+- The production packager `folderPath` also can be change if needed.
+
 ```yaml
+# change the listen port
 catalog:
   port: 4200
+
+# change the production packager folder path
+node-packager:
+  catalog-server:
+    folderPath: dist
+docker-packager:
+  catalog-server:
+    folderPath: dist
+
 ```
+
