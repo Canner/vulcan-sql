@@ -70,7 +70,11 @@ export class CannerPersistenceStore extends PersistentStore {
     });
     // get the indicator files path of each workspaces
     const files = await getIndicatorFilesOfWorkspaces(filesInfo);
-    this.logger.debug('Succeed to get the indicator files of each workspaces');
+    this.logger.debug(
+      `Succeed to get the indicator files of each workspaces: ${JSON.stringify(
+        files
+      )}`
+    );
     // get the latest artifacts of each workspaces
     const artifacts = await this.getLatestArtifactsOfWorkspaces(
       storageService,
@@ -78,6 +82,7 @@ export class CannerPersistenceStore extends PersistentStore {
     );
     // merge the artifacts of each workspaces to one artifact
     const artifact = await this.mergeArtifactsOfWorkspaces(artifacts);
+    this.logger.debug(`Succeed to merge the artifacts: ${artifact}`);
     return Buffer.from(JSON.stringify(artifact), 'utf-8');
   }
 
@@ -150,11 +155,21 @@ export class CannerPersistenceStore extends PersistentStore {
         if (artifact.specs['oas3']['paths'])
           Object.entries(artifact.specs['oas3']['paths']).forEach(
             ([apiEndpoint, endpointInfo]) => {
-              // concat the workspace sql name prefix to original api endpoint
-              // ths api endpoint has the "/" prefix, so concat directly
+              // concat the workspace sql name prefix to original api endpoint, the "apiEndpoint" has the "/" prefix, so concat directly
               const endpoint = `${workspaceSqlName}${apiEndpoint}`;
               merged.specs['oas3']['paths'][endpoint] =
                 endpointInfo as oas3.PathItemObject;
+              // Add workspace sql name prefix to original operationId & summary
+              const { summary, operationId } = merged.specs['oas3']['paths'][
+                endpoint
+              ]['get'] as oas3.OperationObject;
+              merged.specs['oas3']['paths'][endpoint]['get'] = {
+                ...merged.specs['oas3']['paths'][endpoint]['get'],
+                // e.g: get/xxx => get/{workspaceSqlName}/xxx
+                operationId: `get/${workspaceSqlName}/${operationId?.slice(4)}`,
+                // e.g: /xxx => /{workspaceSqlName}/xxx
+                summary: `/${workspaceSqlName}${summary}`,
+              };
             }
           );
         return merged;

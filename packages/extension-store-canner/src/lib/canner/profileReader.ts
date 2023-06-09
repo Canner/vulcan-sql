@@ -3,7 +3,7 @@ import {
   ProfileReader,
   VulcanExtensionId,
   VulcanInternalExtension,
-  ConfigurationError
+  ConfigurationError,
 } from '@vulcan-sql/core';
 import { CannerStoreConfig, getEnvConfig } from '../config';
 import { createStorageService } from '../storageService';
@@ -38,7 +38,11 @@ export class CannerProfileReader extends ProfileReader {
     });
     // get the indicator files path of each workspaces
     const files = await getIndicatorFilesOfWorkspaces(filesInfo);
-    this.logger.debug('Succeed to get the indicator files of each workspaces');
+    this.logger.debug(
+      `Succeed to get the indicator files of each workspaces: ${JSON.stringify(
+        files
+      )}`
+    );
 
     // generate profiles from the indicator files of each workspaces
     const { user, password, host, port } = this.envConfig.profile;
@@ -65,7 +69,7 @@ export class CannerProfileReader extends ProfileReader {
           },
           allow: '*',
         } as Profile<Record<string, any>>;
-        this.logger.debug(`created ${profile.name}.`);
+        this.logger.debug(`created "${profile.name}".`);
         return profile;
       })
     );

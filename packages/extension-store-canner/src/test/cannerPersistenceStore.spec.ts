@@ -139,7 +139,6 @@ describe('Test CannerPersistenceStore', () => {
 
   it('Should load successfully when "specs" field is "oas3" format ', async () => {
     // Arrange
-
     // test artifacts from each workspaces downloaded from storage
     const artifacts = {
       ws1: {
@@ -156,7 +155,12 @@ describe('Test CannerPersistenceStore', () => {
           oas3: {
             ...sinon.stubInterface<oas3.OpenAPIObject>(),
             paths: {
-              '/orders': {},
+              '/orders': {
+                get: {
+                  operationId: 'get/orders',
+                  summary: '/orders',
+                },
+              },
             },
           },
         },
@@ -175,7 +179,12 @@ describe('Test CannerPersistenceStore', () => {
           oas3: {
             ...sinon.stubInterface<oas3.OpenAPIObject>(),
             paths: {
-              '/products/:id': {},
+              '/products/:id': {
+                get: {
+                  operationId: 'get/products/:id',
+                  summary: '/products/:id',
+                },
+              },
             },
           },
         },
@@ -209,10 +218,19 @@ describe('Test CannerPersistenceStore', () => {
             description: 'Data API for Canner Enterprise',
           },
           paths: {
-            [`${fakeWorkspaces.ws1.sqlName}/orders`]:
-              artifacts['ws1'].specs['oas3'].paths['/orders'],
-            [`${fakeWorkspaces.ws2.sqlName}/products/:id`]:
-              artifacts['ws2'].specs['oas3'].paths['/products/:id'],
+            [`${fakeWorkspaces.ws1.sqlName}/orders`]: {
+              get: {
+                operationId: `get/${fakeWorkspaces.ws1.sqlName}/orders`,
+                summary: `/${fakeWorkspaces.ws1.sqlName}/orders`,
+              },
+            },
+
+            [`${fakeWorkspaces.ws2.sqlName}/products/:id`]: {
+              get: {
+                operationId: `get/${fakeWorkspaces.ws2.sqlName}/products/:id`,
+                summary: `/${fakeWorkspaces.ws2.sqlName}/products/:id`,
+              },
+            },
           },
         },
       },
