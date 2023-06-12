@@ -53,6 +53,7 @@ export class Evaluator {
         );
         continue;
       }
+      logger.debug(`profile: ${profile.name}, allow: ${profile.allow}`);
       this.profiles.set(profile.name, this.getConstraints(profile.allow));
     }
   }

@@ -122,7 +122,7 @@ describe('Test CannerProfileReader', () => {
     };
     const expected = [
       {
-        name: `profile-${fakeWorkspaces.ws1.sqlName}`,
+        name: `canner-${fakeWorkspaces.ws1.sqlName}`,
         type: 'canner',
         connection: {
           ...connectionInfo,
@@ -131,7 +131,7 @@ describe('Test CannerProfileReader', () => {
         allow: '*',
       },
       {
-        name: `profile-${fakeWorkspaces.ws2.sqlName}`,
+        name: `canner-${fakeWorkspaces.ws2.sqlName}`,
         type: 'canner',
         connection: {
           ...connectionInfo,
