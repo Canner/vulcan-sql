@@ -70,6 +70,9 @@
       "@vulcan-sql/core/validators/built-in-validators/*": [
         "packages/core/src/lib/validators/built-in-validators/*"
       ],
+      "@vulcan-sql/extension-authenticator-canner": [
+        "packages/extension-authenticator-canner/src/index.ts"
+      ],
       "@vulcan-sql/extension-dbt": ["packages/extension-dbt/src/index"],
       "@vulcan-sql/extension-debug-tools": [
         "packages/extension-debug-tools/src/index.ts"
@@ -77,14 +80,14 @@
       "@vulcan-sql/extension-driver-bq": [
         "packages/extension-driver-bq/src/index.ts"
       ],
+      "@vulcan-sql/extension-driver-canner": [
+        "packages/extension-driver-canner/src/index.ts"
+      ],
       "@vulcan-sql/extension-driver-duckdb": [
         "packages/extension-driver-duckdb/src/index.ts"
       ],
       "@vulcan-sql/extension-driver-pg": [
         "packages/extension-driver-pg/src/index.ts"
-      ],
-      "@vulcan-sql/extension-driver-canner": [
-        "packages/extension-driver-canner/src/index.ts"
       ],
       "@vulcan-sql/extension-driver-snowflake": [
         "packages/extension-driver-snowflake/src/index.ts"

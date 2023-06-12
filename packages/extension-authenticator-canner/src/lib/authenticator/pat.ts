@@ -1,8 +1,6 @@
 import {
-  UserError,
   ConfigurationError,
   VulcanExtensionId,
-  VulcanInternalExtension,
   InternalError,
 } from '@vulcan-sql/core';
 import {
@@ -10,10 +8,10 @@ import {
   KoaContext,
   AuthStatus,
   AuthResult,
-  AuthType,
-} from '@vulcan-sql/serve/models';
+} from '@vulcan-sql/serve';
 import { isEmpty } from 'lodash';
 import axios from 'axios';
+import config from '../config';
 
 export interface CannerPATOptions {
   host: string;
@@ -22,8 +20,7 @@ export interface CannerPATOptions {
   ssl: boolean;
 }
 
-@VulcanInternalExtension('auth')
-@VulcanExtensionId(AuthType.CannerPAT)
+@VulcanExtensionId('canner-pat')
 export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> {
   private options: CannerPATOptions = {} as CannerPATOptions;
 
@@ -33,9 +30,7 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async getTokenInfo(ctx: KoaContext): Promise<any> {
-    throw new InternalError(
-      `${AuthType.CannerPAT} does not support token generate.`
-    );
+    throw new InternalError(`canner-pat does not support token generate.`);
   }
 
   public async authCredential(context: KoaContext) {
@@ -45,14 +40,16 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
     };
     const authorize = context.request.headers['authorization'];
     if (
+      // no need to check this.options because it a external extension,
+      // it must be configured correctly to be load into container and can be used in authenticate middleware
       !authorize ||
       !authorize.toLowerCase().startsWith(this.getExtensionId()!)
     )
       return incorrect;
 
-    if (isEmpty(this.options) || !this.options.host || !this.options.port)
+    if (isEmpty(this.options) || !this.options.host)
       throw new ConfigurationError(
-        'please provide correct connection information to Canner Enterprise, including "host" and "port".'
+        'please provide correct connection information to Canner Enterprise, including "host".'
       );
 
     // validate request auth token
@@ -92,7 +89,7 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
           operationName: 'UserMe',
           variables: {},
           query:
-            'query UserMe{userMe {accountRole attributes createdAt email groups {id name} lastName firstName username}',
+            'query UserMe{userMe {accountRole attributes createdAt email groups {id name} lastName firstName username}}',
         },
         {
           headers: {
@@ -113,11 +110,11 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
   }
   private getCannerUrl(path = '/') {
     const { host, port, ssl = false } = this.options;
-    if (process.env['IS_ON_KUBERNETES'])
+    if (config.isOnKubernetes)
       return `http://${process.env['WEB_SERVICE_HOST']}${path}`; // for internal usage, we don't need to specify port
     else {
       const protocol = ssl ? 'https' : 'http';
-      return `${protocol}://${host}:${port}${path}`;
+      return `${protocol}://${host}${port ? `:${port}` : ''}${path}`;
     }
   }
 }

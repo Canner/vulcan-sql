@@ -2,7 +2,7 @@ import * as sinon from 'ts-sinon';
 import axios from 'axios';
 import { IncomingHttpHeaders } from 'http';
 import { Request } from 'koa';
-import { CannerPATAuthenticator } from '@vulcan-sql/serve/auth';
+import { CannerPATAuthenticator } from '../lib/authenticator';
 import { AuthResult, AuthStatus, KoaContext } from '@vulcan-sql/serve/models';
 
 jest.mock('axios');
@@ -44,7 +44,7 @@ const mockOptions = {
 };
 
 it.each([
-  { 'canner-pat': { host: 'mockHost' } },
+  { 'canner-pat': { port: 3000, ssl: true } },
   { 'canner-pat': { port: 3000 } },
   { 'canner-pat': { ssl: false } },
   { 'canner-pat': {} },
@@ -63,7 +63,7 @@ it.each([
 
   // Act, Assert
   await expect(authenticator.authCredential(ctx)).rejects.toThrow(
-    'please provide correct connection information to Canner Enterprise, including "host" and "port".'
+    'please provide correct connection information to Canner Enterprise, including "host".'
   );
 });
 

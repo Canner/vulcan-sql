@@ -3,7 +3,6 @@ import { ServeConfig, VulcanServer } from '@vulcan-sql/serve';
 import * as supertest from 'supertest';
 import * as md5 from 'md5';
 import defaultConfig from './projectConfig';
-import faker from '@faker-js/faker';
 
 let server: VulcanServer;
 
@@ -76,39 +75,3 @@ it.each([...users])(
   },
   10000
 );
-
-it('Example 2: authenticate user identity by POST /auth/token API using PAT should get 400', async () => {
-  // Arrange
-  const projectConfig: ServeConfig & IBuildOptions = {
-    ...defaultConfig,
-    auth: {
-      enabled: true,
-      options: {
-        'canner-pat': {
-          host: 'mockhost',
-          port: faker.datatype.number({ min: 20000, max: 30000 }),
-          ssl: false,
-        },
-      },
-    },
-  };
-  const builder = new VulcanBuilder(projectConfig);
-  await builder.build();
-  server = new VulcanServer(projectConfig);
-  const httpServer = (await server.start())['http'];
-  // Act
-  const agent = supertest(httpServer);
-
-  // Assert
-  const result = await agent
-    .post('/auth/token')
-    .send({
-      type: 'canner-pat',
-    })
-    .set('Accept', 'application/json')
-    .set('Authorization', 'Canner-PAT mocktoken');
-  expect(result.status).toBe(400);
-  expect(JSON.parse(result.text).message).toBe(
-    'canner-pat does not support token generate.'
-  );
-}, 10000);

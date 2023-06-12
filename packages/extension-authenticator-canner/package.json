@@ -1,0 +1,30 @@
+{
+  "name": "@vulcan-sql/extension-authenticator-canner",
+  "description": "Canner Enterprise authenticator for Vulcan SQL",
+  "version": "0.4.0",
+  "type": "commonjs",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "vulcan",
+    "vulcan-sql",
+    "data",
+    "sql",
+    "database",
+    "data-warehouse",
+    "data-lake",
+    "api-builder",
+    "postgres",
+    "pg"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Canner/vulcan.git"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "@vulcan-sql/core": "~0.4.0-0",
+    "@vulcan-sql/serve": "~0.4.0-0"
+  }
+}

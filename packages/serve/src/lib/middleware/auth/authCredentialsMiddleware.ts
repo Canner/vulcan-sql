@@ -46,8 +46,6 @@ export class AuthCredentialsMiddleware extends BaseAuthMiddleware {
 
     // pass current context to auth token for users
     for (const name of Object.keys(this.authenticators)) {
-      // skip the disappeared auth type name in options
-      if (!this.options[name]) continue;
       // auth token
       const result = await this.authenticators[name].authCredential(context);
       // if state is indeterminate, change to next authentication

@@ -96,6 +96,7 @@ export class PasswordFileAuthenticator extends BaseAuthenticator<PasswordFileOpt
 
     const authorize = context.request.headers['authorization'];
     if (
+      !this.getOptions() ||
       !authorize ||
       !authorize.toLowerCase().startsWith(this.getExtensionId()!)
     )
