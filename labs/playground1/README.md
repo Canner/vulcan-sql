@@ -19,3 +19,7 @@ make
 ## Testing Data
 
 After installation, you can find `artists.csv` and `artworks.csv` under folder `test-data`. They are the data we used for this playground. You can also access the data base via [DuckDB CLI](https://duckdb.org/docs/api/cli): `duckdb ./test-data/moma.db`
+
+## Examples
+
+We provide some examples in the `examples` folder to show how to configured your Vulcan API
