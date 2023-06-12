@@ -11,6 +11,7 @@ import {
 } from '../lib/canner/persistenceStore';
 
 describe('Test CannerPersistenceStore', () => {
+  const fakePath = 'fake-path';
   // fake workspaceId
   const fakeWorkspaces = {
     // fake workspace id and sql name
@@ -41,21 +42,25 @@ describe('Test CannerPersistenceStore', () => {
   };
   const fakeStorageListedObjectsInfo = {
     ws1: {
-      indicator: { name: `${fakeWorkspaces.ws1.id}/vulcansql/indicator.json` },
+      indicator: {
+        name: `${fakePath}/${fakeWorkspaces.ws1.id}/vulcansql/indicator.json`,
+      },
       artifact: {
-        name: `${fakeWorkspaces.ws1.id}/vulcansql/${fakeWorkspaces.ws1.folders[1]}/result.json`,
+        name: `${fakePath}/${fakeWorkspaces.ws1.id}/vulcansql/${fakeWorkspaces.ws1.folders[1]}/result.json`,
       },
       others: [
-        { name: `${fakeWorkspaces.ws1.id}/notebook` },
-        { name: `${fakeWorkspaces.ws1.id}/notebook_output` },
+        { name: `${fakePath}/${fakeWorkspaces.ws1.id}/notebook` },
+        { name: `${fakePath}/${fakeWorkspaces.ws1.id}/notebook_output` },
       ],
     },
     ws2: {
-      indicator: { name: `${fakeWorkspaces.ws2.id}/vulcansql/indicator.json` },
-      artifact: {
-        name: `${fakeWorkspaces.ws2.id}/vulcansql/${fakeWorkspaces.ws2.folders[1]}/result.json`,
+      indicator: {
+        name: `${fakePath}/${fakeWorkspaces.ws2.id}/vulcansql/indicator.json`,
       },
-      others: [{ name: `${fakeWorkspaces.ws2.id}/data` }],
+      artifact: {
+        name: `${fakePath}/${fakeWorkspaces.ws2.id}/vulcansql/${fakeWorkspaces.ws2.folders[1]}/result.json`,
+      },
+      others: [{ name: `${fakePath}/${fakeWorkspaces.ws2.id}/data` }],
     },
   };
 
@@ -128,8 +133,14 @@ describe('Test CannerPersistenceStore', () => {
       .stub(storageServiceModule, 'createStorageService')
       .resolves(stubStorageService);
 
-    const stubOption = sinon.stubInterface<ArtifactBuilderOptions>();
-    const store = new CannerPersistenceStore(stubOption, {}, 'Canner');
+    const store = new CannerPersistenceStore(
+      {
+        ...sinon.stubInterface<ArtifactBuilderOptions>(),
+        filePath: fakePath,
+      },
+      {},
+      'Canner'
+    );
 
     // Act, Assert
     await expect(store.load()).rejects.toThrowError(
@@ -269,8 +280,14 @@ describe('Test CannerPersistenceStore', () => {
       .stub(storageServiceModule, 'createStorageService')
       .resolves(stubStorageService);
 
-    const stubOption = sinon.stubInterface<ArtifactBuilderOptions>();
-    const store = new CannerPersistenceStore(stubOption, {}, 'Canner');
+    const store = new CannerPersistenceStore(
+      {
+        ...sinon.stubInterface<ArtifactBuilderOptions>(),
+        filePath: fakePath,
+      },
+      {},
+      'Canner'
+    );
 
     const mergedArtifact = JSON.parse((await store.load()).toString('utf-8'));
     // Act, Assert

@@ -4,7 +4,6 @@ import {
   PersistentStore,
   TYPES,
   VulcanExtensionId,
-  VulcanInternalExtension,
 } from '@vulcan-sql/core';
 import { inject } from 'inversify';
 import * as oas3 from 'openapi3-ts';
@@ -37,7 +36,7 @@ interface WorkspaceArtifact {
  * Used the string to identify the extension Id not by the enum "ArtifactBuilderProviderType".
  * Because if we create another enum to extend the 'ArtifactBuilderProviderType', it seems unnecessary to give the new enum only has 'Canner' as its type."
  *  */
-@VulcanInternalExtension()
+
 @VulcanExtensionId('Canner')
 export class CannerPersistenceStore extends PersistentStore {
   private filePath: string;
@@ -92,14 +91,16 @@ export class CannerPersistenceStore extends PersistentStore {
   ): Promise<WorkspaceArtifact[]> {
     return await Promise.all(
       // download latest artifact buffer content of each workspace by viewing the indicator.json of the each workspace
-      indicators.map(async ({ workspaceId, name }) => {
-        const buffer = await storageService.downObjectAsBuffer({ name });
+      indicators.map(async ({ workspaceId, name: indicatorPath }) => {
+        const buffer = await storageService.downObjectAsBuffer({
+          name: indicatorPath,
+        });
         const indicator = JSON.parse(
           buffer.toString('utf-8')
         ) as ArtifactIndicator;
         const artifact = await this.getWorkspaceArtifact(
           storageService,
-          workspaceId,
+          indicatorPath,
           indicator
         );
         this.logger.debug('Succeed to download latest artifacts of workspaces');
@@ -113,11 +114,13 @@ export class CannerPersistenceStore extends PersistentStore {
 
   private async getWorkspaceArtifact(
     storageService: BaseStorageService,
-    workspaceId: string,
+    indicatorPath: string,
     indicator: ArtifactIndicator
   ): Promise<BuiltInArtifact> {
     const latestArtifactFolder = indicator[indicator.master];
-    const path = `${workspaceId}/vulcansql/${latestArtifactFolder}/result.json`;
+    const vulcanFolderPath = indicatorPath.replace('/indicator.json', '');
+    const path = `${vulcanFolderPath}/${latestArtifactFolder}/result.json`;
+    this.logger.debug(`Download the artifact from path: ${path}`);
     // download from artifact path name
     const buffer = await storageService.downObjectAsBuffer({
       name: path,

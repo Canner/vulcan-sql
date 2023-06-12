@@ -2,7 +2,6 @@ import {
   Profile,
   ProfileReader,
   VulcanExtensionId,
-  VulcanInternalExtension,
   ConfigurationError,
 } from '@vulcan-sql/core';
 import { CannerStoreConfig, getEnvConfig } from '../config';
@@ -19,7 +18,6 @@ export interface CannerProfileReaderOptions {
  * Used the string to identify the extension Id not by the enum "LocalFileProfileReader".
  * Because if we create another enum to extend the 'LocalFileProfileReader', it seems unnecessary to give the new enum only has 'Canner' as its type."
  *  */
-@VulcanInternalExtension()
 @VulcanExtensionId('Canner')
 export class CannerProfileReader extends ProfileReader {
   private envConfig: CannerStoreConfig = getEnvConfig();
@@ -58,7 +56,7 @@ export class CannerProfileReader extends ProfileReader {
         ) as ArtifactIndicator;
         const workspaceSqlName = indicator[workspaceId];
         const profile = {
-          name: `profile-${workspaceSqlName}`,
+          name: `canner-${workspaceSqlName}`,
           type: 'canner',
           connection: {
             user,
