@@ -36,11 +36,3 @@ This extension let Data API request can be authenticated with [Canner PAT](https
           # indicate using http or https default is false
           ssl: true
    ```
-
-## Testing
-
-```bash
-nx test extension-authenticator-canner
-```
-
-This library was generated with [Nx](https://nx.dev).

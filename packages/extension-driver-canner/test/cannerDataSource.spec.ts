@@ -60,7 +60,7 @@ it('Data source should export successfully', async () => {
   fs.rmSync('tmp', { recursive: true, force: true });
 }, 100000);
 
-it('Data source should throw when fail to export data', async () => {
+it('Data source should throw error when fail to export data', async () => {
   // Arrange
   // TODO: refactor to avoid stubbing private method
   // stub the private function to manipulate getting error from the remote server
@@ -91,7 +91,7 @@ it('Data source should throw when fail to export data', async () => {
   fs.rmSync('tmp', { recursive: true, force: true });
 }, 100000);
 
-it('Data source should throw when given directory is not exist', async () => {
+it('Data source should throw error when given directory is not exist', async () => {
   // Arrange
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
@@ -106,7 +106,7 @@ it('Data source should throw when given directory is not exist', async () => {
   ).rejects.toThrow();
 }, 100000);
 
-it('Data source should throw when given profile name is not exist', async () => {
+it('Data source should throw error when given profile name is not exist', async () => {
   // Arrange
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();

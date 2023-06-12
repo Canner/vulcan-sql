@@ -199,7 +199,7 @@ it('Should auth credential successful when request header "authorization" pass t
 });
 
 // Token info
-it('Should throw when use getTokenInfo with cannerPATAuthenticator', async () => {
+it('Should throw error when use getTokenInfo with cannerPATAuthenticator', async () => {
   // Arrange
   const ctx = {
     ...sinon.stubInterface<KoaContext>(),
