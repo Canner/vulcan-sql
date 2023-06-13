@@ -60,23 +60,6 @@ describe('Test auth router middleware', () => {
     sinon.default.restore();
   });
 
-  it.each([[{}], [undefined]])(
-    'Should throw error when options = %p',
-    async (options) => {
-      // Arrange
-      const expected = new Error(
-        'please set at least one auth type and user credential when you enable the "auth" options, currently support types: "".'
-      );
-
-      // Act
-      const middleware = new AuthRouterMiddleware({ options: options }, '', []);
-
-      const activateFunc = async () => await middleware.activate();
-
-      expect(activateFunc).rejects.toThrow(expected);
-    }
-  );
-
   it('Should active corresponding authenticator when activate middleware', async () => {
     // Arrange
     const middleware = new AuthRouterMiddleware(

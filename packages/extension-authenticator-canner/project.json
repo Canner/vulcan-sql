@@ -1,0 +1,32 @@
+{
+  "root": "packages/extension-authenticator-canner",
+  "sourceRoot": "packages/extension-authenticator-canner/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/extension-authenticator-canner",
+        "main": "packages/extension-authenticator-canner/src/index.ts",
+        "tsConfig": "packages/extension-authenticator-canner/tsconfig.lib.json",
+        "assets": ["packages/extension-authenticator-canner/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/extension-authenticator-canner/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/extension-authenticator-canner"],
+      "options": {
+        "jestConfig": "packages/extension-authenticator-canner/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

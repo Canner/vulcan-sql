@@ -11,7 +11,7 @@ export enum AuthType {
 export interface AuthUserInfo {
   name: string;
   attr: {
-    [field: string]: string | boolean | number;
+    [field: string]: string | boolean | number | any[];
   };
 }
 

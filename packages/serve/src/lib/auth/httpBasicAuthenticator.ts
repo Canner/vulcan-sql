@@ -115,6 +115,7 @@ export class BasicAuthenticator extends BaseAuthenticator<BasicOptions> {
 
     const authorize = context.request.headers['authorization'];
     if (
+      !this.getOptions() ||
       !authorize ||
       !authorize.toLowerCase().startsWith(this.getExtensionId()!)
     )

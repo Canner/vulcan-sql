@@ -38,27 +38,6 @@ describe('Test auth credential middleware', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it.each([[{}], [undefined]])(
-    'Should throw error when options = %p',
-    async (options) => {
-      // Arrange
-      const expected = new Error(
-        'please set at least one auth type and user credential when you enable the "auth" options, currently support types: "".'
-      );
-
-      // Act
-      const middleware = new AuthCredentialsMiddleware(
-        { options: options },
-        '',
-        [],
-        new ProjectOptions()
-      );
-      const activateFunc = async () => await middleware.activate();
-
-      expect(activateFunc).rejects.toThrow(expected);
-    }
-  );
-
   it.each([
     ['basic', sinon.stubInterface<BasicAuthenticator>()],
     ['simple-token', sinon.stubInterface<SimpleTokenAuthenticator>()],

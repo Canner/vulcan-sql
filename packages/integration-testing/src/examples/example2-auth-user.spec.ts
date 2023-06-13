@@ -23,29 +23,6 @@ const users = [
   },
 ];
 
-const projectConfig: ServeConfig & IBuildOptions = {
-  ...defaultConfig,
-  auth: {
-    enabled: true,
-    options: {
-      basic: {
-        'users-list': [
-          {
-            name: users[0].name,
-            md5Password: md5(users[0].password),
-            attr: users[0].attr,
-          },
-          {
-            name: users[1].name,
-            md5Password: md5(users[1].password),
-            attr: users[1].attr,
-          },
-        ],
-      },
-    },
-  },
-};
-
 afterEach(async () => {
   await server.close();
 });
@@ -54,6 +31,28 @@ it.each([...users])(
   'Example 2: authenticate user identity by POST /auth/token API',
   async ({ name, password }) => {
     // Arrange
+    const projectConfig: ServeConfig & IBuildOptions = {
+      ...defaultConfig,
+      auth: {
+        enabled: true,
+        options: {
+          basic: {
+            'users-list': [
+              {
+                name: users[0].name,
+                md5Password: md5(users[0].password),
+                attr: users[0].attr,
+              },
+              {
+                name: users[1].name,
+                md5Password: md5(users[1].password),
+                attr: users[1].attr,
+              },
+            ],
+          },
+        },
+      },
+    };
     const expected = Buffer.from(`${name}:${password}`).toString('base64');
     const builder = new VulcanBuilder(projectConfig);
     await builder.build();
