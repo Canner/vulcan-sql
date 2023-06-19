@@ -1,10 +1,78 @@
 urlPath: /artist/:id/works
+description: Get the artist's artworks information.
 request:
   - fieldName: id
     fieldIn: path
     description: constituent id
     validators:
       - required
+response:
+  - name: Title
+    description: The title of the artwork
+    required: true
+  - name: Artist
+    description: The name of artist
+    required: true
+  - name: ConstituentID
+    description: The ID of the artist
+    required: true
+  - name: ArtistBio
+    description: Born location and year
+  - name: Nationality
+    description: Nationality
+  - name: BeginDate
+    description: The year the artist was born
+  - name: EndDate
+    description: The year the artist died
+  - name: Gender
+    description: Male/Female/Non-binary
+  - name: Date
+    description: The date of the artwork
+  - name: Medium
+    description: The medium of the artwork
+    required: true
+  - name: Dimensions
+    description: The dimensions of the artwork
+  - name: CreditLine
+    description: The credit line of the artwork
+  - name: AccessionNumber
+    description: The accession number of the artwork
+  - name: Classification
+    description: The classification of the artwork
+  - name: Department
+    description: The department of the artwork
+  - name: DateAcquired
+    description: The date the artwork was acquired
+  - name: Cataloged
+    description: Whether the artwork is cataloged(N/Y)
+    required: true
+  - name: ObjectID
+    description: The ID of the artwork
+    required: true
+  - name: URL
+    description: The URL of the artwork
+    required: true
+  - name: ThumbnailURL
+    description: The thumbnail URL of the artwork
+    required: true
+  - name: Circumference (cm)
+    description: The circumference of the artwork
+  - name: Depth (cm)
+    description: The depth of the artwork
+  - name: Diameter (cm)
+    description: The diameter of the artwork
+  - name: Height (cm)
+    description: The height of the artwork
+  - name: Length (cm)
+    description: The length of the artwork
+  - name: Weight (kg)
+    description: The weight of the artwork
+  - name: Width (cm)
+    description: The width of the artwork
+  - name: Seat Height (cm)
+    description: The seat height of the artwork
+  - name: Duration (sec.)
+    description: The duration of the artwork
 sample:
   parameters:
     id: '1'

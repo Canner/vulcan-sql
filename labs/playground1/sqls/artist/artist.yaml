@@ -1,10 +1,32 @@
 urlPath: /artist/:id
+description: Get the artist information.
 request:
   - fieldName: id
     fieldIn: path
     description: constituent id
     validators:
       - required
+response:
+  - name: ConstituentID
+    description: The ID of the artist
+    required: true
+  - name: DisplayName
+    description: The name of the artist
+    required: true
+  - name: ArtistBio
+    description: Born location and year
+  - name: Nationality
+    description: Nationality
+  - name: Gender
+    description: Male/Female/Non-binary
+  - name: BeginDate
+    description: The year the artist was born
+  - name: EndDate
+    description: The year the artist died
+  - name: Wiki QID
+    description: The QID of the artist on Wikidata
+  - name: ULAN
+    description: The ULAN of the artist
 sample:
   parameters:
     id: '1'
