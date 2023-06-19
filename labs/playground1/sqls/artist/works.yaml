@@ -45,16 +45,13 @@ response:
     description: The date the artwork was acquired
   - name: Cataloged
     description: Whether the artwork is cataloged(N/Y)
-    required: true
   - name: ObjectID
     description: The ID of the artwork
     required: true
   - name: URL
     description: The URL of the artwork
-    required: true
   - name: ThumbnailURL
     description: The thumbnail URL of the artwork
-    required: true
   - name: Circumference (cm)
     description: The circumference of the artwork
   - name: Depth (cm)
