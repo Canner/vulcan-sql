@@ -1,0 +1,14 @@
+{
+  "pkg": {
+    "assets": [
+      "node_modules/@vulcan-sql/**/*.js.map",
+      "node_modules/@vulcan-sql/**/*.html",
+      "node_modules/@vulcan-sql/**/*.json",
+      "node_modules/@vulcan-sql/**/*.sql",
+      "node_modules/@vulcan-sql/**/*.csv",
+      "node_modules/@vulcan-sql/**/*.yaml",
+      "node_modules/duckdb/lib/binding/duckdb.node"
+    ],
+    "outputPath": "dist-bin"
+  }
+}
