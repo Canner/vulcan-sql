@@ -1,10 +1,10 @@
 import React from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import DiveIn from '@site/src/components/DiveIn';
 import Overview from '../components/Overview';
 import Features from '../components/Features';
 import Head from '@docusaurus/Head';
+import Community from '@site/src/components/Community';
 
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
@@ -17,7 +17,7 @@ export default function Home(): JSX.Element {
       <main>
         <Overview />
         <Features />
-        <DiveIn />
+        <Community />
       </main>
     </Layout>
   );

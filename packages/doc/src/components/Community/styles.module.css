@@ -1,0 +1,121 @@
+.communitySection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 120px;
+  margin-bottom: 40px;
+  gap: 24px;
+}
+
+.title {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 56px;
+  line-height: 46px;
+  margin: 0px;
+  color: var(--ifm-color-emphasis-900);
+}
+
+.descriptionBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  gap: 32px;
+}
+
+.description {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 30px;
+  max-width: 1040px;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 8px;
+}
+
+.githubSection {
+  margin-top: 56px;
+  display: flex;
+  padding: 0px 80px;
+  min-height: 588px;
+  justify-content: center;
+}
+
+.actionIcon {
+  height: 20px;
+  margin-right: 8px;
+}
+
+.actionButton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 16px;
+  color: var(--ifm-color-gray-700);
+  text-align: center;
+  font-size: 18px;
+  border: 1px solid var(--ifm-color-gray-300);
+  border-radius: 4px;
+  background-color: var(--ifm-link-button-background-color);
+}
+
+.actionButton:hover {
+  background-color: var(--ifm-link-button-background-color);
+  color: var(--ifm-color-gray-700);
+}
+
+.cardBlock {
+  font-size: 14px;
+  border: 1px solid var(--ifm-color-gray-300);
+  border-radius: 4px;
+  height: 282px;
+  padding: 16px 24px;
+  min-width: 336px;
+  margin-bottom: 24px;
+}
+
+.cardContent p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+}
+
+.cardMeta {
+  color: var(--ifm-color-emphasis-700);
+}
+
+.cardMeta:hover {
+  text-decoration: none;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.cardMeta strong {
+  color: var(--ifm-font-color-base);
+}
+
+.cardAvatar {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--ifm-color-gray-200);
+}
+
+.cardAvatarBlock {
+  align-items: center
+}
+
+.gitHubIcon {
+  background-color: var(--ifm-link-button-background-color);
+  width: 30px;
+  height: 30px;
+}

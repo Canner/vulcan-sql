@@ -3,6 +3,7 @@
   --ifm-font-family-base: 'Source Sans Pro', sans-serif;
   --ifm-sidebar-menu-color: var(--ifm-color-gray-700);
   --ifm-sidebar-title-color: var(--ifm-color-gray-900);
+  --ifm-link-button-background-color: var(--ifm-color-white);
 }
 
 /* If you have a different syntax highlighting theme for dark mode. */
@@ -11,6 +12,7 @@
   --docusaurus-highlighted-code-line-bg: rgb(58, 53, 77);
   --ifm-sidebar-menu-color: var(--ifm-color-gray-400);
   --ifm-sidebar-title-color: var(--ifm-color-gray-200);
+  --ifm-link-button-background-color: var(--ifm-color-gray-100);
 }
 
 .sidebar-title {
