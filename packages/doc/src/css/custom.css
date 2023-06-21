@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
 :root {
   --docusaurus-highlighted-code-line-bg: rgb(233, 233, 233);
   --ifm-font-family-base: 'Source Sans Pro', sans-serif;
   --ifm-sidebar-menu-color: var(--ifm-color-gray-700);
   --ifm-sidebar-title-color: var(--ifm-color-gray-900);
+  --ifm-link-button-background-color: var(--ifm-color-white);
 }
 
 /* If you have a different syntax highlighting theme for dark mode. */
@@ -11,13 +14,14 @@
   --docusaurus-highlighted-code-line-bg: rgb(58, 53, 77);
   --ifm-sidebar-menu-color: var(--ifm-color-gray-400);
   --ifm-sidebar-title-color: var(--ifm-color-gray-200);
+  --ifm-link-button-background-color: var(--ifm-color-gray-100);
 }
 
 .sidebar-title {
   margin-top: 1.5rem;
   padding: 0 var(--ifm-menu-link-padding-horizontal);
   color: var(--ifm-sidebar-title-color);
-  font-weight: var(--ifm-font-weight-bold)
+  font-weight: var(--ifm-font-weight-bold);
 }
 
 .menu__link {

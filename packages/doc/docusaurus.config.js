@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'VulcanSQL',
-  tagline: 'Build Analytics APIs from parameterized SQL on your data',
+  tagline: 'Build Data APIs from parameterized SQL on your data',
   url: 'https://vulcansql.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -88,16 +88,24 @@ const config = {
             title: 'Documentation',
             items: [
               {
-                label: 'Get Started',
+                label: 'Getting Started',
                 to: '/docs/intro',
               },
               {
-                label: 'Analytics API',
-                to: '/docs/connect/overview',
+                label: 'Building Data API',
+                to: '/docs/develop/init',
               },
               {
-                label: 'API Plugins',
+                label: 'API Catalog & Documentation',
+                to: '/docs/catalog/catalog-intro',
+              },
+              {
+                label: 'API Configuration',
                 to: '/docs/api-plugin/overview',
+              },
+              {
+                label: 'Deployment and Maintenance',
+                to: '/docs/deployment',
               },
             ],
           },

@@ -38,7 +38,7 @@ const sidebars = {
     },
     {
       type: 'html',
-      value: '<img src="/img/lightning.svg" width="20em" class="menu_icon" /> Building Analytics API',
+      value: '<img src="/img/lightning.svg" width="20em" class="menu_icon" /> Building Data API',
       className: 'sidebar-title',
     },
     {

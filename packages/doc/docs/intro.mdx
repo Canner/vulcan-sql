@@ -1,7 +1,8 @@
 # Introduction
 
 ## What is VulcanSQL
-VulcanSQL empowers you to build robust and scalable APIs by leveraging the power of SQL templates, similar to how you use SQL templates in [dbt](https://www.getdbt.com/) to transform data. With VulcanSQL, you can encapsulate your logic and transformations within SQL templates, enabling you to effortlessly create advanced Analytics APIs.
+
+VulcanSQL empowers you to build robust and scalable APIs by leveraging the power of SQL templates, similar to how you use SQL templates in [dbt](https://www.getdbt.com/) to transform data. With VulcanSQL, you can encapsulate your logic and transformations within SQL templates, enabling you to effortlessly create advanced Data APIs.
 
 ![vulcan overview](../static/img/vulcan-concept-docs.png)
 
@@ -10,12 +11,13 @@ Whether you need to filter data from a data warehouse, perform data validation o
 ## Main Features
 To fully utilize the capabilities of VulcanSQL, it is essential to familiarize yourself with the available features and functionalities. The documentation is organized into several sections, each covering an important aspect of the framework. Here's a brief overview of the main features:
 
-### Building Analytics API
+### Building Data API
+
 1. [Connecting to Data Sources](./connect/overview):
 Discover how to seamlessly integrate VulcanSQL with your data warehouse to unlock the power of analytics.
 
 1. [Writing SQL Templates](./develop/overview):
-Leverage the power of SQL templates to encapsulate your logic and transformations. Discover how to structure and write SQL templates that serve as the foundation for your analytics APIs, enabling you to manipulate and transform data with ease.
+   Leverage the power of SQL templates to encapsulate your logic and transformations. Discover how to structure and write SQL templates that serve as the foundation for your data APIs, enabling you to manipulate and transform data with ease.
 
 1. [Caching Datasets](./develop/cache):
 Explore techniques for caching datasets in VulcanSQL to optimize query performance and reduce the load on data sources. This feature enables you to store and reuse intermediate results, improving overall API response times.
@@ -31,13 +33,14 @@ Explore the mechanisms and practices for handling data privacy in VulcanSQL. It 
 
 ### API Catalog & Documentation
 1. [API Catalog](catalog/catalog-intro):
-Learn how to create an API catalog with VulcanSQL, providing a centralized repository for all your Analytics APIs. This catalog enables easy discovery, management, and sharing of APIs within your organization.
+   Learn how to create an API catalog with VulcanSQL, providing a centralized repository for all your Data APIs. This catalog enables easy discovery, management, and sharing of APIs within your organization.
 
 1. [API Documentation](./develop/api-doc):
 Understand how to generate comprehensive API documentation (OpenAPI Specification) with VulcanSQL, including endpoints, parameters, response formats, and examples.
 
 ### API Configuration
-Discover the extensibility of VulcanSQL through API plugins. This section explains how to leverage pre-built plugins to enhance the functionality of your Analytics APIs, including [Response Format](./api-plugin/format), [Pagination](./api-plugin/pagination), [CORS](./api-plugin/cors), [Rate Limit](./api-plugin/rate-limit) and [Access Log](./api-plugin/access-log).
+
+Discover the extensibility of VulcanSQL through API plugins. This section explains how to leverage pre-built plugins to enhance the functionality of your Data APIs, including [Response Format](./api-plugin/format), [Pagination](./api-plugin/pagination), [CORS](./api-plugin/cors), [Rate Limit](./api-plugin/rate-limit) and [Access Log](./api-plugin/access-log).
 
 ### Deployment and Maintenance
 Understand the deployment and maintenance considerations for VulcanSQL in a production environment. This section covers topics such as [packaging and deploying your APIs](./deployment).
