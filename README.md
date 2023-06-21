@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.imgur.com/P7lJaK6.png" width="600" >
+  <img src="https://i.imgur.com/9xLnLed.png" width="600" >
 </p>
 
 <p align="center">
@@ -22,13 +22,13 @@
 
 ## What is VulcanSQL
 
-> **VulcanSQL is an Data API generator** that helps data engineers to build scalable data APIs using only SQL without writing any backend code.
+> **VulcanSQL is an Data API Framework** that helps analytics engineers build scalable data APIs using only SQL templates without any backend skills required.
 
-![overview of VulcanSQL](https://imgur.com/eKYhqTO.png)
+![overview of VulcanSQL](https://i.imgur.com/JvCIZQ1.png)
 
 ## Why VulcanSQL?
 
-APIs are still the primary programming interface for data consumers to utilize data in their daily business applications, such as BI, reports, dashboards, spreadsheets, and web applications. However, data stored in data warehouses are not accessible for those users and tools without an API consumption layer.
+APIs are still the primary programming interface for data consumers to utilize data in their daily business applications, such as web applications, automation services, spreadsheets and internal tools. However, data stored in data warehouses are not accessible for those users and tools without an API consumption layer.
 
 VulcanSQL aims to solve that problem by translating SQL into flexible APIs; it is contextual in that it can translate APIs into the corresponding SQL based on different user personas and business contexts. It is also extendable with custom business logic and complex SQL translation.
 
@@ -39,7 +39,7 @@ When scaling data usages outside the traditional data team to business users and
 ## Features
 
 - Parameterized SQL into scalable and secure APIs
-- Built-in API access and version control
+- Built-in API access control
 - Built-in self-generated API documentation
 - Integrate with existing toolsets, such as Excel / Google spreadsheet, Zapier, Retool, etc.
 
