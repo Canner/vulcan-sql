@@ -136,7 +136,7 @@ You can add a number validator on `userId` input.
 `yaml parameters: userId: in: query validators: # set your validator here. - name: 'number' `
 </details>
 
-### Step 2: Build self-serve documentation and catalog
+### Step 2: Build self-service documentation and catalog
 
 VulcanSQL will automatically build documentation and catalog for you.
 
