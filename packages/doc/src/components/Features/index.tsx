@@ -138,8 +138,6 @@ const FeatureList: FeatureData[] = [
 export default function HomepageFeatures(): JSX.Element {
   return (
     <section className={styles.section}>
-      <h1 className={`text--center ${styles.title}`}>What is VulcanSQL?</h1>
-      <h3 className={`text--center ${styles.cardDescription}`} style={{maxWidth: '900px', marginBottom: '100px'}}>VulcanSQL is an Analytics API framework that helps data analysts to build scalable analytics APIs using only SQL without writing any backend experience.</h3>
       <FeatureCard featureList={FeatureList} />
     </section>
   );

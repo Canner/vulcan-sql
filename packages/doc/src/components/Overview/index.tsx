@@ -1,27 +1,8 @@
 import Link from '@docusaurus/Link';
 import React from 'react';
 import styles from './styles.module.css';
-import OverviewImageUrl from '@site/static/img/vulcan-concept-light.png';
-
-const featureList = [
-  {
-    icon: require('@site/static/img/feature-1-icon.svg').default,
-    title: 'Create Robust APIs with SQL',
-    description: 'Harness the simplicity of SQL to develop scalable and flexible APIs, tailor-made for your needs.',
-  },
-  {
-    icon: require('@site/static/img/feature-2-icon.svg').default,
-    title: 'Dynamic SQL Generation',
-    description:
-      'Generate context-specific SQL tailored to various personas in real time.',
-  },
-  {
-    icon: require('@site/static/img/feature-3-icon.svg').default,
-    title: 'Extendable and Scalable',
-    description:
-      'Modular and extendable with your custom business logic at scale.',
-  },
-];
+import communityStyles from '@site/src/components/Community/styles.module.css';
+import VulcanSQLProcessImageUrl from '@site/static/img/vulcan-process.png';
 
 export default function Overview(): JSX.Element {
   return (
@@ -35,8 +16,16 @@ export default function Overview(): JSX.Element {
         title="GitHub"
       ></iframe>
       <h1 className={`text--center ${styles.title}`}>
-        Build Data APIs From Parameterized SQL
+        Create and Share <strong>Data</strong> <strong>APIs</strong> Fast.
+        <br />
+        Made for Analytics Engineers.
       </h1>
+      <div className={`text--center ${styles.description}`}>
+        VulcanSQL turns your SQL templates into data APIs for efficient data
+        sharing.
+        <br />
+        No backend skills required. Empower your data sharing, faster.
+      </div>
       <Link
         className={`button button--primary ${styles.getStartButton}`}
         to="./docs/intro"
@@ -44,19 +33,11 @@ export default function Overview(): JSX.Element {
         Get started now
       </Link>
       <div className="container">
-        <img src={OverviewImageUrl} style={{ marginTop: '20px' }} alt="Overview of VulcanSQL" />
-        <div className={`row ${styles.featureContainer}`}>
-          {featureList.map((feature) => (
-            <div
-              className={`col col--4 text--center ${styles.feature}`}
-              key={feature.title}
-            >
-              {feature.icon && <feature.icon />}
-              <h3>{feature.title}</h3>
-              <div>{feature.description}</div>
-            </div>
-          ))}
-        </div>
+        <img
+          src={VulcanSQLProcessImageUrl}
+          style={{ margin: '104px auto' }}
+          alt="Process of VulcanSQL"
+        />
       </div>
     </section>
   );
