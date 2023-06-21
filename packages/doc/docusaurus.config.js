@@ -88,16 +88,24 @@ const config = {
             title: 'Documentation',
             items: [
               {
-                label: 'Get Started',
+                label: 'Getting Started',
                 to: '/docs/intro',
               },
               {
-                label: 'Data API',
-                to: '/docs/connect/overview',
+                label: 'Building Data API',
+                to: '/docs/develop/init',
               },
               {
-                label: 'API Plugins',
+                label: 'API Catalog & Documentation',
+                to: '/docs/catalog/catalog-intro',
+              },
+              {
+                label: 'API Configuration',
                 to: '/docs/api-plugin/overview',
+              },
+              {
+                label: 'Deployment and Maintenance',
+                to: '/docs/deployment',
               },
             ],
           },
