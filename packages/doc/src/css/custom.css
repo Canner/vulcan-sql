@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
 :root {
   --docusaurus-highlighted-code-line-bg: rgb(233, 233, 233);
   --ifm-font-family-base: 'Source Sans Pro', sans-serif;
@@ -19,7 +21,7 @@
   margin-top: 1.5rem;
   padding: 0 var(--ifm-menu-link-padding-horizontal);
   color: var(--ifm-sidebar-title-color);
-  font-weight: var(--ifm-font-weight-bold)
+  font-weight: var(--ifm-font-weight-bold);
 }
 
 .menu__link {

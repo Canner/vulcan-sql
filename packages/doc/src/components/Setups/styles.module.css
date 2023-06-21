@@ -1,0 +1,232 @@
+.section {
+  display: inline-block;
+  align-items: center;
+  padding: 0 200px;
+}
+
+.section * {
+  transition: all 0.2s;
+}
+
+.title {
+  color: var(--ifm-color-emphasis-900);
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 56px;
+  line-height: 46px;
+  margin: 120px 0;
+}
+
+.card {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 120px 0;
+}
+
+/* card Container */
+.card .textContainer {
+  margin-bottom: 20px;
+}
+
+.card .imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card .cardTitle {
+  color: var(--ifm-color-emphasis-900);
+  margin-bottom: 24px;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 48px;
+  line-height: 46px;
+}
+
+/* card Description */
+.card .cardDescription {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.card .highlight {
+  color: var(--ifm-color-primary);
+}
+
+.card .bold {
+  font-weight: 800;
+}
+
+.card .imageContainer img {
+  padding: 0;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+
+.card .links a {
+  margin-right: 22px;
+}
+
+/* radioTabs */
+.radioTabs > div {
+  border: 1px solid var(--ifm-color-emphasis-400);
+  border-radius: 10px;
+  padding: 0;
+  margin: 24px 0;
+  height: auto;
+}
+
+.radioTabs input[type='radio'] {
+  display: none;
+}
+
+.radioTabs input[type='radio'] + label {
+  padding: 24px 16px;
+  width: 100%;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 30px;
+  color: var(--ifm-color-emphasis-700);
+
+  display: inline-block;
+  cursor: pointer;
+}
+
+.radioTabs input[type='radio'] + label + p {
+  margin: 0 16px 24px 16px;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 30px;
+  color: var(--ifm-color-emphasis-600);
+  display: none;
+  opacity: 0;
+}
+
+/* radioTabs hover */
+.radioTabs > div[data-is-active='true'],
+.radioTabs > div:hover {
+  border: 1px solid var(--ifm-color-primary);
+}
+
+/* radioTabs checked */
+.radioTabs input[type='radio']:checked + label {
+  padding-bottom: 16px;
+  color: var(--ifm-color-primary);
+}
+
+.radioTabs input[type='radio']:checked + label .inlineLogo path {
+  fill: var(--ifm-color-primary);
+}
+
+.radioTabs input[type='radio']:checked + label + p {
+  opacity: 1;
+  display: block;
+}
+
+/* components */
+/*link*/
+.link {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+/* inlineLogo */
+.inlineLogo {
+  margin-right: 5px;
+  height: 1.1em;
+  vertical-align: text-top;
+}
+
+/* gallery */
+.gallery {
+  margin: 60px 0;
+  padding: 0;
+}
+
+.galleryTitle {
+  padding: 0 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-bottom: 34px;
+}
+
+.galleryTitle h4 {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 32px;
+  line-height: 40px;
+  color: var(--ifm-color-emphasis-900);
+}
+
+.galleryImg {
+  padding: 0;
+}
+
+.gallery img {
+  padding: 0 12px;
+}
+
+/* RWD */
+/* 1440p */
+@media screen and (max-width: 1440px) {
+  .section {
+    padding: 0 100px;
+  }
+}
+/* 1024p */
+@media screen and (max-width: 1024px) {
+  .section {
+    padding: 0 80px;
+  }
+}
+
+/* table */
+@media screen and (min-width: 997px) {
+  /* card Container */
+  .card .textContainer {
+    padding-right: 30px;
+  }
+
+  .card .imageContainer {
+    padding-left: 30px;
+  }
+}
+
+/* pad */
+@media screen and (max-width: 996px) {
+  .section {
+    padding: 0 60px;
+  }
+  .title {
+    margin-bottom: 40px;
+  }
+
+  .cardTitle {
+    margin-bottom: 24px;
+  }
+}
+
+/* phone */
+@media screen and (max-width: 390px) {
+  .section {
+    padding: 0 16px;
+  }
+}
