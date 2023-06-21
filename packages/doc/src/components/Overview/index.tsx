@@ -35,7 +35,7 @@ export default function Overview(): JSX.Element {
         title="GitHub"
       ></iframe>
       <h1 className={`text--center ${styles.title}`}>
-        Build Analytics APIs From Parameterized SQL
+        Build Data APIs From Parameterized SQL
       </h1>
       <Link
         className={`button button--primary ${styles.getStartButton}`}

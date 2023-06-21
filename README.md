@@ -22,7 +22,7 @@
 
 ## What is VulcanSQL
 
-> **VulcanSQL is an Analytics API generator** that helps data engineers to build scalable analytics APIs using only SQL without writing any backend code.
+> **VulcanSQL is an Data API generator** that helps data engineers to build scalable data APIs using only SQL without writing any backend code.
 
 ![overview of VulcanSQL](https://imgur.com/eKYhqTO.png)
 

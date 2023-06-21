@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'VulcanSQL',
-  tagline: 'Build Analytics APIs from parameterized SQL on your data',
+  tagline: 'Build Data APIs from parameterized SQL on your data',
   url: 'https://vulcansql.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -92,7 +92,7 @@ const config = {
                 to: '/docs/intro',
               },
               {
-                label: 'Analytics API',
+                label: 'Data API',
                 to: '/docs/connect/overview',
               },
               {
