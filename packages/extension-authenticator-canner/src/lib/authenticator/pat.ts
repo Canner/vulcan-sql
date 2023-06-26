@@ -81,7 +81,7 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
   }
 
   private async fetchCannerUser(token: string) {
-    const graphqlUrl = this.getCannerUrl('/web/graphql');
+    const graphqlUrl = this.getCannerUrl('/graphql');
     try {
       return await axios.post(
         graphqlUrl,
@@ -110,11 +110,16 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
   }
   private getCannerUrl(path = '/') {
     const { host, port, ssl = false } = this.options;
-    if (config.isOnKubernetes)
-      return `http://${process.env['WEB_SERVICE_HOST']}${path}`; // for internal usage, we don't need to specify port
-    else {
+    // the web endpoint is different between connecting from internal or external
+    if (config.isOnKubernetes) {
+      // the vulcan-sql service and web service is in the same cluster and will not pass the nginx proxy
+      return `${process.env['WEB_ENDPOINT']}${path}`;
+    } else {
       const protocol = ssl ? 'https' : 'http';
-      return `${protocol}://${host}${port ? `:${port}` : ''}${path}`;
+      // canner nginx proxy will redirect all request to web service when path starts with /web
+      const pathPrefix = '/web';
+      const endpoint = `${protocol}://${host}${port ? `:${port}` : ''}`;
+      return `${endpoint}${pathPrefix}${path}`;
     }
   }
 }
