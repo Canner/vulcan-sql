@@ -201,7 +201,10 @@ export default function HomepageFeatures(): JSX.Element {
           </div>
         </div>
         <div className={`${clsx('col col--7')} ${styles.imageContainer}`}>
-          <img src={'./img/vulcan_docker_build.gif'} />
+          <img
+            className={styles.radius}
+            src={'./img/vulcan_docker_build.gif'}
+          />
         </div>
       </div>
 
@@ -219,7 +222,7 @@ export default function HomepageFeatures(): JSX.Element {
           <RadioTabs />
         </div>
         <div className={`${clsx('col col--7')} ${styles.imageContainer}`}>
-          <img src={shareSessionsImgSrc} />
+          <img className={styles.radius} src={shareSessionsImgSrc} />
         </div>
       </div>
     </section>

@@ -46,9 +46,16 @@
 .githubSection {
   margin-top: 56px;
   display: flex;
-  padding: 0px 80px;
+  flex-wrap: wrap;
+  padding: 0px 60px;
   min-height: 588px;
   justify-content: center;
+  width: -webkit-fill-available;
+}
+
+.gitHubCard {
+  width: calc(4 / 12 * 100%);
+  padding: 8px;
 }
 
 .actionIcon {
@@ -80,8 +87,7 @@
   border-radius: 4px;
   height: 282px;
   padding: 16px 24px;
-  min-width: 336px;
-  margin-bottom: 24px;
+  /* margin-bottom: 24px; */
 }
 
 .cardContent p {
@@ -93,6 +99,13 @@
 
 .cardMeta {
   color: var(--ifm-color-emphasis-700);
+}
+
+a.cardMeta {
+  display: block;
+}
+div.cardMeta {
+  margin: 0 10px;
 }
 
 .cardMeta:hover {
@@ -108,14 +121,50 @@
   width: 40px;
   height: 40px;
   border: 1px solid var(--ifm-color-gray-200);
+  overflow: clip;
 }
 
 .cardAvatarBlock {
-  align-items: center
+  align-items: center;
+  display: flex;
+}
+
+.cardAvatarBlock > div {
+  display: grid;
+  justify-content: left;
+}
+
+.cardAvatarBlock span,
+.cardAvatarBlock strong {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .gitHubIcon {
   background-color: var(--ifm-link-button-background-color);
   width: 30px;
   height: 30px;
+  overflow: clip;
+}
+
+/* table */
+@media screen and (min-width: 997px) {
+  .githubSection {
+    padding: 0px 80px;
+  }
+}
+
+/* pad */
+@media screen and (max-width: 996px) {
+  .githubSection {
+    padding: 0px 24px;
+  }
+}
+
+/* phone */
+@media screen and (max-width: 390px) {
+  .githubSection {
+    padding: 0 12px;
+  }
 }

@@ -71,6 +71,10 @@
   height: auto;
 }
 
+img.radius {
+  border-radius: 4px;
+}
+
 .card .links a {
   margin-right: 22px;
 }
@@ -213,7 +217,7 @@
 /* pad */
 @media screen and (max-width: 996px) {
   .section {
-    padding: 0 60px;
+    padding: 0 24px;
   }
   .title {
     margin-bottom: 40px;
@@ -227,6 +231,6 @@
 /* phone */
 @media screen and (max-width: 390px) {
   .section {
-    padding: 0 16px;
+    padding: 0 12px;
   }
 }

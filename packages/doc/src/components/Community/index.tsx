@@ -1,7 +1,5 @@
-import React, { type ReactNode } from 'react';
-import { renderToString } from 'react-dom/server';
-import { MDXProvider } from '@mdx-js/react';
-import * as dayjs from 'dayjs';
+import React from 'react';
+import dayjs from 'dayjs';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import styles from './styles.module.css';
@@ -22,8 +20,7 @@ interface GitHubIssueItem {
   avatarUrl: string;
 }
 
-const gitHubIssueColumns: GitHubIssueItem[][] = [[], [], []];
-[
+const gitHubIssueColumns: GitHubIssueItem[] = [
   {
     html_url: 'https://github.com/Canner/vulcan-sql/issues/138',
     url: 'https://api.github.com/repos/Canner/vulcan-sql/issues/138',
@@ -141,7 +138,7 @@ const gitHubIssueColumns: GitHubIssueItem[][] = [[], [], []];
     ),
     avatarUrl: 'https://avatars.githubusercontent.com/u/19495220?v=4',
   },
-].forEach((issue, i) => gitHubIssueColumns[i % 3]!.push(issue));
+];
 
 function GitHubCard({
   html_url,
@@ -152,51 +149,45 @@ function GitHubCard({
   avatarUrl,
 }: GitHubIssueItem): JSX.Element {
   return (
-    <Link className={styles.cardMeta} to={html_url}>
-      <div className={clsx('card', styles.cardBlock)}>
-        <div className="card__header">
-          <div className={`avatar ${styles.cardAvatarBlock}`}>
-            <img
-              alt={uid}
-              className={`avatar__photo ${styles.cardAvatar}`}
-              src={avatarUrl}
-              loading="lazy"
-            />
-            <div className={clsx('avatar__intro', styles.cardMeta)}>
-              <strong className="avatar__name">{uid}</strong>
-              <span>{dayjs(date).fromNow()}</span>
+    <div className={`col col--4 ${styles.gitHubCard}`}>
+      <Link className={styles.cardMeta} to={html_url}>
+        <div className={clsx('card', styles.cardBlock)}>
+          <div className="card__header">
+            <div className={`${styles.cardAvatarBlock}`}>
+              <img
+                alt={uid}
+                className={`avatar__photo ${styles.cardAvatar}`}
+                src={avatarUrl}
+                loading="lazy"
+              />
+              <div className={clsx('avatar__intro', styles.cardMeta)}>
+                <strong className="avatar__name">{uid}</strong>
+                <span>{dayjs(date).fromNow()}</span>
+              </div>
+              <img
+                src={GitHubImageUrl}
+                className={`avatar__photo ${styles.gitHubIcon}`}
+                alt="GitHub Icon"
+              />
             </div>
-            <img
-              src={GitHubImageUrl}
-              className={`avatar__photo ${styles.gitHubIcon}`}
-              alt="GitHub Icon"
-            />
+          </div>
+          <div className={clsx('card__body', styles.cardContent)}>
+            <strong>{title}</strong>
+            <br />
+            <p>{content}</p>
           </div>
         </div>
-        <div className={clsx('card__body', styles.cardContent)}>
-          <strong>{title}</strong>
-          <br />
-          <p>{content}</p>
-        </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 }
 
 function GitHubSection() {
   return (
     <div className={clsx(styles.githubSection)}>
-      <div className="container">
-        <div className={clsx('row', styles.cardSection)}>
-          {gitHubIssueColumns.map((items, i) => (
-            <div className="col col--4" key={i}>
-              {items.map((item) => (
-                <GitHubCard {...item} key={item.url} />
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
+      {gitHubIssueColumns.map((item) => (
+        <GitHubCard {...item} key={item.url} />
+      ))}
     </div>
   );
 }
