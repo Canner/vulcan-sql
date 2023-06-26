@@ -175,7 +175,7 @@ On API catalog page, you can preview data or read from your applications.
 
 ## Installation
 
-Visit [the documentation](https://vulcansql.com/docs/installation) for installation guide.
+Visit [the documentation](https://vulcansql.com/docs/get-started/installation) for installation guide.
 
 ## Demo Screenshot
 
