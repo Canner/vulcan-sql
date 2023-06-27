@@ -14,5 +14,6 @@ COPY --from=build /usr/app /usr/app
 COPY config.json .
 COPY index.js .
 ENV NODE_ENV production
+ENV API_BASE_URL http://host.docker.internal
 
 CMD [ "node", "index.js" ]

@@ -8,7 +8,9 @@ const dirPath = path.resolve(
   '@vulcan-sql/catalog-server'
 );
 const config = JSON.parse(fs.readFileSync('config.json', 'utf-8'));
-process.env['VULCAN_SQL_HOST'] = `http://localhost:${config.port || 3000}`;
+const API_BASE_URL = process.env['API_BASE_URL'] || 'http://localhost'
+
+process.env['VULCAN_SQL_HOST'] = `${API_BASE_URL}:${config.port || 3000}`;
 const catalog = config.catalog || {};
 const hostname = catalog.hostname || 'localhost';
 const port = catalog.port || 4200;
