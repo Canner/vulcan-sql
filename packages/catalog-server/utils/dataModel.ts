@@ -92,11 +92,13 @@ export class Endpoint implements IEndpoint {
   get description() {
     return this.schema.description;
   }
+
   get apiDocUrl() {
     return this.schema.apiDocUrl;
   }
+
   get parameters() {
-    return this.schema.request.map((param) => {
+    return (this.schema.request || []).map((param) => {
       return {
         name: param.fieldName,
         type: param.type,
@@ -108,8 +110,9 @@ export class Endpoint implements IEndpoint {
       };
     });
   }
+
   get columns() {
-    return this.schema.response.map((column) => {
+    return (this.schema.response || []).map((column) => {
       return {
         name: column.name,
         type: column.type as string,
