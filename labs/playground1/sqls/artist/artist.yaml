@@ -1,12 +1,9 @@
-urlPath: /artist/:id
+urlPath: /artist
 request:
-  - fieldName: id
-    fieldIn: path
-    description: constituent id
+  - fieldName: begin_date
+    fieldIn: query
+    description: begin date
     validators:
+      - string
       - required
-sample:
-  parameters:
-    id: '1'
-  profile: duck
 profile: duck

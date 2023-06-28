@@ -2,4 +2,4 @@ select
 *
 from "artists"
 where 
-ConstituentID = {{ context.params.id }}
+BeginDate = {{ context.params.begin_date }}
