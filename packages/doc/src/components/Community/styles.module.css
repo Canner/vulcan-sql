@@ -181,7 +181,7 @@ div.cardMeta {
 .gitHubEmojis {
   display: flex;
   align-items: flex-start;
-  gap: 4px;
+  gap: 8px;
   align-self: stretch;
   line-height: 26px;
 }
