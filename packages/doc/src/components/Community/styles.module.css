@@ -91,6 +91,10 @@
   gap: 16px;
 }
 
+.cardBlock:hover {
+  border: 1px solid var(--ifm-color-primary);
+}
+
 .cardContent {
   display: flex;
   height: 100%;
