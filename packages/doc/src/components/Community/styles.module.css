@@ -7,9 +7,12 @@
   gap: 24px;
 }
 
-.title {
+.communitySection > * {
   font-family: 'Roboto';
   font-style: normal;
+}
+
+.title {
   font-weight: 900;
   font-size: 56px;
   line-height: 46px;
@@ -26,8 +29,6 @@
 }
 
 .description {
-  font-family: 'Roboto';
-  font-style: normal;
   font-weight: 500;
   font-size: 20px;
   line-height: 30px;
@@ -48,7 +49,7 @@
   display: flex;
   flex-wrap: wrap;
   padding: 0px 60px;
-  min-height: 588px;
+  min-height: 640px;
   justify-content: center;
   width: -webkit-fill-available;
 }
@@ -85,15 +86,34 @@
   font-size: 14px;
   border: 1px solid var(--ifm-color-gray-300);
   border-radius: 4px;
-  height: 282px;
+  height: 312px;
   padding: 16px 24px;
-  /* margin-bottom: 24px; */
+  gap: 16px;
 }
 
-.cardContent p {
+.cardContent {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+}
+
+.gitHubContent {
+  font-size: 14px;
+  line-height: 22px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 0;
+  align-self: stretch;
+  overflow: hidden;
+}
+
+.gitHubContent p {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 6;
   overflow: hidden;
 }
 
@@ -146,6 +166,40 @@ div.cardMeta {
   width: 30px;
   height: 30px;
   overflow: clip;
+}
+
+.gitHubTitle {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.gitHubEmojis {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  align-self: stretch;
+  line-height: 26px;
+}
+
+.gitHubEmoji {
+  display: flex;
+  height: 24px;
+  padding: 2px 4px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+
+  border-radius: 50px;
+  border: 1px solid var(--ifm-color-gray-300);
+}
+
+.gitHubEmoji > img {
+  height: 12px;
+}
+
+.gitHubEmoji > span {
+  font-size: 12px;
 }
 
 /* table */
