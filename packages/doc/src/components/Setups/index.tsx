@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import styles from './styles.module.css';
 import Link from '@docusaurus/Link';
 import clsx from 'clsx';
+import Carousel from '../share/Carousel';
 
 enum ShareType {
   API_Documentation = 'API Documentation',
@@ -129,7 +130,8 @@ export default function HomepageFeatures(): JSX.Element {
               <h4>API Best Practices at Your Fingertips</h4>
               <StyleLink link="https://vulcansql.com/docs/api-plugin/overview" />
             </div>
-            <div className={`${clsx('col col--12')} ${styles.galleryImg}`}>
+
+            <Carousel>
               <img
                 className={clsx('col col--4')}
                 src={'./img/validation.png'}
@@ -142,7 +144,7 @@ export default function HomepageFeatures(): JSX.Element {
                 className={clsx('col col--4')}
                 src={'./img/column_level_access_control.png'}
               />
-            </div>
+            </Carousel>
           </div>
         </div>
 
@@ -174,7 +176,7 @@ export default function HomepageFeatures(): JSX.Element {
 
       {/* Deploy */}
       <div className={`${clsx('col col--12')} ${styles.card}`}>
-        <div className={`${clsx('col col--5')} ${styles.textContainer}`}>
+        <div className={`${clsx('col col--6')} ${styles.textContainer}`}>
           <h3 className={`${styles.cardTitle}`}>Deploy</h3>
           <p className={`${styles.cardDescription}`}>
             VulcanSQL offers{' '}
@@ -200,14 +202,17 @@ export default function HomepageFeatures(): JSX.Element {
             />
           </div>
         </div>
-        <div className={`${clsx('col col--7')} ${styles.imageContainer}`}>
-          <img src={'./img/vulcan_docker_build.gif'} />
+        <div className={`${clsx('col col--6')} ${styles.imageContainer}`}>
+          <img
+            className={styles.radius}
+            src={'./img/vulcan_docker_build.gif'}
+          />
         </div>
       </div>
 
       {/* Share */}
       <div className={`${clsx('col col--12')} ${styles.card}`}>
-        <div className={`${clsx('col col--5')} ${styles.textContainer}`}>
+        <div className={`${clsx('col col--6')} ${styles.textContainer}`}>
           <h3 className={`${styles.cardTitle}`}>Share</h3>
           <p className={`${styles.cardDescription}`}>
             VulcanSQL offers many data sharing options,{' '}
@@ -218,8 +223,8 @@ export default function HomepageFeatures(): JSX.Element {
           </p>
           <RadioTabs />
         </div>
-        <div className={`${clsx('col col--7')} ${styles.imageContainer}`}>
-          <img src={shareSessionsImgSrc} />
+        <div className={`${clsx('col col--6')} ${styles.imageContainer}`}>
+          <img className={styles.radius} src={shareSessionsImgSrc} />
         </div>
       </div>
     </section>

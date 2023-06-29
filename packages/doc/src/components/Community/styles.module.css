@@ -2,14 +2,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 120px;
-  margin-bottom: 40px;
+  /* margin-top: 120px;
+  margin-bottom: 40px; */
+  margin: 120px 200px;
   gap: 24px;
 }
 
-.title {
+.communitySection > * {
   font-family: 'Roboto';
   font-style: normal;
+}
+
+.title {
   font-weight: 900;
   font-size: 56px;
   line-height: 46px;
@@ -26,8 +30,6 @@
 }
 
 .description {
-  font-family: 'Roboto';
-  font-style: normal;
   font-weight: 500;
   font-size: 20px;
   line-height: 30px;
@@ -46,9 +48,14 @@
 .githubSection {
   margin-top: 56px;
   display: flex;
-  padding: 0px 80px;
-  min-height: 588px;
+  flex-wrap: wrap;
   justify-content: center;
+  width: -webkit-fill-available;
+}
+
+.gitHubCard {
+  width: calc(4 / 12 * 100%);
+  padding: 8px;
 }
 
 .actionIcon {
@@ -64,13 +71,20 @@
   color: var(--ifm-color-gray-700);
   text-align: center;
   font-size: 18px;
-  border: 1px solid var(--ifm-color-gray-300);
+  border: 1px solid var(--ifm-link-button-border-color);
   border-radius: 4px;
   background-color: var(--ifm-link-button-background-color);
 }
 
 .actionButton:hover {
-  background-color: var(--ifm-link-button-background-color);
+  background-color: var(--ifm-link-button-hover-background-color);
+  border: 1px solid var(--ifm-link-button-border-color);
+  color: var(--ifm-color-gray-700);
+}
+
+.actionButton:active {
+  background-color: var(--ifm-link-button-active-background-color);
+  border: 1px solid var(--ifm-link-button-border-color);
   color: var(--ifm-color-gray-700);
 }
 
@@ -78,21 +92,50 @@
   font-size: 14px;
   border: 1px solid var(--ifm-color-gray-300);
   border-radius: 4px;
-  height: 282px;
+  height: 312px;
   padding: 16px 24px;
-  min-width: 336px;
-  margin-bottom: 24px;
+  gap: 16px;
 }
 
-.cardContent p {
+.cardBlock:hover {
+  border: 1px solid var(--ifm-color-primary);
+}
+
+.cardContent {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+}
+
+.gitHubContent {
+  font-size: 14px;
+  line-height: 22px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 0;
+  align-self: stretch;
+  overflow: hidden;
+}
+
+.gitHubContent p {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 6;
   overflow: hidden;
 }
 
 .cardMeta {
   color: var(--ifm-color-emphasis-700);
+}
+
+a.cardMeta {
+  display: block;
+}
+div.cardMeta {
+  margin: 0 10px;
 }
 
 .cardMeta:hover {
@@ -108,14 +151,89 @@
   width: 40px;
   height: 40px;
   border: 1px solid var(--ifm-color-gray-200);
+  overflow: clip;
 }
 
 .cardAvatarBlock {
-  align-items: center
+  align-items: center;
+  display: flex;
+}
+
+.cardAvatarBlock > div {
+  display: grid;
+  justify-content: left;
+}
+
+.cardAvatarBlock span,
+.cardAvatarBlock strong {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .gitHubIcon {
   background-color: var(--ifm-link-button-background-color);
   width: 30px;
   height: 30px;
+  overflow: clip;
+}
+
+.gitHubTitle {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.gitHubEmojis {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+  line-height: 26px;
+}
+
+.gitHubEmoji {
+  display: flex;
+  height: 24px;
+  padding: 2px 4px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+
+  border-radius: 50px;
+  border: 1px solid var(--ifm-color-gray-300);
+}
+
+.gitHubEmoji > img {
+  height: 12px;
+}
+
+.gitHubEmoji > span {
+  font-size: 12px;
+}
+
+/* RWD */
+/* 1440p */
+@media screen and (max-width: 1440px) {
+}
+/* 1024p */
+@media screen and (max-width: 1024px) {
+  .communitySection {
+    margin: 80px 120px;
+  }
+}
+
+/* table */
+@media screen and (min-width: 997px) {
+}
+
+/* pad */
+@media screen and (max-width: 996px) {
+  .communitySection {
+    margin: 80px 24px;
+  }
+}
+
+/* phone */
+@media screen and (max-width: 390px) {
 }

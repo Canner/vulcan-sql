@@ -1,7 +1,6 @@
 .section {
-  display: inline-block;
   align-items: center;
-  padding: 0 200px;
+  margin: 80px 200px;
 }
 
 .section * {
@@ -21,18 +20,21 @@
 .card {
   display: flex;
   flex-wrap: wrap;
-  margin: 120px 0;
+  margin-top: 120px;
+  padding: 0;
 }
 
 /* card Container */
-.card .textContainer {
+.textContainer {
   margin-bottom: 20px;
+  padding: 0;
 }
 
-.card .imageContainer {
+.imageContainer {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0;
 }
 
 .card .cardTitle {
@@ -69,6 +71,10 @@
   max-height: 100%;
   width: auto;
   height: auto;
+}
+
+img.radius {
+  border-radius: 4px;
 }
 
 .card .links a {
@@ -119,6 +125,9 @@
 .radioTabs > div:hover {
   border: 1px solid var(--ifm-color-primary);
 }
+.radioTabs > div:focus {
+  border: 1px solid var(--ifm-color-emphasis-400);
+}
 
 /* radioTabs checked */
 .radioTabs input[type='radio']:checked + label {
@@ -154,12 +163,12 @@
 
 /* gallery */
 .gallery {
-  margin: 60px 0;
+  margin-top: 60px;
   padding: 0;
 }
 
 .galleryTitle {
-  padding: 0 12px;
+  /* padding: 0 12px; */
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -187,14 +196,11 @@
 /* RWD */
 /* 1440p */
 @media screen and (max-width: 1440px) {
-  .section {
-    padding: 0 100px;
-  }
 }
 /* 1024p */
 @media screen and (max-width: 1024px) {
   .section {
-    padding: 0 80px;
+    margin: 80px 120px;
   }
 }
 
@@ -213,7 +219,7 @@
 /* pad */
 @media screen and (max-width: 996px) {
   .section {
-    padding: 0 60px;
+    margin: 80px 24px;
   }
   .title {
     margin-bottom: 40px;
@@ -226,7 +232,4 @@
 
 /* phone */
 @media screen and (max-width: 390px) {
-  .section {
-    padding: 0 16px;
-  }
 }

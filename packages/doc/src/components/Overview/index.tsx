@@ -1,18 +1,18 @@
 import Link from '@docusaurus/Link';
 import React from 'react';
 import styles from './styles.module.css';
-import communityStyles from '@site/src/components/Community/styles.module.css';
 import VulcanSQLProcessImageUrl from '@site/static/img/vulcan-process.png';
+import VulcanSQLProcessMobileImageUrl from '@site/static/img/vulcan_process_m.png';
 
 export default function Overview(): JSX.Element {
   return (
     <section className={styles.overview}>
       <iframe
-        src="https://ghbtns.com/github-btn.html?user=canner&repo=vulcan-sql&type=star&count=true&size=large"
+        src="https://ghbtns.com/github-btn.html?user=canner&repo=vulcan-sql&type=star&count=true"
         frameBorder="0"
         scrolling="0"
-        width="150"
-        height="30"
+        width="90"
+        height="20"
         title="GitHub"
       ></iframe>
       <h1 className={`text--center ${styles.title}`}>
@@ -32,13 +32,13 @@ export default function Overview(): JSX.Element {
       >
         Get started now
       </Link>
-      <div className="container">
-        <img
-          src={VulcanSQLProcessImageUrl}
-          style={{ margin: '104px auto' }}
-          alt="Process of VulcanSQL"
+      <picture className={styles.banner_image}>
+        <source
+          srcSet={VulcanSQLProcessMobileImageUrl}
+          media="(max-width: 414px)"
         />
-      </div>
+        <img src={VulcanSQLProcessImageUrl} alt="Process of VulcanSQL" />
+      </picture>
     </section>
   );
 }

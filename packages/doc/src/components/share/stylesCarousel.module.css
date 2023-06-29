@@ -1,0 +1,84 @@
+.carousel * {
+  transition: all 0.2s;
+}
+
+.carousel_input {
+  display: none;
+}
+
+.carousel_drag {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.carousel_content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.carousel_content_item {
+  display: contents;
+}
+
+.dots {
+  display: none;
+}
+
+/* is not table */
+@media screen and (max-width: 996px) {
+  .carousel {
+    margin: 20px 0;
+    height: auto;
+    overflow: hidden;
+  }
+
+  .carousel_drag {
+    margin-bottom: 14px;
+  }
+
+  .carousel_content {
+    width: 90%;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    --actives-index: 0;
+    --mouse-move-x: 0px;
+    width: 90%;
+    transform: translateX(
+      calc(var(--mouse-move-x) + var(--actives-index) * 100% * -1)
+    );
+  }
+
+  .carousel_content_item > * {
+    /* max-width: 100%;
+    width: 100%; */
+    /* pointer-events: none; */
+    user-drag: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+  }
+
+  .dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dots label {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    margin: 10px;
+    background-color: var(--ifm-color-emphasis-200);
+    cursor: pointer;
+  }
+
+  .dots label.active {
+    background-color: var(--ifm-color-primary);
+  }
+}

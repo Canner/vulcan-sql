@@ -6,6 +6,9 @@
   --ifm-sidebar-menu-color: var(--ifm-color-gray-700);
   --ifm-sidebar-title-color: var(--ifm-color-gray-900);
   --ifm-link-button-background-color: var(--ifm-color-white);
+  --ifm-link-button-hover-background-color: var(--ifm-color-gray-100);
+  --ifm-link-button-active-background-color: var(--ifm-color-gray-200);
+  --ifm-link-button-border-color: var(--ifm-color-gray-300);
 }
 
 /* If you have a different syntax highlighting theme for dark mode. */
@@ -15,6 +18,9 @@
   --ifm-sidebar-menu-color: var(--ifm-color-gray-400);
   --ifm-sidebar-title-color: var(--ifm-color-gray-200);
   --ifm-link-button-background-color: var(--ifm-color-gray-100);
+  --ifm-link-button-hover-background-color: var(--ifm-color-gray-300);
+  --ifm-link-button-active-background-color: var(--ifm-color-gray-500);
+  --ifm-link-button-border-color: var(--ifm-color-gray-400);
 }
 
 .sidebar-title {
