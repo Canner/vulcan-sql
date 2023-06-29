@@ -72,13 +72,20 @@
   color: var(--ifm-color-gray-700);
   text-align: center;
   font-size: 18px;
-  border: 1px solid var(--ifm-color-gray-300);
+  border: 1px solid var(--ifm-link-button-border-color);
   border-radius: 4px;
   background-color: var(--ifm-link-button-background-color);
 }
 
 .actionButton:hover {
-  background-color: var(--ifm-link-button-background-color);
+  background-color: var(--ifm-link-button-hover-background-color);
+  border: 1px solid var(--ifm-link-button-border-color);
+  color: var(--ifm-color-gray-700);
+}
+
+.actionButton:active {
+  background-color: var(--ifm-link-button-active-background-color);
+  border: 1px solid var(--ifm-link-button-border-color);
   color: var(--ifm-color-gray-700);
 }
 

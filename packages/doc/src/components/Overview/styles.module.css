@@ -38,7 +38,17 @@
   text-align: center;
   background-color: var(--ifm-color-primary);
   box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.043);
-  color: var(--ifm-color-white);
+  color: var(--ifm-color-gray-100);
+}
+
+.getStartButton:hover {
+  background-color: var(--ifm-color-primary-light);
+  color: var(--ifm-color-gray-100);
+}
+
+.getStartButton:active {
+  background-color: var(--ifm-color-primary-dark);
+  color: var(--ifm-color-gray-100);
 }
 
 .featureContainer {
