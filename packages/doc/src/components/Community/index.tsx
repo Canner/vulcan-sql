@@ -288,7 +288,7 @@ export default function Community(): JSX.Element {
           </Link>
           <Link
             className={`button button--outline ${styles.actionButton}`}
-            to="https://vulcansql.com/docs/intro"
+            to="https://github.com/Canner/vulcan-sql"
           >
             <GitHub className={styles.actionIcon} role="img" />
             GitHub
