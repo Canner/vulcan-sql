@@ -3,6 +3,7 @@ import { AuthCredentialsMiddleware } from '@vulcan-sql/serve/middleware';
 import {
   AuthResult,
   AuthStatus,
+  AuthType,
   AuthUserInfo,
   KoaContext,
 } from '@vulcan-sql/serve/models';
@@ -13,6 +14,8 @@ import {
   SimpleTokenAuthenticator,
 } from '@vulcan-sql/serve';
 import { ProjectOptions } from '@vulcan-sql/core';
+import { IncomingHttpHeaders } from 'http';
+import { Request } from 'koa';
 
 describe('Test auth credential middleware', () => {
   afterEach(() => {
@@ -39,12 +42,20 @@ describe('Test auth credential middleware', () => {
   });
 
   it.each([
-    ['basic', sinon.stubInterface<BasicAuthenticator>()],
-    ['simple-token', sinon.stubInterface<SimpleTokenAuthenticator>()],
-    ['password-file', sinon.stubInterface<PasswordFileAuthenticator>()],
+    ['basic', sinon.stubInterface<BasicAuthenticator>(), AuthType.Basic],
+    [
+      'simple-token',
+      sinon.stubInterface<SimpleTokenAuthenticator>(),
+      AuthType.SimpleToken,
+    ],
+    [
+      'password-file',
+      sinon.stubInterface<PasswordFileAuthenticator>(),
+      AuthType.PasswordFile,
+    ],
   ])(
     'Should auth successful when request match "%p" authorization',
-    async (type, authenticator) => {
+    async (type, authenticator, tokenIdentifier) => {
       // Arrange
       const expected = {
         name: 'user1',
@@ -66,6 +77,13 @@ describe('Test auth credential middleware', () => {
 
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
+        request: {
+          ...sinon.stubInterface<Request>(),
+          headers: {
+            ...sinon.stubInterface<IncomingHttpHeaders>(),
+            authorization: `${tokenIdentifier} 123`,
+          },
+        },
         state: {
           ...sinon.stubInterface<{ user: AuthUserInfo }>(),
         },
@@ -86,12 +104,20 @@ describe('Test auth credential middleware', () => {
   );
 
   it.each([
-    ['basic', sinon.stubInterface<BasicAuthenticator>()],
-    ['simple-token', sinon.stubInterface<SimpleTokenAuthenticator>()],
-    ['password-file', sinon.stubInterface<PasswordFileAuthenticator>()],
+    ['basic', sinon.stubInterface<BasicAuthenticator>(), AuthType.Basic],
+    [
+      'simple-token',
+      sinon.stubInterface<SimpleTokenAuthenticator>(),
+      AuthType.SimpleToken,
+    ],
+    [
+      'password-file',
+      sinon.stubInterface<PasswordFileAuthenticator>(),
+      AuthType.PasswordFile,
+    ],
   ])(
-    'Should auth successful when request match %p authorization',
-    async (type, authenticator) => {
+    'Should auth failed when got AuthStatus.FAIL at matched authenticator',
+    async (type, authenticator, tokenIdentifier) => {
       // Arrange
       const expected = {
         type,
@@ -111,6 +137,13 @@ describe('Test auth credential middleware', () => {
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
         status: sinon.stubInterface<any>(),
+        request: {
+          ...sinon.stubInterface<Request>(),
+          headers: {
+            ...sinon.stubInterface<IncomingHttpHeaders>(),
+            authorization: `${tokenIdentifier} 123`,
+          },
+        },
         body: sinon.stubInterface<Record<string, any>>(),
       };
 
@@ -130,12 +163,21 @@ describe('Test auth credential middleware', () => {
   );
 
   it.each([
-    ['basic', sinon.stubInterface<BasicAuthenticator>()],
-    ['simple-token', sinon.stubInterface<SimpleTokenAuthenticator>()],
-    ['password-file', sinon.stubInterface<PasswordFileAuthenticator>()],
+    ['basic', sinon.stubInterface<BasicAuthenticator>(), AuthType.Basic],
+    [
+      'simple-token',
+      sinon.stubInterface<SimpleTokenAuthenticator>(),
+      AuthType.SimpleToken,
+    ],
+    [
+      'password-file',
+      sinon.stubInterface<PasswordFileAuthenticator>(),
+      AuthType.PasswordFile,
+    ],
   ])(
-    'Should auth successful when request match  authorization',
-    async (type, authenticator) => {
+    // user use this authenticator, but this authenticator does not configured properly.
+    'Should auth failed when got AuthStatus.INDETERMINATE at matched authenticator',
+    async (type, authenticator, tokenIdentifier) => {
       // Arrange
       const expected = new Error('All types of authenticator failed.');
 
@@ -151,6 +193,13 @@ describe('Test auth credential middleware', () => {
       const ctx = {
         ...sinon.stubInterface<KoaContext>(),
         status: sinon.stubInterface<any>(),
+        request: {
+          ...sinon.stubInterface<Request>(),
+          headers: {
+            ...sinon.stubInterface<IncomingHttpHeaders>(),
+            authorization: `${tokenIdentifier} 123`,
+          },
+        },
         body: sinon.stubInterface<Record<string, any>>(),
       };
 
@@ -165,6 +214,79 @@ describe('Test auth credential middleware', () => {
       const handle = async () =>
         await middleware.handle(ctx, async () => Promise.resolve());
 
+      expect(handle()).rejects.toThrow(expected);
+    }
+  );
+  it('Should throw "Please provide proper authorization information" when does not provide authorization info', async () => {
+    // Arrange
+    const ctx = {
+      ...sinon.stubInterface<KoaContext>(),
+      status: sinon.stubInterface<any>(),
+      request: {
+        ...sinon.stubInterface<Request>(),
+        headers: {
+          ...sinon.stubInterface<IncomingHttpHeaders>(),
+          // empty authorization
+          authorization: '',
+        },
+      },
+      body: sinon.stubInterface<Record<string, any>>(),
+    };
+    const type = AuthType.Basic;
+    const authenticator = sinon.stubInterface<BasicAuthenticator>();
+    authenticator.getExtensionId.returns(type);
+    const expected = new Error(
+      'Please provide proper authorization information'
+    );
+
+    // Act
+    const middleware = new AuthCredentialsMiddleware(
+      { options: { [type]: {} } },
+      '',
+      [authenticator],
+      new ProjectOptions()
+    );
+    await middleware.activate();
+    const handle = async () =>
+      await middleware.handle(ctx, async () => Promise.resolve());
+
+    // Assert
+    expect(handle()).rejects.toThrow(expected);
+  });
+  it.each([
+    ['basic', sinon.stubInterface<BasicAuthenticator>()],
+    ['simple-token', sinon.stubInterface<SimpleTokenAuthenticator>()],
+    ['password-file', sinon.stubInterface<PasswordFileAuthenticator>()],
+  ])(
+    'Should throw "All types of authenticator failed" when match with the authenticator but with a invalid tokenIdentifier',
+    async (type, authenticator) => {
+      const expected = new Error('All types of authenticator failed.');
+      authenticator.getExtensionId.returns(type);
+      const ctx = {
+        ...sinon.stubInterface<KoaContext>(),
+        status: sinon.stubInterface<any>(),
+        request: {
+          ...sinon.stubInterface<Request>(),
+          headers: {
+            ...sinon.stubInterface<IncomingHttpHeaders>(),
+            authorization: 'InvalidTokenIdentifier 123',
+          },
+        },
+        body: sinon.stubInterface<Record<string, any>>(),
+      };
+
+      // Act
+      const middleware = new AuthCredentialsMiddleware(
+        { options: { [type]: {} } },
+        '',
+        [authenticator],
+        new ProjectOptions()
+      );
+      await middleware.activate();
+      const handle = async () =>
+        await middleware.handle(ctx, async () => Promise.resolve());
+
+      // Assert
       expect(handle()).rejects.toThrow(expected);
     }
   );

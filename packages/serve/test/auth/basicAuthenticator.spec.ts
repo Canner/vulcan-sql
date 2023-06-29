@@ -60,7 +60,7 @@ describe('Test http basic authenticator', () => {
     },
   ] as Array<AuthUserListOptions>;
 
-  it.each([[{}], [{ 'non-basic': {} }], [{ basic: {} }]])(
+  it.each([[{}]])(
     'Should auth incorrect when options = %p in options',
     async (options) => {
       // Arrange
@@ -78,44 +78,6 @@ describe('Test http basic authenticator', () => {
       expect(result).toEqual(expectIncorrect);
     }
   );
-  it('Test to auth credential failed when request header not exist "authorization" key', async () => {
-    // Arrange
-    const ctx = {
-      ...sinon.stubInterface<KoaContext>(),
-      request: {
-        ...sinon.stubInterface<Request>(),
-        headers: {
-          ...sinon.stubInterface<IncomingHttpHeaders>(),
-        },
-      },
-    };
-
-    // Act
-    const result = await authCredential(ctx, { basic: {} });
-
-    // Assert
-    expect(result).toEqual(expectIncorrect);
-  });
-
-  it('Should auth credential failed when request header "authorization" not start with "basic"', async () => {
-    // Arrange
-    const ctx = {
-      ...sinon.stubInterface<KoaContext>(),
-      request: {
-        ...sinon.stubInterface<Request>(),
-        headers: {
-          ...sinon.stubInterface<IncomingHttpHeaders>(),
-          authorization: '',
-        },
-      },
-    };
-
-    // Act
-    const result = await authCredential(ctx, { basic: {} });
-
-    // Assert
-    expect(result).toEqual(expectIncorrect);
-  });
 
   it('Should auth credential failed when request header "authorization" not match in empty "users-list" options', async () => {
     // Arrange

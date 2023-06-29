@@ -63,15 +63,10 @@ export class SimpleTokenAuthenticator extends BaseAuthenticator<SimpleTokenOptio
       status: AuthStatus.INDETERMINATE,
       type: this.getExtensionId()!,
     };
-    if (isEmpty(this.options)) return incorrect;
+    if (isEmpty(this.options) || !this.getOptions()) return incorrect;
 
-    const authorize = context.request.headers['authorization'];
-    if (
-      !authorize ||
-      !authorize.toLowerCase().startsWith(this.getExtensionId()!)
-    )
-      return incorrect;
     // validate request auth token
+    const authorize = <string>context.request.headers['authorization'];
     const token = authorize.trim().split(' ')[1];
     try {
       return await this.validate(token);
