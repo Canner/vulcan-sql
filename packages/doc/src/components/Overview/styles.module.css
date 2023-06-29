@@ -33,16 +33,37 @@
   color: var(--ifm-color-emphasis-600);
 }
 
-.getStartButton {
-  width: fit-content;
+.banner_button {
+  display: flex;
+}
+
+.banner_button > * {
   height: 50px;
+
   border-radius: 4px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 8px;
+
+  font-family: Roboto;
+  padding: 8px 16px;
   font-size: 18px;
-  padding-top: 10px;
-  text-align: center;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%;
+}
+
+.banner_button > .getStartButton {
   background-color: var(--ifm-color-primary);
   box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.043);
   color: var(--ifm-color-gray-100);
+}
+
+.banner_button > .view_demo_button {
+  color: var(--ifm-color-emphasis-700, #606770);
+  border: 1px solid var(--ifm-color-emphasis-300, #dadde1);
 }
 
 .getStartButton:hover {
@@ -78,5 +99,13 @@
 }
 
 /* phone */
-@media screen and (max-width: 390px) {
+@media screen and (max-width: 414px) {
+  .banner_button {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .banner_button > * {
+    width: 100%;
+    margin: 8px 0;
+  }
 }

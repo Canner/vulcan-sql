@@ -26,12 +26,20 @@ export default function Overview(): JSX.Element {
         <br />
         No backend skills required. Empower your data sharing, faster.
       </div>
-      <Link
-        className={`button button--primary ${styles.getStartButton}`}
-        to="./docs/intro"
-      >
-        Get started now
-      </Link>
+      <div className={styles.banner_button}>
+        <Link
+          className={`button button--primary ${styles.getStartButton}`}
+          to="./docs/intro"
+        >
+          Get started now
+        </Link>
+        <Link
+          className={`button button--outline button--secondary ${styles.view_demo_button}`}
+          to="https://catalog-server.vercel.app/catalog"
+        >
+          View a demo
+        </Link>
+      </div>
       <picture className={styles.banner_image}>
         <source
           srcSet={VulcanSQLProcessMobileImageUrl}
