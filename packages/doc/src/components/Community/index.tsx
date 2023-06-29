@@ -263,11 +263,13 @@ export default function Community(): JSX.Element {
               emojis,
             };
           } catch (error) {
-            return { item, error };
+            console.error({ item, error });
+            return null;
           }
         })
       );
-      setData(data);
+      // todo: add fake data if api error
+      setData(data.filter(Boolean));
     };
 
     fetchGitHubData();
