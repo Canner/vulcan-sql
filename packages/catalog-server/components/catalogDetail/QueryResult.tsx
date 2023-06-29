@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Typography, Button, Badge, Dropdown, Space, Menu } from 'antd';
 import styled from 'styled-components';
 import CustomizedTable from './CustomizedTable';
@@ -85,6 +85,7 @@ export default function QueryResult(props: QueryResultProps) {
     props;
   const [parameterFormVisible, setParameterFormVisible] = useState(false);
   const [parameterCount, setParameterCount] = useState(0);
+  const hasParameter = parameters.length > 0;
   const hasDataset = Object.keys(dataset || {}).length > 0;
   const hasCount = parameterCount > 0;
   const {
@@ -119,14 +120,20 @@ export default function QueryResult(props: QueryResultProps) {
 
   const resultData = useMemo(
     () =>
-      hasCount
+      (hasCount || !hasParameter)
         ? data.map((item, index) => ({
             ...item,
             key: `${JSON.stringify(item)}${index}`,
           }))
         : [],
-    [data, hasCount]
+    [data, hasCount, hasParameter]
   );
+
+  useEffect(() => {
+    if(!hasParameter) {
+      onDatasetPreview({});
+    }
+  }, [hasParameter, parameters])
 
   const onParameterFormReset = () => {
     setParameterCount(0);
@@ -248,6 +255,7 @@ export default function QueryResult(props: QueryResultProps) {
               icon={<FilterOutlined />}
               type={hasCount ? 'primary' : 'default'}
               ghost={hasCount}
+              disabled={!hasParameter}
               onClick={() => setParameterFormVisible(!parameterFormVisible)}
             >
               <Space align="center">

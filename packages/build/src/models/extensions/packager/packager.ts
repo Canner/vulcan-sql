@@ -74,12 +74,12 @@ export abstract class Packager<C = PackagerConfig> extends ExtensionBase<C> {
   }
 
   protected async getEntryJS() {
-    return fs.readFile(path.resolve(__dirname, 'assets', 'entry.js'), 'utf-8');
+    return fs.readFile(path.resolve(__dirname, 'assets', 'entryJs.template'), 'utf-8');
   }
 
   protected async getCatalogEntryJS() {
     return fs.readFile(
-      path.resolve(__dirname, 'assets', 'catalogEntry.js'),
+      path.resolve(__dirname, 'assets', 'catalogEntryJs.template'),
       'utf-8'
     );
   }

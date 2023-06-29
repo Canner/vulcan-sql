@@ -5,15 +5,12 @@ FROM node:16-bullseye AS build
 WORKDIR /usr/app
 
 # install dependencies
-COPY package.json .
+COPY /dist/packages/catalog-server/ .
 RUN npm install --omit=dev
 
 FROM node:16-bullseye-slim
 WORKDIR /usr/app
 COPY --from=build /usr/app /usr/app
-COPY config.json .
-COPY index.js .
 ENV NODE_ENV production
-ENV API_BASE_URL http://host.docker.internal
 
-CMD [ "node", "index.js" ]
+CMD [ "./node_modules/.bin/next", "start", "-p", "4200" ]

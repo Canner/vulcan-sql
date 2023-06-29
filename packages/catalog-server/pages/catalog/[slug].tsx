@@ -4,6 +4,7 @@ import {
   useDatasetLazyQuery,
   useEndpointLazyQuery,
 } from '@vulcan-sql/catalog-server/graphQL/catalog.graphql.generated';
+import Path from '@vulcan-sql/catalog-server/lib/path';
 import { useStore } from '@vulcan-sql/catalog-server/lib/store';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -13,13 +14,17 @@ export function CatalogDetail() {
   const { setPathNames } = useStore();
   const slug = router.query.slug as string;
 
-  const [fetchEndpoint, { data, loading }] = useEndpointLazyQuery();
+  const [fetchEndpoint, { data, loading, error }] = useEndpointLazyQuery();
   const [
     fetchDataset,
     { data: datasetData, loading: datasetLoading, error: datasetError },
   ] = useDatasetLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
+
+  if(error) {
+    router.push(Path.Catalog)
+  }
 
   useEffect(() => {
     if (data?.endpoint) {
