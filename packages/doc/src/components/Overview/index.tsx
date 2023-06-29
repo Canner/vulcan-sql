@@ -7,11 +7,11 @@ export default function Overview(): JSX.Element {
   return (
     <section className={styles.overview}>
       <iframe
-        src="https://ghbtns.com/github-btn.html?user=canner&repo=vulcan-sql&type=star&count=true&size=large"
+        src="https://ghbtns.com/github-btn.html?user=canner&repo=vulcan-sql&type=star&count=true"
         frameBorder="0"
         scrolling="0"
         width="150"
-        height="30"
+        height="20"
         title="GitHub"
       ></iframe>
       <h1 className={`text--center ${styles.title}`}>
