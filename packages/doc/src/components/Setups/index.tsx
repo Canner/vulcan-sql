@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import styles from './styles.module.css';
 import Link from '@docusaurus/Link';
 import clsx from 'clsx';
+import Carousel from '../share/Carousel';
 
 enum ShareType {
   API_Documentation = 'API Documentation',
@@ -129,7 +130,8 @@ export default function HomepageFeatures(): JSX.Element {
               <h4>API Best Practices at Your Fingertips</h4>
               <StyleLink link="https://vulcansql.com/docs/api-plugin/overview" />
             </div>
-            <div className={`${clsx('col col--12')} ${styles.galleryImg}`}>
+
+            <Carousel>
               <img
                 className={clsx('col col--4')}
                 src={'./img/validation.png'}
@@ -142,7 +144,7 @@ export default function HomepageFeatures(): JSX.Element {
                 className={clsx('col col--4')}
                 src={'./img/column_level_access_control.png'}
               />
-            </div>
+            </Carousel>
           </div>
         </div>
 

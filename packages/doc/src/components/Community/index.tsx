@@ -6,6 +6,7 @@ import Link from '@docusaurus/Link';
 import styles from './styles.module.css';
 
 import relativeTime from 'dayjs/plugin/relativeTime.js';
+import Carousel from '../share/Carousel';
 dayjs.extend(relativeTime);
 
 const Discord = require('@site/static/img/discord.svg').default;
@@ -235,9 +236,11 @@ function GitHubCard({
 function GitHubSection({ data: gitHubIssueColumns }) {
   return (
     <div className={clsx(styles.githubSection)}>
-      {gitHubIssueColumns.map((item: GitHubIssueItem) => (
-        <GitHubCard {...item} key={item.url} />
-      ))}
+      <Carousel>
+        {gitHubIssueColumns.map((item: GitHubIssueItem) => (
+          <GitHubCard {...item} key={item.url} />
+        ))}
+      </Carousel>
     </div>
   );
 }
