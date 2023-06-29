@@ -176,7 +176,7 @@ export default function HomepageFeatures(): JSX.Element {
 
       {/* Deploy */}
       <div className={`${clsx('col col--12')} ${styles.card}`}>
-        <div className={`${clsx('col col--5')} ${styles.textContainer}`}>
+        <div className={`${clsx('col col--6')} ${styles.textContainer}`}>
           <h3 className={`${styles.cardTitle}`}>Deploy</h3>
           <p className={`${styles.cardDescription}`}>
             VulcanSQL offers{' '}
@@ -202,7 +202,7 @@ export default function HomepageFeatures(): JSX.Element {
             />
           </div>
         </div>
-        <div className={`${clsx('col col--7')} ${styles.imageContainer}`}>
+        <div className={`${clsx('col col--6')} ${styles.imageContainer}`}>
           <img
             className={styles.radius}
             src={'./img/vulcan_docker_build.gif'}
@@ -212,7 +212,7 @@ export default function HomepageFeatures(): JSX.Element {
 
       {/* Share */}
       <div className={`${clsx('col col--12')} ${styles.card}`}>
-        <div className={`${clsx('col col--5')} ${styles.textContainer}`}>
+        <div className={`${clsx('col col--6')} ${styles.textContainer}`}>
           <h3 className={`${styles.cardTitle}`}>Share</h3>
           <p className={`${styles.cardDescription}`}>
             VulcanSQL offers many data sharing options,{' '}
@@ -223,7 +223,7 @@ export default function HomepageFeatures(): JSX.Element {
           </p>
           <RadioTabs />
         </div>
-        <div className={`${clsx('col col--7')} ${styles.imageContainer}`}>
+        <div className={`${clsx('col col--6')} ${styles.imageContainer}`}>
           <img className={styles.radius} src={shareSessionsImgSrc} />
         </div>
       </div>

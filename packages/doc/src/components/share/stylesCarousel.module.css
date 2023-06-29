@@ -6,9 +6,6 @@
   display: none;
 }
 
-.dots {
-  display: none;
-}
 .carousel_drag {
   display: flex;
   justify-content: center;
@@ -19,23 +16,30 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  width: 90%;
 }
 
 .carousel_content_item {
   display: contents;
 }
 
+.dots {
+  display: none;
+}
+
 /* is not table */
 @media screen and (max-width: 996px) {
   .carousel {
     margin: 20px 0;
-    padding-bottom: 20px;
     height: auto;
     overflow: hidden;
   }
 
+  .carousel_drag {
+    margin-bottom: 14px;
+  }
+
   .carousel_content {
+    width: 90%;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;

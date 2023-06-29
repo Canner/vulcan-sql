@@ -54,7 +54,7 @@ export default function Carousel(props: CarouselProps) {
         const carouselContent = carouselContentRef.current;
         carouselContent.style.setProperty('--mouse-move-x', `0px`);
       }
-      moveX > 0 ? handlePrev() : handleNext();
+      if (Math.abs(moveX) > 60) moveX > 0 ? handlePrev() : handleNext();
     },
     [mouseMoveX, carouselContentRef.current]
   );
@@ -88,7 +88,7 @@ export default function Carousel(props: CarouselProps) {
         carouselContent.style.setProperty('--mouse-move-x', `0px`);
       }
 
-      moveX > 0 ? handlePrev() : handleNext();
+      if (Math.abs(moveX) > 60) moveX > 0 ? handlePrev() : handleNext();
     },
     [mouseMoveX, carouselContentRef.current]
   );
