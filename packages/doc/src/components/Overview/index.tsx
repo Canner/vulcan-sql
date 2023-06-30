@@ -1,7 +1,7 @@
 import Link from '@docusaurus/Link';
 import React from 'react';
 import styles from './styles.module.css';
-import VulcanSQLProcessImageUrl from '@site/static/img/vulcan-process.png';
+import VulcanSQLProcessImageUrl from '@site/static/img/vulcan_process.png';
 import VulcanSQLProcessMobileImageUrl from '@site/static/img/vulcan_process_m.png';
 
 export default function Overview(): JSX.Element {
