@@ -11,7 +11,7 @@ export default function Overview(): JSX.Element {
         src="https://ghbtns.com/github-btn.html?user=canner&repo=vulcan-sql&type=star&count=true"
         frameBorder="0"
         scrolling="0"
-        width="90"
+        width="91"
         height="20"
         title="GitHub"
       ></iframe>
