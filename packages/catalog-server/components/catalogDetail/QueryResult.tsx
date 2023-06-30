@@ -102,7 +102,6 @@ export default function QueryResult(props: QueryResultProps) {
   const [parameterCount, setParameterCount] = useState(0);
   const apiType = getAPIType(parameters);
   const hasParameter = parameters.length > 0;
-  const hasDataset = Object.keys(dataset || {}).length > 0;
   const hasParameterValue = parameterCount > 0;
   const [trigger, setTrigger] = useState(Date.now());
   const {
@@ -299,7 +298,7 @@ export default function QueryResult(props: QueryResultProps) {
           <div>
             {/* May meet problem with `overlay` prop after 4.24.0, it changes to `menu` prop */}
             <Dropdown
-              disabled={!hasParameterValue || !hasDataset}
+              disabled={!resultData.length}
               overlay={menu}
               placement="topRight"
               getPopupContainer={(trigger) => trigger.parentElement!}
