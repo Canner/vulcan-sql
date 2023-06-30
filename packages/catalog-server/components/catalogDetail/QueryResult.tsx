@@ -76,18 +76,35 @@ export interface QueryResultProps {
   parameters: Parameter[];
   dataset: Dataset;
   loading: boolean;
-  onDatasetPreview: (options?: any) => void;
+  onDatasetPreview: (options?: any) => Promise<void>;
   error?: any;
 }
+
+const API_TYPE = {
+  NO_PARAMETER: 'NO_PARAMETER',
+  PATH_PARAMETER: 'PATH_PARAMETER',
+  QUERY_PARAMETER: 'QUERY_PARAMETER',
+};
+
+const getAPIType = (parameters) => {
+  if (parameters.length === 0) {
+    return API_TYPE.NO_PARAMETER;
+  } else if (parameters.some((param) => param.required)) {
+    return API_TYPE.PATH_PARAMETER;
+  }
+  return API_TYPE.QUERY_PARAMETER;
+};
 
 export default function QueryResult(props: QueryResultProps) {
   const { dataset, parameters, columns, loading, onDatasetPreview, error } =
     props;
   const [parameterFormVisible, setParameterFormVisible] = useState(false);
   const [parameterCount, setParameterCount] = useState(0);
+  const apiType = getAPIType(parameters);
   const hasParameter = parameters.length > 0;
   const hasDataset = Object.keys(dataset || {}).length > 0;
-  const hasCount = parameterCount > 0;
+  const hasParameterValue = parameterCount > 0;
+  const [trigger, setTrigger] = useState(Date.now());
   const {
     data = [],
     apiUrl = '',
@@ -95,6 +112,7 @@ export default function QueryResult(props: QueryResultProps) {
     jsonDownloadUrl = '',
     metadata,
   } = dataset || {};
+  const [resultData, setResultData] = useState([]);
   const [tutorialModalProps, setTutorialModalProps] = useState({
     type: null,
     visible: false,
@@ -118,36 +136,41 @@ export default function QueryResult(props: QueryResultProps) {
     [data, columns]
   );
 
-  const resultData = useMemo(
-    () =>
-      (hasCount || !hasParameter)
-        ? data.map((item, index) => ({
-            ...item,
-            key: `${JSON.stringify(item)}${index}`,
-          }))
-        : [],
-    [data, hasCount, hasParameter]
-  );
+  // if the submit result same as before in reset situation,
+  // need to make sure trigger to re-render
+  useEffect(() => {
+    if (data.length) {
+      setResultData(
+        (data || []).map((item, index) => ({
+          ...item,
+          key: `${JSON.stringify(item)}${index}`,
+        }))
+      );
+    }
+  }, [data, trigger]);
 
   useEffect(() => {
-    if(!hasParameter) {
+    if (apiType === API_TYPE.NO_PARAMETER) {
       onDatasetPreview({});
     }
-  }, [hasParameter, parameters])
+  }, [parameters]);
 
   const onParameterFormReset = () => {
     setParameterCount(0);
     setParameterFormVisible(false);
+    setResultData([]);
   };
 
-  const onParameterFormSubmit = (values) => {
+  const onParameterFormSubmit = async (values) => {
     const count = Object.values(values).reduce(
       (acc: number, cur) => (cur ? acc + 1 : acc),
       0
     ) as number;
-    onDatasetPreview(values);
+    await onDatasetPreview(values);
     setParameterCount(count);
     setParameterFormVisible(false);
+    // to trigger effect of resultData
+    setTrigger(Date.now());
   };
 
   const menu = (
@@ -253,8 +276,8 @@ export default function QueryResult(props: QueryResultProps) {
           <div className="queryResult-btnTrigger">
             <Button
               icon={<FilterOutlined />}
-              type={hasCount ? 'primary' : 'default'}
-              ghost={hasCount}
+              type={hasParameterValue ? 'primary' : 'default'}
+              ghost={hasParameterValue}
               disabled={!hasParameter}
               onClick={() => setParameterFormVisible(!parameterFormVisible)}
             >
@@ -276,7 +299,7 @@ export default function QueryResult(props: QueryResultProps) {
           <div>
             {/* May meet problem with `overlay` prop after 4.24.0, it changes to `menu` prop */}
             <Dropdown
-              disabled={!hasCount || !hasDataset}
+              disabled={!hasParameterValue || !hasDataset}
               overlay={menu}
               placement="topRight"
               getPopupContainer={(trigger) => trigger.parentElement!}

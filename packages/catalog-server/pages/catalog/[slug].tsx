@@ -43,9 +43,9 @@ export function CatalogDetail() {
   }, [fetchEndpoint, fetchDataset, slug]);
 
   // get dataset data
-  const onDatasetPreview = (filter?: Pick<DatasetQueryVariables, 'filter'>) => {
+  const onDatasetPreview = async (filter?: Pick<DatasetQueryVariables, 'filter'>) => {
     if (data?.endpoint) {
-      fetchDataset({
+      await fetchDataset({
         variables: { endpointSlug: data.endpoint?.slug, filter },
       });
     }
