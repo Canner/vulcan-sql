@@ -74,6 +74,7 @@
   border: 1px solid var(--ifm-link-button-border-color);
   border-radius: 4px;
   background-color: var(--ifm-link-button-background-color);
+  font-weight: 400;
 }
 
 .actionButton:hover {
