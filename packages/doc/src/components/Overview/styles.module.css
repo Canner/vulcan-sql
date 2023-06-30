@@ -57,13 +57,23 @@
 
 .banner_button > .getStartButton {
   background-color: var(--ifm-color-primary);
-  box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.043);
+  box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.04);
   color: var(--ifm-color-gray-100);
 }
 
 .banner_button > .view_demo_button {
-  color: var(--ifm-color-emphasis-700, #606770);
-  border: 1px solid var(--ifm-color-emphasis-300, #dadde1);
+  color: var(--ifm-link-button-color);
+  border: 1px solid var(--ifm-link-button-border-color);
+}
+
+.banner_button > .view_demo_button:hover {
+  color: var(--ifm-link-button-color);
+  background-color: var(--ifm-link-button-hover-background-color);
+}
+
+.banner_button > .view_demo_button:active {
+  color: var(--ifm-link-button-color);
+  background-color: var(--ifm-link-button-active-background-color);
 }
 
 .getStartButton:hover {

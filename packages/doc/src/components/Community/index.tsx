@@ -140,7 +140,8 @@ export default function Community(): JSX.Element {
             className={`button button--outline ${styles.actionButton}`}
             to="https://github.com/Canner/vulcan-sql"
           >
-            <GitHub className={styles.actionIcon} role="img" />
+            <img className={`${styles.actionIcon} ${styles.gitHub_button__dark}`} src="./img/github_white.svg" />
+            <img className={`${styles.actionIcon} ${styles.gitHub_button__light}`} src='./img/github.svg' />
             GitHub
           </Link>
         </div>

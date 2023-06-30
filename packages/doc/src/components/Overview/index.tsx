@@ -31,13 +31,13 @@ export default function Overview(): JSX.Element {
           className={`button button--primary ${styles.getStartButton}`}
           to="./docs/intro"
         >
-          Get started now
+          Get Started Now
         </Link>
         <Link
-          className={`button button--outline button--secondary ${styles.view_demo_button}`}
+          className={`button button--outline ${styles.view_demo_button}`}
           to="https://catalog-server.vercel.app/catalog"
         >
-          View a demo
+          View a Demo
         </Link>
       </div>
       <picture className={styles.banner_image}>
