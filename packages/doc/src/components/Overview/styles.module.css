@@ -1,26 +1,19 @@
 .overview {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   margin: 80px 200px;
+  text-align-last: center;
 }
 
 .title {
-  font-family: 'Roboto';
   font-style: normal;
   font-weight: 900;
   margin-top: 16px;
   font-size: 64px;
-  line-height: 64px;
+  line-height: 70px;
   color: var(--ifm-color-emphasis-900);
 }
 
-.title strong {
-  background: linear-gradient(
-    120deg,
-    #3578e5 42.68%,
-    rgba(107, 18, 204, 0.6) 86.6%
-  );
+.gradient_text {
+  background: linear-gradient(120deg, #3578e5 30%, #6b12cc 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -33,20 +26,18 @@
   color: var(--ifm-color-emphasis-600);
 }
 
-.banner_button {
+.banner_button_content {
   display: flex;
+  justify-content: center;
 }
 
-.banner_button > * {
+.banner_button {
   height: 50px;
-
   border-radius: 4px;
-
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 0 8px;
-
   font-family: Roboto;
   padding: 8px 16px;
   font-size: 18px;
@@ -55,23 +46,23 @@
   line-height: 140%;
 }
 
-.banner_button > .getStartButton {
+.banner_button_content > .getStartButton {
   background-color: var(--ifm-color-primary);
   box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.04);
   color: var(--ifm-color-gray-100);
 }
 
-.banner_button > .view_demo_button {
+.banner_button_content > .view_demo_button {
   color: var(--ifm-link-button-color);
   border: 1px solid var(--ifm-link-button-border-color);
 }
 
-.banner_button > .view_demo_button:hover {
+.banner_button_content > .view_demo_button:hover {
   color: var(--ifm-link-button-color);
   background-color: var(--ifm-link-button-hover-background-color);
 }
 
-.banner_button > .view_demo_button:active {
+.banner_button_content > .view_demo_button:active {
   color: var(--ifm-link-button-color);
   background-color: var(--ifm-link-button-active-background-color);
 }
@@ -87,6 +78,7 @@
 }
 
 .banner_image {
+  display: block;
   margin-top: 80px;
 }
 
@@ -106,16 +98,42 @@
   .overview {
     margin: 80px 24px;
   }
+  .title {
+    font-size: 56px;
+    line-height: 70px;
+  }
 }
 
 /* phone */
 @media screen and (max-width: 414px) {
-  .banner_button {
+  .overview {
+    margin-top: 32px;
+  }
+  .title {
+    font-size: 26px;
+    line-height: 32px;
+  }
+  .title_line_break {
+    display: none;
+  }
+  .description {
+    margin: 16px auto;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+  }
+  .banner_button_content {
     width: 100%;
     flex-wrap: wrap;
   }
-  .banner_button > * {
+  .banner_button {
     width: 100%;
     margin: 8px 0;
+    font-size: 12px;
+    line-height: 22px;
+    height: auto;
+  }
+  .banner_image {
+    margin-top: 40px;
   }
 }

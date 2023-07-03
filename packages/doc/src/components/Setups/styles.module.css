@@ -9,24 +9,25 @@
 
 .title {
   color: var(--ifm-color-emphasis-900);
-  font-family: 'Roboto';
   font-style: normal;
   font-weight: 900;
-  font-size: 56px;
+  font-size: 48px;
   line-height: 46px;
-  margin: 120px 0;
+  margin: 100px 0 80px 0;
 }
 
 .card {
   display: flex;
   flex-wrap: wrap;
+  margin-top: 80px;
+}
+
+.card + .card {
   margin-top: 120px;
-  padding: 0;
 }
 
 /* card Container */
 .textContainer {
-  margin-bottom: 20px;
   padding: 0;
 }
 
@@ -40,7 +41,6 @@
 .card .cardTitle {
   color: var(--ifm-color-emphasis-900);
   margin-bottom: 24px;
-  font-family: 'Roboto';
   font-style: normal;
   font-weight: 900;
   font-size: 48px;
@@ -49,12 +49,12 @@
 
 /* card Description */
 .card .cardDescription {
-  font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
   font-size: 20px;
   line-height: 30px;
   color: var(--ifm-color-emphasis-600);
+  margin: 24px 0;
 }
 
 .card .highlight {
@@ -97,7 +97,6 @@ img.radius {
 .radioTabs input[type='radio'] + label {
   padding: 24px 16px;
   width: 100%;
-  font-family: 'Roboto';
   font-style: normal;
   font-weight: 500;
   font-size: 20px;
@@ -110,7 +109,6 @@ img.radius {
 
 .radioTabs input[type='radio'] + label + p {
   margin: 0 16px 24px 16px;
-  font-family: 'Roboto';
   font-style: normal;
   font-weight: 500;
   font-size: 20px;
@@ -147,7 +145,6 @@ img.radius {
 /* components */
 /*link*/
 .link {
-  font-family: 'Roboto';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -163,34 +160,25 @@ img.radius {
 
 /* gallery */
 .gallery {
-  margin-top: 60px;
+  margin-top: 40px;
   padding: 0;
 }
 
-.galleryTitle {
-  /* padding: 0 12px; */
+.gallery_title_content {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
   margin-bottom: 34px;
 }
 
-.galleryTitle h4 {
-  font-family: 'Roboto';
+.gallery_title {
   font-style: normal;
   font-weight: 900;
   font-size: 32px;
   line-height: 40px;
   color: var(--ifm-color-emphasis-900);
-}
-
-.galleryImg {
-  padding: 0;
-}
-
-.gallery img {
-  padding: 0 12px;
+  margin: 0;
 }
 
 /* RWD */
@@ -221,6 +209,9 @@ img.radius {
   .section {
     margin: 80px 24px;
   }
+  .card + .card {
+    margin-top: 80px;
+  }
   .title {
     margin-bottom: 40px;
   }
@@ -228,8 +219,43 @@ img.radius {
   .cardTitle {
     margin-bottom: 24px;
   }
+
+  .gallery_title_content {
+    margin-bottom: 24px;
+  }
 }
 
 /* phone */
-@media screen and (max-width: 390px) {
+@media screen and (max-width: 414px) {
+  .title {
+    font-size: 24px;
+    line-height: 24px;
+  }
+
+  .card .cardTitle {
+    font-size: 24px;
+    line-height: 24px;
+  }
+
+  .card .cardDescription {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .gallery_title {
+    font-size: 24px;
+  }
+
+  .radioTabs input[type='radio'] + label {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .radioTabs input[type='radio'] + label + p {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+  }
 }

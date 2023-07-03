@@ -2,20 +2,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* margin-top: 120px;
-  margin-bottom: 40px; */
-  margin: 120px 200px;
+  margin: 80px 200px;
   gap: 24px;
 }
 
 .communitySection > * {
-  font-family: 'Roboto';
   font-style: normal;
 }
 
 .title {
   font-weight: 900;
-  font-size: 56px;
+  font-size: 48px;
   line-height: 46px;
   margin: 0px;
   color: var(--ifm-color-emphasis-900);
@@ -26,7 +23,7 @@
   flex-direction: column;
   align-items: center;
   padding: 0px;
-  gap: 32px;
+  gap: 24px;
 }
 
 .description {
@@ -46,7 +43,7 @@
 }
 
 .githubSection {
-  margin-top: 56px;
+  margin-top: 24px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -237,11 +234,45 @@ div.cardMeta {
 
 /* pad */
 @media screen and (max-width: 996px) {
+  .githubSection {
+    margin-top: 4px;
+  }
   .communitySection {
     margin: 80px 24px;
   }
 }
 
 /* phone */
-@media screen and (max-width: 390px) {
+@media screen and (max-width: 414px) {
+  .title {
+    font-size: 24px;
+    line-height: 24px;
+  }
+
+  .description {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .buttonContainer {
+    width: 85%;
+    flex-wrap: wrap;
+  }
+
+  .actionButton {
+    font-size: 12px;
+    line-height: 22px;
+    font-weight: 400;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .githubSection {
+    margin-top: 0;
+  }
+
+  .gitHubTitle {
+    font-size: 14px;
+  }
 }
