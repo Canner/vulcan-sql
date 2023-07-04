@@ -62,7 +62,7 @@ export default function HomepageFeatures(): JSX.Element {
 
   const RadioTabs = useCallback(() => {
     return (
-      <div className={styles.radioTabs}>
+      <div className={styles.radio_tabs}>
         {shareSessions.map(({ title, description, icon: Icon }, i) => {
           return (
             <div
@@ -82,7 +82,7 @@ export default function HomepageFeatures(): JSX.Element {
                 value={title}
               />
               <label htmlFor={`radio_tab_${i}`}>
-                <Icon className={styles.inlineLogo} />
+                <Icon className={styles.inline_logo} />
                 {title}
               </label>
               <p>{description}</p>
@@ -98,13 +98,13 @@ export default function HomepageFeatures(): JSX.Element {
       <h2 className={`text--center ${styles.title}`}>How VulcanSQL Works</h2>
       {/* Build */}
       <div className={styles.card}>
-        <div className={`${clsx('col col--6')} ${styles.textContainer}`}>
-          <h3 className={`${styles.cardTitle}`}>Build</h3>
-          <p className={`${styles.cardDescription}`}>
+        <div className={`${clsx('col col--6')} ${styles.text_container}`}>
+          <h3 className={`${styles.card_title}`}>Build</h3>
+          <p className={`${styles.card_description}`}>
             VulcanSQL offers a development experience similar to{' '}
             <img
               src={'./img/dbt.png'}
-              className={styles.inlineLogo}
+              className={styles.inline_logo}
               alt="dbt logo"
             />
             <span className={styles.bold}>dbt</span>. Just insert variables into
@@ -116,7 +116,7 @@ export default function HomepageFeatures(): JSX.Element {
           </p>
         </div>
         <div
-          className={`${clsx('col col--6')} ${styles.imageContainer} ${
+          className={`${clsx('col col--6')} ${styles.image_container} ${
             styles.cardContent
           }`}
         >
@@ -148,13 +148,13 @@ export default function HomepageFeatures(): JSX.Element {
 
       {/* Accelerate */}
       <div className={styles.card}>
-        <div className={`${clsx('col col--6')} ${styles.textContainer}`}>
-          <h3 className={`${styles.cardTitle}`}>Accelerate</h3>
-          <p className={`${styles.cardDescription}`}>
+        <div className={`${clsx('col col--6')} ${styles.text_container}`}>
+          <h3 className={`${styles.card_title}`}>Accelerate</h3>
+          <p className={`${styles.card_description}`}>
             VulcanSQL uses{' '}
             <img
               src={'./img/duck_db.png'}
-              className={styles.inlineLogo}
+              className={styles.inline_logo}
               alt="dbt logo"
             />
             <span className={styles.bold}>DuckDB</span> as a caching layer,{' '}
@@ -166,16 +166,16 @@ export default function HomepageFeatures(): JSX.Element {
           </p>
           <StyleLink link="https://vulcansql.com/docs/develop/cache" />
         </div>
-        <div className={`${clsx('col col--6')} ${styles.imageContainer}`}>
+        <div className={`${clsx('col col--6')} ${styles.image_container}`}>
           <img src={'./img/accelerate.png'} />
         </div>
       </div>
 
       {/* Deploy */}
       <div className={styles.card}>
-        <div className={`${clsx('col col--6')} ${styles.textContainer}`}>
-          <h3 className={`${styles.cardTitle}`}>Deploy</h3>
-          <p className={`${styles.cardDescription}`}>
+        <div className={`${clsx('col col--6')} ${styles.text_container}`}>
+          <h3 className={`${styles.card_title}`}>Deploy</h3>
+          <p className={`${styles.card_description}`}>
             VulcanSQL offers{' '}
             <span className={styles.highlight}>
               flexible deployment options
@@ -199,7 +199,7 @@ export default function HomepageFeatures(): JSX.Element {
             />
           </div>
         </div>
-        <div className={`${clsx('col col--6')} ${styles.imageContainer}`}>
+        <div className={`${clsx('col col--6')} ${styles.image_container}`}>
           <img
             className={styles.radius}
             src={'./img/vulcan_docker_build.gif'}
@@ -209,9 +209,9 @@ export default function HomepageFeatures(): JSX.Element {
 
       {/* Share */}
       <div className={styles.card}>
-        <div className={`${clsx('col col--5')} ${styles.textContainer}`}>
-          <h3 className={`${styles.cardTitle}`}>Share</h3>
-          <p className={`${styles.cardDescription}`}>
+        <div className={`${clsx('col col--5')} ${styles.text_container}`}>
+          <h3 className={`${styles.card_title}`}>Share</h3>
+          <p className={`${styles.card_description}`}>
             VulcanSQL offers many data sharing options,{' '}
             <span className={styles.highlight}>
               seamlessly integrating your data into familiar applications
@@ -220,7 +220,7 @@ export default function HomepageFeatures(): JSX.Element {
           </p>
           <RadioTabs />
         </div>
-        <div className={`${clsx('col col--7')} ${styles.imageContainer}`}>
+        <div className={`${clsx('col col--7')} ${styles.image_container}`}>
           <img className={styles.radius} src={shareSessionsImgSrc} />
         </div>
       </div>

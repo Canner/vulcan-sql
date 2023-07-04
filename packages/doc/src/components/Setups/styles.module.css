@@ -27,18 +27,18 @@
 }
 
 /* card Container */
-.textContainer {
+.text_container {
   padding: 0;
 }
 
-.imageContainer {
+.image_container {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0;
 }
 
-.card .cardTitle {
+.card .card_title {
   color: var(--ifm-color-emphasis-900);
   margin-bottom: 24px;
   font-style: normal;
@@ -48,7 +48,7 @@
 }
 
 /* card Description */
-.card .cardDescription {
+.card .card_description {
   font-style: normal;
   font-weight: 400;
   font-size: 20px;
@@ -65,7 +65,7 @@
   font-weight: 800;
 }
 
-.card .imageContainer img {
+.card .image_container img {
   padding: 0;
   max-width: 100%;
   max-height: 100%;
@@ -81,8 +81,8 @@ img.radius {
   margin-right: 22px;
 }
 
-/* radioTabs */
-.radioTabs > div {
+/* radio_tabs */
+.radio_tabs > div {
   border: 1px solid var(--ifm-color-emphasis-400);
   border-radius: 10px;
   padding: 0;
@@ -90,11 +90,11 @@ img.radius {
   height: auto;
 }
 
-.radioTabs input[type='radio'] {
+.radio_tabs input[type='radio'] {
   display: none;
 }
 
-.radioTabs input[type='radio'] + label {
+.radio_tabs input[type='radio'] + label {
   padding: 24px 16px;
   width: 100%;
   font-style: normal;
@@ -107,7 +107,7 @@ img.radius {
   cursor: pointer;
 }
 
-.radioTabs input[type='radio'] + label + p {
+.radio_tabs input[type='radio'] + label + p {
   margin: 0 16px 24px 16px;
   font-style: normal;
   font-weight: 500;
@@ -118,26 +118,27 @@ img.radius {
   opacity: 0;
 }
 
-/* radioTabs hover */
-.radioTabs > div[data-is-active='true'],
-.radioTabs > div:hover {
+/* radio_tabs hover */
+.radio_tabs > div[data-is-active='true'],
+.radio_tabs > div:hover {
   border: 1px solid var(--ifm-color-primary);
 }
-.radioTabs > div:focus {
+
+.radio_tabs > div:focus {
   border: 1px solid var(--ifm-color-emphasis-400);
 }
 
-/* radioTabs checked */
-.radioTabs input[type='radio']:checked + label {
+/* radio_tabs checked */
+.radio_tabs input[type='radio']:checked + label {
   padding-bottom: 16px;
   color: var(--ifm-color-primary);
 }
 
-.radioTabs input[type='radio']:checked + label .inlineLogo path {
+.radio_tabs input[type='radio']:checked + label .inline_logo path {
   fill: var(--ifm-color-primary);
 }
 
-.radioTabs input[type='radio']:checked + label + p {
+.radio_tabs input[type='radio']:checked + label + p {
   opacity: 1;
   display: block;
 }
@@ -151,8 +152,8 @@ img.radius {
   line-height: 22px;
 }
 
-/* inlineLogo */
-.inlineLogo {
+/* inline_logo */
+.inline_logo {
   margin-right: 5px;
   height: 1.1em;
   vertical-align: text-top;
@@ -195,11 +196,11 @@ img.radius {
 /* table */
 @media screen and (min-width: 997px) {
   /* card Container */
-  .card .textContainer {
+  .card .text_container {
     padding-right: 30px;
   }
 
-  .card .imageContainer {
+  .card .image_container {
     padding-left: 30px;
   }
 }
@@ -209,14 +210,16 @@ img.radius {
   .section {
     margin: 80px 24px;
   }
+
   .card + .card {
     margin-top: 80px;
   }
+
   .title {
     margin-bottom: 40px;
   }
 
-  .cardTitle {
+  .card_title {
     margin-bottom: 24px;
   }
 
@@ -232,12 +235,12 @@ img.radius {
     line-height: 24px;
   }
 
-  .card .cardTitle {
+  .card .card_title {
     font-size: 24px;
     line-height: 24px;
   }
 
-  .card .cardDescription {
+  .card .card_description {
     font-weight: 400;
     font-size: 14px;
     line-height: 22px;
@@ -247,13 +250,13 @@ img.radius {
     font-size: 24px;
   }
 
-  .radioTabs input[type='radio'] + label {
+  .radio_tabs input[type='radio'] + label {
     font-weight: 400;
     font-size: 14px;
     line-height: 22px;
   }
 
-  .radioTabs input[type='radio'] + label + p {
+  .radio_tabs input[type='radio'] + label + p {
     font-weight: 400;
     font-size: 14px;
     line-height: 22px;
