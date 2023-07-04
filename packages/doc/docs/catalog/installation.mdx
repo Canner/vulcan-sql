@@ -1,0 +1,33 @@
+# Installation
+
+To begin using VulcanSQL catalog feature, you will need to install the VulcanSQL `@vulcan-sql/catalog-server` package depend on which executed version of VulcanSQL.
+
+## Install From Binary
+In binary version, VulcanSQL will pull the docker image of `ghcr.io/canner/vulcan-sql/catalog-server` from [Github Packages](https://github.com/Canner/vulcan-sql/pkgs/container/vulcan-sql%2Fcatalog-server).
+
+If you need catalog-server package to empower your development, just **make sure your docker is running** and run:
+```bash
+vulcan catalog
+```
+Then, it will start listening in [http://localhost:4200](http://localhost:4200). 
+
+## Install from NPM
+### Preparing the installation
+Before installing the VulcanSQL catalog-server from NPM, make sure the following requirements are installed on your computer:
+* [Node.js](https://nodejs.org): Only versions above v16 are supported.
+* Your preferred Node.js package manager: [NPM](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/)
+
+### NPM Install
+```bash
+npm i -g @vulcan-sql/catalog-server
+```
+
+After installing `@vulcan-sql/catalog-server`, you can run:
+```bash
+vulcan catalog
+```
+Then, it will start listening in [http://localhost:4200](http://localhost:4200). 
+
+## Next Step
+
+Head to [Introduction](./catalog-intro) to learn what's feature that catalog provided.

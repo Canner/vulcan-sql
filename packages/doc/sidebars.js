@@ -156,6 +156,10 @@ const sidebars = {
           type: 'doc',
           id: 'catalog/catalog-intro',
         },
+        {
+          type: 'doc',
+          id: 'catalog/installation',
+        }
       ],
     },
     {
