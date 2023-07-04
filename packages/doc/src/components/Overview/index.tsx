@@ -104,11 +104,11 @@ export default function Overview(): JSX.Element {
   return (
     <section className={styles.overview}>
       <iframe
-        src="https://ghbtns.com/github-btn.html?user=canner&repo=vulcan-sql&type=star&count=true"
+        src="https://ghbtns.com/github-btn.html?user=canner&repo=vulcan-sql&type=star&count=true&size=large"
         frameBorder="0"
         scrolling="0"
-        width="91"
-        height="20"
+        width="160"
+        height="30"
         title="GitHub"
       ></iframe>
       <h1 className={`text--center ${styles.title}`}>
@@ -132,7 +132,7 @@ export default function Overview(): JSX.Element {
         </Link>
         <Link
           className={`button button--outline ${styles.banner_button} ${styles.view_demo_button}`}
-          to="https://catalog-server.vercel.app/catalog"
+          to="https://codesandbox.io/p/sandbox/vulcansql-demo-wfd834"
         >
           View a Demo
         </Link>
