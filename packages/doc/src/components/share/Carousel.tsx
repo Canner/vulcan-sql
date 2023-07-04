@@ -36,7 +36,7 @@ export default function Carousel(props: CarouselProps) {
     const nextTimer = setTimeout(handleNext, 3000);
 
     return () => clearTimeout(nextTimer);
-  }, [mouseDown]);
+  }, [mouseDown, currentIndex]);
 
   // desktop
   const handleMouseDown = useCallback((e) => {

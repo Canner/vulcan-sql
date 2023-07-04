@@ -62,7 +62,7 @@ export default function HomepageFeatures(): JSX.Element {
 
   const RadioTabs = useCallback(() => {
     return (
-      <div className={styles.radioTabs}>
+      <div className={styles.radio_tabs}>
         {shareSessions.map(({ title, description, icon: Icon }, i) => {
           return (
             <div
@@ -82,7 +82,7 @@ export default function HomepageFeatures(): JSX.Element {
                 value={title}
               />
               <label htmlFor={`radio_tab_${i}`}>
-                <Icon className={styles.inlineLogo} />
+                <Icon className={styles.inline_logo} />
                 {title}
               </label>
               <p>{description}</p>
@@ -96,89 +96,86 @@ export default function HomepageFeatures(): JSX.Element {
   return (
     <section className={styles.section}>
       <h2 className={`text--center ${styles.title}`}>How VulcanSQL Works</h2>
-      <div>
-        {/* Build */}
-        <div className={`${clsx('col col--12')} ${styles.card}`}>
-          <div className={`${clsx('col col--6')} ${styles.textContainer}`}>
-            <h3 className={`${styles.cardTitle}`}>Build</h3>
-            <p className={`${styles.cardDescription}`}>
-              VulcanSQL offers a development experience similar to{' '}
-              <img
-                src={'./img/dbt.png'}
-                className={styles.inlineLogo}
-                alt="dbt logo"
-              />
-              <span className={styles.bold}>dbt</span>. Just insert variables
-              into your templated SQL. VulcanSQL accepts input from your API and{' '}
-              <span className={styles.highlight}>
-                generates SQL statements on the fly
-              </span>
-              .
-            </p>
-          </div>
-          <div
-            className={`${clsx('col col--6')} ${styles.imageContainer} ${
-              styles.cardContent
-            }`}
-          >
-            <img src={'./img/build.png'} />
-          </div>
-
-          {/* API Best Practices at Your Fingertips */}
-          <div className={`${clsx('col col--12')} ${styles.gallery}`}>
-            <div className={`${styles.galleryTitle}`}>
-              <h4>API Best Practices at Your Fingertips</h4>
-              <StyleLink link="https://vulcansql.com/docs/api-plugin/overview" />
-            </div>
-
-            <Carousel>
-              <img
-                className={clsx('col col--4')}
-                src={'./img/validation.png'}
-              />
-              <img
-                className={clsx('col col--4')}
-                src={'./img/error_response.png'}
-              />
-              <img
-                className={clsx('col col--4')}
-                src={'./img/column_level_access_control.png'}
-              />
-            </Carousel>
-          </div>
+      {/* Build */}
+      <div className={styles.card}>
+        <div className={`${clsx('col col--6')} ${styles.text_container}`}>
+          <h3 className={`${styles.card_title}`}>Build</h3>
+          <p className={`${styles.card_description}`}>
+            VulcanSQL offers a development experience similar to{' '}
+            <img
+              src={'./img/dbt.png'}
+              className={styles.inline_logo}
+              alt="dbt logo"
+            />
+            <span className={styles.bold}>dbt</span>. Just insert variables into
+            your templated SQL. VulcanSQL accepts input from your API and{' '}
+            <span className={styles.highlight}>
+              generates SQL statements on the fly
+            </span>
+            .
+          </p>
+        </div>
+        <div
+          className={`${clsx('col col--6')} ${styles.image_container} ${
+            styles.cardContent
+          }`}
+        >
+          <img src={'./img/build.png'} />
         </div>
 
-        {/* Accelerate */}
-        <div className={`${clsx('col col--12')} ${styles.card}`}>
-          <div className={`${clsx('col col--6')} ${styles.textContainer}`}>
-            <h3 className={`${styles.cardTitle}`}>Accelerate</h3>
-            <p className={`${styles.cardDescription}`}>
-              VulcanSQL uses{' '}
-              <img
-                src={'./img/duck_db.png'}
-                className={styles.inlineLogo}
-                alt="dbt logo"
-              />
-              <span className={styles.bold}>DuckDB</span> as a caching layer,{' '}
-              <span className={styles.highlight}>
-                boosting your query speed and API response time{' '}
-              </span>
-              . This means faster, smoother data APIs for you and less strain on
-              your data sources.
-            </p>
-            <StyleLink link="https://vulcansql.com/docs/develop/cache" />
+        {/* API Best Practices at Your Fingertips */}
+        <div className={styles.gallery}>
+          <div className={styles.gallery_title_content}>
+            <h4 className={styles.gallery_title}>
+              API Best Practices at Your Fingertips
+            </h4>
+            <StyleLink link="https://vulcansql.com/docs/api-plugin/overview" />
           </div>
-          <div className={`${clsx('col col--6')} ${styles.imageContainer}`}>
-            <img src={'./img/accelerate.png'} />
-          </div>
+
+          <Carousel>
+            <img className={clsx('col col--4')} src={'./img/validation.png'} />
+            <img
+              className={clsx('col col--4')}
+              src={'./img/error_response.png'}
+            />
+            <img
+              className={clsx('col col--4')}
+              src={'./img/column_level_access_control.png'}
+            />
+          </Carousel>
+        </div>
+      </div>
+
+      {/* Accelerate */}
+      <div className={styles.card}>
+        <div className={`${clsx('col col--6')} ${styles.text_container}`}>
+          <h3 className={`${styles.card_title}`}>Accelerate</h3>
+          <p className={`${styles.card_description}`}>
+            VulcanSQL uses{' '}
+            <img
+              src={'./img/duck_db.png'}
+              className={styles.inline_logo}
+              alt="dbt logo"
+            />
+            <span className={styles.bold}>DuckDB</span> as a caching layer,{' '}
+            <span className={styles.highlight}>
+              boosting your query speed and API response time{' '}
+            </span>
+            . This means faster, smoother data APIs for you and less strain on
+            your data sources.
+          </p>
+          <StyleLink link="https://vulcansql.com/docs/develop/cache" />
+        </div>
+        <div className={`${clsx('col col--6')} ${styles.image_container}`}>
+          <img src={'./img/accelerate.png'} />
         </div>
       </div>
 
       {/* Deploy */}
-      <div className={`${clsx('col col--12')} ${styles.card}`}>
-        <div className={`${clsx('col col--6')} ${styles.textContainer}`}>
-          <h3 className={`${styles.cardTitle}`}>Deploy</h3>
-          <p className={`${styles.cardDescription}`}>
+      <div className={styles.card}>
+        <div className={`${clsx('col col--6')} ${styles.text_container}`}>
+          <h3 className={`${styles.card_title}`}>Deploy</h3>
+          <p className={`${styles.card_description}`}>
             VulcanSQL offers{' '}
             <span className={styles.highlight}>
               flexible deployment options
@@ -202,7 +199,7 @@ export default function HomepageFeatures(): JSX.Element {
             />
           </div>
         </div>
-        <div className={`${clsx('col col--6')} ${styles.imageContainer}`}>
+        <div className={`${clsx('col col--6')} ${styles.image_container}`}>
           <img
             className={styles.radius}
             src={'./img/vulcan_docker_build.gif'}
@@ -211,10 +208,10 @@ export default function HomepageFeatures(): JSX.Element {
       </div>
 
       {/* Share */}
-      <div className={`${clsx('col col--12')} ${styles.card}`}>
-        <div className={`${clsx('col col--6')} ${styles.textContainer}`}>
-          <h3 className={`${styles.cardTitle}`}>Share</h3>
-          <p className={`${styles.cardDescription}`}>
+      <div className={styles.card}>
+        <div className={`${clsx('col col--5')} ${styles.text_container}`}>
+          <h3 className={`${styles.card_title}`}>Share</h3>
+          <p className={`${styles.card_description}`}>
             VulcanSQL offers many data sharing options,{' '}
             <span className={styles.highlight}>
               seamlessly integrating your data into familiar applications
@@ -223,7 +220,7 @@ export default function HomepageFeatures(): JSX.Element {
           </p>
           <RadioTabs />
         </div>
-        <div className={`${clsx('col col--6')} ${styles.imageContainer}`}>
+        <div className={`${clsx('col col--7')} ${styles.image_container}`}>
           <img className={styles.radius} src={shareSessionsImgSrc} />
         </div>
       </div>
