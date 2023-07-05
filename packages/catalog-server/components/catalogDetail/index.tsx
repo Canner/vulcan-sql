@@ -11,7 +11,7 @@ export interface CatalogDetailProps {
   loading: boolean;
   dataset: Dataset;
   datasetLoading: boolean;
-  onDatasetPreview: (options?: any) => void;
+  onDatasetPreview: (options?: any) => Promise<void>;
   datasetError?: any;
 }
 

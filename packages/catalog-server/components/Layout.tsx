@@ -12,6 +12,7 @@ const { Header, Content } = AntdLayout;
 
 const StyledAntdLayout = styled(AntdLayout)`
   min-height: 100vh;
+  overflow-x: hidden;
 
   .ant-layout-header {
     border-bottom: 1px rgba(0, 0, 0, 0.03) solid;
