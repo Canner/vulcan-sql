@@ -1,0 +1,27 @@
+urlPath: /min_deaths
+description: Get a list of countries or WHO regions that have the minimum deaths on a given date range
+request:
+  - fieldName: start_date
+    description: YYYY-MM-DD
+    fieldIn: query
+  - fieldName: end_date
+    description: YYYY-MM-DD
+    fieldIn: query
+  - fieldName: top_n
+    description: Top N
+    fieldIn: query
+  - fieldName: group_by
+    description: Group by, e.g. "WHO_region", "Country_code"; default value is "Country_code"
+    fieldIn: query
+response:
+  - name: Country_code
+    description: country code
+  - name: Country
+    description: country name
+  - name: WHO_region
+    description: WHO region, e.g. "AFRO" for Africa, "AMRO" for Americas, "EMRO" for Eastern Mediterranean, "EURO" for Europe, "SEARO" for South-East Asia, "WPRO" for Western Pacific
+  - name: Total_deaths
+    description: total deaths
+    type: number
+profiles:
+  - duckdb

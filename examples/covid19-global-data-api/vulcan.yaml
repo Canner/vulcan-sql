@@ -1,0 +1,35 @@
+name: 'covid19-global-data-api'
+description: A starter Vulcan project
+version: 0.2.0
+template:
+  provider: LocalFile
+  # Path to .sql files
+  folderPath: sqls
+  codeLoader: InMemory
+artifact:
+  provider: LocalFile
+  serializer: JSON
+  # Path to build result
+  filePath: result.json
+schema-parser:
+  reader: LocalFile
+  # Path to .yaml files
+  folderPath: sqls
+document-generator:
+  specs:
+    - oas3
+types:
+  - RESTFUL
+auth:
+  enabled: false
+enforce-https:
+  enabled: false
+response-format:
+  enabled: true
+  options:
+    default: json
+    formats:
+      - json
+      - csv
+extensions:
+  duckdb: '@vulcan-sql/extension-driver-duckdb'

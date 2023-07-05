@@ -1,0 +1,1 @@
+SELECT DISTINCT WHO_region FROM read_csv_auto('WHO-COVID-19-global-data.csv')

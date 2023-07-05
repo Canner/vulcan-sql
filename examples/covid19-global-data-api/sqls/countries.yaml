@@ -1,0 +1,11 @@
+urlPath: /countries
+description: Get a list of countries and their country codes
+response:
+  - name: Country
+    description: country name
+  - name: Country_code
+    description: country code
+  - name: WHO_region
+    description: WHO region, e.g. "AFRO" for Africa, "AMRO" for Americas, "EMRO" for Eastern Mediterranean, "EURO" for Europe, "SEARO" for South-East Asia, "WPRO" for Western Pacific
+profiles:
+  - duckdb

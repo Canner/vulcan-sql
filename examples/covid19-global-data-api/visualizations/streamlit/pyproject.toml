@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "streamlit-demo"
+version = "0.1.0"
+description = ""
+authors = ["ChihYu Yeh <chihyu.jimmy.yeh@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+streamlit = "^1.24.0"
+watchdog = "^3.0.0"
+requests = "^2.31.0"
+pandas = "^2.0.3"
+plotly = "^5.15.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

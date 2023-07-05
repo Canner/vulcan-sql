@@ -1,0 +1,35 @@
+urlPath: /reports
+description: Get a list of COVID-19 reports by country and date
+request:
+  - fieldName: start_date
+    description: YYYY-MM-DD
+    fieldIn: query
+  - fieldName: end_date
+    description: YYYY-MM-DD
+    fieldIn: query
+  - fieldName: country_code
+    description: country code, a comma-separated string
+    fieldIn: query
+response:
+  - name: Date_reported
+    description: date of report
+  - name: Country_code
+    description: country code
+  - name: Country
+    description: country name
+  - name: WHO_region
+    description: WHO region, e.g. "AFRO" for Africa, "AMRO" for Americas, "EMRO" for Eastern Mediterranean, "EURO" for Europe, "SEARO" for South-East Asia, "WPRO" for Western Pacific
+  - name: New_cases
+    description: new cases
+    type: number
+  - name: Cumulative_cases
+    description: cumulative cases
+    type: number
+  - name: New_deaths
+    description: new deaths
+    type: number
+  - name: Cumulative_deaths
+    description: cumulative deaths
+    type: number
+profiles:
+  - duckdb

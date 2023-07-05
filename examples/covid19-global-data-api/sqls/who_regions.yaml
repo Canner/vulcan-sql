@@ -1,0 +1,7 @@
+urlPath: /who_regions
+description: Get a list of WHO regions
+response:
+  - name: WHO_region
+    description: WHO region, e.g. "AFRO" for Africa, "AMRO" for Americas, "EMRO" for Eastern Mediterranean, "EURO" for Europe, "SEARO" for South-East Asia, "WPRO" for Western Pacific
+profiles:
+  - duckdb
