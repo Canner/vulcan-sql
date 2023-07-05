@@ -131,7 +131,8 @@
   width: auto;
   height: auto;
 }
-img.radius {
+
+.radius {
   border-radius: 4px;
 }
 
@@ -214,6 +215,10 @@ img.radius {
   margin-top: 15px;
 }
 
+.radius {
+  border-radius: 4px;
+}
+
 /* RWD */
 /* table */
 /* 1440p */
@@ -244,7 +249,7 @@ img.radius {
   }
 
   .title {
-    font-size: 56px;
+    font-size: 50px;
     line-height: 70px;
   }
 }
@@ -260,7 +265,7 @@ img.radius {
     line-height: 32px;
   }
 
-  .title_line_break {
+  .desktop_line_break {
     display: none;
   }
 
