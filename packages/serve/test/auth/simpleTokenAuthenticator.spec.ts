@@ -55,7 +55,7 @@ describe('Test simple-token authenticator', () => {
     },
   ] as SimpleTokenOptions;
 
-  it.each([[{}]])(
+  it.each([[{}], [{ 'simple-token': [] }]])(
     'Should auth incorrect when options = %p in options',
     async (options) => {
       // Arrange

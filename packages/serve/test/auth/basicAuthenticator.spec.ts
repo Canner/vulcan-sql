@@ -60,7 +60,7 @@ describe('Test http basic authenticator', () => {
     },
   ] as Array<AuthUserListOptions>;
 
-  it.each([[{}]])(
+  it.each([[{}], [{ basic: {} }]])(
     'Should auth incorrect when options = %p in options',
     async (options) => {
       // Arrange

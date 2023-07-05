@@ -34,12 +34,11 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
   }
 
   public async authCredential(context: KoaContext) {
-    const authorize = <string>context.request.headers['authorization'];
     if (isEmpty(this.options) || !this.options.host)
       throw new ConfigurationError(
         'please provide correct connection information to Canner Enterprise, including "host".'
       );
-
+    const authorize = <string>context.request.headers['authorization'];
     // validate request auth token
     const token = authorize.trim().split(' ')[1];
 

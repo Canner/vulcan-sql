@@ -53,7 +53,7 @@ describe('Test password-file authenticator', () => {
     },
   ];
 
-  it.each([[{}]])(
+  it.each([[{}], [{ 'password-file': {} }]])(
     'Should auth incorrect when options = %p in options',
     async (options) => {
       // Arrange
