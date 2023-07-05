@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { GraphQLError } from 'graphql';
 import { gql, ApolloServer } from 'apollo-server-micro';
 import GraphQLJSON from 'graphql-type-json';
 import {
@@ -79,11 +80,26 @@ const resolvers = {
       return new Endpoint(schema);
     },
     dataset: async (_, args, ctx) => {
-      const { schema, data } = await adapter.getPreviewData(ctx, {
-        slug: args.endpointSlug,
-        filter: args.filter,
-      });
-      return new Dataset(schema, data);
+      try {
+        const { schema, data } = await adapter.getPreviewData(ctx, {
+          slug: args.endpointSlug,
+          filter: args.filter,
+        });
+        return new Dataset(schema, data);
+      } catch (error) {
+        if (error.response && error.response.data) {
+          const { status, data } = error.response;
+          const errorMessage = `status: ${status}, ${data.code}: ${data.message}`;
+          throw new GraphQLError(errorMessage, {
+            extensions: {
+              code: data.code,
+              http: { status: status },
+            },
+          });
+        } else {
+          throw error;
+        }
+      }
     },
   },
 };
