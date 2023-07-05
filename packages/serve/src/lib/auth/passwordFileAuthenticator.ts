@@ -92,16 +92,11 @@ export class PasswordFileAuthenticator extends BaseAuthenticator<PasswordFileOpt
       status: AuthStatus.INDETERMINATE,
       type: this.getExtensionId()!,
     };
-    if (isEmpty(this.options)) return incorrect;
+    // will not auth user if vulcan.yaml didn't configure this authenticator
+    if (isEmpty(this.options) || !this.getOptions()) return incorrect;
 
-    const authorize = context.request.headers['authorization'];
-    if (
-      !this.getOptions() ||
-      !authorize ||
-      !authorize.toLowerCase().startsWith(this.getExtensionId()!)
-    )
-      return incorrect;
     // validate request auth token
+    const authorize = <string>context.request.headers['authorization'];
     const token = authorize.trim().split(' ')[1];
     const bareToken = Buffer.from(token, 'base64').toString();
     try {

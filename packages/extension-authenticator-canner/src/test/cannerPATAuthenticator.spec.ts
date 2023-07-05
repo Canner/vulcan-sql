@@ -24,10 +24,6 @@ const getStubAuthenticator = async (
   return authenticator;
 };
 
-const expectIncorrect = {
-  status: AuthStatus.INDETERMINATE,
-  type: 'canner-pat',
-};
 const expectFailed = (
   message = 'authenticate user by "canner-pat" type failed.'
 ) => ({
@@ -65,47 +61,6 @@ it.each([
   await expect(authenticator.authCredential(ctx)).rejects.toThrow(
     'please provide correct connection information to Canner Enterprise, including "host".'
   );
-});
-
-it('Test to auth credential failed when request header not exist "authorization" key', async () => {
-  // Arrange
-  const ctx = {
-    ...sinon.stubInterface<KoaContext>(),
-    request: {
-      ...sinon.stubInterface<Request>(),
-      headers: {
-        ...sinon.stubInterface<IncomingHttpHeaders>(),
-      },
-    },
-  } as KoaContext;
-  const authenticator = await getStubAuthenticator(mockOptions);
-
-  // Act
-  const result = await authenticator.authCredential(ctx);
-
-  // Assert
-  expect(result).toEqual(expectIncorrect);
-});
-
-it('Should auth credential failed when request header "authorization" not start with "canner-pat"', async () => {
-  // Arrange
-  const ctx = {
-    ...sinon.stubInterface<KoaContext>(),
-    request: {
-      ...sinon.stubInterface<Request>(),
-      headers: {
-        ...sinon.stubInterface<IncomingHttpHeaders>(),
-        authorization: 'Incorrect-Prefix 1234567890',
-      },
-    },
-  } as KoaContext;
-  const authenticator = await getStubAuthenticator(mockOptions);
-
-  // Act
-  const result = await authenticator.authCredential(ctx);
-
-  // Assert
-  expect(result).toEqual(expectIncorrect);
 });
 
 // the situation of status code 4xx, 5xx(including 401, 403) is handled by axios

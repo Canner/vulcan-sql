@@ -55,7 +55,7 @@ describe('Test simple-token authenticator', () => {
     },
   ] as SimpleTokenOptions;
 
-  it.each([[{}], [{ basic: {} }], [{ 'simple-token': [] }]])(
+  it.each([[{}], [{ 'simple-token': [] }]])(
     'Should auth incorrect when options = %p in options',
     async (options) => {
       // Arrange
@@ -73,44 +73,6 @@ describe('Test simple-token authenticator', () => {
       expect(result).toEqual(expectIncorrect);
     }
   );
-  it('Test to auth credential failed when request header not exist "authorization" key', async () => {
-    // Arrange
-    const ctx = {
-      ...sinon.stubInterface<KoaContext>(),
-      request: {
-        ...sinon.stubInterface<Request>(),
-        headers: {
-          ...sinon.stubInterface<IncomingHttpHeaders>(),
-        },
-      },
-    } as KoaContext;
-
-    // Act
-    const result = await authCredential(ctx, { 'simple-token': userLists });
-
-    // Assert
-    expect(result).toEqual(expectIncorrect);
-  });
-
-  it('Should auth credential failed when request header "authorization" not start with "simple-token"', async () => {
-    // Arrange
-    const ctx = {
-      ...sinon.stubInterface<KoaContext>(),
-      request: {
-        ...sinon.stubInterface<Request>(),
-        headers: {
-          ...sinon.stubInterface<IncomingHttpHeaders>(),
-          authorization: '',
-        },
-      },
-    } as KoaContext;
-
-    // Act
-    const result = await authCredential(ctx, { 'simple-token': userLists });
-
-    // Assert
-    expect(result).toEqual(expectIncorrect);
-  });
 
   it('Should auth credential failed when request header "authorization" not matched in empty simple-token" options', async () => {
     // Arrange
