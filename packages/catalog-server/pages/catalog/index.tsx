@@ -6,7 +6,7 @@ import Path from '@vulcan-sql/catalog-server/lib/path';
 
 export function Catalog() {
   const router = useRouter();
-  const { data } = useEndpointsQuery();
+  const { data, loading } = useEndpointsQuery();
 
   const endpoints = useMemo(() => {
     return (data?.endpoints || []).map((endpoint) => ({
@@ -16,7 +16,7 @@ export function Catalog() {
       },
     }));
   }, [data?.endpoints]);
-  return <CatalogComponent title="Catalog" data={endpoints} />;
+  return <CatalogComponent title="Catalog" data={endpoints} loading={loading} />
 }
 
 export default Catalog;
