@@ -9,6 +9,17 @@ SELECT * FROM public.users
 WHERE age >= {{ context.params.age }};
 ```
 
+and you can define the request fields in the configuration file:
+
+```yaml
+urlPath: /users
+request:
+  // highlight-start
+  - fieldName: age
+    fieldIn: query
+  // highlight-end
+```
+
 With parameters set in SQL template, you can dynamically filter the results based on the `age` parameter provided in the querystring
 
 ```bash
