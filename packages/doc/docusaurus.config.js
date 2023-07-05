@@ -65,6 +65,12 @@ const config = {
             label: 'Docs',
           },
           {
+            to: 'use-cases/internal-tools/overview',
+            position: 'left',
+            label: 'Use Cases',
+            activeBaseRegex: '/use-cases/'
+          },
+          {
             href: 'https://discord.gg/ztDz8DCmG4',
             position: 'left',
             label: 'Community',
@@ -149,6 +155,15 @@ const config = {
         anonymizeIP: true,
       },
     ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'use-cases',
+        path: 'use-cases',
+        routeBasePath: 'use-cases',
+        sidebarPath: require.resolve('./use-cases/sidebars.js'),
+      }
+    ]
   ],
 };
 
