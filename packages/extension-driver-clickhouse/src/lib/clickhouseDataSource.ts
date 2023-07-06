@@ -120,6 +120,8 @@ export class ClickHouseDataSource extends DataSource<any, ClickHouseOptions> {
       const [namesRow, typesRow, ...dataRows] = rows;
       names = JSON.parse(namesRow.text);
       types = JSON.parse(typesRow.text);
+      // ClickHouse stream only called once and return all data row in one chuck, so we need to push each row to the stream by loop.
+      // Please see https://clickhouse.com/docs/en/integrations/language-clients/nodejs#resultset-and-row-abstractions
       dataRows.forEach((row) => dataRowStream.push(row.text));
     });
     await new Promise((resolve) => {

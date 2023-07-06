@@ -42,7 +42,7 @@ export const mapFromClickHouseType = (clickHouseType: string) => {
 };
 
 /**
- * Convert the js type to the corresponding ClickHouse type for generating named placeholder of parameterize query.
+ * Convert the JS type (source is JSON format by API query parameter) to the corresponding ClickHouse type for generating named placeholder of parameterized query.
  * Only support to convert number to Int or Float, boolean to Boolean, string to String, other types will convert to String.
  * If exist complex type e.g: object, Array, null, undefined, Date, Record.. etc, just convert to string type by ClickHouse function in SQL.
  * ClickHouse support converting string to other types function.

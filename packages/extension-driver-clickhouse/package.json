@@ -15,8 +15,8 @@
     "data-warehouse",
     "data-lake",
     "api-builder",
-    "snowflake",
-    "snow"
+    "clickhouse",
+    "ch"
   ],
   "repository": {
     "type": "git",

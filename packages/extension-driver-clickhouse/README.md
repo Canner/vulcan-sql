@@ -74,7 +74,7 @@ At the above, it not contains `log` option, because the `logs` need to define a 
 
 ## Note
 
-The ClickHouse support parameterize query to prevent SQL Injection by prepared statement. The named placeholder define by `{name:type}`, please see [Query with Parameters](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#queries-with-parameters).
+The ClickHouse support parameterized query to prevent SQL Injection by prepared statement. The named placeholder define by `{name:type}`, please see [Query with Parameters](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#queries-with-parameters).
 
 However, The VulcanSQL API support API query parameter is JSON format, so it not support [variety types like ClickHouse](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#supported-clickhouse-data-types), The VulcanSQL will only support to convert below types:
 
@@ -94,9 +94,7 @@ SELECT * FROM users WHERE born_date = toDate({val:String});
 
 ## ⚠️ Caution
 
-ClickHouse driver currently not yet support for caching datasets feature.
-
-If you use the ClickHouse driver and setup the cache options in API Schema yaml, it will throw error.
+ClickHouse driver currently not yet support for caching datasets feature. If you use the ClickHouse driver with caching dataset feature, it will be failed.
 
 ## Testing
 
