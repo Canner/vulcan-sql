@@ -1,4 +1,4 @@
-# Appsmith
+# Making of database GUI in Appsmith
 
 ## Introduction
 
@@ -43,11 +43,11 @@ To successfully finish this guide, you'll need:
 First, you need to follow the instruction to create an init template:
 https://vulcansql.com/docs/develop/init
 
-Here's what it will looks like:
+Here's what it will look like:
 
 ![appsmith-vulcan-sql-start](./imgs/appsmith-vulcan-sql-start.png)
 
-In this case, we will use `fruits_average_price_2020.csv` & `vegetables_average_price_2020.csv` files to practice.
+In this case, we will use `food_prices_2020.csv` to practice.
 
 
 ### Write your SQL query
@@ -95,24 +95,46 @@ SELECT * FROM cached_food
 ### Set up Appsmith Application
 Now we start to set up Appsmith.
 
-After create Appsmith account, it will directly help create and navigate to `My first application`.
+After creating an Appsmith account, it will directly help create and navigate to `My first application`.
 
 ![appsmith-setup-1.png](./imgs/appsmith-setup-1.png)
 
-Then, we select **+ New datasource** on the sidebar in tab **Explorer**. Appsmith provides several types of datasource for developers. In this case, we choose **REST API** for using VulcanSQL Data API as datasource.
+We add a select **Widget** to canvas and name it `foodType` to prepare the parameter for **REST API** in next step.
+In the **Options** section, we add the value `Fruit` and `Vegetable` for filtering the data and set default selected value to `Fruit`.
+Name the select label to `Food Type`.
+
+![appsmith-setup-1.1.png](./imgs/appsmith-setup-1.1.png)
+
+Then, we select **+ New datasource** on the sidebar in tab **Explorer**. Appsmith provides datasources for developers. In this case, we choose **REST API** for using VulcanSQL Data API as datasource.
 
 ![appsmith-setup-2.png](./imgs/appsmith-setup-2.png)
 
-It will navigate to **Queries/JS** section, then we edit the name to `getFruits` and add the flights API that we created in VulcanSQL before.
+After navigate to the **Queries/JS** section, we edit the name to `getFruits`. Add the API that was created in VulcanSQL previously. Include the dynamic parameter `{{foodType.selectedOptionValue}}` in the filter key value. This will enable the API to interact with the food type selection.
 
 ![appsmith-setup-3.png](./imgs/appsmith-setup-3.png)
 
-Now, done setting up the datasource, we can drag a **Table** to canvas and select `getFruits` in the table data on the right sidebar. As you have completed, you can click the **Deploy** button on the right top of the screen to deploy the application and test it in the view mode.
+
+Back to the select, we need to add the event to interact with the API's filtering parameter. Scroll down to the **Events** section and
+add an event to **onOptionChange**, choose **Execute a query** > `getFruits`.
+
+![appsmith-setup-1.2.png](./imgs/appsmith-setup-1.2.png)
+
+After setting up the datasource, we can drag a **Table** to canvas and select `getFruits` in the table data on the right sidebar. As you complete, you can click the **Deploy** button on the right top of the screen to deploy the application and test it in the view mode.
 
 ![appsmith-setup-4.png](./imgs/appsmith-setup-4.png)
 
-### Conclusion
+Here's the deployed result.
+
+![appsmith-setup-5.png](./imgs/appsmith-setup-5.png)
+
+## Conclusion
 
 That's it! This concludes our simple example: [Vulcan+Appsmith Demo](https://app.appsmith.com/app/my-first-application/page1-64a6848a4d60e87c5655e3f6).
 
 To ensure a fast and seamless experience, we invite you to try out our [VulcanSQL Demo](https://codesandbox.io/p/sandbox/demo-for-appsmith-frpcqz) template on CodeSandbox. By using VulcanSQL and Appsmith, you can fully experience their powerful capabilities. Enjoy the benefits and efficiency that VulcanSQL and Appsmith bring to your data operations.
+
+:::info
+We have a [Discord community](https://discord.gg/ztDz8DCmG4) and welcome to ask us anything or give us feedback! Also, we definitely welcome you to share interesting projects you've done using VulcanSQL in [#showcase](https://discord.com/channels/1017514410677391420/1017514410677391427) channel!
+
+Finally, if VulcanSQL resonates with you, please consider starring us on GitHub!
+:::
