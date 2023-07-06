@@ -103,7 +103,7 @@ export default function HomepageFeatures(): JSX.Element {
           <p className={`${styles.card_description}`}>
             VulcanSQL offers a development experience similar to{' '}
             <img
-              src={'./img/dbt.png'}
+              src={'./img/dbt_logo.png'}
               className={styles.inline_logo}
               alt="dbt logo"
             />
