@@ -65,7 +65,7 @@ const config = {
             label: 'Docs',
           },
           {
-            to: 'use-cases/internal-tools/overview',
+            to: 'use-cases/internal-tools/appsmith',
             position: 'left',
             label: 'Use Cases',
             activeBaseRegex: '/use-cases/'
