@@ -1,0 +1,32 @@
+{
+  "name": "@vulcan-sql/extension-driver-clickhouse",
+  "description": "Clickhouse driver for VulcanSQL",
+  "version": "0.5.3",
+  "type": "commonjs",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "vulcan",
+    "vulcan-sql",
+    "data",
+    "sql",
+    "database",
+    "data-warehouse",
+    "data-lake",
+    "api-builder",
+    "snowflake",
+    "snow"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Canner/vulcan.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@clickhouse/client": "^0.1.1"
+  },
+  "peerDependencies": {
+    "@vulcan-sql/core": "~0.5.3-0"
+  }
+}
