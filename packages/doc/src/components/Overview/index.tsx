@@ -65,7 +65,7 @@ export default function Overview(): JSX.Element {
   const userUiImgSrc = useMemo(
     () =>
       users.find(({ type }) => type === userType)?.imgSrc ||
-      './img/vulcan_share_apidocs.gif',
+      './img/catalog.png',
     [userType]
   );
 
@@ -114,13 +114,12 @@ export default function Overview(): JSX.Element {
       <h1 className={`text--center ${styles.title}`}>
         Create and Share <span className={styles.gradient_text}>Data</span>{' '}
         <span className={styles.gradient_text}>APIs</span> Fast.{' '}
-        <br className={`${styles.title_line_break}`} />
+        <br className={`${styles.desktop_line_break}`} />
         Made for Analytics Engineers.
       </h1>
       <div className={`text--center ${styles.description}`}>
         VulcanSQL turns your SQL templates into data APIs for efficient data
-        sharing.
-        <br />
+        sharing. <br className={`${styles.desktop_line_break}`} />
         No backend skills required. Empower your data sharing, faster.
       </div>
       <div className={styles.banner_button_content}>
@@ -151,7 +150,7 @@ export default function Overview(): JSX.Element {
             Fewer Ad-hoc Requests
             <br />
             More
-            <span className={styles.gradient_text}> Self-Service </span>.
+            <span className={styles.gradient_text}> Self-Service</span>.
           </h3>
           <p className={`${styles.card_description}`}>
             With VulcanSQL, analytics engineers can control access to the data

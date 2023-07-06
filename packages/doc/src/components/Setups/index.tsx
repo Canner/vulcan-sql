@@ -103,7 +103,7 @@ export default function HomepageFeatures(): JSX.Element {
           <p className={`${styles.card_description}`}>
             VulcanSQL offers a development experience similar to{' '}
             <img
-              src={'./img/dbt.png'}
+              src={'./img/dbt_logo.png'}
               className={styles.inline_logo}
               alt="dbt logo"
             />
@@ -201,7 +201,7 @@ export default function HomepageFeatures(): JSX.Element {
         </div>
         <div className={`${clsx('col col--6')} ${styles.image_container}`}>
           <img
-            className={styles.radius}
+            className={`${styles.radius} ${styles.img_gradient_borders}`}
             src={'./img/vulcan_docker_build.gif'}
           />
         </div>
@@ -221,7 +221,10 @@ export default function HomepageFeatures(): JSX.Element {
           <RadioTabs />
         </div>
         <div className={`${clsx('col col--7')} ${styles.image_container}`}>
-          <img className={styles.radius} src={shareSessionsImgSrc} />
+          <img
+            className={`${styles.radius} ${styles.img_gradient_borders}`}
+            src={shareSessionsImgSrc}
+          />
         </div>
       </div>
     </section>
