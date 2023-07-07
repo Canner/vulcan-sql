@@ -1,6 +1,6 @@
 # ClickHouse
 
-Connect with your ClickHouse servers via the official [Node.js Driver](https://clickhouse.com/docs/en/integrations/language-clients/nodejs).
+Connect to your ClickHouse servers using the official [Node.js Driver](https://clickhouse.com/docs/en/integrations/language-clients/nodejs).
 
 ## Installation
 
@@ -43,45 +43,53 @@ Connect with your ClickHouse servers via the official [Node.js Driver](https://c
 
 ## Configuration
 
-Please check [arguments of ClickHouse Client](https://clickhouse.com/docs/en/integrations/language-clients/nodejs) for further information.
+For more information, please refer to the [ClickHouse Client documentation](https://clickhouse.com/docs/en/integrations/language-clients/nodejs) to learn about the available arguments for the ClickHouse Client.
 
-| Name                 | Required | Default               | Description                                                                                                                                                                                                                                                       |
-| -------------------- | -------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| host                 | N        | http://localhost:8123 | ClickHouse instance URL.                                                                                                                                                                                                                                          |
-| request_timeout      | N        | 30000                 | The request timeout in milliseconds.                                                                                                                                                                                                                              |
-| max_open_connections | N        | Infinity              | Maximum number of sockets to allow per host.                                                                                                                                                                                                                      |
-| compression          | N        |                       | Data applications operating with large datasets over the wire can benefit from enabling compression. Currently, only GZIP is supported using zlib.Please see [Compression docs](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#compression). |
-| username             | N        | default               | The name of the user on whose behalf requests are made.                                                                                                                                                                                                           |
-| password             | N        |                       | The user password.                                                                                                                                                                                                                                                |
-| application          | N        | VulcanSQL             | The name of the application using the Node.js client.                                                                                                                                                                                                             |
-| database             | N        | default               | Database name to use.                                                                                                                                                                                                                                             |
-| clickhouse_settings  | N        |                       | ClickHouse settings to apply to all requests. please see the [Advance Settings](https://clickhouse.com/docs/en/operations/settings), and [Definition](https://github.com/ClickHouse/clickhouse-js/blob/0.1.1/src/settings.ts)                                     |
-| tls                  | N        |                       | Configure TLS certificates. Please see [TLS docs](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#tls-certificates).                                                                                                                          |
-| session_id           | N        |                       | ClickHouse Session ID to send with every request.                                                                                                                                                                                                                 |
-| keep_alive           | N        |                       | HTTP Keep-Alive related settings. Please see [Keep Alive docs](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#keep-alive)                                                                                                                    |
+| Name                 | Required | Default               | Description                                                                                                                                                                                                                                                            |
+| -------------------- | -------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| host                 | N        | http://localhost:8123 | ClickHouse instance URL.                                                                                                                                                                                                                                               |
+| request_timeout      | N        | 30000                 | Request timeout in milliseconds.                                                                                                                                                                                                                                       |
+| max_open_connections | N        | Infinity              | Maximum number of sockets to allow per host.                                                                                                                                                                                                                           |
+| compression          | N        |                       | Compression settings for data transfer. Currently, only GZIP compression using zlib is supported. See [Compression docs](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#compression) for details.                                                 |
+| username             | N        | default               | The name of the user on whose behalf requests are made.                                                                                                                                                                                                                |
+| password             | N        |                       | The user's password.                                                                                                                                                                                                                                                   |
+| application          | N        | VulcanSQL             | The name of the application using the Node.js client.                                                                                                                                                                                                                  |
+| database             | N        | default               | Database name to use.                                                                                                                                                                                                                                                  |
+| clickhouse_settings  | N        |                       | ClickHouse settings to apply to all requests. For all available settings, see [Advance Settings](https://clickhouse.com/docs/en/operations/settings), and For the definition, see [Definition](https://github.com/ClickHouse/clickhouse-js/blob/0.1.1/src/settings.ts) |
+| tls                  | N        |                       | Configure TLS certificates. See [TLS docs](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#tls-certificates).                                                                                                                                      |
+| session_id           | N        |                       | ClickHouse Session ID to send with every request.                                                                                                                                                                                                                      |
+| keep_alive           | N        |                       | HTTP Keep-Alive related settings. See [Keep Alive docs](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#keep-alive)                                                                                                                                |
 
-At the above, it not contains `log` option, because the `logs` need to define a Logger class and assign to it, so it could not set by `profiles.yaml`.
+The `log` option is not included above because it requires defining a Logger class and assigning it. Therefore, it cannot be set through `profiles.yaml`.
 
 ## Note
 
-The ClickHouse support parameterized query to prevent SQL Injection by prepared statement. The named placeholder define by `{name:type}`, please see [Query with Parameters](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#queries-with-parameters).
+ClickHouse supports parameterized queries to prevent SQL injection using prepared statements. Named placeholders are defined using the `{name:type}` syntax. For more information, refer to the [Query with Parameters](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#queries-with-parameters) section in the ClickHouse documentation.
 
-However, The VulcanSQL API support API query parameter is JSON format, so it not support [variety types like ClickHouse](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#supported-clickhouse-data-types), The VulcanSQL will only support to convert below types:
+However, the VulcanSQL API supports JSON format for API query parameters and does not support the full range of types available in ClickHouse. VulcanSQL only supports the conversion of the following types:
 
-- `boolean` to `Boolean` ClickHouse type
-- `number` to `Int` or `Float` ClickHouse type
-- `string` to `String` ClickHouse type
+- `boolean` to ClickHouse type `Boolean`
+- `number` to ClickHouse types `Int` or `Float`
+- `string` to ClickHouse type `String`
 
-Therefore, if you would like to query the data is a special type from ClickHouse, e.g: `Array(Unit8)`, `Record<K, V>`, `Date`, `DateTime` ...etc, you could use the ClickHouse [Regular Function](https://clickhouse.com/docs/en/sql-reference/functions) or [Type Conversion Function](https://clickhouse.com/docs/en/sql-reference/functions/type-conversion-functions) to do it.
+Therefore, if you need to query data with special types in ClickHouse, such as `Array(Unit8)`, `Record<K, V>`, `Date`, `DateTime`, and so on, you can use ClickHouse [Regular Functions](https://clickhouse.com/docs/en/sql-reference/functions) or [Type Conversion Functions](https://clickhouse.com/docs/en/sql-reference/functions/type-conversion-functions) to handle them.
 
 Example:
 
 ```sql
--- If the val from API query parameter is '1990-11-01', and the born_date columns type is Date32 type
--- What is the toDate function, please see https://clickhouse.com/docs/en/sql-reference/functions/type-conversion-functions#todate
+-- If the `val` from the API query parameter is '1990-11-01' and the `born_date` column is of type `Date32`,
+-- you can use the toDate function to convert the value. See https://clickhouse.com/docs/en/sql-reference/functions/type-conversion-functions#todate
 SELECT * FROM users WHERE born_date = toDate({val:String});
 ```
 
 ## ⚠️ Caution
 
-ClickHouse driver currently not yet support for caching datasets feature. If you use the ClickHouse driver with caching dataset feature, it will be failed.
+The ClickHouse driver currently does not support caching datasets. If you use the ClickHouse driver with caching dataset features, it will result in failure.
+
+## Testing
+
+To run tests for the `extension-driver-clickhouse` module, use the following command:
+
+```bash
+nx test extension-driver-clickhouse
+```
