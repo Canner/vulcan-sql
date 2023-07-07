@@ -1,0 +1,208 @@
+# Positioning of Data Warehouse and VulcanSQL
+
+## What are Data Warehouses:
+
+Data warehouses serve as central repositories that consolidate data from various sources. They facilitate the extraction, transformation, and loading (ETL) of data, which can then be utilized for generating reports and conducting data analysis to derive valuable business insights.
+
+Data warehouses are typically optimized for online analytical processing (OLAP), which involves executing complex queries that often incorporate aggregation functions like `SUM` and `DISTINCT`.
+
+To fulfill their purpose, data warehouses are often designed as highly distributed systems that can automatically scale according to the data load and processing requirements.
+
+Popular platforms like [BigQuery](https://cloud.google.com/bigquery) and [Snowflake](https://www.snowflake.com/en/) are widely adopted by the community for efficiently storing and managing vast amounts of data.
+
+## Why Data Warehouse is not suitable for serving web applications
+
+### Different design purposes:
+
+The primary purpose of a Data Warehouse is for analysis and report generation, storing and processing large volumes of structured data.
+It is optimized for complex analytical queries such as aggregation, correlation, and multidimensional analysis.
+
+Serving web applications, on the other hand, aim to provide dynamic and interactive web content, requiring quick responses to user requests.
+Therefore, the design of a Data Warehouse is not suitable for directly supporting real-time, low-latency web applications.
+
+### Performance limitations:
+
+Data Warehouses are typically optimized for batch processing of large amounts of data, which may not perform well for real-time data queries and updates.
+Serving web applications require fast data read and write operations to support user interactions, necessitating efficient data access and processing capabilities.
+A Data Warehouse may not be able to provide real-time data updates and low-latency query responses, resulting in a degraded user experience when used
+as the backend for serving web applications.
+
+### Differences in data structure and scale:
+
+Data Warehouses often employ structured data models and storage mechanisms that involve a significant amount of data redundancy.
+While this design supports complex analytical requirements, it may be overly complex and redundant for serving web applications.
+Web applications tend to favor simpler and more flexible data structures to quickly retrieve and process data. Additionally,
+web applications typically deal with smaller data volumes compared to Data Warehouses,
+leading to wasted storage space and computational resources when using a Data Warehouse.
+
+### Cost considerations:
+
+While Data Warehouses offers a scalable and cost-effective pricing model, it is primarily designed for analytical workloads.
+Serving web applications typically require frequent read and write operations, which can lead to increased costs when using BigQuery.
+The pricing structure of BigQuery is based on storage and query usage, and the cost can escalate when handling real-time updates and interactive user requests.
+
+### System complexity:
+
+Data Warehouses typically consist of multiple components and complex architectures, ex: ETL, data modeling, and indexing.
+Using a Data Warehouse for serving web applications can introduce additional complexity and maintenance costs.
+In contrast, web applications tend to use lightweight database systems or caching technologies to provide simpler and more efficient system architectures.
+
+## VulcanSQL as a low-latency, high-concurrent Data API Application
+
+VulcanSQL has emerged with the aim of helping users browse data faster and more conveniently, positioning itself as a low-latency, high-concurrent Data API Application. I will now describe why VulcanSQL is more suitable for serving Data APIs compared to a data warehouse.
+
+VulcanSQL leverages DuckDB as a caching layer for data, fully utilizing DuckDB's advantages to achieve the desired low-latency and high-concurrency characteristics that web applications value. In VulcanSQL's typical usage scenarios, developers (such as Data Engineers or Data Analysts) treat the data warehouse as "cold data" and store frequently accessed or user-relevant data within VulcanSQL as "hot data".
+
+## Building a Data API
+
+I'll run a VulcanSQL server and Using BigQuery as the data warehouse with [TPC-H](http://www.tpc.org/tpch/) SF1 data inside, and Assuming we are building a API which will serve the daily revenue of the last 3 years
+
+After [initialize](https://vulcansql.com/docs/develop/init) your VulcanSQL project, we can start building your API with sql templates
+
+### Implement your API with sql templates
+
+#### Step 1. Write your API
+
+Under the "sql" folder, let create a `daily_revenue.sql` file with content, you will write your business logic here.
+
+For example, I will serve a API that users can retrieve the daily revenue in a range period.
+
+```sql
+{% cache %}
+select
+*
+from daily_revenue
+where orderdate >= {{ context.params.startdate }}
+and orderdate <= {{ context.params.enddate }}
+{% endcache %}
+```
+
+Within the `{% cache %} ... {% endcache %}` scope, you can fetch data from the "daily_revenue" table in DuckDB,
+while the `context.params.xxx` represents the values obtained from the request parameters.
+
+#### Step 2. Configured your API
+
+Under the "sql" folder, let create a `daily_revenue.yaml` file to configured your API
+
+```yaml
+urlPath: /daily_revenue
+request:
+- fieldName: startdate
+    fieldIn: query
+    description: limit of query
+- fieldName: enddate
+    fieldIn: query
+    description: limit of query
+cache:
+- cacheTableName: daily_revenue
+    # daily revenue for the last 3 years
+    sql: "select sum(totalprice), orderdate from cannerflow-286003.tpch_sf1.orders where orderdate >= '1996-01-01' group by orderdate "
+    profile: bq
+    refreshTime:
+        every: "1d"
+profile: bq
+```
+
+We've defined a API with path `/daily_revenue` that accepts query parameters. In the `cache` settings, we will retrieve aggregated data from BigQuery, store it in DuckDB, and refresh the cache on a daily basis.
+
+#### Step 3. Configured the VulcanSQL project
+
+In this example, We will connect to BigQuery and DuckDB, and using caching layer.
+Let's configured your `vulcan.yaml` file to use BigQuery & DuckDB driver and setting DuckDB as our caching layer
+
+```yaml
+name: my-vulcan-data-api
+# ... other configuration
+extensions:
+  bq: '@vulcan-sql/extension-driver-bq'
+  duckdb: '@vulcan-sql/extension-driver-duckdb'
+cache:
+  type: parquet
+  folderPath: tmp
+  loader: duckdb
+# ... other configuration
+```
+
+In the `cache` settings, we configured we will use DuckDB as our caching layer.
+For the connections to BigQuery and DuckDB, let configured our `profile.yaml`.
+
+```yaml
+- name: bq # profile name
+  type: bq
+  connection:
+    location: ASIA-EAST1
+    keyFilename: 'my-gcp-credentials.json'
+  allow: '*'
+  cache:
+    # The GCS bucket name for vulcan to store query result that will be used in cache feature
+    bucketName: 'vulcan-ci'
+- name: duck # profile name
+  type: duckdb
+  connection:
+    # Optional: Whether log query requests (default: false)
+    log-queries: false
+    # Optional: Whether log query requests' parameters, please be aware that query parameters might contain sensitive data (default: false)
+    log-parameters: false
+  allow: '*'
+```
+
+### Let's hit the road
+
+Just start with the Vulcan CLI in your terminal, under the project root
+
+1. Run `vulcan build` to build your API
+
+2. Run `vulcan serve`
+
+Now, your Data API is ready to serve!
+
+In this case, we stored the aggregated data that retrieve from the data warehouse and turn a sql template into Data APIs.
+Let's see how VulcanSQL performs.
+
+I ran some load testing using [k6.io](https://k6.io/) to measure whether VulcanSQL can serve as a low-latency, high-concurrency Data API application.
+
+Let see the basic request.
+
+I ran the loading test for 30 sec.
+
+For concurrent 1 and 10, I can see VulcanSQL can handle it within 100 ms, perfect!
+
+```terminal
+# concurrent 1, ran for 30 sec
+med 9ms
+p(95) 13ms
+
+# concurrent 10, ran for 30 sec
+med 48ms
+p(95) 71ms
+```
+
+With VulcanSQL, I see the respond time is still good with 100 concurrent users
+
+```terminal
+# concurrent 50, ran for 30 sec
+med 223ms
+p(95) 267ms
+
+# concurrent 100, ran for 30 sec
+med 422ms
+p(95) 492ms
+```
+
+And for 300 concurrent users, I see the respond time is grow to 1s
+
+```terminal
+# concurrent 300, ran for 30 sec
+med 1.0s
+p(95) 1.3s
+```
+
+## Wrapping Up
+
+In this post, I've tried making sense that data warehouse is not suitable of serving web applications.
+VulcanSQL leverages the flexibility of DuckDB to create a low-latency, high-concurrency Data API.
+I hope you're now confident that VulcanSQL can deliver data to you within 500 milliseconds even with 100 concurrent users.
+
+I've love to hear your feedback about VulcanSQL in our [Discord](https://discord.com/invite/ztDz8DCmG4) channel.
+
+Have fun with VulcanSQL, feel free to [leave a start on GitHub](https://github.com/Canner/vulcan-sql) if you liked this article.

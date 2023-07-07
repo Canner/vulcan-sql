@@ -70,6 +70,11 @@ const config = {
             label: 'Community',
           },
           {
+            to: 'blog',
+            position: 'left',
+            label: 'Blogs',
+          },
+          {
             href: 'https://twitter.com/vulcansql',
             label: 'Twitter',
             position: 'right',
