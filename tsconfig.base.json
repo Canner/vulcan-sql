@@ -83,6 +83,9 @@
       "@vulcan-sql/extension-driver-canner": [
         "packages/extension-driver-canner/src/index.ts"
       ],
+      "@vulcan-sql/extension-driver-clickhouse": [
+        "packages/extension-driver-clickhouse/src/index.ts"
+      ],
       "@vulcan-sql/extension-driver-duckdb": [
         "packages/extension-driver-duckdb/src/index.ts"
       ],

@@ -21,7 +21,8 @@ const sidebars = {
   tutorialSidebar: [
     {
       type: 'html',
-      value: '<img src="/img/launch.svg" width="20em" class="menu_icon" /> Getting Started',
+      value:
+        '<img src="/img/launch.svg" width="20em" class="menu_icon" /> Getting Started',
       className: 'sidebar-title',
     },
     {
@@ -38,7 +39,8 @@ const sidebars = {
     },
     {
       type: 'html',
-      value: '<img src="/img/lightning.svg" width="20em" class="menu_icon" /> Building Data API',
+      value:
+        '<img src="/img/lightning.svg" width="20em" class="menu_icon" /> Building Data API',
       className: 'sidebar-title',
     },
     {
@@ -69,7 +71,11 @@ const sidebars = {
         {
           type: 'doc',
           id: 'connect/duckdb',
-        }
+        },
+        {
+          type: 'doc',
+          id: 'connect/clickhouse',
+        },
       ],
     },
     {
@@ -97,7 +103,7 @@ const sidebars = {
           type: 'doc',
           id: 'develop/advance',
         },
-      ]
+      ],
     },
     {
       type: 'doc',
@@ -144,7 +150,8 @@ const sidebars = {
     },
     {
       type: 'html',
-      value: '<img src="/img/doc.svg" width="20em" class="menu_icon" /> API Catalog & Documentation',
+      value:
+        '<img src="/img/doc.svg" width="20em" class="menu_icon" /> API Catalog & Documentation',
       className: 'sidebar-title',
     },
     {
@@ -164,7 +171,8 @@ const sidebars = {
     },
     {
       type: 'html',
-      value: '<img src="/img/settings.svg" width="20em" class="menu_icon" /> API Configuration',
+      value:
+        '<img src="/img/settings.svg" width="20em" class="menu_icon" /> API Configuration',
       className: 'sidebar-title',
     },
     {
@@ -319,7 +327,8 @@ const sidebars = {
     // },
     {
       type: 'html',
-      value: '<img src="/img/deploy.svg" width="20em" class="menu_icon" /> Deployment and Maintenance',
+      value:
+        '<img src="/img/deploy.svg" width="20em" class="menu_icon" /> Deployment and Maintenance',
       className: 'sidebar-title',
     },
     'deployment',
