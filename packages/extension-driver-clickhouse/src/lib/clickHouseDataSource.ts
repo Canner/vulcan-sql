@@ -1,5 +1,6 @@
 import {
   BindParameters,
+  DataColumn,
   DataResult,
   DataSource,
   ExecuteOptions,
@@ -17,7 +18,7 @@ import {
   ResultSet,
   Row,
 } from '@clickhouse/client';
-import { buildSQL } from './sqlBuilder';
+import { buildSQL, removeEndingSemiColon } from './sqlBuilder';
 import { mapFromClickHouseType, mapToClickHouseType } from './typeMapper';
 import { omit } from 'lodash';
 
@@ -62,10 +63,10 @@ export class ClickHouseDataSource extends DataSource<any, ClickHouseOptions> {
       const client = createClient(options);
       this.clientMapping.set(profile.name, {
         client,
-        options: profile.connection,
+        options,
       });
 
-      await client.query({ query: 'SELECT 1;' });
+      await client.query({ query: 'SELECT 1' });
       this.logger.debug(`Profile ${profile.name} initialized`);
     }
   }
@@ -82,14 +83,22 @@ export class ClickHouseDataSource extends DataSource<any, ClickHouseOptions> {
     // convert to clickhouse support type of query params.
     const params = this.convertToQueryParams(bindParams);
     try {
+      // Use JSONEachFormat to get data result with column name , refer: https://clickhouse.com/docs/en/integrations/language-clients/nodejs#supported-data-formats
       const builtSQL = buildSQL(sql, operations);
-      const result = await client.query({
+      const data = await client.query({
         query: builtSQL,
-        // get result with column name and type, refer: https://clickhouse.com/docs/en/integrations/language-clients/nodejs#supported-data-formats
-        format: 'JSONCompactEachRowWithNamesAndTypes',
+        format: 'JSONEachRow',
         query_params: params,
       });
-      return await this.getResultFromRestfulSet(result);
+      // Get the query metadata e.g: column name, type by DESCRIBE TABLE method.
+      // DESCRIBE TABLE will return the type after evaluating the query, without execution, and will return only one entry per column, see: https://www.tinybird.co/blog-posts/tips-11-how-to-get-the-types-returned-by-a-query
+      const metadata = await client.query({
+        // remove semicolon at the end, because could not exist semicolon in sub-query when using DESCRIBE TABLE
+        query: `DESCRIBE TABLE (${removeEndingSemiColon(builtSQL)})`,
+        format: 'JSONEachRow',
+        query_params: params,
+      });
+      return await this.getResultFromRestfulSet(metadata, data);
     } catch (e: any) {
       this.logger.debug(
         `Errors occurred, release connection from ${profileName}`
@@ -101,28 +110,29 @@ export class ClickHouseDataSource extends DataSource<any, ClickHouseOptions> {
   public async prepare({ parameterIndex, value }: RequestParameter) {
     // ClickHouse use {name:type} be a placeholder, so if we only use number string as name e.g: {1:Unit8}
     // it will face issue when converting to the query params => {1: value1}, because the key is value not string type, so here add prefix "p" to avoid this issue.
-    return `{p${parameterIndex}:${mapToClickHouseType(value)}`;
+    return `{p${parameterIndex}:${mapToClickHouseType(value)}}`;
   }
 
-  private async getResultFromRestfulSet(result: ResultSet) {
+  public async destroy() {
+    for (const { client } of this.clientMapping.values()) {
+      await client.close();
+    }
+  }
+
+  private async getResultFromRestfulSet(metadata: ResultSet, data: ResultSet) {
     const dataRowStream = new Stream.Readable({
       objectMode: true,
       read: () => null,
       // automatically destroy() the stream when it emits 'finish' or errors. Node > 10.16
       autoDestroy: true,
     });
-    // data is all rows according to https://clickhouse.com/docs/en/integrations/language-clients/nodejs#resultset-and-row-abstractions
-    // first row is column names, second row is column types, the rest is data
-    let names: string[] = [];
-    let types: string[] = [];
-    const rawStream = result.stream();
+    // Get the metadata and only need column name and type
+    const columns = (await metadata.json()) as Array<DataColumn>;
+    const rawStream = data.stream();
+    // ClickHouse stream only called once and return all data row in one chuck, so we need to push each row to the stream by loop.
+    // Please see https://clickhouse.com/docs/en/integrations/language-clients/nodejs#resultset-and-row-abstractions
     rawStream.on('data', (rows: Row[]) => {
-      const [namesRow, typesRow, ...dataRows] = rows;
-      names = JSON.parse(namesRow.text);
-      types = JSON.parse(typesRow.text);
-      // ClickHouse stream only called once and return all data row in one chuck, so we need to push each row to the stream by loop.
-      // Please see https://clickhouse.com/docs/en/integrations/language-clients/nodejs#resultset-and-row-abstractions
-      dataRows.forEach((row) => dataRowStream.push(row.text));
+      rows.forEach((row) => dataRowStream.push(JSON.parse(row.text)));
     });
     await new Promise((resolve) => {
       rawStream.on('end', () => {
@@ -132,11 +142,10 @@ export class ClickHouseDataSource extends DataSource<any, ClickHouseOptions> {
     });
     return {
       getColumns: () => {
-        return names.map((name, idx) => ({
-          name: name || '',
-          // Convert ClickHouse type to FieldDataType supported by VulcanSQL for generating the response schema in the specification
-          // please see https://github.com/Canner/vulcan-sql/pull/78#issuecomment-1621532674
-          type: mapFromClickHouseType(types[idx] || ''),
+        return columns.map((column) => ({
+          name: column.name || '',
+          // Convert ClickHouse type to FieldDataType supported by VulcanSQL for generating the response schema in the specification, see: https://github.com/Canner/vulcan-sql/pull/78#issuecomment-1621532674
+          type: mapFromClickHouseType(column.type || ''),
         }));
       },
       getData: () => dataRowStream,

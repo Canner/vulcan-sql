@@ -1,3 +1,3 @@
-export * from './lib/clickhouseDataSource';
-import { ClickHouseDataSource } from './lib/clickhouseDataSource';
+export * from './lib/clickHouseDataSource';
+import { ClickHouseDataSource } from './lib/clickHouseDataSource';
 export default [ClickHouseDataSource];

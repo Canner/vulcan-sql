@@ -25,7 +25,7 @@ register('Int256', 'string');
 register('Float32', 'number');
 register('Float64', 'number');
 register('Decimal', 'number');
-register('Boolean', 'boolean');
+register('Bool', 'boolean');
 register('String', 'string');
 register('FixedString', 'string');
 register('UUID', 'string');
