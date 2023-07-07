@@ -5,7 +5,7 @@ const register = (clickHouseType: string, type: string) => {
 };
 
 // Reference
-// https://clickhouse.com/docs/en/integrations/language-clients/nodejs#resultset-and-row-abstractions
+// https://clickhouse.com/docs/en/native-protocol/columns#integers
 // Currently, FieldDataType only support number, string, boolean, Date for generating response schema in the specification.
 register('Int', 'number');
 register('UInt', 'number');
@@ -25,6 +25,8 @@ register('Int256', 'string');
 register('Float32', 'number');
 register('Float64', 'number');
 register('Decimal', 'number');
+// When define column type or query result with parameterized query, The Bool or Boolean type both supported.
+// But the column type of query result only return Bool, so we only support Bool type for safety.
 register('Bool', 'boolean');
 register('String', 'string');
 register('FixedString', 'string');
@@ -43,12 +45,12 @@ export const mapFromClickHouseType = (clickHouseType: string) => {
 
 /**
  * Convert the JS type (source is JSON format by API query parameter) to the corresponding ClickHouse type for generating named placeholder of parameterized query.
- * Only support to convert number to Int or Float, boolean to Boolean, string to String, other types will convert to String.
+ * Only support to convert number to Int or Float, boolean to Bool, string to String, other types will convert to String.
  * If exist complex type e.g: object, Array, null, undefined, Date, Record.. etc, just convert to string type by ClickHouse function in SQL.
  * ClickHouse support converting string to other types function.
  * Please see Each section of the https://clickhouse.com/docs/en/sql-reference/functions and https://clickhouse.com/docs/en/sql-reference/functions/type-conversion-functions
  * @param value
- * @returns 'FLoat', 'Int', 'Boolean', 'String'
+ * @returns 'FLoat', 'Int', 'Bool', 'String'
  */
 
 export const mapToClickHouseType = (value: any) => {
@@ -57,7 +59,9 @@ export const mapToClickHouseType = (value: any) => {
     if (value % 1 !== 0) return 'Float';
     return 'Int';
   }
-  if (typeof value === 'boolean') return 'Boolean';
+  // When define column type or query result with parameterized query, The Bool or Boolean type both supported.
+  // But the column type of query result only return Bool, so we only support Bool type for safety.
+  if (typeof value === 'boolean') return 'Bool';
   if (typeof value === 'string') return 'String';
   return 'String';
 };
