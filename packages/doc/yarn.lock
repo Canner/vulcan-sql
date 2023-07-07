@@ -1293,6 +1293,14 @@
     chalk "^4.1.2"
     tslib "^2.4.0"
 
+"@docusaurus/logger@2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@docusaurus/logger/-/logger-2.4.1.tgz#4d2c0626b40752641f9fdd93ad9b5a7a0792f767"
+  integrity sha512-5h5ysIIWYIDHyTVd8BjheZmQZmEgWDR54aQ1BX9pjFfpyzFo5puKXKYrYJXbjEHGyVhEzmB9UXwbxGfaZhOjcg==
+  dependencies:
+    chalk "^4.1.2"
+    tslib "^2.4.0"
+
 "@docusaurus/lqip-loader@2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@docusaurus/lqip-loader/-/lqip-loader-2.1.0.tgz#0cde274b59caf8451b5963c92bfa2ea127a4b552"
@@ -1609,6 +1617,17 @@
     js-yaml "^4.1.0"
     tslib "^2.4.0"
 
+"@docusaurus/utils-validation@^2":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@docusaurus/utils-validation/-/utils-validation-2.4.1.tgz#19959856d4a886af0c5cfb357f4ef68b51151244"
+  integrity sha512-unII3hlJlDwZ3w8U+pMO3Lx3RhI4YEbY3YNsQj4yzrkZzlpqZOLuAiZK2JyULnD+TKbceKU0WyWkQXtYbLNDFA==
+  dependencies:
+    "@docusaurus/logger" "2.4.1"
+    "@docusaurus/utils" "2.4.1"
+    joi "^17.6.0"
+    js-yaml "^4.1.0"
+    tslib "^2.4.0"
+
 "@docusaurus/utils@2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@docusaurus/utils/-/utils-2.1.0.tgz#b77b45b22e61eb6c2dcad8a7e96f6db0409b655f"
@@ -1630,10 +1649,39 @@
     url-loader "^4.1.1"
     webpack "^5.73.0"
 
+"@docusaurus/utils@2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@docusaurus/utils/-/utils-2.4.1.tgz#9c5f76eae37b71f3819c1c1f0e26e6807c99a4fc"
+  integrity sha512-1lvEZdAQhKNht9aPXPoh69eeKnV0/62ROhQeFKKxmzd0zkcuE/Oc5Gpnt00y/f5bIsmOsYMY7Pqfm/5rteT5GA==
+  dependencies:
+    "@docusaurus/logger" "2.4.1"
+    "@svgr/webpack" "^6.2.1"
+    escape-string-regexp "^4.0.0"
+    file-loader "^6.2.0"
+    fs-extra "^10.1.0"
+    github-slugger "^1.4.0"
+    globby "^11.1.0"
+    gray-matter "^4.0.3"
+    js-yaml "^4.1.0"
+    lodash "^4.17.21"
+    micromatch "^4.0.5"
+    resolve-pathname "^3.0.0"
+    shelljs "^0.8.5"
+    tslib "^2.4.0"
+    url-loader "^4.1.1"
+    webpack "^5.73.0"
+
 "@endiliey/react-ideal-image@^0.0.11":
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/@endiliey/react-ideal-image/-/react-ideal-image-0.0.11.tgz#dc3803d04e1409cf88efa4bba0f67667807bdf27"
   integrity sha512-QxMjt/Gvur/gLxSoCy7VIyGGGrGmDN+VHcXkN3R2ApoWX0EYUE+hMgPHSW/PV6VVebZ1Nd4t2UnGRBDihu16JQ==
+
+"@gracefullight/docusaurus-plugin-microsoft-clarity@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@gracefullight/docusaurus-plugin-microsoft-clarity/-/docusaurus-plugin-microsoft-clarity-0.1.3.tgz#b7dd89c815bbae23cfb92d1fb072684c448984f4"
+  integrity sha512-oFbYXzsEPeDK8C6tdqpAVRRQ3pkqFb85cGfPROll/fXa4reJ4PWg7mf7H+m1yrlzHrs3A/L3cIKGMHWR1JdOZg==
+  dependencies:
+    "@docusaurus/utils-validation" "^2"
 
 "@hapi/hoek@^9.0.0":
   version "9.3.0"
