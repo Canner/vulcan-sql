@@ -34,6 +34,16 @@ const sidebars = {
     },
     {
       type: 'html',
+      value: '<img src="/img/plot.svg" width="20em" class="menu_icon" /> Customer-Facing Analytics',
+      className: 'sidebar-title',
+    },
+    {
+      type: 'doc',
+      id: 'customer-facing-analytics/streamlit',
+      label: 'Streamlit',
+    },
+    {
+      type: 'html',
       value: '<br/><br/>',
     },
   ],
