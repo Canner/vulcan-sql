@@ -31,7 +31,7 @@ it(
     });
     // We must consume the stream or the connection won't be released.
     await streamToArray(getData());
-    // Close the pg server
+    // Close the clickhouse server
     await clickHouse.destroy();
 
     // Act, Assert

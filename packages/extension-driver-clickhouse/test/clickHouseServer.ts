@@ -27,7 +27,7 @@ export class ClickHouseServer {
     // https://github.com/apocas/dockerode/issues/647
     await new Promise((res) => docker.modem.followProgress(pullStream, res));
     this.container = await docker.createContainer({
-      name: `vulcan-clickhouse-test-${faker.random.word()}`,
+      name: `vulcan-clickhouse-test-${faker.git.shortSha()}`,
       Image: this.image,
       ExposedPorts: {
         '8123/tcp': {},
