@@ -26,11 +26,8 @@ const sidebars = {
     },
     {
       type: 'doc',
-      id: 'internal-tools/overview',
-    },
-    {
-      type: 'doc',
       id: 'internal-tools/appsmith',
+      label: 'Appsmith',
     },
     {
       type: 'html',
