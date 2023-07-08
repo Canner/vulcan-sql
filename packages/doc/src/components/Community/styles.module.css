@@ -2,20 +2,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* margin-top: 120px;
-  margin-bottom: 40px; */
-  margin: 120px 200px;
+  margin: 80px 200px;
   gap: 24px;
 }
 
 .communitySection > * {
-  font-family: 'Roboto';
   font-style: normal;
 }
 
 .title {
   font-weight: 900;
-  font-size: 56px;
+  font-size: 48px;
   line-height: 46px;
   margin: 0px;
   color: var(--ifm-color-emphasis-900);
@@ -26,7 +23,7 @@
   flex-direction: column;
   align-items: center;
   padding: 0px;
-  gap: 32px;
+  gap: 24px;
 }
 
 .description {
@@ -46,7 +43,7 @@
 }
 
 .githubSection {
-  margin-top: 56px;
+  margin-top: 24px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -68,24 +65,32 @@
   flex-direction: row;
   align-items: center;
   padding: 8px 16px;
-  color: var(--ifm-color-gray-700);
+  color: var(--ifm-link-button-color);
   text-align: center;
   font-size: 18px;
   border: 1px solid var(--ifm-link-button-border-color);
   border-radius: 4px;
-  background-color: var(--ifm-link-button-background-color);
+  font-weight: 400;
+}
+
+.gitHub_button__dark {
+  display: var(--github-white-mark-display);
+}
+
+.gitHub_button__light {
+  display: var(--github-mark-display);
 }
 
 .actionButton:hover {
   background-color: var(--ifm-link-button-hover-background-color);
   border: 1px solid var(--ifm-link-button-border-color);
-  color: var(--ifm-color-gray-700);
+  color: var(--ifm-link-button-color);
 }
 
 .actionButton:active {
   background-color: var(--ifm-link-button-active-background-color);
   border: 1px solid var(--ifm-link-button-border-color);
-  color: var(--ifm-color-gray-700);
+  color: var(--ifm-link-button-color);
 }
 
 .cardBlock {
@@ -229,11 +234,46 @@ div.cardMeta {
 
 /* pad */
 @media screen and (max-width: 996px) {
+  .githubSection {
+    margin-top: 4px;
+  }
+
   .communitySection {
     margin: 80px 24px;
   }
 }
 
 /* phone */
-@media screen and (max-width: 390px) {
+@media screen and (max-width: 414px) {
+  .title {
+    font-size: 24px;
+    line-height: 24px;
+  }
+
+  .description {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .buttonContainer {
+    width: 85%;
+    flex-wrap: wrap;
+  }
+
+  .actionButton {
+    font-size: 12px;
+    line-height: 22px;
+    font-weight: 400;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .githubSection {
+    margin-top: 0;
+  }
+
+  .gitHubTitle {
+    font-size: 14px;
+  }
 }

@@ -53,7 +53,7 @@ describe('Test password-file authenticator', () => {
     },
   ];
 
-  it.each([[{}], [{ 'simple-token': [] }], [{ basic: {} }]])(
+  it.each([[{}], [{ 'password-file': {} }]])(
     'Should auth incorrect when options = %p in options',
     async (options) => {
       // Arrange
@@ -71,48 +71,6 @@ describe('Test password-file authenticator', () => {
       expect(result).toEqual(expectIncorrect);
     }
   );
-  it('Test to auth credential failed when request header not exist "authorization" key', async () => {
-    // Arrange
-    const ctx = {
-      ...sinon.stubInterface<KoaContext>(),
-      request: {
-        ...sinon.stubInterface<Request>(),
-        headers: {
-          ...sinon.stubInterface<IncomingHttpHeaders>(),
-        },
-      },
-    } as KoaContext;
-
-    // Act
-    const result = await authCredential(ctx, {
-      'password-file': { path: '', users: [] },
-    });
-
-    // Assert
-    expect(result).toEqual(expectIncorrect);
-  });
-
-  it('Should auth credential failed when request header "authorization" not start with "password-file"', async () => {
-    // Arrange
-    const ctx = {
-      ...sinon.stubInterface<KoaContext>(),
-      request: {
-        ...sinon.stubInterface<Request>(),
-        headers: {
-          ...sinon.stubInterface<IncomingHttpHeaders>(),
-          authorization: '',
-        },
-      },
-    } as KoaContext;
-
-    // Act
-    const result = await authCredential(ctx, {
-      'password-file': { path: '', users: [] },
-    });
-
-    // Assert
-    expect(result).toEqual(expectIncorrect);
-  });
 
   it('Should auth credential failed when "path" is empty in "password-file" options', async () => {
     // Arrange

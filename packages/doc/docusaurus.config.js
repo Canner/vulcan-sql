@@ -71,6 +71,11 @@ const config = {
             activeBaseRegex: '/use-cases/'
           },
           {
+            to: 'blog',
+            position: 'left',
+            label: 'Blogs',
+          },
+          {
             href: 'https://discord.gg/ztDz8DCmG4',
             position: 'left',
             label: 'Community',

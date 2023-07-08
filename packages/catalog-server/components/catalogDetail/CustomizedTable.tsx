@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Table, TableProps, ConfigProvider, Empty } from 'antd';
+import { Table, TableProps, ConfigProvider, Empty, SpinProps } from 'antd';
+import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
 
 const StyledCustomizedTable = styled.div`
   .customizedTable {
@@ -40,7 +41,7 @@ const tableColumns = [
 ];
 
 export default function CustomizedTable(props: CustomizedTableProps) {
-  const { unit, renderUnit, dataSource, ...restProps } = props;
+  const { unit, renderUnit, dataSource, loading, ...restProps } = props;
   const countString = renderUnit
     ? renderUnit(dataSource)
     : `${dataSource.length} ${unit}`;
@@ -60,6 +61,12 @@ export default function CustomizedTable(props: CustomizedTableProps) {
           columns={tableColumns}
           dataSource={dataSource}
           pagination={false}
+          loading={
+            {
+              spinning: loading,
+              indicator: <LoadingOutlined style={{ fontSize: 24 }} spin />,
+            } as SpinProps
+          }
           {...restProps}
         />
       </ConfigProvider>

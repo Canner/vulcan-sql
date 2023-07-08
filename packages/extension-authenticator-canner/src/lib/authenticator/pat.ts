@@ -34,24 +34,11 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
   }
 
   public async authCredential(context: KoaContext) {
-    const incorrect = {
-      status: AuthStatus.INDETERMINATE,
-      type: this.getExtensionId()!,
-    };
-    const authorize = context.request.headers['authorization'];
-    if (
-      // no need to check this.options because it a external extension,
-      // it must be configured correctly to be load into container and can be used in authenticate middleware
-      !authorize ||
-      !authorize.toLowerCase().startsWith(this.getExtensionId()!)
-    )
-      return incorrect;
-
     if (isEmpty(this.options) || !this.options.host)
       throw new ConfigurationError(
         'please provide correct connection information to Canner Enterprise, including "host".'
       );
-
+    const authorize = <string>context.request.headers['authorization'];
     // validate request auth token
     const token = authorize.trim().split(' ')[1];
 

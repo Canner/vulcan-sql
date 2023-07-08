@@ -1,16 +1,18 @@
 import React from 'react';
 import { Typography } from 'antd';
 import Endpoint, { EndpointProps } from './Endpoint';
+import Loading from '../Loading';
 
 const { Title } = Typography;
 
 export interface CatalogProps {
   title?: string;
   data: EndpointProps[];
+  loading: boolean;
 }
 
 export default function Catalog(props: CatalogProps) {
-  const { title, data } = props;
+  const { title, data, loading } = props;
 
   const EndpointList = () => (
     <>
@@ -23,7 +25,7 @@ export default function Catalog(props: CatalogProps) {
   return (
     <div>
       {title && <Title level={3}>{title}</Title>}
-      <EndpointList />
+      {loading ? <Loading /> : <EndpointList />}
     </div>
   );
 }
