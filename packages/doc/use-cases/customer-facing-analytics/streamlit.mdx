@@ -4,7 +4,8 @@
 
 In this example, we'll demonstrate how effortlessly VulcanSQL can create and share data APIs. 
 This allows data users to craft their own data visualization applications using different tools, like Streamlit, which is used in this example. 
-The final product will be an interactive data visualization as shown below:
+The final product will be an interactive data visualization as shown below, 
+and you can check [API documentation](https://covid19-global-data-api.fly.dev/doc) and [data dashboard](https://covid19-dashboard.fly.dev/) demos here.
 
 ![streamlit](./gifs/streamlit.gif)
 
@@ -34,7 +35,7 @@ We are going to use [COVID-19 data from WHO](https://covid19.who.int/data), and 
 We try to have a simple setup here to demonstate how it is easy to create and share data APIs using VulcanSQL, so we download the data set and feed data directly into DuckDB.
 It's also a perfect scenario if you have a data warehouse in the cloud, then you can directly feed data to VulcanSQL, and use DuckDB as a caching layer.
 
-All of the source code is open source and on GitHub. Feel free to check it out!
+All of the source code is open source and on [GitHub](https://github.com/Canner/vulcan-sql-examples/tree/main/covid19-global-data-api). Feel free to check it out!
 
 ### What does the dataset contain?
 
@@ -110,7 +111,10 @@ Feel free to inspect the source code of Streamlit part if you are interested!
 
 ### Deployment
 
-After creating and testing your API endpoints in your local environment, we can deploy them to the public now!
+After creating and testing your API endpoints in your local environment, we can deploy them to the public now! 
+We use [Fly.io](https://fly.io/) as the deployment option, since it offers the free deployment service and 
+we can adjust the configuration parameters to prevent apps from hibernation! 
+Welcome to check [further details here](https://github.com/Canner/vulcan-sql-examples/tree/main/covid19-global-data-api#deployment) if you are curious!
 
 ## Conclusion
 
