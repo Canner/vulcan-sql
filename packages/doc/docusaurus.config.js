@@ -149,10 +149,10 @@ const config = {
         anonymizeIP: true,
       },
     ],
-    [
-      "@gracefullight/docusaurus-plugin-microsoft-clarity",
-      { projectId: "hvf0jtjhh7" },
-    ],
+    // [
+    //   "@gracefullight/docusaurus-plugin-microsoft-clarity",
+    //   { projectId: "hvf0jtjhh7" },
+    // ],
   ],
 };
 
