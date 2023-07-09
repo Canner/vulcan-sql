@@ -1,6 +1,6 @@
 {
-  "name": "@vulcan-sql/test-utility",
-  "description": "Vulcan package for extension testing",
+  "name": "@vulcan-sql/extension-driver-clickhouse",
+  "description": "Clickhouse driver for VulcanSQL",
   "version": "0.6.0",
   "type": "commonjs",
   "publishConfig": {
@@ -15,13 +15,17 @@
     "data-warehouse",
     "data-lake",
     "api-builder",
-    "dev-tools"
+    "clickhouse",
+    "ch"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Canner/vulcan-sql.git"
+    "url": "https://github.com/Canner/vulcan.git"
   },
   "license": "MIT",
+  "dependencies": {
+    "@clickhouse/client": "^0.1.1"
+  },
   "peerDependencies": {
     "@vulcan-sql/core": "~0.6.0-0"
   }
