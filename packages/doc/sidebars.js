@@ -157,11 +157,11 @@ const sidebars = {
     {
       type: 'category',
       label: 'Catalog',
-      link: { type: 'doc', id: 'catalog/catalog-intro' },
+      link: { type: 'doc', id: 'catalog/intro' },
       items: [
         {
           type: 'doc',
-          id: 'catalog/catalog-intro',
+          id: 'catalog/intro',
         },
         {
           type: 'doc',
@@ -198,7 +198,7 @@ const sidebars = {
         },
         {
           type: 'doc',
-          id: 'develop/pagination/offset',
+          id: 'api-plugin/pagination/offset',
         },
       ],
     },
