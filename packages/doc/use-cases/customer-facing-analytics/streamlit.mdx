@@ -2,9 +2,9 @@
 
 ## Introduction
 
-In this example, we'll demonstrate how effortlessly VulcanSQL can create and share data APIs. 
-This allows data users to craft their own data visualization applications using different tools, like Streamlit, which is used in this example. 
-The final product will be an interactive data visualization as shown below, 
+In this example, we'll demonstrate how effortlessly VulcanSQL can create and share data APIs.
+This allows data users to craft their own data visualization applications using different tools, like Streamlit, which is used in this example.
+The final product will be an interactive data visualization as shown below,
 and you can check [API documentation](https://covid19-global-data-api.fly.dev/doc) and [data dashboard](https://covid19-dashboard.fly.dev/) demos here.
 
 ![streamlit](./gifs/streamlit.gif)
@@ -14,24 +14,24 @@ and you can check [API documentation](https://covid19-global-data-api.fly.dev/do
 If you're trying to share data APIs straight from your data warehouses or data lakes, you might find it complex and challenging.
 
 1. You need to select and get familiar with a programming language and a server framework or library.
-2. You need to grasp and put into action many API best practices. These include API documentation, 
+2. You need to grasp and put into action many API best practices. These include API documentation,
 rate-limiting, pagination, Cross-Origin Resource Sharing (CORS), as well as user authentication and authorization, etc.
 
 ## Why VulcanSQL
 
 **VulcanSQL is a Data API Framework that helps data folks build and share scalable data APIs using SQL templates without any backend skills required.**
 
-1. VulcanSQL uses the power of DuckDB as a cache layer. This mix helps cut costs and gives a big performance boost, 
+1. VulcanSQL uses the power of DuckDB as a cache layer. This mix helps cut costs and gives a big performance boost,
 making it a great fit for scenarios with lots of traffic and need for fast responses, where traditional OLAP database systems fall short.
-2. VulcanSQL has API best practices built in, like auto-generated API documentation using OpenAPI, rate limiting, pagination, and Cross-Origin Resource Sharing (CORS). 
+2. VulcanSQL has API best practices built in, like auto-generated API documentation using OpenAPI, rate limiting, pagination, and Cross-Origin Resource Sharing (CORS).
 This lets you focus more on implementing business logic.
 3. VulcanSQL ensures data privacy with features like user authentication and authorization, and data masking, etc. This gives you better control over how your data is used.
-4. VulcanSQL comes with API catalog designed to be user-friendly for non-technical users. This enables them to explore your 
-API endpoints effortlessly and establish connections with downstream applications such as Excel, Google Spreadsheet, Retool, among others. 
+4. VulcanSQL comes with API catalog designed to be user-friendly for non-technical users. This enables them to explore your
+API endpoints effortlessly and establish connections with downstream applications such as Excel, Google Spreadsheet, Retool, among others.
 
 ## Demo: VulcanSQL + Streamlit
 
-We are going to use [COVID-19 data from WHO](https://covid19.who.int/data), and the data is in CSV format. 
+We are going to use [COVID-19 data from WHO](https://covid19.who.int/data), and the data is in CSV format.
 We try to have a simple setup here to demonstate how it is easy to create and share data APIs using VulcanSQL, so we download the data set and feed data directly into DuckDB.
 It's also a perfect scenario if you have a data warehouse in the cloud, then you can directly feed data to VulcanSQL, and use DuckDB as a caching layer.
 
@@ -39,7 +39,7 @@ All of the source code is open source and on [GitHub](https://github.com/Canner/
 
 ### What does the dataset contain?
 
-The dataset we will use is daily cases and deaths by date reported to WHO. You can read detailed information in the link given above. 
+The dataset we will use is daily cases and deaths by date reported to WHO. You can read detailed information in the link given above.
 The table below shows what each field means in the dataset:
 
 |Field name|Type|Description|
@@ -77,8 +77,8 @@ After you inspect how you can generate API endpoints using VulcanSQL, let's see 
 {% set country_codes = context.params.country_code %}
 
 SELECT * FROM read_csv_auto('WHO-COVID-19-global-data.csv')
-WHERE 
-    Date_reported >= {{ context.params.start_date | is_required }} AND 
+WHERE
+    Date_reported >= {{ context.params.start_date | is_required }} AND
     Date_reported <= {{ context.params.end_date | is_required }}
 
     {% if country_codes %}
@@ -87,7 +87,7 @@ WHERE
 ```
 
 We accept `country_code`, `start_date` and `end_date` as query parameters.
-1. The `country_code` parameter accepts a comma-separated string, 
+1. The `country_code` parameter accepts a comma-separated string,
 accommodating multiple countries that users may wish to explore. We leverage `UNNEST` and `string_split` functions to extract these values effectively.
 2. The `start_date` and `end_date` should be provided in the 'YYYY-MM-DD' format.
 
@@ -96,14 +96,14 @@ Take this project for example, I use DuckDB as the database, so SQL syntax you'v
 
 ### What is API Catalog and why
 
-Despite creating API endpoints easily using SQL, VulcanSQL also has an extension called [API Catalog](../../docs/catalog/catalog-intro), which enables data consumers to inspect and use your API endpoints easily, 
+Despite creating API endpoints easily using SQL, VulcanSQL also has an extension called [API Catalog](../../docs/catalog/intro), which enables data consumers to inspect and use your API endpoints easily,
 to help enable the dream of self-service analytics. The short video below shows how it works for data consumers:
 
 ![api_catalog](./gifs/api_catalog.gif)
 
 ### What is Streamlit and why
 
-In this example we use Streamlit to demo how VulcanSQL can be used, and you can definitely try other data visualization tools if you wish. 
+In this example we use Streamlit to demo how VulcanSQL can be used, and you can definitely try other data visualization tools if you wish.
 Any tools that can ingest data using API endpoints are good candidates!
 
 We choose Streamlit because it is a great tool for Python developers if they want to create a data web app for quick sharing.
@@ -111,14 +111,14 @@ Feel free to inspect the source code of Streamlit part if you are interested!
 
 ### Deployment
 
-After creating and testing your API endpoints in your local environment, we can deploy them to the public now! 
-We use [Fly.io](https://fly.io/) as the deployment option, since it offers the free deployment service and 
-we can adjust the configuration parameters to prevent apps from hibernation! 
+After creating and testing your API endpoints in your local environment, we can deploy them to the public now!
+We use [Fly.io](https://fly.io/) as the deployment option, since it offers the free deployment service and
+we can adjust the configuration parameters to prevent apps from hibernation!
 Welcome to check [further details here](https://github.com/Canner/vulcan-sql-examples/tree/main/covid19-global-data-api#deployment) if you are curious!
 
 ## Conclusion
 
-We hope that this example excites you and makes you want to try out VulcanSQL. 
+We hope that this example excites you and makes you want to try out VulcanSQL.
 
 :::info
 We have a [Discord community](https://discord.gg/ztDz8DCmG4) and welcome to ask us anything or give us feedback!
