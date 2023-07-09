@@ -129,10 +129,6 @@ const config = {
                 label: 'GitHub',
                 href: 'https://github.com/Canner/vulcan-sql',
               },
-              {
-                label: 'Privacy Policy',
-                href: '/docs/privacy-policy'
-              }
             ],
           },
         ],
