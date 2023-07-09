@@ -115,12 +115,11 @@ export default function Overview(): JSX.Element {
         Create and Share <span className={styles.gradient_text}>Data</span>{' '}
         <span className={styles.gradient_text}>APIs</span> Fast.{' '}
         <br className={`${styles.desktop_line_break}`} />
-        Made for Analytics Engineers.
+        Made for Data Folks.
       </h1>
       <div className={`text--center ${styles.description}`}>
-        VulcanSQL turns your SQL templates into data APIs for efficient data
-        sharing. <br className={`${styles.desktop_line_break}`} />
-        No backend skills required. Empower your data sharing, faster.
+        VulcanSQL turns your SQL templates into data APIs for data applications. <br className={`${styles.desktop_line_break}`} />
+        No backend skills required.
       </div>
       <div className={styles.banner_button_content}>
         <Link
@@ -153,7 +152,7 @@ export default function Overview(): JSX.Element {
             <span className={styles.gradient_text}> Self-Service</span>.
           </h3>
           <p className={`${styles.card_description}`}>
-            With VulcanSQL, analytics engineers can control access to the data
+            With VulcanSQL, data team can control access to the data
             warehouse using data APIs. Additionally, VulcanSQL{' '}
             <span className={styles.highlight}>
               automatically generates a 'self-service' interface.
