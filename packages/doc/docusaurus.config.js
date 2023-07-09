@@ -131,7 +131,7 @@ const config = {
               },
               {
                 label: 'Privacy',
-                href: '/terms/privacy'
+                href: 'https://cannerdata.com/terms/privacy'
               }
             ],
           },
