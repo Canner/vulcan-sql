@@ -24,7 +24,7 @@ One of the challenges with frequent and fast data access is the increased cost a
 With VulcanSQL's [dynamic parameter](/docs/develop/dynamic-param) feature, users have precise control over the data they access. This enhances data privacy and reduces data transfer, improving efficiency and security. Moreover, VulcanSQL's [data privacy handling](/docs/data-privacy/overview) ensures the protection of sensitive information through encryption and access control.
 
 #### Enhance performance with caching mechanism
-To address the challenges of high-concurrency and low-latency, VulcanSQL implements a caching mechanism using DuckDB. This caching layer allows VulcanSQL to synchronize data from DuckDB and serve it to users without the need to repeatedly connect to the data source.
+To address the challenges of low-latency, VulcanSQL implements a caching mechanism using DuckDB. This caching layer allows VulcanSQL to synchronize data from DuckDB and serve it to users without the need to repeatedly connect to the data source.
 
 #### Optimize cost with caching layer
 By leveraging the DuckDB caching layer, VulcanSQL significantly reduces the need to fetch data from the data warehouse for most queries. This results in cost savings as it minimizes the resources consumed by querying the data warehouse. Instead, VulcanSQL can retrieve the data directly from the DuckDB cache, which offers faster access and eliminates the need for frequent queries to the data warehouse. This caching mechanism improves performance and helps optimize costs in data retrieval and processing.
@@ -51,7 +51,7 @@ In this case, we will use [`food_prices_2020.csv`](https://codesandbox.io/p/sand
 
 
 ### Write your SQL query
-With VulcanSQL's filtering feature, you have the ability to selectively expose specific data to your application. In our example, we have a dataset called food_prices_2020.csv, but we only want to present the fruit prices. To achieve this, we can dynamically add a parameter called `filter` to specify the desired data filtering. 
+With VulcanSQL's filtering feature, you have the ability to selectively expose specific data to your application. In our example, we have a dataset called food_prices_2020.csv, but we only want to present the fruit prices. To achieve this, we can dynamically add a parameter called `filter` to specify the desired data filtering.
 
 In `food.yaml`, we define the parameter we need to pass in the request:
 ```yaml
@@ -75,11 +75,11 @@ SELECT * FROM read_csv_auto('data/food_prices_2020.csv')
 {% endif %}
 ```
 
-Adding parameters to our data operations provides a quick and semantic way to control and filter the accuracy of the data. By specifying parameters, we can precisely retrieve the desired information and ensure that the results are tailored to our specific requirements. 
+Adding parameters to our data operations provides a quick and semantic way to control and filter the accuracy of the data. By specifying parameters, we can precisely retrieve the desired information and ensure that the results are tailored to our specific requirements.
 
 #### For those datasource on cloud:
 
-In high-concurrency and low-latency scenarios, VulcanSQL offers a caching mechanism for datasources stored in data warehouses or data lakes. By caching datasets, the frequency of retrieving data from the original source is reduced, resulting in improved performance. To learn more about VulcanSQL's caching functionality and its usage, refer to the documentation on [Caching Datasets](/docs/develop/cache).
+In low-latency scenarios, VulcanSQL offers a caching mechanism for datasources stored in data warehouses or data lakes. By caching datasets, the frequency of retrieving data from the original source is reduced, resulting in improved performance. To learn more about VulcanSQL's caching functionality and its usage, refer to the documentation on [Caching Datasets](/docs/develop/cache).
 
 It can just as simple to use `cache/endcache` syntax:
 
