@@ -140,10 +140,14 @@ const config = {
                 label: 'GitHub',
                 href: 'https://github.com/Canner/vulcan-sql',
               },
+              {
+                label: 'Privacy',
+                href: 'https://cannerdata.com/terms/privacy'
+              }
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Canner, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Canner, Inc. Built with Docusaurus.</div>`,
       },
       prism: {
         theme: lightCodeTheme,

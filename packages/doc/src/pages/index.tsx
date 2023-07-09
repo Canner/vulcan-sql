@@ -13,6 +13,7 @@ export default function Home(): JSX.Element {
       <Head>
         <title>{siteConfig.title}</title>
         <meta property="og:title" content={siteConfig.title} />
+        <script type="text/javascript" src="/js/clarity.js" defer></script>
       </Head>
       <main>
         <Overview />
