@@ -97,7 +97,7 @@ const config = {
               },
               {
                 label: 'API Catalog & Documentation',
-                to: '/docs/catalog/catalog-intro',
+                to: '/docs/catalog/intro',
               },
               {
                 label: 'API Configuration',
