@@ -11,6 +11,7 @@
     "extension-debug-tools": "packages/extension-debug-tools",
     "extension-driver-bq": "packages/extension-driver-bq",
     "extension-driver-canner": "packages/extension-driver-canner",
+    "extension-driver-clickhouse": "packages/extension-driver-clickhouse",
     "extension-driver-duckdb": "packages/extension-driver-duckdb",
     "extension-driver-pg": "packages/extension-driver-pg",
     "extension-driver-snowflake": "packages/extension-driver-snowflake",
