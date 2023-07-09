@@ -52,3 +52,11 @@
   vertical-align: middle;
   margin: -0.3em 0.2em 0em 0em;
 }
+
+.privacy__link {
+  color: var(--ifm-footer-link-color);
+}
+
+.privacy__link:hover {
+  text-decoration: none;
+}

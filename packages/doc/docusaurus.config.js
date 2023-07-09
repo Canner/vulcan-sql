@@ -132,7 +132,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Canner, Inc. Built with Docusaurus.`,
+        copyright: `<a href="/terms/privacy" class="privacy__link" >Privacy policy</a> | <a href="/terms/eula" class="privacy__link">EULA</a> © ${new Date().getFullYear()} Canner, Inc. Built with Docusaurus.</div>`,
       },
       prism: {
         theme: lightCodeTheme,
