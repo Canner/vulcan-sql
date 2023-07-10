@@ -13,6 +13,7 @@
     "extension-driver-canner": "packages/extension-driver-canner",
     "extension-driver-clickhouse": "packages/extension-driver-clickhouse",
     "extension-driver-duckdb": "packages/extension-driver-duckdb",
+    "extension-driver-ksqldb": "packages/extension-driver-ksqldb",
     "extension-driver-pg": "packages/extension-driver-pg",
     "extension-driver-snowflake": "packages/extension-driver-snowflake",
     "extension-huggingface": "packages/extension-huggingface",

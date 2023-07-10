@@ -89,6 +89,9 @@
       "@vulcan-sql/extension-driver-duckdb": [
         "packages/extension-driver-duckdb/src/index.ts"
       ],
+      "@vulcan-sql/extension-driver-ksqldb": [
+        "packages/extension-driver-ksqldb/src/index.ts"
+      ],
       "@vulcan-sql/extension-driver-pg": [
         "packages/extension-driver-pg/src/index.ts"
       ],

@@ -1,0 +1,32 @@
+{
+  "root": "packages/extension-driver-ksqldb",
+  "sourceRoot": "packages/extension-driver-ksqldb/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/extension-driver-ksqldb",
+        "main": "packages/extension-driver-ksqldb/src/index.ts",
+        "tsConfig": "packages/extension-driver-ksqldb/tsconfig.lib.json",
+        "assets": ["packages/extension-driver-ksqldb/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/extension-driver-ksqldb/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/extension-driver-ksqldb"],
+      "options": {
+        "jestConfig": "packages/extension-driver-ksqldb/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
