@@ -83,6 +83,10 @@ export abstract class Packager<C = PackagerConfig> extends ExtensionBase<C> {
 
     packageJson['main'] = 'index.js';
 
+    if(!packageJson['dependencies']['@vulcan-sql/catalog-server']) {
+      throw new Error('Have you installed @vulcan-sql/catalog-server module?')
+    }
+
     // remove all dependencies except catalog-server
     for (const key in packageJson['dependencies']) {
       if (key !== '@vulcan-sql/catalog-server') {
