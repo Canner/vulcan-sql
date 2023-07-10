@@ -118,6 +118,7 @@ export class BQDataSource extends DataSource<any, BQOptions> {
     this.checkProfileExist(profileName);
     const { bigQuery, options } = this.bqMapping.get(profileName)!;
 
+    // Transforms the parameter key to avoid potential errors when the key is a number
     const params: Record<string, any> = {};
     bindParams.forEach((value, key) => {
       params[key.replace('@', '')] = value;
@@ -144,6 +145,9 @@ export class BQDataSource extends DataSource<any, BQOptions> {
   }
 
   public async prepare({ parameterIndex }: RequestParameter) {
+    // This method prepares the query parameter name to avoid issues when converting params to an object later on.
+    // By prefixing the parameter name with '@p', we ensure that it doesn't start with a number and can be properly accessed.
+    // eg: { 1: 'foo' } => { '@p1': 'foo' } => { p1: 'foo' }
     return `@p${parameterIndex}`;
   }
 
