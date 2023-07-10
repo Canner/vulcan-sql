@@ -41,8 +41,15 @@ export abstract class Packager<C = PackagerConfig> extends ExtensionBase<C> {
 
   protected async getPackageJson() {
     const packageJson: Record<string, any> = {};
+    const isPkg = Boolean((<any>process).pkg);
+    // if we are running in pkg binary, then we need to use package.json inside binary root: /snapshot/binary
     const projectPackageJson = JSON.parse(
-      await fs.readFile(path.resolve(process.cwd(), 'package.json'), 'utf-8')
+      await fs.readFile(
+        isPkg
+          ? path.resolve('/snapshot/binary', 'package.json')
+          : path.resolve(process.cwd(), 'package.json'),
+        'utf-8'
+      )
     );
 
     packageJson['dependencies'] = projectPackageJson['dependencies'];
@@ -56,11 +63,24 @@ export abstract class Packager<C = PackagerConfig> extends ExtensionBase<C> {
 
   protected async getCatalogPackageJson() {
     const packageJson: Record<string, any> = {};
-    const projectPackageJson = JSON.parse(
-      await fs.readFile(path.resolve(process.cwd(), 'package.json'), 'utf-8')
-    );
+    let projectPackageJson: Record<string, any> = {}
+    const isPkg = Boolean((<any>process).pkg);
+    // if we are running in pkg binary, then we need to use package.json inside binary root: /snapshot/binary
+    if(isPkg) {
+      projectPackageJson = JSON.parse(
+        await fs.readFile(path.resolve('/snapshot/binary', 'package.json'), 'utf-8')
+      );
+      // add catalog-server module manually because its not in binary package.json
+      packageJson['dependencies'] = {
+        '@vulcan-sql/catalog-server': projectPackageJson['version'],
+      }
+    } else {
+      projectPackageJson = JSON.parse(
+        await fs.readFile(path.resolve(process.cwd(), 'package.json'), 'utf-8')
+      );
+      packageJson['dependencies'] = projectPackageJson['dependencies']
+    }
 
-    packageJson['dependencies'] = projectPackageJson['dependencies'];
     packageJson['main'] = 'index.js';
 
     // remove all dependencies except catalog-server
@@ -74,7 +94,10 @@ export abstract class Packager<C = PackagerConfig> extends ExtensionBase<C> {
   }
 
   protected async getEntryJS() {
-    return fs.readFile(path.resolve(__dirname, 'assets', 'entryJs.template'), 'utf-8');
+    return fs.readFile(
+      path.resolve(__dirname, 'assets', 'entryJs.template'),
+      'utf-8'
+    );
   }
 
   protected async getCatalogEntryJS() {
