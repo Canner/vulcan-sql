@@ -15,6 +15,7 @@ import {
 } from '@vulcan-sql/core';
 import * as path from 'path';
 import { buildSQL } from './sqlBuilder';
+import { DuckDBExtensionLoader } from './duckdbExtensionLoader';
 
 const getType = (value: any) => {
   const jsType = typeof value;
@@ -29,7 +30,7 @@ const getType = (value: any) => {
 };
 
 // read more configuration in DuckDB document: https://duckdb.org/docs/extensions/httpfs
-export interface S3Credentials {
+export interface ConfigurationParameters {
   region?: string;
   accessKeyId?: string;
   secretAccessKey?: string;
@@ -44,7 +45,7 @@ export interface DuckDBOptions {
   'persistent-path'?: string;
   'log-queries'?: boolean;
   'log-parameters'?: boolean;
-  's3-credentials'?: S3Credentials;
+  'configuration-parameters'?: ConfigurationParameters;
 }
 
 @VulcanExtensionId('duckdb')
@@ -56,7 +57,7 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
       db: duckdb.Database;
       logQueries: boolean;
       logParameters: boolean;
-      s3Credentials: S3Credentials;
+      configurationParameters: ConfigurationParameters;
     }
   >();
   private logger = this.getLogger();
@@ -74,14 +75,15 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
       // Only reuse db instance when not using in-memory only db
       let db = dbPath !== ':memory:' ? dbByPath.get(dbPath) : undefined;
       if (!db) {
-        db = this.initDatabase(dbPath);
+        db = await this.initDatabase(dbPath);
         dbByPath.set(dbPath, db);
       }
       this.dbMapping.set(profile.name, {
         db,
         logQueries: profile.connection?.['log-queries'] || false,
         logParameters: profile.connection?.['log-parameters'] || false,
-        s3Credentials: profile.connection?.['s3-credentials'] || {},
+        configurationParameters:
+          profile.connection?.['configuration-parameters'] || {},
       });
     }
   }
@@ -95,11 +97,12 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     if (!this.dbMapping.has(profileName)) {
       throw new InternalError(`Profile instance ${profileName} not found`);
     }
-    const { db, s3Credentials, ...options } = this.dbMapping.get(profileName)!;
+    const { db, configurationParameters, ...options } =
+      this.dbMapping.get(profileName)!;
     const builtSQL = buildSQL(sql, operations);
     // create new connection for each query
     const connection = db.connect();
-    this.loadExtensions(connection, s3Credentials);
+    await this.loadExtensions(connection, configurationParameters);
     const statement = connection.prepare(builtSQL);
     const parameters = Array.from(bindParams.values());
     this.logRequest(builtSQL, parameters, options);
@@ -173,9 +176,10 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     if (!fs.existsSync(directory!))
       throw new InternalError(`The directory ${directory} not exists`);
 
-    const { db } = this.dbMapping.get(profileName)!;
+    const { db, configurationParameters } = this.dbMapping.get(profileName)!;
     // create new connection for export
     const connection = db.connect();
+    await this.loadExtensions(connection, configurationParameters);
     const formatTypeMapper = {
       [CacheLayerStoreFormatType.parquet.toString()]: 'parquet',
     };
@@ -201,7 +205,7 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     if (!fs.existsSync(directory!))
       throw new InternalError(`The directory ${directory} not exists`);
 
-    const { db, s3Credentials } = this.dbMapping.get(profileName)!;
+    const { db } = this.dbMapping.get(profileName)!;
     // create new connection for import
     const connection = db.connect();
     // read all parquet files in directory by *.parquet
@@ -211,7 +215,6 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     };
     // create table and if resolve done, return
     return await new Promise((resolve, reject) => {
-      this.loadExtensions(connection, s3Credentials);
       connection.run(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
       connection.run(
         `CREATE OR REPLACE TABLE ${schema}.${tableName} AS SELECT * FROM ${formatTypeMapper[type]}`,
@@ -243,47 +246,33 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     });
   }
 
-  private initDatabase(dbPath: string) {
+  private async initDatabase(dbPath: string) {
     const db = new duckdb.Database(dbPath);
     const conn = db.connect();
-    this.installExtensions(conn);
+    await this.installExtensions(conn);
     return db;
   }
 
-  private installExtensions(connection: duckdb.Connection) {
+  private async installExtensions(
+    connection: duckdb.Connection
+  ): Promise<void> {
     // allows DuckDB to read remote/write remote files
-    connection.run('INSTALL httpfs');
+    return await new Promise((resolve, reject) => {
+      connection.run('INSTALL httpfs', (err: any) => {
+        if (err) reject(err);
+        this.logger.debug('Installed httpfs extension');
+        resolve();
+      });
+    });
   }
 
-  private loadExtensions(
+  private async loadExtensions(
     connection: duckdb.Connection,
-    s3Credentials: S3Credentials
+    configurationParameters: ConfigurationParameters
   ) {
-    connection.run('LOAD httpfs');
-
-    // set credentials;
-    if (s3Credentials['region']) {
-      connection.run(`SET s3_region='${s3Credentials['region']}'`);
-    }
-    if (s3Credentials['accessKeyId']) {
-      connection.run(`SET s3_access_key_id='${s3Credentials['accessKeyId']}'`);
-    }
-    if (s3Credentials['secretAccessKey']) {
-      connection.run(
-        `SET s3_secret_access_key='${s3Credentials['secretAccessKey']}'`
-      );
-    }
-    if (s3Credentials['sessionToken']) {
-      connection.run(`SET s3_session_token='${s3Credentials['sessionToken']}'`);
-    }
-    if (s3Credentials['endpoint']) {
-      connection.run(`SET s3_endpoint='${s3Credentials['endpoint']}'`);
-    }
-    if (s3Credentials['url_style']) {
-      connection.run(`SET s3_url_style='${s3Credentials['url_style']}'`);
-    }
-    if (s3Credentials['use_ssl']) {
-      connection.run(`SET s3_use_ssl='${s3Credentials['use_ssl']}'`);
-    }
+    const configurationLoader = new DuckDBExtensionLoader(
+      configurationParameters
+    );
+    await configurationLoader.loadExtension(connection, 'httpfs');
   }
 }
