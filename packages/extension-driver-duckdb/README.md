@@ -29,4 +29,15 @@
        log-queries: false
        # Optional: Whether log query requests' parameters, please be aware that query parameters might contain sensitive data (default: false)
        log-parameters: false
+       # Optional: Contains the configuration parameters DuckDB need (ex: for duckdb extension "httpfs", it will needs region, accessKeyId, ...)
+       # You can read more in the [duckdb extension page](https://duckdb.org/docs/extensions/overview) 
+       configuration-parameters: 
+         region?: string
+         accessKeyId?: string
+         secretAccessKey?: string
+         # alternative option for accessKeyId and secretAccessKey
+         sessionToken?: string
+         endpoint?: string
+         url_style?: string
+         use_ssl?: boolean
    ```

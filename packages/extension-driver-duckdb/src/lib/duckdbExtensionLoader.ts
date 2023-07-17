@@ -3,16 +3,16 @@ import { getLogger } from '@vulcan-sql/core';
 import { ConfigurationParameters } from './duckdbDataSource';
 
 // DuckDB parameter name : configuration name
-export enum HTTPFS_CONFIGURATIONS {
-  s3_region = 'region',
-  s3_access_key_id = 'accessKeyId',
-  s3_secret_access_key = 'secretAccessKey',
+export const HTTPFS_CONFIGURATIONS = Object.freeze({
+  s3_region: 'region',
+  s3_access_key_id: 'accessKeyId',
+  s3_secret_access_key: 'secretAccessKey',
   // sessionToken= alternative option for accessKeyId and secretAccessKey
-  s3_session_token = 'sessionToken',
-  s3_endpoint = 'endpoint',
-  s3_url_style = 'url_style',
-  s3_use_ssl = 'use_ssl',
-}
+  s3_session_token: 'sessionToken',
+  s3_endpoint: 'endpoint',
+  s3_url_style: 'url_style',
+  s3_use_ssl: 'use_ssl',
+});
 
 export class DuckDBExtensionLoader {
   private configurations: ConfigurationParameters;
@@ -42,33 +42,31 @@ export class DuckDBExtensionLoader {
       this.logger.debug(`Error when loading extension:${extensionName}`);
       throw error;
     }
-    try {
-      await Promise.all(
-        Object.entries(extensionConfigurations).map(
-          async ([dbParameterName, configurationKey]) => {
-            const configurationValue =
-              this.configurations[
-                configurationKey as keyof ConfigurationParameters
-              ];
-            // if configuration is not undefined
-            if (configurationValue !== undefined) {
-              conn.run(`SET ${dbParameterName}='${configurationValue}'`);
+
+    Object.entries(extensionConfigurations).forEach(
+      ([dbParameterName, configurationKey]) => {
+        const configurationValue =
+          this.configurations[
+            configurationKey as keyof ConfigurationParameters
+          ];
+        // if configuration is not undefined
+        if (configurationValue !== undefined) {
+          conn.run(
+            `SET ${dbParameterName}='${configurationValue}'`,
+            (err: any) => {
+              if (err) throw err;
               this.logger.debug(
-                `Configuration parameter "${dbParameterName}" set`
-              );
-            } else {
-              this.logger.debug(
-                `Configuration "${dbParameterName}" has not been set`
+                `Configuration error "${dbParameterName}": ${err}`
               );
             }
-          }
-        )
-      );
-    } catch (error) {
-      this.logger.debug(
-        `Error when setting configuration for extension:${extensionName}`
-      );
-      throw error;
-    }
+          );
+          this.logger.debug(`Configuration parameter "${dbParameterName}" set`);
+        } else {
+          this.logger.debug(
+            `Configuration "${dbParameterName}" has not been set`
+          );
+        }
+      }
+    );
   }
 }
