@@ -25,7 +25,13 @@
       "options": {
         "jestConfig": "packages/extension-driver-ksqldb/jest.config.ts",
         "passWithNoTests": true
-      }
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "install-dependencies"
+        }
+      ]
     }
   },
   "tags": []

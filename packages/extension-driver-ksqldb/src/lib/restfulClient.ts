@@ -6,7 +6,7 @@ const BASIC_HEADERS = {
 
 const RESTFUL_API = {
   INFO: '/info',
-  KQL: '/ksql',
+  KSQL: '/ksql',
   QUERY: '/query',
 };
 
@@ -96,12 +96,25 @@ export class RestfulClient {
     });
   }
 
-  public async checkConnection() {
-    const res = await this.request<KsqlInfoResponse>(RESTFUL_API.INFO, 'GET');
-    if (res.KsqlServerInfo['serverStatus'] !== 'RUNNING') {
-      throw new Error('KSQLDB server is not running');
+  public async checkConnection(): Promise<
+    KsqlInfoResponse['KsqlServerInfo']['serverStatus']
+  > {
+    try {
+      const res = await this.request<KsqlInfoResponse>(RESTFUL_API.INFO, 'GET');
+      return res.KsqlServerInfo['serverStatus'];
+    } catch (e) {
+      throw new Error('KsqlDb server is not ready');
     }
-    return res;
+  }
+
+  public async checkConnectionRunning(): Promise<boolean> {
+    try {
+      const status = await this.checkConnection();
+      const isRunning = status === 'RUNNING';
+      return isRunning;
+    } catch (e) {
+      return false;
+    }
   }
 
   public async query({
@@ -109,19 +122,42 @@ export class RestfulClient {
     query_params = {},
   }: {
     query: string;
-    query_params: Record<string, any>;
+    query_params?: Record<string, any>;
   }) {
+    // bind query parameters
+    const ksql = this.bindParams(query, query_params);
+
+    const buffer = Buffer.from(JSON.stringify({ ksql }));
+    const res = await this.request(RESTFUL_API.QUERY, 'POST', buffer);
+    return res;
+  }
+
+  public async exec({
+    query,
+    query_params = {},
+  }: {
+    query: string;
+    query_params?: Record<string, any>;
+  }) {
+    // bind query parameters
+    const ksql = this.bindParams(query, query_params);
+
+    const buffer = Buffer.from(JSON.stringify({ ksql }));
+    const res = await this.request(RESTFUL_API.KSQL, 'POST', buffer);
+    return res;
+  }
+
+  private bindParams(query: string, query_params: Record<string, any>) {
     const values = Object.values(query_params);
 
     // replace the parameterized placeholder to values
     const ksql = query.replace(/\$(\d+)/g, (_, index) => {
       const valueIndex = parseInt(index) - 1;
-      return values[valueIndex];
+      const paramValue = values[valueIndex];
+      return typeof paramValue === 'string' ? `'${paramValue}'` : paramValue;
     });
 
-    const buffer = Buffer.from(JSON.stringify({ ksql }));
-    const res = await this.request(RESTFUL_API.QUERY, 'POST', buffer);
-    return res;
+    return ksql;
   }
 
   private async request<R = QueryResponse[]>(
@@ -151,11 +187,17 @@ export class RestfulClient {
       });
 
       req.on('end', () => {
-        const jsonData = JSON.parse(data);
+        let responseData: any = data;
+        try {
+          responseData = JSON.parse(data);
+        } catch (e) {
+          responseData = data;
+        }
+
         if (status === 200) {
-          resolve(jsonData);
+          resolve(responseData);
         } else {
-          reject(jsonData);
+          reject(responseData);
         }
         this.close();
       });

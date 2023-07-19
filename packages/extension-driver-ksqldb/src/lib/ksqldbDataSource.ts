@@ -39,7 +39,11 @@ export class KSQLDBDataSource extends DataSource<any, any> {
       this.clientMapping.set(profile.name, { client, options });
 
       // Testing connection
-      await client.checkConnection();
+      const isRunning = await client.checkConnectionRunning();
+      if (!isRunning) {
+        throw new Error('KsqlDb server is not running');
+      }
+
       this.logger.debug(`Profile ${profile.name} initialized`);
     }
   }
