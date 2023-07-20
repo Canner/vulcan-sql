@@ -56,7 +56,7 @@ export const TableQuestionAnsweringFilter: FunctionalFilter = async ({
     return results.cells.join(', ');
   } catch (error) {
     throw new InternalError(
-      `Error when executing Hugging Face TableQuestionAnswering tasks, details: ${
+      `Error when sending data to Hugging Face for executing TableQuestionAnswering tasks, details: ${
         (error as Error).message
       }`
     );

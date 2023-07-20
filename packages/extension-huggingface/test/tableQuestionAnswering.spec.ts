@@ -171,7 +171,7 @@ it(
 
     // Assert
     await expect(execute({})).rejects.toThrow(
-      "Error when executing Hugging Face TableQuestionAnswering tasks, details: Invalid inference output: Expected {aggregator: string, answer: string, cells: string[], coordinates: number[][]}. Use the 'request' method with the same parameters to do a custom call with no type checking."
+      "Error when sending data to Hugging Face for executing TableQuestionAnswering tasks, details: Invalid inference output: Expected {aggregator: string, answer: string, cells: string[], coordinates: number[][]}. Use the 'request' method with the same parameters to do a custom call with no type checking."
     );
   },
   50 * 1000
