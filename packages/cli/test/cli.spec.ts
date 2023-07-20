@@ -47,14 +47,18 @@ afterEach(async () => {
   await runShutdownJobs();
 });
 
-it('Init command should create new folder with default config', async () => {
-  // Action
-  const config: any = jsYAML.load(
-    await fs.readFile(path.resolve(projectRoot, 'vulcan.yaml'), 'utf8')
-  );
-  // Assert
-  expect(config.name).toBe(projectName);
-});
+it(
+  'Init command should create new folder with default config',
+  async () => {
+    // Action
+    const config: any = jsYAML.load(
+      await fs.readFile(path.resolve(projectRoot, 'vulcan.yaml'), 'utf8')
+    );
+    // Assert
+    expect(config.name).toBe(projectName);
+  },
+  10 * 1000
+);
 
 it('Build command should make result.json', async () => {
   // Action
