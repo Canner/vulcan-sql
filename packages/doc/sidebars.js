@@ -483,6 +483,50 @@ const sidebars = {
     },
     {
       type: 'html',
+      value:
+        '<img src="/img/deploy.svg" width="20em" class="menu_icon" /> OLD: Connectors',
+      className: 'sidebar-title',
+    },
+    {
+      type: 'category',
+      label: 'Connecting to Data Sources',
+      link: { type: 'doc', id: 'connectors' },
+      items: [
+        {
+          type: 'doc',
+          id: 'connectors',
+        },
+        {
+          type: 'doc',
+          id: 'connectors/bigquery',
+        },
+        {
+          type: 'doc',
+          id: 'connectors/postgresql',
+        },
+        {
+          type: 'doc',
+          id: 'connectors/snowflake',
+        },
+        {
+          type: 'doc',
+          id: 'connectors/duckdb',
+        },
+        {
+          type: 'doc',
+          id: 'connectors/clickhouse',
+        },
+      ],
+    },
+    {
+      type: 'html',
+      value:
+        '<img src="/img/deploy.svg" width="20em" class="menu_icon" /> OLD: Contributing',
+      className: 'sidebar-title',
+    },
+    'contributing/overview',
+    {
+      type: 'html',
       value: '<br/><br/>',
     },
   ],
