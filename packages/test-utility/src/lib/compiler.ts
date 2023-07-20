@@ -22,6 +22,9 @@ export const getTestCompiler = async (config: Partial<ICoreOptions> = {}) => {
   // Builder and executor
   const stubQueryBuilder = sinon.stubInterface<IDataQueryBuilder>();
   const stubExecutor = sinon.stubInterface<IExecutor>();
+  stubExecutor.prepare.callsFake(
+    async ({ parameterIndex }) => `$${parameterIndex}`
+  );
   stubExecutor.createBuilder.resolves(stubQueryBuilder);
   container.bind<IExecutor>(TYPES.Executor).toConstantValue(stubExecutor);
 
@@ -93,9 +96,17 @@ export const getTestCompiler = async (config: Partial<ICoreOptions> = {}) => {
         profileName: 'mocked-profile',
       });
     },
+    getCreatedProfiles: async () => {
+      const calls = stubExecutor.createBuilder.getCalls();
+      return calls.map((call) => call.args[0]);
+    },
     getExecutedQueries: async () => {
       const calls = stubExecutor.createBuilder.getCalls();
       return calls.map((call) => call.args[1]);
+    },
+    getCreatedBinding: async () => {
+      const calls = stubExecutor.createBuilder.getCalls();
+      return calls.map((call) => call.args[2].getBinding());
     },
   };
 };
