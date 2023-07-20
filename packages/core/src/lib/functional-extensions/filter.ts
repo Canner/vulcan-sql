@@ -10,6 +10,8 @@ export interface FunctionalFilterOptions {
   value: any;
   args: Record<string, any>;
   metadata: NunjucksExecutionMetadata;
+  // The options from configuration for the filter extension
+  options: Record<string, any> | Array<Record<string, any>>;
 }
 
 export type FunctionalFilter = (
@@ -32,6 +34,7 @@ export const createFilterExtension = (
         value: options.value,
         args: options.args[0],
         metadata: options.metadata,
+        options: this.getConfig(),
       });
     }
   }
