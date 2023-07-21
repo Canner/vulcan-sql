@@ -25,7 +25,7 @@ Supporting Hugging Face Inference API task for VulcanSQL, provided by [Canner](h
 
 VulcanSQL support using Hugging Face tasks by [VulcanSQL Filters](https://vulcansql.com/docs/develop/advance#filters) statement.
 
-**⚠️ Caution**: Hugging Face has a [rate limit](https://huggingface.co/docs/api-inference/faq#rate-limits), so it does not allow sending large datasets to the Hugging Face library for processing.
+**⚠️ Caution**: Hugging Face has a [rate limit](https://huggingface.co/docs/api-inference/faq#rate-limits), so it does not allow sending large datasets to the Hugging Face library for processing. Otherwise, using a different Hugging Face model may yield different results or even result in failure.
 
 ### Table Question Answering
 
@@ -54,7 +54,7 @@ Sample 1:
   }
 ] %}
 
--- The source data from "huggingface_table_question_answering" need array of object type.
+-- The source data for "huggingface_table_question_answering" needs to be an array of objects.
 SELECT {{ data | huggingface_table_question_answering(query="How many repositories related to data-lake topic?") }}
 ```
 
@@ -65,6 +65,8 @@ Sample 2:
   SELECT * FROM products
 {% endreq %}
 
--- The "model" argument is optional, if not provide it, default is 'google/tapas-base-finetuned-wtq'
-SELECT {{ products.value() | huggingface_table_question_answering(query="How many products related to 3C type?", model="microsoft/tapex-base-finetuned-wtq") }}
+-- The "model" keyword argument is optional. If not provided, the default value is 'google/tapas-base-finetuned-wtq'.
+-- The "wait_for_model" keyword argument is optional. If not provided, the default value is false.
+-- The "use_cache" keyword argument is optional. If not provided, the default value is true.
+SELECT {{ products.value() | huggingface_table_question_answering(query="How many products related to 3C type?", model="microsoft/tapex-base-finetuned-wtq", wait_for_model=true, use_cache=true) }}
 ```
