@@ -1,3 +1,4 @@
+import faker from '@faker-js/faker';
 import { getTestCompiler } from '@vulcan-sql/test-utility';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
@@ -31,53 +32,6 @@ const data = [
     description: 'Sample repository for testing',
   },
 ];
-
-it.each([
-  { question: 'what repository has most stars?', expected: 'vulcan-sql' },
-  { question: 'what repository has lowest stars?', expected: 'hell-word' },
-  {
-    question: 'How many stars does the vulcan-sql repository have?',
-    expected: '1000',
-  },
-  {
-    question: 'How many stars does the accio repository have?',
-    expected: '500',
-  },
-  {
-    question: 'How many repositories related to data-lake topic?',
-    expected: 'vulcan-sql, accio',
-  },
-])(
-  'Should get correct expected $answer when asking $question',
-  async ({ question, expected }) => {
-    // Arrange
-
-    const token = process.env['HF_ACCESS_TOKEN'];
-    const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } =
-      await getTestCompiler({
-        extensions: { huggingface: path.join(__dirname, '..', 'src') },
-        huggingface: {
-          accessToken: token,
-        },
-      });
-
-    const sql = `{% set data = ${JSON.stringify(
-      data
-    )} %}SELECT {{ data | huggingface_table_question_answering(query="${question}") }}`;
-
-    // Act
-    await compileAndLoad(sql);
-    await execute({});
-
-    // Assert
-    const queries = await getExecutedQueries();
-    const bindings = await getCreatedBinding();
-
-    expect(queries[0]).toBe('SELECT $1');
-    expect(bindings[0].get('$1')).toEqual(expected);
-  },
-  50 * 1000
-);
 
 it(
   'Should throw error when not pass the "query" argument',
@@ -152,27 +106,121 @@ it('Should throw error when input value not be array of object', async () => {
 });
 
 it(
-  'Should throw error when provided model cause the Hugging Face tableQuestionAnswering task failed',
+  'Should throw error when not provide access token',
   async () => {
-    const token = process.env['HF_ACCESS_TOKEN'];
     const { compileAndLoad, execute } = await getTestCompiler({
       extensions: { huggingface: path.join(__dirname, '..', 'src') },
       huggingface: {
-        accessToken: token,
+        accessToken: '',
       },
     });
 
     const sql = `{% set data = ${JSON.stringify(
       data
-    )} %}SELECT {{ data | huggingface_table_question_answering(query="what repository has most stars?", model="neulab/omnitab-large-1024shot-finetuned-wtq-1024shot") }}`;
+    )} %}SELECT {{ data | huggingface_table_question_answering("${faker.internet.password()}") }}`;
 
     // Act
     await compileAndLoad(sql);
 
     // Assert
-    await expect(execute({})).rejects.toThrow(
-      "Error when sending data to Hugging Face for executing TableQuestionAnswering tasks, details: Invalid inference output: Expected {aggregator: string, answer: string, cells: string[], coordinates: number[][]}. Use the 'request' method with the same parameters to do a custom call with no type checking."
-    );
+    await expect(execute({})).rejects.toThrow('please given access token');
+  },
+  50 * 1000
+);
+
+it(
+  'Should throw error when not set hugging face options',
+  async () => {
+    const { compileAndLoad, execute } = await getTestCompiler({
+      extensions: { huggingface: path.join(__dirname, '..', 'src') },
+    });
+
+    const sql = `{% set data = ${JSON.stringify(
+      data
+    )} %}SELECT {{ data | huggingface_table_question_answering("${faker.internet.password()}") }}`;
+
+    // Act
+    await compileAndLoad(sql);
+
+    // Assert
+    await expect(execute({})).rejects.toThrow('please given access token');
+  },
+  50 * 1000
+);
+
+it(
+  'Should get correct expected value when provided "neulab/omnitab-large-1024shot-finetuned-wtq-1024shot" model and wait it for model',
+  async () => {
+    const token = process.env['HF_ACCESS_TOKEN'];
+    const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } =
+      await getTestCompiler({
+        extensions: { huggingface: path.join(__dirname, '..', 'src') },
+        huggingface: {
+          accessToken: token,
+        },
+      });
+
+    const sql = `{% set data = ${JSON.stringify(
+      data
+    )} %}SELECT {{ data | huggingface_table_question_answering(query="what repository has most stars?", model="neulab/omnitab-large-1024shot-finetuned-wtq-1024shot", wait_for_model=true) }}`;
+
+    // Act
+    await compileAndLoad(sql);
+    await execute({});
+
+    // Assert
+    const queries = await getExecutedQueries();
+    const bindings = await getCreatedBinding();
+
+    expect(queries[0]).toBe('SELECT $1');
+    expect(bindings[0].get('$1')).toEqual('vulcan-sql');
+  },
+  50 * 1000
+);
+
+it.each([
+  { question: 'what repository has most stars?', expected: 'vulcan-sql' },
+  { question: 'what repository has lowest stars?', expected: 'hell-word' },
+  {
+    question: 'How many stars does the vulcan-sql repository have?',
+    expected: '1000',
+  },
+  {
+    question: 'How many stars does the accio repository have?',
+    expected: '500',
+  },
+  {
+    question: 'How many repositories related to data-lake topic?',
+    expected: 'vulcan-sql, accio',
+  },
+])(
+  'Should get correct expected $answer when asking $question',
+  async ({ question, expected }) => {
+    // Arrange
+
+    const token = process.env['HF_ACCESS_TOKEN'];
+    const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } =
+      await getTestCompiler({
+        extensions: { huggingface: path.join(__dirname, '..', 'src') },
+        huggingface: {
+          accessToken: token,
+        },
+      });
+
+    const sql = `{% set data = ${JSON.stringify(
+      data
+    )} %}SELECT {{ data | huggingface_table_question_answering(query="${question}", wait_for_model=true) }}`;
+
+    // Act
+    await compileAndLoad(sql);
+    await execute({});
+
+    // Assert
+    const queries = await getExecutedQueries();
+    const bindings = await getCreatedBinding();
+
+    expect(queries[0]).toBe('SELECT $1');
+    expect(bindings[0].get('$1')).toEqual(expected);
   },
   50 * 1000
 );

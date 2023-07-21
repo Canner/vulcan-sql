@@ -22,14 +22,7 @@
     "url": "https://github.com/Canner/vulcan.git"
   },
   "license": "MIT",
-  "dependencies": {
-    "@huggingface/inference": "^2.6.1",
-    "node-fetch": "2"
-  },
   "peerDependencies": {
     "@vulcan-sql/core": "~0.6.0-0"
-  },
-  "devDependencies": {
-    "@types/node-fetch": "^2.6.4"
   }
 }
