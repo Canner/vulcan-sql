@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/extension-driver-duckdb",
   "description": "duckdb driver for Vulcan SQL",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"
@@ -23,6 +23,6 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@vulcan-sql/core": "~0.6.0-0"
+    "@vulcan-sql/core": "~0.7.0-0"
   }
 }
