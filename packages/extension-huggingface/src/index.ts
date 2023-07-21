@@ -2,7 +2,7 @@
 import {
   Builder as HuggingFaceTableQuestionAnsweringFilterBuilder,
   Runner as HuggingFaceTableQuestionAnsweringFilterRunner,
-} from './lib/tableQuestionAnswering';
+} from './lib/filters/tableQuestionAnswering';
 
 export default [
   HuggingFaceTableQuestionAnsweringFilterBuilder,

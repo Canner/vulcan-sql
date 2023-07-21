@@ -4,7 +4,7 @@ import {
   createFilterExtension,
 } from '@vulcan-sql/core';
 import axios, { AxiosError } from 'axios';
-import { convertToHuggingFaceTable } from './utils';
+import { convertToHuggingFaceTable } from '../utils';
 import { isArray } from 'class-validator';
 import { has } from 'lodash';
 
