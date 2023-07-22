@@ -30,6 +30,10 @@
 
 Use [Online Playground](https://codesandbox.io/p/sandbox/vulcansql-demo-wfd834) to get a taste of VulcanSQL!
 
+## Examples
+
+Need Inspiration?! Discover a [selected compilation of examples](https://github.com/Canner/vulcan-sql-examples) showcasing the use of VulcanSQL!
+
 ## Installation
 
 Please visit [the installation guide](https://vulcansql.com/docs/get-started/installation).

@@ -58,7 +58,8 @@ const serveCatalogByDocker = async (options: CatalogCommandOptions) => {
   const port = catalogConfig.port || Number(options.port);
   const VULCAN_SQL_HOST = `http://host.docker.internal:${config.port || 3000}`
 
-  const catalogVersion = process.env['CATALOG_DOCKER_VERSION']
+  // sync the version with binary package.json
+  const catalogVersion = JSON.parse(await fs.readFile(path.resolve('/snapshot/binary', 'package.json'), 'utf-8'))['version']
   const dockerImage = `ghcr.io/canner/vulcan-sql/catalog-server:${catalogVersion}`
   const containerName = "catalog-server"
 

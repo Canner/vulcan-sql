@@ -15,6 +15,7 @@ import {
 } from '@vulcan-sql/core';
 import * as path from 'path';
 import { buildSQL } from './sqlBuilder';
+import { DuckDBExtensionLoader } from './duckdbExtensionLoader';
 
 const getType = (value: any) => {
   const jsType = typeof value;
@@ -28,10 +29,23 @@ const getType = (value: any) => {
   }
 };
 
+// read more configuration in DuckDB document: https://duckdb.org/docs/extensions/httpfs
+export interface ConfigurationParameters {
+  region?: string;
+  accessKeyId?: string;
+  secretAccessKey?: string;
+  // sessionToken: alternative option for accessKeyId and secretAccessKey
+  sessionToken?: string;
+  endpoint?: string;
+  url_style?: string;
+  use_ssl?: boolean;
+}
+
 export interface DuckDBOptions {
   'persistent-path'?: string;
   'log-queries'?: boolean;
   'log-parameters'?: boolean;
+  'configuration-parameters'?: ConfigurationParameters;
 }
 
 @VulcanExtensionId('duckdb')
@@ -39,7 +53,12 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
   // Use protected method for unit test
   protected dbMapping = new Map<
     string,
-    { db: duckdb.Database; logQueries: boolean; logParameters: boolean }
+    {
+      db: duckdb.Database;
+      logQueries: boolean;
+      logParameters: boolean;
+      configurationParameters: ConfigurationParameters;
+    }
   >();
   private logger = this.getLogger();
 
@@ -56,13 +75,15 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
       // Only reuse db instance when not using in-memory only db
       let db = dbPath !== ':memory:' ? dbByPath.get(dbPath) : undefined;
       if (!db) {
-        db = new duckdb.Database(dbPath);
+        db = await this.initDatabase(dbPath);
         dbByPath.set(dbPath, db);
       }
       this.dbMapping.set(profile.name, {
         db,
         logQueries: profile.connection?.['log-queries'] || false,
         logParameters: profile.connection?.['log-parameters'] || false,
+        configurationParameters:
+          profile.connection?.['configuration-parameters'] || {},
       });
     }
   }
@@ -76,10 +97,12 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     if (!this.dbMapping.has(profileName)) {
       throw new InternalError(`Profile instance ${profileName} not found`);
     }
-    const { db, ...options } = this.dbMapping.get(profileName)!;
+    const { db, configurationParameters, ...options } =
+      this.dbMapping.get(profileName)!;
     const builtSQL = buildSQL(sql, operations);
     // create new connection for each query
     const connection = db.connect();
+    await this.loadExtensions(connection, configurationParameters);
     const statement = connection.prepare(builtSQL);
     const parameters = Array.from(bindParams.values());
     this.logRequest(builtSQL, parameters, options);
@@ -153,9 +176,10 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     if (!fs.existsSync(directory!))
       throw new InternalError(`The directory ${directory} not exists`);
 
-    const { db } = this.dbMapping.get(profileName)!;
+    const { db, configurationParameters } = this.dbMapping.get(profileName)!;
     // create new connection for export
     const connection = db.connect();
+    await this.loadExtensions(connection, configurationParameters);
     const formatTypeMapper = {
       [CacheLayerStoreFormatType.parquet.toString()]: 'parquet',
     };
@@ -220,5 +244,35 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
         `CREATE INDEX ${index} ON ${schema}.${tableName} (${column})`
       );
     });
+  }
+
+  private async initDatabase(dbPath: string) {
+    const db = new duckdb.Database(dbPath);
+    const conn = db.connect();
+    await this.installExtensions(conn);
+    return db;
+  }
+
+  private async installExtensions(
+    connection: duckdb.Connection
+  ): Promise<void> {
+    // allows DuckDB to read remote/write remote files
+    return await new Promise((resolve, reject) => {
+      connection.run('INSTALL httpfs', (err: any) => {
+        if (err) reject(err);
+        this.logger.debug('Installed httpfs extension');
+        resolve();
+      });
+    });
+  }
+
+  private async loadExtensions(
+    connection: duckdb.Connection,
+    configurationParameters: ConfigurationParameters
+  ) {
+    const configurationLoader = new DuckDBExtensionLoader(
+      configurationParameters
+    );
+    await configurationLoader.loadExtension(connection, 'httpfs');
   }
 }
