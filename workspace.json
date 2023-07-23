@@ -15,6 +15,7 @@
     "extension-driver-duckdb": "packages/extension-driver-duckdb",
     "extension-driver-pg": "packages/extension-driver-pg",
     "extension-driver-snowflake": "packages/extension-driver-snowflake",
+    "extension-huggingface": "packages/extension-huggingface",
     "extension-store-canner": "packages/extension-store-canner",
     "integration-testing": "packages/integration-testing",
     "serve": "packages/serve",

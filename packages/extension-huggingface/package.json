@@ -1,6 +1,6 @@
 {
-  "name": "@vulcan-sql/extension-dbt",
-  "description": "Using dbt models form VulcanSQL projects",
+  "name": "@vulcan-sql/extension-huggingface",
+  "description": "Hugging Face feature for VulcanSQL",
   "version": "0.7.0",
   "type": "commonjs",
   "publishConfig": {
@@ -15,11 +15,11 @@
     "data-warehouse",
     "data-lake",
     "api-builder",
-    "dbt"
+    "huggingface"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Canner/vulcan-sql.git"
+    "url": "https://github.com/Canner/vulcan.git"
   },
   "license": "MIT",
   "peerDependencies": {

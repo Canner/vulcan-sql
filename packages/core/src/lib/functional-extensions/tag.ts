@@ -11,6 +11,8 @@ export interface FunctionalTagOptions {
   sql: string;
   args: Record<string, any>;
   metadata: NunjucksExecutionMetadata;
+  // The options from configuration for the tag extension
+  options: Record<string, any> | Array<Record<string, any>>;
 }
 
 export type FunctionalTag = (options: FunctionalTagOptions) => Promise<string>;
@@ -57,6 +59,7 @@ export const createTagExtension = (
         sql,
         args: args[0] as any,
         metadata,
+        options: this.getConfig(),
       });
       return new nunjucks.runtime.SafeString(result);
     }

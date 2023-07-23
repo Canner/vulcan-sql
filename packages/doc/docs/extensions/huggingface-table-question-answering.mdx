@@ -1,0 +1,89 @@
+# Hugging Face
+
+## Installation
+
+1. Install the package:
+
+   **If you are developing with binary, the package is already bundled in the binary. You can skip this step.**
+
+   ```bash
+   npm i @vulcan-sql/extension-huggingface
+   ```
+
+2. Update your `vulcan.yaml` file to enable the extension:
+
+   ```yaml
+   extensions:
+     ...
+     // highlight-next-line
+     hf: '@vulcan-sql/extension-huggingface'
+
+   // highlight-next-line
+   hf:
+     // highlight-next-line
+     # Required: Hugging Face access token, see: https://huggingface.co/docs/hub/security-tokens
+     // highlight-next-line
+     accessToken: 'your-huggingface-access-token'
+   ```
+
+## Using Hugging Face
+
+VulcanSQL support using Hugging Face tasks by [VulcanSQL Filters](https://vulcansql.com/docs/develop/advance#filters) statement.
+
+:::caution
+Hugging Face has a [rate limit](https://huggingface.co/docs/api-inference/faq#rate-limits), so it does not allow sending large datasets to the Hugging Face library for processing.
+
+Otherwise, using a different Hugging Face model may yield different results or even result in failure.
+:::
+
+### Table Question Answering
+
+The [Table Question Answering](https://huggingface.co/docs/api-inference/detailed_parameters#table-question-answering-task) is one of the Natural Language Processing tasks supported by Hugging Face.
+
+Using the `huggingface_table_question_answering` filter.
+
+Sample 1:
+
+```sql
+{% set data = [
+  {
+    "repository": "vulcan-sql",
+    "topic": ["analytics", "data-lake", "data-warehouse", "api-builder"],
+    "description":"Create and share Data APIs fast! Data API framework for DuckDB, ClickHouse, Snowflake, BigQuery, PostgreSQL"
+  },
+  {
+    "repository": "accio",
+    "topic": ["data-analytics", "data-lake", "data-warehouse", "bussiness-intelligence"],
+    "description": "Query Your Data Warehouse Like Exploring One Big View."
+  },
+  {
+    "repository": "hell-word",
+    "topic": [],
+    "description": "Sample repository for testing"
+  }
+] %}
+
+-- The source data for "huggingface_table_question_answering" needs to be an array of objects.
+SELECT {{ data | huggingface_table_question_answering(query="How many repositories related to data-lake topic?") }}
+```
+
+Sample 2:
+
+```sql
+{% req products %}
+  SELECT * FROM products
+{% endreq %}
+
+SELECT {{ products.value() | huggingface_table_question_answering(query="How many products related to 3C type?", model="microsoft/tapex-base-finetuned-wtq", wait_for_model=true, use_cache=true) }}
+```
+
+### Arguments
+
+Please check [Table Question Answering](https://huggingface.co/docs/api-inference/detailed_parameters#table-question-answering-task) for further information.
+
+| Name           | Required | Default                         | Description                                                                                                                                               |
+| -------------- | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| query          | Y        |                                 | The query in plain text that you want to ask the table.                                                                                                   |
+| model          | N        | google/tapas-base-finetuned-wtq | The model id of a pretrained model hosted inside a model repo on huggingface.co. See: https://huggingface.co/models?pipeline_tag=table-question-answering |
+| use_cache      | N        | true                            | There is a cache layer on the inference API to speedup requests we have already seen                                                                      |
+| wait_for_model | N        | false                           | If the model is not ready, wait for it instead of receiving 503. It limits the number of requests required to get your inference done                     |

@@ -95,6 +95,9 @@
       "@vulcan-sql/extension-driver-snowflake": [
         "packages/extension-driver-snowflake/src/index.ts"
       ],
+      "@vulcan-sql/extension-huggingface": [
+        "packages/extension-huggingface/src/index.ts"
+      ],
       "@vulcan-sql/extension-store-canner": [
         "packages/extension-store-canner/src/index.ts"
       ],
