@@ -1,20 +1,20 @@
-# Configuration
+# Project Configurations
 
-After creating a VulcanSQL project by `vulcan init`, you will see a file named `vulcan.yaml` under the project root.
-The `vulcan.yaml` is the where **VulcanSQL project configurations** stored, to setup core features like data source, authentication, API Documentation, etc... we will introduce it in this chapter.
+After creating a VulcanSQL project by `vulcan init`, you will see a file named `vulcan.yaml` under the root of the project directory.
+You can see **VulcanSQL's project configurations** like data source, authentication, API Documentation, etc. in the `vulcan.yaml`.
 
 # The project configuration file
 
-Although we said that the `vulcan.yaml` is the main VulcanSQL project configuration file, but it is not mandatory. You could change the project configuration file name whatever you like by passing option, but it is the default filename using command like `vulcan build`, `vulcan serve`, or `vulcan start`.
+Although we said that the `vulcan.yaml` is the main VulcanSQL project configuration file, but it is not mandatory. You could change the project configuration file name whatever you like by passing the option. However, `vulcan.yaml` is the default filename when you use commands like `vulcan build`, `vulcan serve`, or `vulcan start`.
 
-So for example, if you rename the project file name to `hello-world.yaml`, then when you run the above command, you should add the optional options `-c` or `--config` :
+So for example, if you rename the project file name to `hello-world.yaml`, then when you run the above commands, you should add the optional options `-c` or `--config`:
 
 ```bash
 $ mv vulcan.yaml hello-world.yaml
 $ vulcan start -c ./hello-world.yaml  # set the configuation filename to `hello-world.yaml`
 ```
 
-# Structure of the project configuration
+# The structure of the project configurations
 
 It's the default project configuration settings, when you enter `vulcan init` , you will see some configuration options you have pre-defined, below is a sample of how the file is contructed:
 
@@ -169,7 +169,7 @@ We suggest you put each API schema file in the same layer as the SQL file and na
   - users.yaml
 ```
 
-For the API schema file Configuration, we will talk more in [API Schema](./configuration/api-schema).
+For the API schema file Configuration, we will talk more in [API Schema](./api-schema).
 
 ### `document-generator` options
 
@@ -183,7 +183,7 @@ document-generator:
 
 ## Extension
 
-You could set the VulcanSQL extension configuration. The [Extension](../extensions) could let users extend to do powerful things. VulcanSQL also uses the extensions to create built-in extensions which enable it to run the feature.
+You could set the VulcanSQL extension configuration. The [Extensions](../extensions/overview) could let users extend to do powerful things. VulcanSQL also uses the extensions to create built-in extensions which enable it to run the feature.
 
 Below is an configuration sample, these extensions work in **serve phase** to make the API have more restrictions when sending requests.
 
@@ -210,4 +210,4 @@ response-format:
 
 Every built-in extension has its configuration, but you don't need to define all of them manually because we have default configurations for most of them.
 
-For the above configuration, if you are interested, you could see [Data Source Profile](./configuration/data-source-profile), [Rate Limit](./rate-limit), Enforce HTTPS, [Response Format](./response-format), and [Access Control](./access-control) first.
+For the above configuration, if you are interested, you could see [Data Source Profile](./data-source-profile), [Rate Limit](../api-plugin/rate-limit), Enforce HTTPS, [Response Format](../api-plugin/format), and Access Control first.

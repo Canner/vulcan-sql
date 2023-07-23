@@ -1,21 +1,16 @@
 # ClickHouse
 
-Connect to your ClickHouse servers using the official [Node.js Driver](https://clickhouse.com/docs/en/integrations/language-clients/nodejs).
-
 ## Installation
 
-1. Install package
+1. Install the package:
+
+   **If you are developing with binary, the package is already bundled in the binary. You can skip this step.**
 
    ```bash
    npm i @vulcan-sql/extension-driver-clickhouse
    ```
 
-   :::info
-   If you run VulcanSQL with Docker, you should use the command `vulcan-install @vulcan-sql/extension-driver-clickhouse` instead.
-
-   :::
-
-2. Update `vulcan.yaml`, and enable the extension.
+2. Update your `vulcan.yaml` file to enable the extension:
 
    ```yaml
    extensions:
@@ -24,7 +19,7 @@ Connect to your ClickHouse servers using the official [Node.js Driver](https://c
      ch: '@vulcan-sql/extension-driver-clickhouse' # Add this line
    ```
 
-3. Create a new profile in `profiles.yaml` or in your profile files. For example:
+3. Create a new profile in your `profiles.yaml` file or in the designated profile paths. For example:
 
    ```yaml
    - name: ch # profile name
@@ -55,7 +50,7 @@ For more information, please refer to the [ClickHouse Client documentation](http
 | password             | N        |                       | The user's password.                                                                                                                                                                                                                                                   |
 | application          | N        | VulcanSQL             | The name of the application using the Node.js client.                                                                                                                                                                                                                  |
 | database             | N        | default               | Database name to use.                                                                                                                                                                                                                                                  |
-| clickhouse_settings  | N        |                       | ClickHouse settings to apply to all requests. For all available settings, see [Advance Settings](https://clickhouse.com/docs/en/operations/settings), and For the definition, see [Definition](https://github.com/ClickHouse/clickhouse-js/blob/0.1.1/src/settings.ts) |
+| clickhouse_settings  | N        |                       | ClickHouse settings to apply to all requests. For all available settings, see [Advanced Settings](https://clickhouse.com/docs/en/operations/settings), and For the definition, see [Definition](https://github.com/ClickHouse/clickhouse-js/blob/0.1.1/src/settings.ts) |
 | tls                  | N        |                       | Configure TLS certificates. See [TLS docs](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#tls-certificates).                                                                                                                                      |
 | session_id           | N        |                       | ClickHouse Session ID to send with every request.                                                                                                                                                                                                                      |
 | keep_alive           | N        |                       | HTTP Keep-Alive related settings. See [Keep Alive docs](https://clickhouse.com/docs/en/integrations/language-clients/nodejs#keep-alive)                                                                                                                                |
@@ -85,11 +80,3 @@ SELECT * FROM users WHERE born_date = toDate({val:String});
 ## ⚠️ Caution
 
 The ClickHouse driver currently does not support caching datasets. If you use the ClickHouse driver with caching dataset features, it will result in failure.
-
-## Testing
-
-To run tests for the `extension-driver-clickhouse` module, use the following command:
-
-```bash
-nx test extension-driver-clickhouse
-```

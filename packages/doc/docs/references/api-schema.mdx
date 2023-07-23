@@ -86,7 +86,7 @@ The `request` define what the request parameters would like to send with the API
 - `type` - The `type` could let VulcanSQL know the data is what type for handing it. The type could be `string`, `number`, and `boolean`.
   If not set the field, the default is `string` type. But don't worry, in most time, the driver is smart enough to handle parameter types, so it might take more effect on validators.
 - `description` - The `description` field is an optional value too, but if you add the `description`, then it could make the API document could display the description to make the users know what the request field is.
-- `validators` - The `validators` field is an array type to make the request parameter field have some validator to check the value format. E.g If your parameter field should be required, then set the `requried` in validators could make VulcanSQL check the parameter must be required. VulcanSQL provides some built-in validators for you, you could see the [API Validation](../api-validation) to know the detail.
+- `validators` - The `validators` field is an array type to make the request parameter field have some validator to check the value format. E.g If your parameter field should be required, then set the `requried` in validators could make VulcanSQL check the parameter must be required. VulcanSQL provides some built-in validators for you, you could see the [API Validation](../develop/validator) to know the detail.
 
 ### `sample` fields
 
@@ -114,7 +114,7 @@ profiles:
 ```
 
 :::info
-For the more detail of using `sample` field, please see [API Document](../api-document#set-sampler).
+For the more detail of using `sample` field, please see [API Document](../develop/api-doc#setting-sampler).
 
 :::
 
@@ -124,7 +124,7 @@ The `profiles` / `profile` indicated which data sources the API will use to quer
 
 The `profiles` field take precedence over the `profile` field when both existed.
 
-When you use the `profile`, it means the API endpoint will query the data from the data source, and each data source could set the [Authorization](../access-control/authorization) to specify who ( users ) have permission to send the query by the Data API.
+When you use the `profile`, it means the API endpoint will query the data from the data source, and each data source could set the [Authorization](../data-privacy/authz) to specify who ( users ) have permission to send the query by the Data API.
 
 ```yaml
 urlPath: user/:id

@@ -63,7 +63,7 @@ Below are some common scenarios that you may be interested:
 - [Getting Started](https://vulcansql.com/docs/get-started/first-api)
 - [Introduction](https://vulcansql.com/docs/intro)
 - [Guides to Build Data APIs](https://vulcansql.com/docs/develop/init)
-  - [Connecting to Data Sources](https://vulcansql.com/docs/connect/overview)
+  - [Connecting to Data Sources](https://vulcansql.com/docs/connectors/overview)
   - [Writing SQL Templates](https://vulcansql.com/docs/develop/overview)
   - [Caching Datasets](https://vulcansql.com/docs/develop/cache)
   - [Error Handling](https://vulcansql.com/docs/develop/error)
