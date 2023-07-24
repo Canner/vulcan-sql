@@ -1,15 +1,15 @@
 # Data Source Profile
 
-When sending an API request to query the data through SQL file logistic, also should check the data source ( e.g: Database, Warehouse ) has connected, so VulcanSQL needs you to define the Data Source Profile.
+This file defines data source connection information.
 
 ## Define profile in independent YAML files
 
-You could create independent YAML files to define data sources and set the filePath in the `profiles` options of the project config:
+You could create independent YAML files to define data sources and set the filePath in the `profiles` option in the project config(`vulcan.yaml`):
 
 ```yaml
 # pg-profile.yaml
 - name: pg
-  type: postgres
+  type: pg
   allow: '*'
   connection:
     host: example.com
@@ -20,18 +20,18 @@ You could create independent YAML files to define data sources and set the fileP
 
 ------------------------------------
 # duck-profile.yaml
-name: duck
-type: duckdb
-connection:
-   persistent-path: ./test-data/moma.db
-   log-queries: true
-   log-parameters: true
-allow: '*'
+- name: duckdb
+  type: duckdb
+  connection:
+    persistent-path: ./test-data/moma.db
+    log-queries: true
+    log-parameters: true
+  allow: '*'
 
 -------------------------
 # vulcan.yaml (project config)
 extensions:
-  postgres: '@vulcan-sql/extension-driver-duckdb'
+  pg: '@vulcan-sql/extension-driver-pg'
   duckdb: '@vulcan-sql/extension-driver-duckdb'
 
 profiles:
@@ -39,13 +39,16 @@ profiles:
   - ./duck-profile.yaml
 ```
 
-You should make sure you have installed the data source driver package and declared the module name under the `extensions` of the project config.
+You should make sure you have installed the required data source driver package and 
+declared the module name under the `extensions` in the project config(`vulcan.yaml`).
 
 ## Profile fields
 
-In. this Profile, we should give these fields:
+These fields are needed to be filled in:
 
-- `name` - The `name` is the data source name for recognizing so that [API Schema](./api-schema) could set the name to know where the data source the API request queries the result from. Like above `duckdb-profile.yaml` example, the name is `duck`, so you could set the `duck` in `profiles` / `profile` in the API Schema to specify what data source the query is from.
-- `type` - It's a data source type, each data source type uses the `module-name` under the `extensions` config to be the `type` for recognizing, the above sample you could see.
-- `connection` - The needed information to make the connection built, you should check what the connection fields need in each external extension of the data, e.g: [@vulcan-sql/extension-driver-pg](https://www.npmjs.com/package/@vulcan-sql/extension-driver-pg) npm.
-- `allow` - The `allow` field could make our Data API could query the data result from different data sources according to whether the user has permission or not. The [API Schema](./api-schema) `profiles` / `profile` fields have shown some examples. For the `allow` configuration rule, you could see the [Authorization](../data-privacy/authz) for introducing detail.
+- `name` - This data source name should match with the value in the `profiles`/`profile` field according to [API Schema](./api-schema).
+- `type` - It's the data source from the extension package name, such as `@vulcan-sql/extension-driver-[data source]`.
+- `connection` - The information needed to connect to the data source, and you should check what connection fields are needed in each external extension, e.g: [@vulcan-sql/extension-driver-pg](https://www.npmjs.com/package/@vulcan-sql/extension-driver-pg).
+- `allow` - This allows VulcanSQL to be able to query data from different data sources according to autorization rules. 
+There are some examples in the section of `profiles` / `profile` fields in [API Schema](./api-schema). 
+You could check out the [Authorization](../data-privacy/authz) to understand more about the `allow` configuration.
