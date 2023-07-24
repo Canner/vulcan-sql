@@ -16,6 +16,8 @@ cache:
   type: parquet
   folderPath: tmp
   loader: duckdb
+extensions:
+  duckdb: @vulcan-sql/extension-driver-duckdb
 ```
 
  In the configuration, `tmp` means there will be a new folder called `tmp` in the root directory of the project you created.

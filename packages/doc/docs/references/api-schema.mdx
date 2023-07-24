@@ -26,7 +26,8 @@ Here is the introduction of each field in the API Schema.
 ### `urlPath` Field
 
 This is the Data API endpoint URL path. You could add the path parameter here using the `:[param-name]` format.
-If you forgot to add the `fieldName` and `filedIn` only if it's not `header`, VulcanSQL will auto generate it to make it work.
+There are [three types of values in the `fieldIn` field](#request-fields), namely `path`, `query` and `header`. 
+If the value is `header`, you are required to fill in the request parameters. VulcanSQL will auto generate other two values.
 
 ```yaml
 urlPath: /users/:id
@@ -118,6 +119,10 @@ For further details of using the `sample` field, please check out the section of
 
 :::
 
+:::caution
+If [caching is enabled](../develop/cache) in the API endpoint, the sampling funcaionality is disabled.
+:::
+
 ### `profiles` / `profile` field
 
 The `profiles` / `profile` indicate what data sources the APIs use to query the data.
@@ -138,6 +143,13 @@ profile: pg
 Like the above example, if user3 would like to query data from APIs, he doesn't have the permission to the get data.
 
 If you specify the `profiles` field, it could support multiple data sources like the below example:
+
+:::caution
+As the moment, in each SQL file, VulcanSQL only supports one data source, 
+but the data source used for caching is excluded.
+So, in any case you can add DuckDB as the caching layer.
+
+:::
 
 ```yaml
 urlPath: user/:id
