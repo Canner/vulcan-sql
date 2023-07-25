@@ -42,7 +42,9 @@ The [Table Question Answering](https://huggingface.co/docs/api-inference/detaile
 
 Using the `huggingface_table_question_answering` filter.
 
-Sample 1:
+The result will be converted to a JSON string from `huggingface_table_question_answering`. You could decompress the JSON string and use the result by itself.
+
+**Sample 1 - send the data from variable by [set tag](https://vulcansql.com/docs/develop/advance#set-variables):**
 
 ```sql
 {% set data = [
@@ -67,14 +69,36 @@ Sample 1:
 SELECT {{ data | huggingface_table_question_answering(query="How many repositories related to data-lake topic?") }}
 ```
 
-Sample 2:
+**Sample 1 - Response:**
+
+```json
+[
+  {
+    "result": "{\"answer\":\"COUNT > vulcan-sql, accio\",\"coordinates\":[[0,0],[1,0]],\"cells\":[\"vulcan-sql\",\"accio\"],\"aggregator\":\"COUNT\"}"
+  }
+]
+```
+
+**Sample 2 - send the data from [req tag](https://vulcansql.com/docs/develop/predefined-queries):**
 
 ```sql
-{% req products %}
-  SELECT * FROM products
+{% req artists %}
+  SELECT * FROM artists
 {% endreq %}
 
-SELECT {{ products.value() | huggingface_table_question_answering(query="How many products related to 3C type?", model="microsoft/tapex-base-finetuned-wtq", wait_for_model=true, use_cache=true) }}
+{% set question = "List display name where gender are female?" %}
+
+SELECT {{ products.value() | huggingface_table_question_answering(query=question, model="microsoft/tapex-base-finetuned-wtq", wait_for_model=true, use_cache=true) }}
+```
+
+**Sample 2 - Response:**
+
+```json
+[
+  {
+    "result": "{\"answer\":\"Irene Aronson, Ruth Asawa, Isidora Aschheim, Geneviève Asse, Dana Atchley, Aino Aalto, Berenice Abbott\",\"coordinates\":[[8,1],[16,1],[17,1],[23,1],[25,1],[29,1],[35,1]],\"cells\":[\"Irene Aronson\",\"Ruth Asawa\",\"Isidora Aschheim\",\"Geneviève Asse\",\"Dana Atchley\",\"Aino Aalto\",\"Berenice Abbott\"],\"aggregator\":\"NONE\"}"
+  }
+]
 ```
 
 ### Arguments

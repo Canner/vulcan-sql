@@ -6,7 +6,7 @@ start: build test-data/moma.db ../../node_modules
 	@vulcan start
 
 # build the required packages
-build: pkg-core pkg-build pkg-serve pkg-catalog-server pkg-cli pkg-extension-driver-duckdb pkg-extension-authenticator-canner pkg-extension-driver-clickhouse
+build: pkg-core pkg-build pkg-serve pkg-catalog-server pkg-cli pkg-extension-driver-duckdb pkg-extension-authenticator-canner pkg-extension-driver-clickhouse pkg-extension-huggingface
 
 
 # build for core pakge
@@ -62,8 +62,15 @@ pkg-extension-driver-clickhouse: ../../node_modules
 	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
 	rm -rf ./labs/playground1/node_modules/@vulcan-sql/extension-driver-clickhouse; \
 	cp -R ./dist/packages/extension-driver-clickhouse ./labs/playground1/node_modules/@vulcan-sql; \
-	cp -R ./packages/extension-driver-clickhouse/node_modules/@clickhouse ./labs/playground1/node_modules
+	cp -R ./packages/extension-driver-clickhouse/node_modules ./labs/playground1
 
+pkg-extension-huggingface: ../../node_modules
+	@cd ../..; \
+	yarn nx build extension-huggingface; \
+	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
+	rm -rf ./labs/playground1/node_modules/@vulcan-sql/extension-huggingface; \
+	cp -R ./dist/packages/extension-huggingface ./labs/playground1/node_modules/@vulcan-sql; \
+	cp -R ./packages/extension-huggingface/node_modules ./labs/playground1
 
 # build and install for cli pakge
 pkg-cli: ../../node_modules
