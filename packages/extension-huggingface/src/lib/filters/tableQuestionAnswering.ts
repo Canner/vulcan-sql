@@ -79,11 +79,8 @@ export const TableQuestionAnsweringFilter: FunctionalFilter = async ({
 
   try {
     const results = await request(url, context, token);
-    // result format, convert to suitable FunctionalFilter response => https://huggingface.co/docs/api-inference/detailed_parameters#question-answering-task
-    if (!results.aggregator || results.aggregator === 'NONE')
-      // trim the beginning & ending space if model returned answer exist the space, e.g: ' hello world'
-      return (results.answer as string).trim();
-    return results.cells.join(', ');
+    // convert to JSON string to make user get the whole result after parsing it in SQL
+    return JSON.stringify(results);
   } catch (error) {
     throw new InternalError(
       `Error when sending data to Hugging Face for executing TableQuestionAnswering tasks, details: ${
