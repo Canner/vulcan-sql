@@ -26,7 +26,7 @@ const data = [
     description: 'Query Your Data Warehouse Like Exploring One Big View.',
   },
   {
-    repository: 'hell-word',
+    repository: 'hello-world',
     stars: 0,
     topic: [],
     description: 'Sample repository for testing',
@@ -151,6 +151,10 @@ it(
 it(
   'Should get correct expected value when provided "neulab/omnitab-large-1024shot-finetuned-wtq-1024shot" model and wait it for model',
   async () => {
+    const expected = JSON.stringify({
+      // neulab/omnitab-large-1024shot-finetuned-wtq-1024shot will return the result including space in the beginning of the vulcan-sql -> ' vulcan-sql'
+      answer: ' vulcan-sql',
+    });
     const token = process.env['HF_ACCESS_TOKEN'];
     const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } =
       await getTestCompiler({
@@ -173,28 +177,62 @@ it(
     const bindings = await getCreatedBinding();
 
     expect(queries[0]).toBe('SELECT $1');
-    expect(bindings[0].get('$1')).toEqual('vulcan-sql');
+    expect(bindings[0].get('$1')).toEqual(expected);
   },
   50 * 1000
 );
 
 it.each([
-  { question: 'what repository has most stars?', expected: 'vulcan-sql' },
-  { question: 'what repository has lowest stars?', expected: 'hell-word' },
+  {
+    question: 'what repository has most stars?',
+    expected: {
+      answer: 'vulcan-sql',
+      coordinates: [[0, 0]],
+      cells: ['vulcan-sql'],
+      aggregator: 'NONE',
+    },
+  },
+  {
+    question: 'what repository has lowest stars?',
+    expected: {
+      answer: 'hello-world',
+      coordinates: [[2, 0]],
+      cells: ['hello-world'],
+      aggregator: 'NONE',
+    },
+  },
   {
     question: 'How many stars does the vulcan-sql repository have?',
-    expected: '1000',
+    expected: {
+      answer: 'SUM > 1000',
+      coordinates: [[0, 1]],
+      cells: ['1000'],
+      aggregator: 'SUM',
+    },
   },
   {
     question: 'How many stars does the accio repository have?',
-    expected: '500',
+    expected: {
+      answer: 'AVERAGE > 500',
+      coordinates: [[1, 1]],
+      cells: ['500'],
+      aggregator: 'AVERAGE',
+    },
   },
   {
     question: 'How many repositories related to data-lake topic?',
-    expected: 'vulcan-sql, accio',
+    expected: {
+      answer: 'COUNT > vulcan-sql, accio',
+      coordinates: [
+        [0, 0],
+        [1, 0],
+      ],
+      cells: ['vulcan-sql', 'accio'],
+      aggregator: 'COUNT',
+    },
   },
 ])(
-  'Should get correct expected $answer when asking $question',
+  'Should get correct expected answer when asking question',
   async ({ question, expected }) => {
     // Arrange
 
@@ -220,7 +258,9 @@ it.each([
     const bindings = await getCreatedBinding();
 
     expect(queries[0]).toBe('SELECT $1');
-    expect(bindings[0].get('$1')).toEqual(expected);
+    // parse the result to object and match the expected value
+    const result = JSON.parse(bindings[0].get('$1'));
+    expect(result).toEqual(expected);
   },
   50 * 1000
 );
