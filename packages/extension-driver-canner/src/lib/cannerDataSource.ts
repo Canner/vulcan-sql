@@ -92,7 +92,8 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
         // ex: https://cannerHost/data/canner/somePath/file-name?X-Amz-Algorithm=AWS4-HMAC-SHA256
         const fileName = url.split('/').pop()?.split('?')[0] || `part${index}`;
         const writeStream = fs.createWriteStream(
-          path.join(directory, fileName)
+          // rename to parquet extension to make cache layer could read
+          path.join(directory, `${fileName}.parquet`)
         );
         response.data.pipe(writeStream);
         return new Promise((resolve, reject) => {

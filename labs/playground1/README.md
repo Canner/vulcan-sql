@@ -10,8 +10,9 @@ This project contains these resources for testing your development:
 ## Install
 
 ```bash
-cd ./lab/playground1
-make
+$ cd ./lab/playground1
+$ yarn
+$ make
 ```
 
 - This command installs VulcanSQL CLI too, you can use `vulcan start` instead of `make` if the source codes aren’t changed.
