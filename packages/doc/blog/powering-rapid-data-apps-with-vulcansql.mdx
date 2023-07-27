@@ -45,7 +45,7 @@ Let's assume we are creating an API that will provide the daily revenue for the 
 
 For instance, I will set up a VulcanSQL server and use BigQuery as the data warehouse with **[TPC-H](http://www.tpc.org/tpch/)** SF1 data within. We need to handle two things first, but I won't delve into the specifics here.
 - **Project configuration**: Establish project-related configurations. For more information, visit: **https://vulcansql.com/docs/api-plugin/overview**
-- **Connecting to a data source**: For more details, visit **https://vulcansql.com/docs/connect/overview**. We support BigQuery, Snowflake, PostgreSQL, and Clickhouse.
+- **Connecting to a data source**: For more details, visit **https://vulcansql.com/docs/connectors/overview**. We support BigQuery, Snowflake, PostgreSQL, and Clickhouse.
 
 **Now let's dive into the most critical aspect - writing our APIs.**
 
@@ -87,7 +87,7 @@ Here we've defined an API with the path **`/daily_revenue`**. In the **`cache`**
 * **`cacheTableName`**: The name of the table in DuckDB that will store the cached data.
 * **`sql`**: The SQL query that will be executed to extract data from BigQuery.
 * **`refreshTime`**: The frequency at which the cache will be refreshed. In this case, it's daily.
-* **`profile`**: We created a BigQuery profile in the project configuration step. Here, we specify the profile to use. Check out the **[Connecting to Data Sources](https://vulcansql.com/docs/connect/overview)** for more information.
+* **`profile`**: We created a BigQuery profile in the project configuration step. Here, we specify the profile to use. Check out the **[Connecting to Data Sources](https://vulcansql.com/docs/connectors/overview)** for more information.
 
 Once you start the VulcanSQL server, it syncs data from BigQuery to DuckDB for caching and then serves it at the **`/daily_revenue`** endpoint.
 

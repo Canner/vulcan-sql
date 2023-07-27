@@ -1,0 +1,218 @@
+# Project Configurations
+
+After creating a VulcanSQL project by `vulcan init`, you will see a file named `vulcan.yaml` under the root of the project directory.
+You can see **VulcanSQL's project configurations** like data source, authentication, API Documentation, etc. in the `vulcan.yaml`.
+
+# The project configuration file
+
+Although we said that the `vulcan.yaml` is the main VulcanSQL project configuration file, but it is not mandatory. 
+You could change its file name whatever you like by passing the option. However, `vulcan.yaml` is the default filename when you use commands like `vulcan build`, `vulcan serve`, or `vulcan start`.
+Therefore, if you rename `vulcan.yaml` to `hello-world.yaml`, then when you run the above commands, you should add the option `-c` or `--config`:
+
+```bash
+$ mv vulcan.yaml hello-world.yaml
+$ vulcan start -c ./hello-world.yaml  # set the configuation filename to `hello-world.yaml`
+```
+
+# The structure of the project configurations
+
+When you run `vulcan init`, you will see some configurations you have pre-defined, below is a sample of the file content:
+
+```yaml
+# The project name, description and version
+name: my-first-vulcan-project
+description: A starter VulcanSQL project
+version: 0.2.0
+
+# The configuration options of core features
+template:
+  provider: LocalFile
+  folderPath: sqls
+  codeLoader: InMemory
+artifact:
+  provider: LocalFile
+  serializer: JSON
+  filePath: result.json
+schema-parser:
+  reader: LocalFile
+  folderPath: sqls
+document-generator:
+  specs:
+    - oas3
+types:
+  - RESTFUL
+
+# The configuration options of built-in extensions
+profiles:
+  - profile.yaml
+rate-limit:
+  options:
+    interval:
+      min: 1
+    max: 10000
+enforce-https:
+  enabled: false
+auth:
+  enabled: false
+response-format:
+  enabled: true
+  options:
+    default: json
+    formats:
+      - json
+      - csv
+
+# The external extension modules you would like to use in your VulcanSQL project
+extensions:
+  duckdb: '@vulcan-sql/extension-driver-duckdb'
+```
+
+You will see four major sections in the `vulcan.yaml`, the sections consist of **project information**, **configuration options of core features**, **built-in extensions**, and **external extensions**.
+
+## Project information
+
+In the VulcanSQL project configuration, we will provide a section for you to define the project `name` and a `description` for the project's purpose. The `version` will record based on your API version, you should fill in this value when your API changes by following [`semver`](https://semver.org/) conventions.
+
+```yaml
+name: my-first-vulcan-project
+description: A starter VulcanSQL project
+version: 0.2.0
+```
+
+## Configuration options of core features
+
+VulcanSQL has some configuration options related to our core features:
+
+```yaml
+template:
+  provider: LocalFile
+  folderPath: sqls
+  codeLoader: InMemory
+artifact:
+  provider: LocalFile
+  serializer: JSON
+  filePath: result.json
+schema-parser:
+  reader: LocalFile
+  folderPath: sqls
+document-generator:
+  specs:
+    - oas3
+types:
+  - RESTFUL
+profiles:
+  - profile.yaml
+```
+
+Actually, the `template`, `artifact`, and `document-generator` options are related to the `vulcan build` and `vulcan serve` commands and we called them **build phase** and **serving phase**. 
+The `schema-parser`, `types` and `profiles` are used in the **serving phase**.
+
+### Build phase and Serving phase
+
+In the **build phase**, VulcanSQL will use the `template` options to find where is the user-written SQL files and compile the SQL files to the compiled artifact file according to the `artifact` options.
+
+In the **serving phase**, VulcanSQL will use the `schema-parser` options to find where is the user-written API schema files, then VulcanSQL will check the API protocol user would like to create as the API endpoints, according to the `types` option.
+
+When API is created and users send requests to the API endpoints, VulcanSQL will use the `template` and `artifact` options again for translating the SQL files and send to data sources. VulcanSQL relies on `profiles` options to find each data source connection settings.
+
+### `template` options
+
+- **provider** - The `provider` represents what is the provider used to read the SQL files. VulcanSQL uses the `LocalFile` type as a default value, which means the SQL files are put in local places.
+- **codeLoader** - The `codeLoader` option tells the compiler what code loader type we keep the data in, and the default value is `InMemory` .
+- **folderPath** - When the `provider` is `LocalFile`, we need to set the `folderPath` option. The `folderPath` indicates a folder location where your SQL files are located at.
+
+```yaml
+template:
+  provider: LocalFile
+  folderPath: path/to/folder
+  codeLoader: InMemory
+```
+
+If you provide the folder name directly, we will find the folder in the current project.
+
+```yaml
+folderPath: sqls # path to ./sqls folder
+```
+
+### `artifact` options
+
+- **provider** - Similar to `template` options' `provider`, but it is used to save and read the artifact file. The default value is `LocalFile`.
+- **serializer** - It indicates the format the compiled artifact file is serialized to.
+- **filePath** - The location to the compiled artifact file.
+
+```yaml
+artifact:
+  provider: LocalFile
+  serializer: JSON
+  filePath: path/to/file.json
+```
+
+### `schema-parser` options
+
+- **reader** - Similar to `template` options' `provider` The default value is `LocalFile`.
+- **folderPath** - When the `provider` is `LocalFile`, we need to set the `folderPath` option. The `folderPath` indicates a folder location where your API schema files are located at.
+
+```yaml
+schema-parser:
+  reader: LocalFile
+  folderPath: sqls # Path to ./sqls folder
+```
+
+We suggest you put each API schema file in the same folder as respsective SQL file and have the same name as the respective SQL file.
+
+```yaml
+/sqls
+  # Query order SQL file and its API schema file
+  - orders.sql
+  - orders.yaml
+  # Query users SQL file and its API schema file
+  - ursers.sql
+  - users.yaml
+```
+
+For the API schema file configurations, we will talk more in [API Schema](./api-schema).
+
+### `document-generator` options
+
+- **specs** - It's the specification used in the API document. 
+The document generator will generate the specifications and make our document server run it. 
+The default is [Open API 3.0 specification](https://spec.openapis.org/oas/v3.0.0).
+
+```yaml
+document-generator:
+  specs:
+    - oas3
+```
+
+## Built-in and External Extensions
+
+You could set the VulcanSQL extension configurations. The [Extensions](../extensions/overview) grant users power to do powerful things. 
+VulcanSQL also has some built-in extensions, and you can check out [here](../extensions/overview).
+
+Here is a configuration sample of VulcanSQL's built-in extensions, and these extensions work in the **serving phase** to 
+privde the APIs with more restrictions when sending requests.
+
+```yaml
+profiles:
+  - profile.yaml
+rate-limit:
+  options:
+    interval:
+      min: 1
+    max: 10000
+enforce-https:
+  enabled: false
+auth:
+  enabled: false
+response-format:
+  enabled: true
+  options:
+    default: json
+    formats:
+      - json
+      - csv
+```
+
+Every built-in extension has its configuration, but you don't need to define all of them manually because we have default configurations for most of them.
+
+For the above configuration, if you are interested, you could see [Data Source Profile](./data-source-profile), [Rate Limit](../api-plugin/rate-limit), Enforce HTTPs, [Response Format](../api-plugin/format), [Authentication](../data-privacy/authn) first.

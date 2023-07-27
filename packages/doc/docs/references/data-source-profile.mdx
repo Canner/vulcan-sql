@@ -1,0 +1,54 @@
+# Data Source Profile
+
+This file defines data source connection information.
+
+## Define profile in independent YAML files
+
+You could create independent YAML files to define data sources and set the filePath in the `profiles` option in the project config(`vulcan.yaml`):
+
+```yaml
+# pg-profile.yaml
+- name: pg
+  type: pg
+  allow: '*'
+  connection:
+    host: example.com
+    user: vulcan
+    password: secret
+    database: vulcan
+    port: 5432
+
+------------------------------------
+# duck-profile.yaml
+- name: duckdb
+  type: duckdb
+  connection:
+    persistent-path: ./test-data/moma.db
+    log-queries: true
+    log-parameters: true
+  allow: '*'
+
+-------------------------
+# vulcan.yaml (project config)
+extensions:
+  pg: '@vulcan-sql/extension-driver-pg'
+  duckdb: '@vulcan-sql/extension-driver-duckdb'
+
+profiles:
+  - ./pg-profile.yaml
+  - ./duck-profile.yaml
+```
+
+You should make sure you have installed the required data source driver package and 
+declared the module name under the `extensions` in the project config(`vulcan.yaml`).
+
+## Profile fields
+
+These fields are needed to be filled in:
+
+- `name` - This data source name should match with the value in the `profiles`/`profile` field according to [API Schema](./api-schema).
+- `type` - It's the data source from the extension package name, such as `@vulcan-sql/extension-driver-[data source]`.
+- `connection` - The information needed to connect to the data source, and you should check what connection fields are needed in each external extension, e.g: [@vulcan-sql/extension-driver-pg](https://www.npmjs.com/package/@vulcan-sql/extension-driver-pg).
+- `allow` - This allows VulcanSQL to be able to query data from different data sources according to autorization rules. 
+There are some examples in the section of `profiles` / `profile` fields in [API Schema](./api-schema). 
+You could check out the [Authorization](../data-privacy/authz) to understand more about the `allow` configuration.

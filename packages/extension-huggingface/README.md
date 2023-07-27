@@ -23,7 +23,7 @@ Supporting Hugging Face Inference API task for VulcanSQL, provided by [Canner](h
 
 ## Using Hugging Face
 
-VulcanSQL support using Hugging Face tasks by [VulcanSQL Filters](https://vulcansql.com/docs/develop/advance#filters) statement.
+VulcanSQL support using Hugging Face tasks by [VulcanSQL Filters](https://vulcansql.com/docs/develop/advanced#filters) statement.
 
 **⚠️ Caution**: Hugging Face has a [rate limit](https://huggingface.co/docs/api-inference/faq#rate-limits), so it does not allow sending large datasets to the Hugging Face library for processing. Otherwise, using a different Hugging Face model may yield different results or even result in failure.
 

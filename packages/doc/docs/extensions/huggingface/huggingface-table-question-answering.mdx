@@ -1,42 +1,4 @@
-# Hugging Face
-
-## Installation
-
-1. Install the package:
-
-   **If you are developing with binary, the package is already bundled in the binary. You can skip this step.**
-
-   ```bash
-   npm i @vulcan-sql/extension-huggingface
-   ```
-
-2. Update your `vulcan.yaml` file to enable the extension:
-
-   ```yaml
-   extensions:
-     ...
-     // highlight-next-line
-     hf: '@vulcan-sql/extension-huggingface'
-
-   // highlight-next-line
-   hf:
-     // highlight-next-line
-     # Required: Hugging Face access token, see: https://huggingface.co/docs/hub/security-tokens
-     // highlight-next-line
-     accessToken: 'your-huggingface-access-token'
-   ```
-
-## Using Hugging Face
-
-VulcanSQL support using Hugging Face tasks by [VulcanSQL Filters](https://vulcansql.com/docs/develop/advance#filters) statement.
-
-:::caution
-Hugging Face has a [rate limit](https://huggingface.co/docs/api-inference/faq#rate-limits), so it does not allow sending large datasets to the Hugging Face library for processing.
-
-Otherwise, using a different Hugging Face model may yield different results or even result in failure.
-:::
-
-### Table Question Answering
+# Table Question Answering
 
 The [Table Question Answering](https://huggingface.co/docs/api-inference/detailed_parameters#table-question-answering-task) is one of the Natural Language Processing tasks supported by Hugging Face.
 

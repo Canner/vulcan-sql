@@ -6,7 +6,7 @@ The caching layer feature in VulcanSQL allows you to leverage caching to improve
 To provide efficient caching functionality, VulcanSQL utilizes [DuckDB](https://duckdb.org/) as the underlying storage engine. This ensures high-performance caching and improves the overall query execution speed.
 
 :::info
-Please note that in order to use the caching layer feature, you need to have the [DuckDB extension](../connect/duckdb) installed. If you are using VulcanSQL CLI binary, the DuckDB extension is already pre-bundled, so no additional installation is required. However, if you are using VulcanSQL in a NodeJS project, make sure to install the DuckDB extension separately to enable the caching functionality.
+Please note that in order to use the caching layer feature, you need to have the [DuckDB extension](../connectors/duckdb) installed. If you are using VulcanSQL CLI binary, the DuckDB extension is already pre-bundled, so no additional installation is required. However, if you are using VulcanSQL in a NodeJS project, make sure to install the DuckDB extension separately to enable the caching functionality.
 :::
 
 First, you need to add the following configuration to vulcan.yaml.
@@ -16,6 +16,8 @@ cache:
   type: parquet
   folderPath: tmp
   loader: duckdb
+extensions:
+  duckdb: @vulcan-sql/extension-driver-duckdb
 ```
 
  In the configuration, `tmp` means there will be a new folder called `tmp` in the root directory of the project you created.
