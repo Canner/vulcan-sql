@@ -9,6 +9,11 @@ To provide efficient caching functionality, VulcanSQL utilizes [DuckDB](https://
 Please note that in order to use the caching layer feature, you need to have the [DuckDB extension](../connectors/duckdb) installed. If you are using VulcanSQL CLI binary, the DuckDB extension is already pre-bundled, so no additional installation is required. However, if you are using VulcanSQL in a NodeJS project, make sure to install the DuckDB extension separately to enable the caching functionality.
 :::
 
+:::caution
+At the moment, if you need to use the caching layer, only these data sources are supported: BigQuery, Snowflake and DuckDB.
+If you need to have the caching layer enabled for other data sources, please [submit a feature request on GitHub](https://github.com/Canner/vulcan-sql/issues/new?assignees=&labels=type%2Fenhancement%2C+needs-triage&projects=&template=feature-request.md&title=). Thank you!
+:::
+
 First, you need to add the following configuration to vulcan.yaml.
 
 ```yaml title="vulcan.yaml"
