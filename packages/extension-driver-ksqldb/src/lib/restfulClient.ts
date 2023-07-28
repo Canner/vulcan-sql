@@ -1,8 +1,5 @@
 import * as http2 from 'http2';
 
-const BASIC_HEADERS = {
-  Accept: 'application/vnd.ksql.v1+json',
-};
 
 const RESTFUL_API = {
   INFO: '/info',
@@ -54,7 +51,9 @@ export type FinalMessage = {
 export type QueryResponse = Header | Row | FinalMessage;
 
 export interface RestfulClientOptions {
-  host: string;
+  host?: string;
+  username?: string;
+  password?: string;
 }
 
 export class RestfulClient {
@@ -71,7 +70,7 @@ export class RestfulClient {
   public connect() {
     this.startSession = () =>
       new Promise((resolve, reject) => {
-        this.client = http2.connect(this.options.host);
+        this.client = http2.connect(this.options.host || 'http://localhost:8088');
 
         this.client.on('connect', () => {
           this.connected = true;
@@ -103,7 +102,11 @@ export class RestfulClient {
       const res = await this.request<KsqlInfoResponse>(RESTFUL_API.INFO, 'GET');
       return res.KsqlServerInfo['serverStatus'];
     } catch (e) {
-      throw new Error('KsqlDb server is not ready');
+      if(e.error_code) {
+        throw new Error(JSON.stringify(e));
+      } else {
+        throw new Error('KsqlDb server is not ready');
+      }
     }
   }
 
@@ -168,11 +171,16 @@ export class RestfulClient {
     this.startSession && (await this.startSession());
 
     return new Promise((resolve, reject) => {
-      const config = {
-        ...BASIC_HEADERS,
+      const config: any = {
+        'content-type': 'application/vnd.ksql.v1+json',
         ':method': method,
         ':path': path,
       };
+      // add authorization if username and password is provided
+      if(this.options.username && this.options.password) {
+        config['authorization'] = `Basic ${Buffer.from(`${this.options.username}:${this.options.password}`).toString('base64')}`
+      }
+
       const req = this.client!.request(config);
       req.setEncoding('utf-8');
 

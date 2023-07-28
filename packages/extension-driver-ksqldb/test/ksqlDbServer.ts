@@ -17,6 +17,8 @@ export class KSqlDbServer {
   public readonly port = '8088';
   public readonly host = 'localhost';
   public readonly image = 'confluentinc/ksqldb-server:0.29.0';
+  public readonly username = 'admin';
+  public readonly password = 'admin123';
   public container?: Docker.Container;
   public client?: RestfulClient;
 
@@ -25,6 +27,8 @@ export class KSqlDbServer {
     // https://github.com/apocas/dockerode/issues/647
     this.client = new RestfulClient({
       host: `http://${this.host}:${this.port}`,
+      username: this.username,
+      password: this.password,
     });
     await this.waitKSqlDbReady(this.client);
 

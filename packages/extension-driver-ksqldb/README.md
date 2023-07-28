@@ -25,6 +25,10 @@ This is the KSqlDb driver for VulcanSQL, provided by [Canner](https://cannerdata
      connection:
        # Optional: KSqlDb instance URL. Default is http://localhost:8088.
        host: 'www.example.com:8088'
+       # Optional: The name of the user on whose behalf requests are made.
+       username: '<username>',
+       # The user's password
+       password: '<password>'
    ```
 
 ## Testing

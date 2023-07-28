@@ -46,11 +46,18 @@ services:
       - "8088:8088"
     expose:
       - "8088"
+    volumes:
+      - ./jaas_config.file:/etc/confluent/jaas_config.file
+      - ./password-file:/etc/confluent/password-file
     environment:
       KSQL_LISTENERS: http://0.0.0.0:8088
       KSQL_BOOTSTRAP_SERVERS: broker:9092
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
+      KSQL_AUTHENTICATION_METHOD: "BASIC"
+      KSQL_AUTHENTICATION_REALM: "KsqlServer-Props"
+      KSQL_AUTHENTICATION_ROLES: "users"
+      KSQL_OPTS: "-Djava.security.auth.login.config=/etc/confluent/jaas_config.file -Dauthentication.skip.paths=/healthcheck"
     networks:
       - ksqldb_default
 
