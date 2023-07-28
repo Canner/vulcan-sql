@@ -1,0 +1,49 @@
+# The dbt Extension
+
+[dbt](https://www.getdbt.com/) is a powerful tool to transform your data, and VulcanSQL supports queries from [dbt models](https://docs.getdbt.com/docs/building-a-dbt-project/building-models) directly. 
+If you use dbt to create some models, you can make APIs for them instantly.
+
+## Installation
+
+We need to install an additional package to integrate with dbt:
+
+1.  Install package(If you have VulcanSQL in the binary version, you can skip this step)
+
+    ```bash
+    npm i @vulcan-sql/extension-dbt
+    ```
+
+2.  Setup `vulcan.yaml`
+
+    ```yaml
+    extensions:
+      dbt: '@vulcan-sql/extension-dbt' # add this line
+    dbt:
+      modelFiles:
+        - ./target/manifest.json # config the path to manifest.json
+    ```
+
+    :::info
+
+    [Manifest](https://docs.getdbt.com/reference/artifacts/manifest-json) is an artifact which is built from dbt cli, it should be located at “./target/manifest.json”
+    :::
+
+    :::info
+
+    We are not able to share profiles with dbt yet, you need to config profiles for both VulcanSQL and dbt separately**.**
+
+    :::
+
+## Using models in VulcanSQL
+
+Using models of dbt is extremely easy, you only need to use the following syntax.
+
+```sql
+{% dbt "model.<project-name>.<model-name>" %}
+```
+
+For example, to query all data from model `my_first_dbt_model` in the project `demo`:
+
+```sql
+select * from {% dbt "model.demo.my_first_dbt_model" %}
+```

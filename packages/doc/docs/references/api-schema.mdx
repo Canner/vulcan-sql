@@ -1,0 +1,170 @@
+# API Schema
+
+The API Schema is a configuration file for each Data API endpoint.
+
+## API Schema Structure
+
+Below is an example of the API schema structure, and the API schema uses the YAML format:
+
+```yaml
+urlPath: /users/:id
+request:
+  - fieldName: id
+    fieldIn: path
+    description: user id
+    validators:
+      - uuid
+      - required
+profiles:
+  - pg # replace this with your profile name
+```
+
+Here is the introduction of each field in the API Schema.
+
+## API Schema Fields
+
+### `urlPath` Field
+
+This is the Data API endpoint URL path. You could add the path parameter here using the `:[param-name]` format.
+There are [three types of values in the `fieldIn` field](#request-fields), namely `path`, `query` and `header`. 
+If the value is `header`, you are required to fill in the request parameters. VulcanSQL will auto generate other two values.
+
+```yaml
+urlPath: /users/:id
+request:
+  - fieldName: id
+    fieldIn: path
+    ....
+```
+
+After API is generated, VulcanSQL will add a prefix `/api` to distinguish Data API endpoints and other Non-Data API endpoints. For the above sample, the request url eventually should be `/api/users/:id`.
+
+If you don't set the `urlPath`, VulcanSQL uses your API Schema filepath as the url, e.g. API schema filepath is `new/user.yaml`, then the urlPath will be `/new/user`.
+
+### `templateSource` Field
+
+The `templateSource` field is the mapping to the name of the respective SQL file.
+
+```yaml
+- sqls
+  - user.yaml
+  - user.sql
+
+# user.yaml
+urlPath: /users/:id
+templateSource: user
+...
+```
+
+### `request` Fields
+
+The `request` fields define what are the request parameters sent with the API request.
+If you would like to send a request with a parameter, you should define the parameter with at least `fieldName` and `fieldIn` fields.
+
+- `fieldName` - The field name of the parameter of the API request. If it's a query parameter, it is optional by default. However, if your parameter is a path parameter e.g: `/users/:id`, then VulcanSQL will make the path parameter **required**.
+- `fieldIn` - Where is the parameter field put within the API request. It could be `path`, `query`, and `header`. If the `fieldIn` is the `path`, then you should also define the path parameter in `urlPath`. Here is the sample:
+
+  ```yaml
+  urlPath: users
+  request:
+    - fieldName: gender
+      fieldIn: query
+      ...
+    - fieldName: age
+      fieldIn: query
+  ```
+
+  The requests could be 4 cases shown below:
+
+  ```bash
+  /api/users
+  /api/users?gender=male
+  /api/users?age=18
+  /api/users?gender=male&age=18
+  ```
+
+- `type` - It means the request parameter data type. It could be `string`, `number`, or `boolean`, and the default is `string` type.
+- `description` - It's optional. If you add the `description` text, it'll be shown on the API documentation and the API catalog. It's more user friendly for users.
+- `validators` - The `validators` field is an array type. It's used for validating request parameters. 
+For example, if your parameter field is required, then the `required` value should be filled in. VulcanSQL also provides some built-in validators for you, 
+you could see the [API Validation](../develop/validator) for further details.
+
+### `sample` fields
+
+The `sample` fields are optional fields, if you don't set them, then the API document will show the response fields in the API endpoint introduction. VulcanSQL will use `sample` fields to send a query for sampling and get the result column with the field type for generating the information in the API documentation.
+
+If you would like to set it, you should provide these fields:
+
+- `parameters` - The parameters of API requests for querying sampling data.
+
+- `profile`: The `profile` indicates the data source you would like to use for querying the sample data.
+
+```yaml
+urlPath: users/:id
+request:
+  - fieldName: id
+    fieldIn: path
+    type: string
+    ...
+sample:
+  profile: pg
+  parameters:
+    id: '1234'
+profiles:
+  - pg
+```
+
+:::info
+For further details of using the `sample` field, please check out the section of [API Document](../develop/api-doc#setting-sampler) documentation.
+
+:::
+
+:::caution
+If [caching is enabled](../develop/cache) in the API endpoint, the sampling funcaionality is disabled.
+:::
+
+### `profiles` / `profile` field
+
+The `profiles` / `profile` indicate what data sources the APIs use to query the data.
+
+The `profiles` field takes precedence over the `profile` field when both existed.
+
+When you use the `profile`, it means the API endpoint will query the data from the data source. 
+You could set the [Authorization](../data-privacy/authz) for each data source to specify who has the permission to query data from APIs.
+
+```yaml
+urlPath: user/:id
+request: ...
+
+# only user1, and user2 have the pg permission to send the API for querying.
+profile: pg
+```
+
+Like the above example, if user3 would like to query data from APIs, he doesn't have the permission to the get data.
+
+If you specify the `profiles` field, it could support multiple data sources like the below example:
+
+:::caution
+As the moment, in each SQL file, VulcanSQL only supports one data source, 
+but the data source used for caching is excluded.
+So, in any case you can add DuckDB as the caching layer.
+
+:::
+
+```yaml
+urlPath: user/:id
+request: ...
+
+profile:
+  # only user1, and user2 have the pg permission to send the API for querying.
+  - pg
+  # only user1, and user3 have the duckdb permission to send the API for querying.
+  - duckdb
+```
+
+With the above example, user3 can only use the `duckdb` profile to send API requests.
+
+:::caution
+You should make sure the `pg` and `duckdb` profiles have been properly configured for your project, please check out [Data Source Profile](./data-source-profile) for further information.
+
+:::
