@@ -111,13 +111,9 @@ export class RestfulClient {
   }
 
   public async checkConnectionRunning(): Promise<boolean> {
-    try {
-      const status = await this.checkConnection();
-      const isRunning = status === 'RUNNING';
-      return isRunning;
-    } catch (e) {
-      return false;
-    }
+    const status = await this.checkConnection();
+    const isRunning = status === 'RUNNING';
+    return isRunning;
   }
 
   public async query({

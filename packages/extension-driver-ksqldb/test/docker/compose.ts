@@ -74,7 +74,7 @@ export class Compose {
 
   private convertContainerConfig(service: ComposeConfig, network: string) {
     // dockerode does not support relative paths in container volumes
-    const Binds = (service['volumes'] || []).map((volume) => volume.replace('./', ''));
+    const Binds = (service['volumes'] || []).map((volume) => volume.replace('./', `${__dirname}/`));
     return {
       Image: service['image'],
       name: service['hostname'],

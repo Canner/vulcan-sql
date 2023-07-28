@@ -93,7 +93,6 @@ export class KSqlDbServer {
 
   public async destroy() {
     await compose.down();
-    await BPromise.delay(60 * 1000);
   }
 
   public getProfile(name: string) {
@@ -111,7 +110,7 @@ export class KSqlDbServer {
 
   private async waitKSqlDbReady(client: RestfulClient): Promise<void> {
     // start to check connect after 1 minute
-    await BPromise.delay(60 * 1000);
+    // await BPromise.delay(60 * 1000);
     console.log(
       'Start to check ksqldb connection: ',
       `http://${this.host}:${this.port}`
