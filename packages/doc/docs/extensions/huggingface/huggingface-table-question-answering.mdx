@@ -2,7 +2,7 @@
 
 The [Table Question Answering](https://huggingface.co/docs/api-inference/detailed_parameters#table-question-answering-task) is one of the Natural Language Processing tasks supported by Hugging Face.
 
-Using the `huggingface_table_question_answering` filter.
+## Using the `huggingface_table_question_answering` filter.
 
 The result will be converted to a JSON string from `huggingface_table_question_answering`. You could decompress the JSON string and use the result by itself.
 
@@ -63,7 +63,7 @@ SELECT {{ products.value() | huggingface_table_question_answering(query=question
 ]
 ```
 
-### Arguments
+## Arguments
 
 Please check [Table Question Answering](https://huggingface.co/docs/api-inference/detailed_parameters#table-question-answering-task) for further information.
 
@@ -73,3 +73,8 @@ Please check [Table Question Answering](https://huggingface.co/docs/api-inferenc
 | model          | N        | google/tapas-base-finetuned-wtq | The model id of a pretrained model hosted inside a model repo on huggingface.co. See: https://huggingface.co/models?pipeline_tag=table-question-answering |
 | use_cache      | N        | true                            | There is a cache layer on the inference API to speedup requests we have already seen                                                                      |
 | wait_for_model | N        | false                           | If the model is not ready, wait for it instead of receiving 503. It limits the number of requests required to get your inference done                     |
+
+
+## Examples
+
+You can check out this [table-question-answering](https://github.com/Canner/vulcan-sql-examples/tree/main/huggingface/table-question-answering) example for further details!

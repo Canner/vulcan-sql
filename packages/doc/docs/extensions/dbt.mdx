@@ -34,9 +34,25 @@ We need to install an additional package to integrate with dbt:
 
     :::
 
-## Using models in VulcanSQL
+3. Setup `profiles.yaml`(if you are using DuckDB as the data source for your dbt project)
 
-Using models of dbt is extremely easy, you only need to use the following syntax.
+    Add `persistent-path` to the `profiles.yaml` in the root of your VulcanSQL project like following
+  
+    ```yaml
+    - name: duckdb
+      type: duckdb
+      connection:
+        persistent-path: [duckdb db file path of your dbt project]
+      allow: "*"
+    ```
+
+## Setup of your dbt project
+
+Please refer to the [dbt Quickstarts turotials](https://docs.getdbt.com/quickstarts)
+
+## Using the dbt extension
+
+Using models of dbt is extremely easy, you only need to use the following syntax in your VulcanSQL project.
 
 ```sql
 {% dbt "model.<project-name>.<model-name>" %}
@@ -47,3 +63,7 @@ For example, to query all data from model `my_first_dbt_model` in the project `d
 ```sql
 select * from {% dbt "model.demo.my_first_dbt_model" %}
 ```
+
+## Examples
+
+You can check out this [dbt-jaffle-shop](https://github.com/Canner/vulcan-sql-examples/tree/main/dbt-jaffle-shop) example for further details!
