@@ -76,6 +76,10 @@ const sidebars = {
           type: 'doc',
           id: 'connect/clickhouse',
         },
+        {
+          type: 'doc',
+          id: 'connect/ksqldb',
+        },
       ],
     },
     {
