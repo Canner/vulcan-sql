@@ -101,7 +101,7 @@ export class RestfulClient {
     try {
       const res = await this.request<KsqlInfoResponse>(RESTFUL_API.INFO, 'GET');
       return res.KsqlServerInfo['serverStatus'];
-    } catch (e) {
+    } catch (e: any) {
       if(e.error_code) {
         throw new Error(JSON.stringify(e));
       } else {

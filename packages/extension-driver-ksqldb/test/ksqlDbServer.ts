@@ -102,6 +102,8 @@ export class KSqlDbServer {
       type: 'ksqldb',
       connection: {
         host: `http://${this.host}:${this.port}`,
+        username: this.username,
+        password: this.password,
       },
       allow: '*',
     };

@@ -9,6 +9,7 @@ interface ComposeConfig {
   image: string;
   hostname: string;
   ports: string[];
+  volumes: string[];
   environment: Record<string, any>;
   expose: string[];
   entrypoint: string | string[];
@@ -72,6 +73,8 @@ export class Compose {
   }
 
   private convertContainerConfig(service: ComposeConfig, network: string) {
+    // dockerode does not support relative paths in container volumes
+    const Binds = (service['volumes'] || []).map((volume) => volume.replace('./', ''));
     return {
       Image: service['image'],
       name: service['hostname'],
@@ -84,6 +87,7 @@ export class Compose {
             [`${containerPort}/tcp`]: [{ HostPort: hostPort }],
           };
         }, {}),
+        Binds,
         NetworkMode: network,
       },
       Env: Object.keys(service['environment'] || {}).map(
@@ -95,6 +99,6 @@ export class Compose {
       ),
       Entrypoint: service['entrypoint'] || [],
       Tty: service['tty'] || false,
-    };
+    } as Docker.ContainerCreateOptions;;
   }
 }
