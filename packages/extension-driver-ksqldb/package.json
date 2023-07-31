@@ -1,0 +1,28 @@
+{
+  "name": "@vulcan-sql/extension-driver-ksqldb",
+  "description": "KSqlDb driver for VulcanSQL",
+  "version": "0.7.1",
+  "type": "commonjs",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "vulcan",
+    "vulcan-sql",
+    "data",
+    "sql",
+    "database",
+    "data-warehouse",
+    "data-lake",
+    "api-builder",
+    "ksqldb"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Canner/vulcan.git"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "@vulcan-sql/core": "~0.7.1-0"
+  }
+}

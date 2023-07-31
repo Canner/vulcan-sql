@@ -1,0 +1,5 @@
+KsqlServer-Props {
+  org.eclipse.jetty.jaas.spi.PropertyFileLoginModule required
+  file="/etc/confluent/password-file"
+  debug="true";
+};
