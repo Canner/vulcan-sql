@@ -28,7 +28,9 @@ This is the KSqlDb driver for VulcanSQL, provided by [Canner](https://cannerdata
        # Optional: The name of the user on whose behalf requests are made.
        username: '<username>',
        # The user's password
-       password: '<password>'
+       password: '<password>',
+       # Optional: Request timeout in milliseconds. Default value: 25000
+       timeout: 25000
    ```
 
 ## Testing

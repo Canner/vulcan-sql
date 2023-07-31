@@ -54,6 +54,12 @@ export interface RestfulClientOptions {
   host?: string;
   username?: string;
   password?: string;
+  timeout?: number;
+}
+
+const DEFAULT_OPTIONS: Required<Pick<RestfulClientOptions, 'host'|'timeout'>> = {
+  host: 'http://localhost:8088',
+  timeout: 25000,
 }
 
 export class RestfulClient {
@@ -67,10 +73,24 @@ export class RestfulClient {
     this.connect();
   }
 
+  /**
+   * The connect method will create a promise "startSession" method, not really to connect http2 immediately.
+   * To let users establish a "startSession" promise request only when they need to query or exec a statement.
+   */
   public connect() {
     this.startSession = () =>
       new Promise((resolve, reject) => {
-        this.client = http2.connect(this.options.host || 'http://localhost:8088');
+        this.client = http2.connect(this.options.host || DEFAULT_OPTIONS.host, {
+          timeout: this.options.timeout || DEFAULT_OPTIONS.timeout,
+        });
+
+        this.client.setTimeout(this.options.timeout || DEFAULT_OPTIONS.timeout, () => {
+          if (this.connected === false) {
+              const timeoutError = new Error("Connection timeout.");
+              reject(timeoutError);
+              this.client?.destroy(timeoutError);
+          }
+      });
 
         this.client.on('connect', () => {
           this.connected = true;
@@ -83,7 +103,7 @@ export class RestfulClient {
       });
   }
 
-  public close(): Promise<void> {
+  public closeSession(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.client) {
         !this.client.destroyed && this.client.destroy();
@@ -116,6 +136,11 @@ export class RestfulClient {
     return isRunning;
   }
 
+  /**
+   * According to ksqldb restful API: https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-rest-api/query-endpoint
+   * To run a SELECT statement and stream back the results.
+   * SELECT statement: https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-reference/select-pull-query
+   */
   public async query({
     query,
     query_params = {},
@@ -131,6 +156,11 @@ export class RestfulClient {
     return res;
   }
 
+  /**
+   * According to ksqldb restful API: https://docs.ksqldb.io/en/latest/developer-guide/ksqldb-rest-api/ksql-endpoint
+   * All statements, except those starting with SELECT and PRINT, can be run on this exec method. 
+   * To run SELECT and PRINT statements use the "query" method instead.
+   */
   public async exec({
     query,
     query_params = {},
@@ -153,6 +183,8 @@ export class RestfulClient {
     const ksql = query.replace(/\$(\d+)/g, (_, index) => {
       const valueIndex = parseInt(index) - 1;
       const paramValue = values[valueIndex];
+      // Because the ksqldb queries are expressed using a strict subset of ANSI SQL.
+      // It didn't support the string auto conversion, so we need to add the single quote for string value.
       return typeof paramValue === 'string' ? `'${paramValue}'` : paramValue;
     });
 
@@ -203,12 +235,12 @@ export class RestfulClient {
         } else {
           reject(responseData);
         }
-        this.close();
+        this.closeSession();
       });
 
       req.on('error', (error) => {
         reject(error);
-        this.close();
+        this.closeSession();
       });
 
       buffer && req.write(buffer);

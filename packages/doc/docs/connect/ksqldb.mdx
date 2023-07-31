@@ -28,6 +28,7 @@
        host: www.example.com:8088
        username: <username>
        password: <password>
+       timeout: 25000
      allow: '*'
    ```
 
@@ -38,3 +39,4 @@
 | host     | N        |  http://localhost:8088  | ksqlDB instance.  |
 | username | N        |                         | The name of the user on whose behalf requests are made.  |
 | password | N        |                         | The user's password.  |
+| timeout  | N        |  25000                  | Request timeout in milliseconds.  |
