@@ -78,7 +78,7 @@ const sidebars = {
         },
         {
           type: 'doc',
-          id: 'connect/ksqldb',
+          id: 'connectors/ksqldb',
         },
       ],
     },
