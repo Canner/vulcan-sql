@@ -25,7 +25,18 @@ extensions:
   duckdb: @vulcan-sql/extension-driver-duckdb
 ```
 
- In the configuration, `tmp` means there will be a new folder called `tmp` in the root directory of the project you created.
+In the configuration, `tmp` means there will be a new folder called `tmp` in the root directory of the project you created.
+
+If your data source is BigQuery, you need to update your `profiles.yaml` as following:
+
+```yaml
+- name: bq # profile name
+  type: bq
+  ...
+  cache:
+    # You should make sure there is a storage object administrator role in your service account
+    bucketName: 'your-bucket-name'
+```
 
 ## Caching Query Results
 To utilize the caching layer, you can enclose your SQL query inside the `{% cache %}` and `{% endcache %}` tags. For example:
