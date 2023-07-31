@@ -1,6 +1,6 @@
 {
   "name": "@vulcan-sql/extension-driver-ksqldb",
-  "description": "KSqlDb driver for VulcanSQL",
+  "description": "ksqlDB driver for VulcanSQL",
   "version": "0.7.1",
   "type": "commonjs",
   "publishConfig": {
