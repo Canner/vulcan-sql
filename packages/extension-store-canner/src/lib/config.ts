@@ -11,6 +11,7 @@ export interface CannerDriverProfileOptions {
   host?: string;
   // port to connect to canner enterprise. Default is 7432
   port?: number;
+  max?: number;
 }
 
 export interface StorageServiceOptions {
@@ -60,6 +61,8 @@ export const getEnvConfig = (): CannerStoreConfig => {
       host: process.env['PROFILE_CANNER_DRIVER_HOST'],
       // port 7432 is the PG Wire Protocol port, which is the default port for connecting canner enterprise driver
       port: Number(process.env['PROFILE_CANNER_DRIVER_PORT']) || 7432,
+      max:
+        Number(process.env['PROFILE_CANNER_DRIVER_CONNECTION_POOL_MAX']) || 10,
     },
     storage: {
       provider: process.env['STORAGE_PROVIDER'],

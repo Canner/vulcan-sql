@@ -43,7 +43,7 @@ export class CannerProfileReader extends ProfileReader {
     );
 
     // generate profiles from the indicator files of each workspaces
-    const { user, password, host, port } = this.envConfig.profile;
+    const { user, password, host, port, max } = this.envConfig.profile;
     if (!user || !password || !host)
       throw new ConfigurationError(
         'Canner profile reader needs username, password, host properties.'
@@ -64,6 +64,7 @@ export class CannerProfileReader extends ProfileReader {
             host,
             port,
             database: workspaceSqlName,
+            max,
           },
           allow: '*',
         } as Profile<Record<string, any>>;
