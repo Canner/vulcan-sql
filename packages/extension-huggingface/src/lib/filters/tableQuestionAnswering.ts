@@ -44,14 +44,14 @@ export const TableQuestionAnsweringFilter: FunctionalFilter = async ({
   // Convert the data result format to table value format
   const table = convertToHuggingFaceTable(value);
   // omit hidden value '__keywords' from args, it generated from nunjucks and not related to HuggingFace.
-  const { query, model, ...inferenceOptions } = omit(args, '__keywords');
+  const { query, model, endpoint, ...inferenceOptions } = omit(args, '__keywords');
   const payload = {
     inputs: { query, table },
   } as TableQuestionAnsweringOptions;
   if (!isEmpty(inferenceOptions)) payload.options = inferenceOptions;
 
   try {
-    const url = getUrl(model);
+    const url = endpoint ? endpoint : getUrl(model);
     const results = await postRequest(url, payload, token);
     // convert to JSON string to make user get the whole result after parsing it in SQL
     return JSON.stringify(results);

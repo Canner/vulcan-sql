@@ -4,7 +4,14 @@ import {
   Runner as HuggingFaceTableQuestionAnsweringFilterRunner,
 } from './lib/filters/tableQuestionAnswering';
 
+import {
+  Builder as TextGenerationFilterBuilder,
+  Runner as TextGenerationFilterRunner,
+} from './lib/filters/textGeneration';
+
 export default [
   HuggingFaceTableQuestionAnsweringFilterBuilder,
   HuggingFaceTableQuestionAnsweringFilterRunner,
+  TextGenerationFilterBuilder,
+  TextGenerationFilterRunner,
 ];
