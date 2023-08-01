@@ -46,6 +46,11 @@ declare module 'duckdb' {
     /**
      * @param path  a file name for a persistent DB or :memory: for in-memory database
      */
+    constructor(
+      path: string,
+      accessMode?: number | Record<string, string>,
+      callback?: Callback<any>
+    );
     constructor(path: string): Database;
 
     /** Create a new connection to execute query, each connection has own transaction context */
@@ -120,4 +125,6 @@ declare module 'duckdb' {
     [Symbol.asyncIterator](): Iterator<any>;
     nextChunk(): Promise<any[][]>;
   }
+
+  export const OPEN_READONLY: number;
 }

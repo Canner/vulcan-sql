@@ -75,7 +75,7 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
       // Only reuse db instance when not using in-memory only db
       let db = dbPath !== ':memory:' ? dbByPath.get(dbPath) : undefined;
       if (!db) {
-        db = await this.initDatabase(dbPath);
+        db = await this.initDatabase('./persist.db');
         dbByPath.set(dbPath, db);
       }
       this.dbMapping.set(profile.name, {
@@ -247,7 +247,7 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
   }
 
   private async initDatabase(dbPath: string) {
-    const db = new duckdb.Database(dbPath);
+    const db = new duckdb.Database(dbPath, duckdb.OPEN_READONLY);
     const conn = db.connect();
     await this.installExtensions(conn);
     return db;

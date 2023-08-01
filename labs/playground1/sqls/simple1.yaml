@@ -1,0 +1,6 @@
+urlPath: /lineitem
+request:
+  - fieldName: limit
+    fieldIn: query
+    description: limit of query
+profile: duck

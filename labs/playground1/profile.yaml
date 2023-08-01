@@ -1,7 +1,13 @@
-- name: duck
+- name: duck # profile name
   type: duckdb
   connection:
-    persistent-path: ./test-data/moma.db
-    log-queries: true
-    log-parameters: true
+    persistent-path: ./persist.db
+    # Optional: Whether log query requests (default: false)
+    log-queries: false
+    # Optional: Whether log query requests' parameters, please be aware that query parameters might contain sensitive data (default: false)
+    log-parameters: false
+    configuration-parameters:
+      endpoint: ''
+      accessKeyId: ''
+      secretAccessKey: ''
   allow: '*'

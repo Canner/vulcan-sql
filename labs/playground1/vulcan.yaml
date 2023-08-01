@@ -22,16 +22,17 @@ types:
   - RESTFUL
 extensions:
   duckdb: '@vulcan-sql/extension-driver-duckdb'
+cache:
+  type: parquet
+  folderPath: tmp
+  loader: duckdb
 profiles:
   - profile.yaml
-rate-limit:
-  options:
-    interval:
-      min: 1
-    max: 10000
 enforce-https:
   enabled: false
 auth:
+  enabled: false
+rate-limit:
   enabled: false
 response-format:
   enabled: true
