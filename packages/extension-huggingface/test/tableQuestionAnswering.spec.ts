@@ -34,6 +34,58 @@ describe('Test "huggingface_table_question_answering" filter', () => {
     50 * 1000
   );
 
+  it(
+    'Should throw error when pass the "query" argument but value is undefined',
+    async () => {
+      const token = process.env['HF_ACCESS_TOKEN'];
+      const { compileAndLoad, execute } = await getTestCompiler({
+        extensions: { huggingface: path.join(__dirname, '..', 'src') },
+        huggingface: {
+          accessToken: token,
+        },
+      });
+
+      const sql = `{% set data = ${JSON.stringify(
+        repositories
+      )} %}SELECT {{ data | huggingface_table_question_answering(query=undefined) }}`;
+
+      // Act
+      await compileAndLoad(sql);
+
+      // Assert
+      await expect(execute({})).rejects.toThrow(
+        'The "query" argument must have value'
+      );
+    },
+    50 * 1000
+  );
+
+  it(
+    'Should throw error when pass the "query" argument but value is empty string',
+    async () => {
+      const token = process.env['HF_ACCESS_TOKEN'];
+      const { compileAndLoad, execute } = await getTestCompiler({
+        extensions: { huggingface: path.join(__dirname, '..', 'src') },
+        huggingface: {
+          accessToken: token,
+        },
+      });
+
+      const sql = `{% set data = ${JSON.stringify(
+        repositories
+      )} %}SELECT {{ data | huggingface_table_question_answering(query='') }}`;
+
+      // Act
+      await compileAndLoad(sql);
+
+      // Assert
+      await expect(execute({})).rejects.toThrow(
+        'The "query" argument must have value'
+      );
+    },
+    50 * 1000
+  );
+
   it('Should throw error when input value not be array of object', async () => {
     const token = process.env['HF_ACCESS_TOKEN'];
     const { compileAndLoad, execute } = await getTestCompiler({

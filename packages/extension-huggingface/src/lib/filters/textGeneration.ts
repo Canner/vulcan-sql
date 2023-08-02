@@ -55,6 +55,8 @@ export const TextGenerationFilter: FunctionalFilter = async ({
     throw new InternalError('Input value must be an array of object');
   if (!(typeof args === 'object') || !has(args, 'query'))
     throw new InternalError('Must provide "query" keyword argument');
+  if (!args['query'])
+    throw new InternalError('The "query" argument must have value');
 
   // Convert the data result to JSON string as question context
   const context = JSON.stringify(value);

@@ -40,6 +40,8 @@ export const TableQuestionAnsweringFilter: FunctionalFilter = async ({
     throw new InternalError('Input value must be an array of object');
   if (!(typeof args === 'object') || !has(args, 'query'))
     throw new InternalError('Must provide "query" keyword argument');
+  if (!args['query'])
+    throw new InternalError('The "query" argument must have value');
 
   // Convert the data result format to table value format
   const table = convertToHuggingFaceTable(value);

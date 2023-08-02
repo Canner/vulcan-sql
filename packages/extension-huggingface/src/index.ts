@@ -5,13 +5,13 @@ import {
 } from './lib/filters/tableQuestionAnswering';
 
 import {
-  Builder as TextGenerationFilterBuilder,
-  Runner as TextGenerationFilterRunner,
+  Builder as HuggingFaceTextGenerationFilterBuilder,
+  Runner as HuggingFaceTextGenerationFilterRunner,
 } from './lib/filters/textGeneration';
 
 export default [
   HuggingFaceTableQuestionAnsweringFilterBuilder,
   HuggingFaceTableQuestionAnsweringFilterRunner,
-  TextGenerationFilterBuilder,
-  TextGenerationFilterRunner,
+  HuggingFaceTextGenerationFilterBuilder,
+  HuggingFaceTextGenerationFilterRunner,
 ];
