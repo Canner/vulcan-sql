@@ -38,7 +38,7 @@ type TextGenerationOptions = {
 };
 
 /**
- * Get text generation url. Used meta Llama 2.0 model be default value.
+ * Get text generation url. Used gpt2 model be default value.
  * See: https://huggingface.co/docs/api-inference/detailed_parameters#text-generation-task
  * */
 const getUrl = (model = 'gpt2') => `${apiInferenceEndpoint}/${model}`;

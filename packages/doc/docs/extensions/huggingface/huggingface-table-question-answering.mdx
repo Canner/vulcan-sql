@@ -67,12 +67,13 @@ SELECT {{ products.value() | huggingface_table_question_answering(query=question
 
 Please check [Table Question Answering](https://huggingface.co/docs/api-inference/detailed_parameters#table-question-answering-task) for further information.
 
-| Name           | Required | Default                         | Description                                                                                                                                               |
-| -------------- | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| query          | Y        |                                 | The query in plain text that you want to ask the table.                                                                                                   |
-| model          | N        | google/tapas-base-finetuned-wtq | The model id of a pretrained model hosted inside a model repo on huggingface.co. See: https://huggingface.co/models?pipeline_tag=table-question-answering |
-| use_cache      | N        | true                            | There is a cache layer on the inference API to speedup requests we have already seen                                                                      |
-| wait_for_model | N        | false                           | If the model is not ready, wait for it instead of receiving 503. It limits the number of requests required to get your inference done                     |
+| Name           | Required | Default                         | Description                                                                                                                                                |
+|----------------|----------|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| query          | Y        |                                 | The query in plain text that you want to ask the table.                                                                                                    |
+| endpoint       | N        |                                 | The inference endpoint URL, when using `endpoint`, it replaces the original default value of `model`.                                                      |
+| model          | N        | google/tapas-base-finetuned-wtq | The model id of a pre-trained model hosted inside a model repo on huggingface.co. See: https://huggingface.co/models?pipeline_tag=table-question-answering |
+| use_cache      | N        | true                            | There is a cache layer on the inference API to speedup requests we have already seen                                                                       |
+| wait_for_model | N        | false                           | If the model is not ready, wait for it instead of receiving 503. It limits the number of requests required to get your inference done                      |
 
 
 ## Examples
