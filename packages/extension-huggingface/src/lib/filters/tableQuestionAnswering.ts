@@ -3,82 +3,58 @@ import {
   InternalError,
   createFilterExtension,
 } from '@vulcan-sql/core';
-import axios, { AxiosError } from 'axios';
-import { convertToHuggingFaceTable } from '../utils';
-import { isArray } from 'class-validator';
-import { has } from 'lodash';
 
-type HuggingFaceOptions = {
-  accessToken: string;
-};
+import { convertToHuggingFaceTable, postRequest } from '../utils';
+import { has, isArray, isEmpty, omit } from 'lodash';
+import {
+  InferenceNLPOptions,
+  HuggingFaceOptions,
+  apiInferenceEndpoint,
+} from '../model';
 
-// More information described the options, see: https://huggingface.co/docs/api-inference/detailed_parameters#table-question-answering-task
+// More information described the options. See: https://huggingface.co/docs/api-inference/detailed_parameters#table-question-answering-task
 type TableQuestionAnsweringOptions = {
   inputs: {
     query: string;
     table: Record<string, string[]>;
   };
-  options: {
-    use_cache: boolean;
-    wait_for_model: boolean;
-  };
+  options?: InferenceNLPOptions;
 };
 
-const request = async (url: string, data: any, token: string) => {
-  try {
-    const result = await axios.post(url, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return result.data;
-  } catch (error) {
-    const axiosError = error as AxiosError;
-    // https://axios-http.com/docs/handling_errors
-    // if response has error, throw the response error, or throw the request error
-    if (axiosError.response)
-      throw new Error(JSON.stringify(axiosError.response?.data));
-    throw new Error(axiosError.message);
-  }
-};
-
-// default recommended model, see https://huggingface.co/docs/api-inference/detailed_parameters#table-question-answering-task
+/**
+ * Get table question answering url. Used recommend model be default value.
+ * See: https://huggingface.co/docs/api-inference/detailed_parameters#table-question-answering-task
+ * */
 const getUrl = (model = 'google/tapas-base-finetuned-wtq') =>
-  `https://api-inference.huggingface.co/models/${model}`;
+  `${apiInferenceEndpoint}/${model}`;
 
 export const TableQuestionAnsweringFilter: FunctionalFilter = async ({
   args,
   value,
   options,
 }) => {
-  if (!options || !(options as HuggingFaceOptions).accessToken)
-    throw new InternalError('please given access token');
+  const token = (options as HuggingFaceOptions)?.accessToken;
+  if (!token) throw new InternalError('please given access token');
 
   if (!isArray(value))
     throw new InternalError('Input value must be an array of object');
-
   if (!(typeof args === 'object') || !has(args, 'query'))
     throw new InternalError('Must provide "query" keyword argument');
   if (!args['query'])
     throw new InternalError('The "query" argument must have value');
 
-  const token = (options as HuggingFaceOptions).accessToken;
   // Convert the data result format to table value format
   const table = convertToHuggingFaceTable(value);
-  const context = {
-    inputs: {
-      query: args['query'],
-      table,
-    },
-    options: {
-      use_cache: args['use_cache'] ? args['use_cache'] : true,
-      wait_for_model: args['wait_for_model'] ? args['wait_for_model'] : false,
-    },
+  // omit hidden value '__keywords' from args, it generated from nunjucks and not related to HuggingFace.
+  const { query, model, endpoint, ...inferenceOptions } = omit(args, '__keywords');
+  const payload = {
+    inputs: { query, table },
   } as TableQuestionAnsweringOptions;
-
-  // Get table question answering url
-  const url = args['model'] ? getUrl(args['model']) : getUrl();
+  if (!isEmpty(inferenceOptions)) payload.options = inferenceOptions;
 
   try {
-    const results = await request(url, context, token);
+    const url = endpoint ? endpoint : getUrl(model);
+    const results = await postRequest(url, payload, token);
     // convert to JSON string to make user get the whole result after parsing it in SQL
     return JSON.stringify(results);
   } catch (error) {

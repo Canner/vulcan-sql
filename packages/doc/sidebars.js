@@ -176,6 +176,10 @@ const sidebars = {
           type: 'doc',
           id: 'extensions/huggingface/huggingface-table-question-answering',
         },
+        {
+          type: 'doc',
+          id: 'extensions/huggingface/huggingface-text-generation',
+        },
       ]
     },
     // {

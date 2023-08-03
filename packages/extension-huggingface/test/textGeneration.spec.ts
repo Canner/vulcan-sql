@@ -6,8 +6,7 @@ import { repositories } from './test-data/repositories';
 
 // support reading the env from .env file if exited when running test case
 dotenv.config({ path: path.resolve(__dirname, '.env') });
-
-describe('Test "huggingface_table_question_answering" filter', () => {
+describe('Test "huggingface_text_generation" filter', () => {
   it(
     'Should throw error when not pass the "query" argument',
     async () => {
@@ -21,7 +20,7 @@ describe('Test "huggingface_table_question_answering" filter', () => {
 
       const sql = `{% set data = ${JSON.stringify(
         repositories
-      )} %}SELECT {{ data | huggingface_table_question_answering("Not contains query argument!") }}`;
+      )} %}SELECT {{ data | huggingface_text_generation("Not contains query argument!") }}`;
 
       // Act
       await compileAndLoad(sql);
@@ -47,7 +46,7 @@ describe('Test "huggingface_table_question_answering" filter', () => {
 
       const sql = `{% set data = ${JSON.stringify(
         repositories
-      )} %}SELECT {{ data | huggingface_table_question_answering(query=undefined) }}`;
+      )} %}SELECT {{ data | huggingface_text_generation(query=undefined) }}`;
 
       // Act
       await compileAndLoad(sql);
@@ -73,7 +72,7 @@ describe('Test "huggingface_table_question_answering" filter', () => {
 
       const sql = `{% set data = ${JSON.stringify(
         repositories
-      )} %}SELECT {{ data | huggingface_table_question_answering(query='') }}`;
+      )} %}SELECT {{ data | huggingface_text_generation(query='') }}`;
 
       // Act
       await compileAndLoad(sql);
@@ -95,7 +94,7 @@ describe('Test "huggingface_table_question_answering" filter', () => {
       },
     });
 
-    const sql = `{% set data = 'not-array-data' %}SELECT {{ data | huggingface_table_question_answering(query="Does the filter work or not") }}`;
+    const sql = `{% set data = 'not-array-data' %}SELECT {{ data | huggingface_text_generation(query="Does the filter work or not") }}`;
 
     // Act
     await compileAndLoad(sql);
@@ -118,7 +117,7 @@ describe('Test "huggingface_table_question_answering" filter', () => {
 
       const sql = `{% set data = ${JSON.stringify(
         repositories
-      )} %}SELECT {{ data | huggingface_table_question_answering("${faker.internet.password()}") }}`;
+      )} %}SELECT {{ data | huggingface_text_generation("${faker.internet.password()}") }}`;
 
       // Act
       await compileAndLoad(sql);
@@ -130,32 +129,33 @@ describe('Test "huggingface_table_question_answering" filter', () => {
   );
 
   it(
-    'Should throw error when not set hugging face options',
+    'Should not throw when passing the "query" argument by dynamic parameter through HuggingFace default recommended "gpt2" model',
     async () => {
+      const token = process.env['HF_ACCESS_TOKEN'];
       const { compileAndLoad, execute } = await getTestCompiler({
         extensions: { huggingface: path.join(__dirname, '..', 'src') },
+        huggingface: {
+          accessToken: token,
+        },
       });
 
       const sql = `{% set data = ${JSON.stringify(
         repositories
-      )} %}SELECT {{ data | huggingface_table_question_answering("${faker.internet.password()}") }}`;
+      )} %}SELECT {{ data | huggingface_text_generation(query=context.params.value, wait_for_model=true, use_cache=false) }}`;
 
-      // Act
       await compileAndLoad(sql);
-
       // Assert
-      await expect(execute({})).rejects.toThrow('please given access token');
+      await expect(
+        execute({ value: 'what repository has most stars?' })
+      ).resolves.not.toThrow();
     },
-    50 * 1000
+    100 * 1000
   );
 
-  it(
-    'Should get correct expected value when provided "neulab/omnitab-large-1024shot-finetuned-wtq-1024shot" model and wait it for model',
+  // Skip the test case because the "meta-llama/Llama-2-13b-chat-hf" model need to upgrade your huggingface account to Pro Account by paying $9 per month
+  it.skip(
+    'Should get correct result when pass the "query" argument by dynamic parameter through "meta-llama/Llama-2-13b-chat-hf" model',
     async () => {
-      const expected = JSON.stringify({
-        // neulab/omnitab-large-1024shot-finetuned-wtq-1024shot will return the result including space in the beginning of the vulcan-sql -> ' vulcan-sql'
-        answer: ' vulcan-sql',
-      });
       const token = process.env['HF_ACCESS_TOKEN'];
       const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } =
         await getTestCompiler({
@@ -167,7 +167,70 @@ describe('Test "huggingface_table_question_answering" filter', () => {
 
       const sql = `{% set data = ${JSON.stringify(
         repositories
-      )} %}SELECT {{ data | huggingface_table_question_answering(query="what repository has most stars?", model="neulab/omnitab-large-1024shot-finetuned-wtq-1024shot", wait_for_model=true) }}`;
+      )} %}SELECT {{ data | huggingface_text_generation(query=context.params.value,model="meta-llama/Llama-2-13b-chat-hf", wait_for_model=true, use_cache=false) }}`;
+
+      await compileAndLoad(sql);
+      await execute({ value: 'what repository has most stars?' });
+
+      // Assert
+      const queries = await getExecutedQueries();
+      const bindings = await getCreatedBinding();
+
+      expect(queries[0]).toBe('SELECT $1');
+      expect(bindings[0].get('$1')).toEqual(
+        'Answer: Based on the information provided, the repository with the most stars is "vulcan-sql" with 1000 stars.'
+      );
+    },
+    100 * 1000
+  );
+
+  // Skip the test case because the "meta-llama/Llama-2-13b-chat-hf" model need to upgrade your huggingface account to Pro Account by paying $9 per month
+  it.skip.each([
+    {
+      question: 'what repository has most stars?',
+      expected:
+        'Answer: Based on the information provided, the repository with the most stars is "vulcan-sql" with 1000 stars.',
+    },
+    {
+      question: 'what repository has lowest stars?',
+      expected:
+        'Answer: Based on the information provided, the repository with the lowest stars is "hello-world" with 0 stars.',
+    },
+    {
+      question: 'How many stars does the vulcan-sql repository have?',
+      expected:
+        'Answer: Based on the information provided, the vulcan-sql repository has 1000 stars.',
+    },
+    {
+      question: 'How many stars does the accio repository have?',
+      expected:
+        'Answer: Based on the information provided, the accio repository has 500 stars.',
+    },
+    {
+      question: 'How many repositories related to data-lake topic?',
+      expected: `Answer: Based on the provided list of repositories, there are 2 repositories related to the data-lake topic:
+
+      1. vulcan-sql
+      2. accio
+      
+      Both of these repositories have the data-lake topic in their description.`,
+    },
+  ])(
+    'Should get "$expected" answer when asking "$question" through "meta-llama/Llama-2-13b-chat-hf" model',
+    async ({ question, expected }) => {
+      // Arrange
+      const token = process.env['HF_ACCESS_TOKEN'];
+      const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } =
+        await getTestCompiler({
+          extensions: { huggingface: path.join(__dirname, '..', 'src') },
+          huggingface: {
+            accessToken: token,
+          },
+        });
+
+      const sql = `{% set data = ${JSON.stringify(
+        repositories
+      )} %}SELECT {{ data | huggingface_text_generation(query="${question}", model="meta-llama/Llama-2-13b-chat-hf", wait_for_model=true) }}`;
 
       // Act
       await compileAndLoad(sql);
@@ -179,127 +242,6 @@ describe('Test "huggingface_table_question_answering" filter', () => {
 
       expect(queries[0]).toBe('SELECT $1');
       expect(bindings[0].get('$1')).toEqual(expected);
-    },
-    50 * 1000
-  );
-
-  it.each([
-    {
-      question: 'what repository has most stars?',
-      expected: {
-        answer: 'vulcan-sql',
-        coordinates: [[0, 0]],
-        cells: ['vulcan-sql'],
-        aggregator: 'NONE',
-      },
-    },
-    {
-      question: 'what repository has lowest stars?',
-      expected: {
-        answer: 'hello-world',
-        coordinates: [[2, 0]],
-        cells: ['hello-world'],
-        aggregator: 'NONE',
-      },
-    },
-    {
-      question: 'How many stars does the vulcan-sql repository have?',
-      expected: {
-        answer: 'SUM > 1000',
-        coordinates: [[0, 1]],
-        cells: ['1000'],
-        aggregator: 'SUM',
-      },
-    },
-    {
-      question: 'How many stars does the accio repository have?',
-      expected: {
-        answer: 'AVERAGE > 500',
-        coordinates: [[1, 1]],
-        cells: ['500'],
-        aggregator: 'AVERAGE',
-      },
-    },
-    {
-      question: 'How many repositories related to data-lake topic?',
-      expected: {
-        answer: 'COUNT > vulcan-sql, accio',
-        coordinates: [
-          [0, 0],
-          [1, 0],
-        ],
-        cells: ['vulcan-sql', 'accio'],
-        aggregator: 'COUNT',
-      },
-    },
-  ])(
-    'Should get correct $expected answer when asking $question',
-    async ({ question, expected }) => {
-      // Arrange
-
-      const token = process.env['HF_ACCESS_TOKEN'];
-      const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } =
-        await getTestCompiler({
-          extensions: { huggingface: path.join(__dirname, '..', 'src') },
-          huggingface: {
-            accessToken: token,
-          },
-        });
-
-      const sql = `{% set data = ${JSON.stringify(
-        repositories
-      )} %}SELECT {{ data | huggingface_table_question_answering(query="${question}", wait_for_model=true) }}`;
-
-      // Act
-      await compileAndLoad(sql);
-      await execute({});
-
-      // Assert
-      const queries = await getExecutedQueries();
-      const bindings = await getCreatedBinding();
-      // parse the result to object and match the expected value
-      const result = JSON.parse(bindings[0].get('$1'));
-
-      expect(queries[0]).toBe('SELECT $1');
-      expect(result).toEqual(expected);
-    },
-    50 * 1000
-  );
-
-  it(
-    'Should get correct result when pass the "query" argument by dynamic parameter',
-    async () => {
-      const expected = {
-        answer: 'vulcan-sql',
-        coordinates: [[0, 0]],
-        cells: ['vulcan-sql'],
-        aggregator: 'NONE',
-      };
-      const token = process.env['HF_ACCESS_TOKEN'];
-      const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } =
-        await getTestCompiler({
-          extensions: { huggingface: path.join(__dirname, '..', 'src') },
-          huggingface: {
-            accessToken: token,
-          },
-        });
-
-      const sql = `{% set data = ${JSON.stringify(
-        repositories
-      )} %}SELECT {{ data | huggingface_table_question_answering(query=context.params.value) }}`;
-
-      // Act
-      await compileAndLoad(sql);
-      await execute({ value: 'what repository has most stars?' });
-
-      // Assert
-      const queries = await getExecutedQueries();
-      const bindings = await getCreatedBinding();
-      // parse the result to object and match the expected value
-      const result = JSON.parse(bindings[0].get('$1'));
-
-      expect(queries[0]).toBe('SELECT $1');
-      expect(result).toEqual(expected);
     },
     50 * 1000
   );
