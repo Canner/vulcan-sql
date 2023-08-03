@@ -8,7 +8,7 @@ SELECT
   employee_id,
   first_name,
   last_name,
-  {% if context.user.attr.department = 'intern' %}
+  {% if context.user.attr.department == 'intern' %}
     NULL AS salary
   {% else %}
     salary
