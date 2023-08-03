@@ -1,7 +1,7 @@
-- name: duck
+- name: duckdb
   type: duckdb
+  allow: "*"
   connection:
     persistent-path: ./test-data/moma.db
     log-queries: true
     log-parameters: true
-  allow: '*'
