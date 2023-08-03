@@ -13,7 +13,7 @@ Moreover, you can generate an error if a user attempts to access data they are n
 For example, to prevent interns from accessing data after 2023, the following query can be employed:
 
 ```sql
-{% if context.user.attr.department = 'intern' and context.params.year < 2023 %}
+{% if context.user.attr.department == 'intern' and context.params.year < 2023 %}
     {% error "OUT_OF_LIMITED" %}
 {% endif %}
 ```
