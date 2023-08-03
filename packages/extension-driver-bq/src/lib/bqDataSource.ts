@@ -92,7 +92,7 @@ export class BQDataSource extends DataSource<any, BQOptions> {
       const [job] = await bigQuery.createQueryJob(queryOptions);
       await this.runJobAndWait(job);
       const getFilesResponse = await storage.bucket(bucketName).getFiles({
-        prefix: directory.slice(1), // remove the first slash
+        prefix: directory[0] === '/' ? directory.slice(1) : directory, // remove the first slash if needed
       });
       await Promise.all(
         getFilesResponse[0].map(async (file) => {
