@@ -40,7 +40,6 @@ response-format:
       - csv
 extensions:
   duckdb: '@vulcan-sql/extension-driver-duckdb'
-  bq: '@vulcan-sql/extension-driver-bq'
 cache:
   type: parquet
   folderPath: tmp

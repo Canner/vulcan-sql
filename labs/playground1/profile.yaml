@@ -5,13 +5,3 @@
     persistent-path: ./test-data/moma.db
     log-queries: true
     log-parameters: true
-- name: bq # profile name
-  type: bq
-  connection:
-    location: US
-    projectId: 'xxxx' # please fill in your project id
-    keyFilename: '/Users/cyyeh/vulcanci.json' # please change the path of your service account key file
-  cache:
-    # You should make sure there is a storage object administrator role in your service account
-    bucketName: 'canner-storage-test'
-  allow: '*'
