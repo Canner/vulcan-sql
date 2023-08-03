@@ -43,3 +43,15 @@ The configurations for each data source are defined in the `profiles.yaml` file.
         group: 'admin*'
         enabled: 'true'
 ```
+
+## Set the allowed profiles to each template
+
+For every SQL template, we need to tell VulcanSQL what profiles they could use by adding `profiles` property on the schema. 
+From top to bottom, users use the first qualified profile. If users can't use any of them, 403 error will be thrown.
+
+```yaml
+urlPath: /customer
+profiles:
+  - pg-admin
+  - pg-non-admin
+```
