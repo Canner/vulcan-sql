@@ -84,7 +84,6 @@ export class BQDataSource extends DataSource<any, BQOptions> {
     // ref: https://cloud.google.com/bigquery/docs/reference/standard-sql/other-statements#export_option_list
     const bucketObjPrefix = path.join(bucketName, directory);
     const uri = `gs://${path.join(bucketObjPrefix, 'part*.parquet')}`;
-    console.log(directory)
     const queryOptions = {
       query: `EXPORT DATA OPTIONS( uri="${uri}", format='PARQUET') AS ${statement}`,
       location: options?.location || 'US',
