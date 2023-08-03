@@ -1,0 +1,6 @@
+urlPath: /tpch
+profile: bq
+cache:
+  - cacheTableName: 'tpch_orders' # The name of the table in the cache layer storage
+    sql: 'SELECT * FROM `cannerflow-286003.tpch.orders` LIMIT 10' # The SQL query to preload into the cache layer
+    profile: bq

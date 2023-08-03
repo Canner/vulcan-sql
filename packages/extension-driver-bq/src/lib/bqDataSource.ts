@@ -82,7 +82,9 @@ export class BQDataSource extends DataSource<any, BQOptions> {
     // Use the directory to avoid filename collision,
     // The wildcard indicates the partition,
     // ref: https://cloud.google.com/bigquery/docs/reference/standard-sql/other-statements#export_option_list
-    const uri = `gs://${bucketName}/${directory}/part*.parquet`;
+    const bucketObjPrefix = path.join(bucketName, directory);
+    const uri = `gs://${path.join(bucketObjPrefix, 'part*.parquet')}`;
+    console.log(directory)
     const queryOptions = {
       query: `EXPORT DATA OPTIONS( uri="${uri}", format='PARQUET') AS ${statement}`,
       location: options?.location || 'US',
@@ -91,7 +93,7 @@ export class BQDataSource extends DataSource<any, BQOptions> {
       const [job] = await bigQuery.createQueryJob(queryOptions);
       await this.runJobAndWait(job);
       const getFilesResponse = await storage.bucket(bucketName).getFiles({
-        prefix: directory,
+        prefix: directory.slice(1), // remove the first slash
       });
       await Promise.all(
         getFilesResponse[0].map(async (file) => {

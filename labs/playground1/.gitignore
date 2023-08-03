@@ -3,3 +3,4 @@ result.json
 spec-oas3.yaml
 .vulcan-debug
 dist
+tmp

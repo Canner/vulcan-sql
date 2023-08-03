@@ -6,7 +6,10 @@ start: build test-data/moma.db ../../node_modules
 	@vulcan start
 
 # build the required packages
-build: pkg-core pkg-build pkg-serve pkg-catalog-server pkg-cli pkg-extension-driver-duckdb pkg-extension-authenticator-canner pkg-extension-driver-canner pkg-extension-driver-clickhouse pkg-extension-huggingface
+build: pkg-core pkg-build pkg-serve pkg-catalog-server pkg-cli pkg-extension-driver-duckdb \
+		pkg-extension-authenticator-canner pkg-extension-driver-canner \
+		pkg-extension-driver-clickhouse pkg-extension-driver-bq \
+		pkg-extension-huggingface
 
 
 # build for core pakge
@@ -70,6 +73,13 @@ pkg-extension-driver-clickhouse: ../../node_modules
 	rm -rf ./labs/playground1/node_modules/@vulcan-sql/extension-driver-clickhouse; \
 	cp -R ./dist/packages/extension-driver-clickhouse ./labs/playground1/node_modules/@vulcan-sql; \
 	cp -R ./packages/extension-driver-clickhouse/node_modules ./labs/playground1
+
+pkg-extension-driver-bq: ../../node_modules
+	@cd ../..; \
+	yarn nx build extension-driver-bq; \
+	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
+	rm -rf ./labs/playground1/node_modules/@vulcan-sql/extension-driver-bq; \
+	cp -R ./dist/packages/extension-driver-bq ./labs/playground1/node_modules/@vulcan-sql
 
 pkg-extension-huggingface: ../../node_modules
 	@cd ../..; \

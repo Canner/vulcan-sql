@@ -20,8 +20,6 @@ document-generator:
     - oas3
 types:
   - RESTFUL
-extensions:
-  duckdb: '@vulcan-sql/extension-driver-duckdb'
 profiles:
   - profile.yaml
 rate-limit:
@@ -40,3 +38,10 @@ response-format:
     formats:
       - json
       - csv
+extensions:
+  duckdb: '@vulcan-sql/extension-driver-duckdb'
+  bq: '@vulcan-sql/extension-driver-bq'
+cache:
+  type: parquet
+  folderPath: tmp
+  loader: duckdb

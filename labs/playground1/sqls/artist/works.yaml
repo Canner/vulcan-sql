@@ -8,7 +8,7 @@ request:
 sample:
   parameters:
     id: '1'
-  profile: duck
-profile: duck
+  profile: duckdb
+profile: duckdb
 pagination:
   mode: offset
