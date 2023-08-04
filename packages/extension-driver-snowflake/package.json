@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/extension-driver-snowflake",
   "description": "Snowflake driver for VulcanSQL",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"
@@ -30,6 +30,6 @@
     "@types/snowflake-sdk": "^1.6.8"
   },
   "peerDependencies": {
-    "@vulcan-sql/core": "~0.7.2-0"
+    "@vulcan-sql/core": "~0.8.0-0"
   }
 }
