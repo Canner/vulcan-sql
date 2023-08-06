@@ -108,7 +108,7 @@ class VulcanSQLAdapter {
       return isParam
         ? result.replace(param, filter[key])
         : `${result}${querySymbol}${key}=${filter[key]}`;
-    }, `/api${schema.urlPath}`);
+    }, schema.urlPath);
 
     const actualUrl = `${VULCAN_SQL_HOST}${actualPath}`;
     console.log('actualUrl: ', actualUrl);

@@ -8,7 +8,7 @@ export class RestfulRoute extends BaseRoute {
   constructor(options: RouteOptions) {
     super(options);
     const { apiSchema } = options;
-    this.urlPath = this.combineURLs('/api', apiSchema.urlPath);
+    this.urlPath = apiSchema.urlPath;
   }
 
   public async respond(ctx: KoaContext) {
