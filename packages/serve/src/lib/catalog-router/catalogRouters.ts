@@ -43,7 +43,7 @@ export class CatalogRouters extends CatalogRouter {
       const baseUrl = `${ctx.protocol}://${ctx.host}`;
       const result = {
         ...schema,
-        url: `${baseUrl}/api${schema.urlPath}`,
+        url: `${baseUrl}${schema.urlPath}`,
         apiDocUrl: `${baseUrl}${this.getAPIDocUrl(schema)}`,
         shareKey: this.getShareKey(ctx.request.headers.authorization),
         responseFormat: responseFormatOption.enabled
@@ -60,7 +60,7 @@ export class CatalogRouters extends CatalogRouter {
       const result = schemas.map((schema) => {
         return {
           ...schema,
-          url: `${baseUrl}/api${schema.urlPath}`,
+          url: `${baseUrl}${schema.urlPath}`,
           apiDocUrl: `${baseUrl}${this.getAPIDocUrl(schema)}`,
           shareKey: this.getShareKey(ctx.request.headers.authorization),
         };
