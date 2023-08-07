@@ -76,6 +76,11 @@ const config = {
             label: 'Blog',
           },
           {
+            href: 'https://github.com/Canner/vulcan-sql-examples',
+            position: 'left',
+            label: 'Examples',
+          },
+          {
             href: 'https://discord.gg/ztDz8DCmG4',
             position: 'left',
             label: 'Community',
@@ -100,11 +105,15 @@ const config = {
             items: [
               {
                 label: 'Getting Started',
-                to: '/docs/intro',
+                to: '/docs/get-started/first-api',
               },
               {
                 label: 'Building Data API',
                 to: '/docs/develop/init',
+              },
+              {
+                label: 'Extensions',
+                to: '/docs/extensions/overview',
               },
               {
                 label: 'API Catalog & Documentation',
@@ -117,6 +126,10 @@ const config = {
               {
                 label: 'Deployment and Maintenance',
                 to: '/docs/deployment',
+              },
+              {
+                label: 'References',
+                to: '/docs/references/project-configurations',
               },
             ],
           },
@@ -139,6 +152,10 @@ const config = {
               {
                 label: 'GitHub',
                 href: 'https://github.com/Canner/vulcan-sql',
+              },
+              {
+                label: 'Examples',
+                href: 'https://github.com/Canner/vulcan-sql-examples',
               },
               {
                 label: 'Privacy',
