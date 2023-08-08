@@ -390,6 +390,17 @@ const sidebars = {
     },
     'deployment',
     {
+      type: 'category',
+      label: 'Cloud Deployment Guides',
+      link: { type: 'doc', id: 'deployment/flydotio' },
+      items: [
+        {
+          type: 'doc',
+          id: 'deployment/flydotio',
+        },
+      ],
+    },
+    {
       type: 'html',
       value:
         '<img src="/img/book.svg" width="20em" class="menu_icon" /> References',

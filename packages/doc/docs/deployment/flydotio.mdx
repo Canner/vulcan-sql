@@ -1,0 +1,179 @@
+# Fly.io
+
+In this step-by-step guide, we'll guide you how to deploy your VulcanSQL project to [Fly.io](https://fly.io/). 
+Fly.io is a developer friendly service to deploy your apps. Besides, it has [free allowances](https://fly.io/docs/about/pricing/#em-free-allowances-em), 
+which is a great deployment option for side-projects.
+
+## Step 1: Install Fly.io
+
+Please go to [this website](https://fly.io/docs/hands-on/install-flyctl/) for installing `flyctl`, which is a command-line utility that lets you work with Fly.io. 
+You should install the version that's appropriate for your operating system.
+
+After successfully installed `flyctl`, you should see the following message if you type `fly` in the terminal:
+
+```
+cyyeh@JimmydeMBP vulcan-sql % fly
+This is flyctl, the Fly.io command line interface.
+
+Here's a few commands to get you started:
+  fly launch      Launch a new application
+  fly apps        Create and manage apps
+  fly postgres    Create and manage Postgres databases
+        fly mysql       Create and manage PlanetScale MySQL databases
+  fly redis       Create and manage Upstash Redis databases
+  fly machines    Create and manage individual Fly.io machines
+
+If you need help along the way:
+  fly help            Display a complete list of commands
+  fly help <command>  Display help for a specific command, e.g. 'fly help launch'
+
+Visit https://fly.io/docs for additional documentation & guides
+```
+
+## Step 2: Login to Fly.io
+
+**Signup**
+
+If this is your first time setting up Fly.io, please execute the following command in the terminal:
+
+```bash
+fly auth signup
+```
+
+After successfully sign up in Fly.io, you should see the following message in the terminal:
+
+```
+Waiting for session... Done
+successfully logged in as xxxxx@xxx
+```
+
+For more detailed introduction on how to sign up, you can [read more here](https://fly.io/docs/hands-on/sign-up/).
+
+**Login**
+
+If you already have a Fly.io account, please execute the following command in the terminal:
+
+```bash
+fly auth login
+```
+
+After successfully login in Fly.io, you should see the following message in the terminal:
+
+```
+Waiting for session... Done
+successfully logged in as xxxxx@xxx
+```
+
+For more detailed introduction on how to sign in, you can [read more here](https://fly.io/docs/hands-on/sign-in/).
+
+## Step 3: Packaging your VulcanSQL project
+
+In this guide, we'll deploy the Docker version of your VulcanSQL project. So please execute the following command in the terminal:
+
+```bash
+vulcan package --output docker
+```
+
+After executing the command, you'll see a message shown like below and a new directory `dist` in the project directory.
+
+```bash
+2023-08-07 08:47:26.246  INFO  [CORE] Package successfully, you can go to "dist" folder and run "docker build ." to build the image. 
+✔ Package successfully.
+```
+
+The directory structure of `dist` is as following:
+
+```
+dist
+├── Dockerfile
+├── config.json
+├── index.js
+├── package.json
+└── result.json
+```
+
+:::caution
+External resources and configurations, such as `profiles.yaml`, are not copied to the `dist` folder. 
+You'll need to copy them manually. We strongly recommend using a separate profile instead of the one used for development.
+
+After copying `profiles.yaml` into the `dist` folder, you should also add one line in `Dockerfile` as following:
+
+```shell
+.
+.
+.
+FROM node:16-bullseye-slim
+WORKDIR /usr/app
+COPY --from=build /usr/app /usr/app
+COPY config.json .
+COPY index.js .
+COPY result.json .
+# add the line below
+COPY profiles.yaml .
+ENV NODE_ENV production
+
+CMD [ "node", "index.js" ]
+```
+
+**Notes: if you have [multiple profiles](../references/data-source-profile#define-profile-in-independent-yaml-files), you should copy them into the dist folder and add them all in the Dockerfile.**
+:::
+
+## Step 4: Setup Fly.io deployment config
+
+Please execute the following command in the terminal in order to generate a Fly.io deployment config `fly.toml`:
+
+```shell
+fly launch
+```
+
+After executing the command, Fly.io would ask you several questions such as:
+1. Chooese an app name
+2. Select organization
+3. Choose a region for deployment
+4. Would you like to set up a Postgresql database now?
+5. Would you like to set up an Upstash Redis database now?
+6. Would you like to deploy now?
+
+After answering these questions, you will see `fly.toml` in the `dist` folder and the content is similar to this:
+
+```toml
+# fly.toml app configuration file generated for xxxxx on 2023-07-13T22:40:54+08:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "xxxxx"
+primary_region = "bos"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = false
+  min_machines_running = 1
+  processes = ["app"]
+```
+
+:::info
+You can make `auto_stop_machines` to be false, so that you don't need to worry if the machine will hibernate if no one accesses it for a while.
+:::
+
+For more detailed introduction on how to launch your app, you can [read more here](https://fly.io/docs/hands-on/launch-app/).
+
+## Step 5: Deploy to Fly.io
+
+Finally, you can execute the following command in the terminal to deploy your VulcanSQL project and share it with the world!
+
+```shell
+fly deploy
+```
+
+After successfully deploying the app, you should see the following message in the terminal:
+
+```shell
+Watch your app at https://fly.io/apps/xxxx/monitoring
+
+Visit your newly deployed app at https://xxxxx/
+```
+
+Congratulations! Now your VulcanSQL app is on the cloud and is ready to be shared to the world!
