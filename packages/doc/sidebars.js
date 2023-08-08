@@ -400,8 +400,12 @@ const sidebars = {
         },
         {
           type: 'doc',
-          id: 'deployment/gcp-cloudrun',
-        }
+          id: 'deployment/gcp-cloud-run',
+        },
+        // {
+        //   type: 'doc',
+        //   id: 'deployment/gcp-app-engine',
+        // }
       ],
     },
     {
