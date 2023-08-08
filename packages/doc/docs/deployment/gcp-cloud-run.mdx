@@ -14,7 +14,7 @@ Before you begin to use Cloud Run on GCP, you need to do several things:
 1. In the Google Cloud console, on the [project selector page](https://console.cloud.google.com/projectselector2/home/dashboard), select or create a Google Cloud project.
 2. [Make sure the billing is enabled for your Google Cloud project.](https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#console)
 3. [Install](https://cloud.google.com/sdk/docs/install) the Google Cloud CLI.
-4. Initialize the gcloud CLI with the folowwing command:
+4. Initialize the gcloud CLI with the following command:
     ```shell
     gcloud init
     ```
@@ -50,6 +50,11 @@ dist
 ├── package.json
 └── result.json
 ```
+
+:::caution
+External resources and configurations, such as `profiles.yaml`, are not copied to the `dist` folder. 
+You'll need to copy them manually. We strongly recommend using a separate profile instead of the one used for development.
+:::
 
 ## Step 3: Deploy to Cloud Run from source
 
