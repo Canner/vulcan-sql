@@ -398,6 +398,10 @@ const sidebars = {
           type: 'doc',
           id: 'deployment/flydotio',
         },
+        {
+          type: 'doc',
+          id: 'deployment/gcp-cloudrun',
+        }
       ],
     },
     {

@@ -1,0 +1,76 @@
+# GCP: Cloud Run
+
+In this step-by-step guide, we'll guide you how to deploy your VulcanSQL project to Google Cloud Platform(GCP)
+using [Cloud Run](https://cloud.google.com/run). It's a service that we can build and deploy containerized apps
+written in any language(including Go, Python, Java, Node.js, .Net, and Ruby) on a fully managed platform.
+
+:::info
+For more detailed information of the deployment process, you can [read more here](https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service).
+:::
+
+## Step 1: Install and setup the Google Cloud CLI
+
+Before you begin to use Cloud Run on GCP, you need to do several things:
+1. In the Google Cloud console, on the [project selector page](https://console.cloud.google.com/projectselector2/home/dashboard), select or create a Google Cloud project.
+2. [Make sure the billing is enabled for your Google Cloud project.](https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#console)
+3. [Install](https://cloud.google.com/sdk/docs/install) the Google Cloud CLI.
+4. Initialize the gcloud CLI with the folowwing command:
+    ```shell
+    gcloud init
+    ```
+5. You can set the default project for your Cloud Run service with the following command:
+    ```shell
+    gcloud config set project [PROJECT_ID]
+    ```
+
+For more detailed instructions on how to setup the environment, you can [read more here](https://cloud.google.com/run/docs/quickstarts/build-and-deploy/deploy-nodejs-service#before-you-begin).
+
+## Step 2: Package your VulcanSQL project
+
+In this guide, we'll deploy the Docker version of your VulcanSQL project. So please execute the following command in the terminal:
+
+```bash
+vulcan package --output docker
+```
+
+After executing the command, you'll see a message shown like below and a new directory `dist` in the project directory.
+
+```bash
+2023-08-07 08:47:26.246  INFO  [CORE] Package successfully, you can go to "dist" folder and run "docker build ." to build the image. 
+✔ Package successfully.
+```
+
+The directory structure of `dist` is as following:
+
+```
+dist
+├── Dockerfile
+├── config.json
+├── index.js
+├── package.json
+└── result.json
+```
+
+## Step 3: Deploy to Cloud Run from source
+
+Now you can deploy you VulcanSQL app to GCP with the following command:
+
+```shell
+gloud run deploy [YOUR_CLOUDRUN_SERVICE_NAME] --port=3000 --allow-unauthenticated
+```
+
+:::caution
+Important: This quickstart assumes that you have owner or editor roles in the project you are using for the quickstart. 
+Otherwise, refer to [Cloud Run deployment permissions](https://cloud.google.com/run/docs/reference/iam/roles#additional-configuration), 
+[Cloud Build permissions](https://cloud.google.com/build/docs/iam-roles-permissions#predefined_roles), and 
+[Artifact Registry permissions](https://cloud.google.com/artifact-registry/docs/access-control#permissions) for the permissions required.
+:::
+
+After successfully deploy the app, you'll see a similar message in the terminal:
+
+```
+Service [vulcansql-project] revision [vulcansql-project-00001-mud] has been deployed and is serving 100 percent of traffic.
+Service URL: https://vulcansql-project-ggcxvljfba-df.a.run.app
+```
+
+Congratulations! Now your VulcanSQL app is on the cloud and is ready to be shared to the world!
