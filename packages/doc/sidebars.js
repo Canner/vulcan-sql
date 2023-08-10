@@ -390,6 +390,25 @@ const sidebars = {
     },
     'deployment',
     {
+      type: 'category',
+      label: 'Cloud Deployment Guides',
+      link: { type: 'doc', id: 'deployment/flydotio' },
+      items: [
+        {
+          type: 'doc',
+          id: 'deployment/flydotio',
+        },
+        {
+          type: 'doc',
+          id: 'deployment/gcp-cloud-run',
+        },
+        {
+          type: 'doc',
+          id: 'deployment/gcp-app-engine',
+        }
+      ],
+    },
+    {
       type: 'html',
       value:
         '<img src="/img/book.svg" width="20em" class="menu_icon" /> References',
