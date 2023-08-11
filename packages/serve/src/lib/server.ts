@@ -14,6 +14,7 @@ import {
   ConfigurationError,
   VulcanError,
   ICacheLayerRefresher,
+  getAnalysis,
 } from '@vulcan-sql/core';
 import { Container, TYPES } from '../containers';
 import { ServeConfig, sslFileOptions } from '../models';
@@ -128,6 +129,7 @@ export class VulcanServer {
     }
     this.cacheRefresher?.stop();
     this.container.unload();
+    getAnalysis();
   }
 
   /**
