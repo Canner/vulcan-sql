@@ -246,9 +246,24 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     });
   }
 
+  // set duckdb thread to number
+  private async setThread(db: duckdb.Database) {
+    const thread = process.env['THREADS'];
+
+    if (!thread) return;
+    await new Promise((resolve, reject) => {
+      db.run(`SET threads=${Number(thread)}`, (err: any) => {
+        if (err) reject(err);
+        this.logger.debug(`Set thread to ${thread}`);
+        resolve(true);
+      });
+    });
+  }
+
   private async initDatabase(dbPath: string) {
     const db = new duckdb.Database(dbPath);
     const conn = db.connect();
+    await this.setThread(db);
     await this.installExtensions(conn);
     return db;
   }
