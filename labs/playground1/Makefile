@@ -3,13 +3,13 @@
 
 # start vulcan server (default goal)
 start: build test-data/moma.db ../../node_modules
-	@vulcan start
+	@vulcan start --watch
 
 # build the required packages
 build: pkg-core pkg-build pkg-serve pkg-catalog-server pkg-cli pkg-extension-driver-duckdb \
 		pkg-extension-authenticator-canner pkg-extension-driver-canner \
 		pkg-extension-driver-clickhouse pkg-extension-driver-bq \
-		pkg-extension-huggingface
+		pkg-extension-huggingface pkg-extension-api-caller
 
 
 # build for core pakge
