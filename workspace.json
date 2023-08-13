@@ -18,6 +18,7 @@
     "extension-driver-snowflake": "packages/extension-driver-snowflake",
     "extension-huggingface": "packages/extension-huggingface",
     "extension-store-canner": "packages/extension-store-canner",
+    "extension-api-caller": "packages/extension-api-caller",
     "integration-testing": "packages/integration-testing",
     "serve": "packages/serve",
     "test-utility": "packages/test-utility"
