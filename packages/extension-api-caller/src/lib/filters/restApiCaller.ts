@@ -11,8 +11,9 @@ export const RestApiCallerFilter: FunctionalFilter = async ({
   value,
 }) => {
   if (!args['url']) throw new InternalError('url is required');
-  const results = await axios.get<Array<any>>(args['url'], {
-    params: args['arg'] ? { [args['arg']]: value } : {},
+  const url = args['arg'] && args['arg'] === ':id' ? `${args['url']}/${value}` : args['url'];
+  const results = await axios.get<Array<any>>(url, {
+    params: args['arg'] && args['arg'] !== ':id' ? { [args['arg']]: value } : {},
   });
 
   return JSON.stringify(results.data);
