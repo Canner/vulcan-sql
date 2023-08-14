@@ -14,7 +14,7 @@ import {
   VulcanExtensionId,
 } from '@vulcan-sql/core';
 import * as path from 'path';
-import { buildSQL } from './sqlBuilder';
+import { buildSQL, chunkSize } from './sqlBuilder';
 import { DuckDBExtensionLoader } from './duckdbExtensionLoader';
 
 const getType = (value: any) => {
@@ -99,49 +99,74 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     }
     const { db, configurationParameters, ...options } =
       this.dbMapping.get(profileName)!;
-    const builtSQL = buildSQL(sql, operations);
+    const [builtSQL, streamSQL] = buildSQL(sql, operations);
+
     // create new connection for each query
     const connection = db.connect();
     await this.loadExtensions(connection, configurationParameters);
-    const statement = connection.prepare(builtSQL);
     const parameters = Array.from(bindParams.values());
     this.logRequest(builtSQL, parameters, options);
+    if (streamSQL) this.logRequest(streamSQL, parameters, options);
 
-    const result = await statement.stream(...parameters);
-    const firstChunk = await result.nextChunk();
+    const [result, asyncIterable] = await Promise.all([
+      new Promise<duckdb.TableData>((resolve, reject) => {
+        const c = db.connect();
+        c.all(
+          builtSQL,
+          ...parameters,
+          (err: duckdb.DuckDbError | null, res: duckdb.TableData) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(res);
+          }
+        );
+      }),
+      new Promise<duckdb.QueryResult | undefined>((resolve, reject) => {
+        if (!streamSQL) resolve(undefined);
+        try {
+          const c = db.connect();
+          const result = c.stream(streamSQL, ...parameters);
+          resolve(result);
+        } catch (err: any) {
+          reject(err);
+        }
+      }),
+    ]);
+    const asyncIterableStream = new Readable({
+      objectMode: true,
+      read: function () {
+        for (const row of result) {
+          this.push(row);
+        }
+        this.push(null);
+      },
+    });
+    if (result.length >= chunkSize) {
+      asyncIterableStream._read = async function () {
+        if (asyncIterable) {
+          for await (const row of asyncIterable) {
+            this.push(row);
+          }
+          this.push(null);
+        }
+      };
+      if (result) {
+        for (const row of result) {
+          asyncIterableStream.push(row);
+        }
+      }
+    }
     return {
       getColumns: () => {
-        if (!firstChunk || firstChunk.length === 0) return [];
-        return Object.keys(firstChunk[0]).map((columnName) => ({
+        if (!result || result.length === 0) return [];
+        return Object.keys(result[0]).map((columnName) => ({
           name: columnName,
-          type: getType(firstChunk[0][columnName as any]),
+          type: getType(result[0][columnName as any]),
         }));
       },
       getData: () => {
-        const stream = new Readable({
-          objectMode: true,
-          read() {
-            result.nextChunk().then((chunk) => {
-              if (!chunk) {
-                this.push(null);
-                return;
-              }
-              for (const row of chunk) {
-                this.push(row);
-              }
-            });
-          },
-        });
-        // Send the first chunk
-        if (firstChunk) {
-          for (const row of firstChunk) {
-            stream.push(row);
-          }
-        } else {
-          // If there is no data, close the stream.
-          stream.push(null);
-        }
-        return stream;
+        return asyncIterableStream;
       },
     };
   }

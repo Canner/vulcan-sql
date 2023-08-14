@@ -206,7 +206,7 @@ it('Should throw error from upstream', async () => {
       operations: {} as any,
       profileName: 'mocked-profile',
     })
-  ).rejects.toThrow(/^Parser Error: syntax error at or near "wrong"/);
+  ).rejects.toThrow(/^Parser Error: syntax error at or near/);
 });
 
 it('Should return empty data and column with zero result', async () => {
@@ -275,7 +275,7 @@ it('Should print queries without binding when log-queries = true', async () => {
     profileName: 'mocked-profile',
   });
   // Assert
-  expect(logs.slice(-1)[0][0]).toBe(`select $1::INTEGER as test`);
+  expect(/select \$1::INTEGER as test/.test(logs.slice(-1)[0][0])).toBe(true);
 });
 
 it('Should print queries with binding when log-queries = true and log-parameters = true', async () => {
@@ -316,7 +316,7 @@ it('Should print queries with binding when log-queries = true and log-parameters
     profileName: 'mocked-profile',
   });
   // Assert
-  expect(logs.slice(-1)[0][0]).toBe(`select $1::INTEGER as test`);
+  expect(/select \$1::INTEGER as test/.test(logs.slice(-1)[0][0])).toBe(true);
   expect(logs.slice(-1)[0][1]).toEqual([1234]);
 });
 

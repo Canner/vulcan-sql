@@ -67,7 +67,10 @@ it('BuildSQL function should build sql with operations', async () => {
   // Act
   const result = builder.buildSQL(statement, { limit: '$1', offset: '$2' });
   // Arrange
-  expect(result).toBe(
-    'SELECT * FROM (SELECT * FROM users) LIMIT $1 OFFSET $2;'
+  expect(result[0]).toBe(
+    `SELECT * FROM (SELECT * FROM (SELECT * FROM users) LIMIT $1 OFFSET $2) LIMIT ${builder.chunkSize};`
+  );
+  expect(result[1]).toBe(
+    `SELECT * FROM (SELECT * FROM (SELECT * FROM users) LIMIT $1 OFFSET $2) OFFSET ${builder.chunkSize};`
   );
 });

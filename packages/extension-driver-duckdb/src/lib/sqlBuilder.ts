@@ -26,15 +26,23 @@ export const isNoOP = (
   return true;
 };
 
+const duckdbExecuteChunkSize =
+  process.env['DUCKDB_EXECUTE_CHUNK_SIZE'] || '2000';
+
+export const chunkSize = Number(duckdbExecuteChunkSize);
+
 export const buildSQL = (
   sql: string,
   operations: Partial<Parameterized<SQLClauseOperation>>
-): string => {
-  if (isNoOP(operations)) return sql;
+): string[] => {
+  if (isNoOP(operations) && !/^select/.test(sql.toLowerCase()))
+    return [sql, ''];
   let builtSQL = '';
   builtSQL += `SELECT * FROM (${removeEndingSemiColon(sql)})`;
   builtSQL = addLimit(builtSQL, operations.limit);
   builtSQL = addOffset(builtSQL, operations.offset);
-  builtSQL += ';';
-  return builtSQL;
+
+  const chunkSql = `SELECT * FROM (${builtSQL}) LIMIT ${chunkSize};`;
+  const streamSql = `SELECT * FROM (${builtSQL}) OFFSET ${chunkSize};`;
+  return [chunkSql, streamSql];
 };
