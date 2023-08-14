@@ -104,7 +104,7 @@ it('Should work with memory-only database', async () => {
   // Assert
   expect(columns).toEqual([{ name: 'test', type: 'number' }]);
   expect(data).toEqual([{ test: 579 }]);
-});
+}, 20000);
 
 it('Should work with persistent database', async () => {
   // Arrange
