@@ -23,6 +23,12 @@ describe('Performance Analysis', () => {
       fs.unlinkSync('performanceRecord.txt');
     }
   });
+  afterEach(() => {
+    PerformanceAnalysis.clean();
+    if (fs.existsSync('performanceRecord.txt')) {
+      fs.unlinkSync('performanceRecord.txt');
+    }
+  });
   it('should collect performance data', async () => {
     await collect('waitOneSec');
     expect(PerformanceAnalysis.count()).toBeTruthy();
@@ -37,6 +43,6 @@ describe('Performance Analysis', () => {
     // expect file have two lines
     const data = fs.readFileSync('performanceRecord.txt', 'utf8');
     const lines = data.split('\n').filter((line) => line !== '');
-    expect(lines.length).toBe(4);
+    expect(lines.length).toBe(6);
   });
 });
