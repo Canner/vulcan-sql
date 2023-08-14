@@ -45,7 +45,6 @@ export class SchemaParser {
     for await (const schemaData of this.schemaReader.readSchema()) {
       const schema = await this.parseContent(schemaData);
       schema.metadata = metadata?.[schema.templateSource || schema.sourceName];
-      schema.urlPath = `/api${schema.urlPath}`
       // execute middleware
       await execute(schema);
       schemas.push(schema as APISchema);
