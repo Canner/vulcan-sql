@@ -42,7 +42,7 @@ export const buildSQL = (
   builtSQL = addLimit(builtSQL, operations.limit);
   builtSQL = addOffset(builtSQL, operations.offset);
 
-  const chunkSql = `SELECT * FROM (${builtSQL}) LIMIT ${chunkSize};`;
-  const streamSql = `SELECT * FROM (${builtSQL}) OFFSET ${chunkSize};`;
-  return [chunkSql, streamSql];
+  const firstDataSql = `SELECT * FROM (${builtSQL}) LIMIT ${chunkSize};`;
+  const restDataSql = `SELECT * FROM (${builtSQL}) OFFSET ${chunkSize};`;
+  return [firstDataSql, restDataSql];
 };

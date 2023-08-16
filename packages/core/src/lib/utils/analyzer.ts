@@ -106,7 +106,7 @@ export class PerformanceAnalysis {
   // write to txt file
   public static writePerformanceReport() {
     const filePath = path.join('./performanceRecord.txt');
-    // print current date, time as humun readable format
+    // print current date, time as human readable format
     fs.appendFileSync(filePath, `------${new Date().toLocaleString()}\n`);
     for (const key of Object.keys(keyStatistics)) {
       fs.appendFileSync(filePath, `${key}\n`);
