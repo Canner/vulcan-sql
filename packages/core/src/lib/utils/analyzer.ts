@@ -17,6 +17,32 @@ let keyStatistics: Record<
     p90?: number;
   }
 > = {};
+/**
+  * This is a performance analysis tool for concurrent tasks
+  * You can use it to collect the start and end time of a task, the collected data with the same key will be summarized
+  * the summarzied report contains the min, max, avg, median, p90 of the task 
+  * When the code snippet is executed, the performance analysis tool will automatically collect the start and end time of the task
+  * 
+  * example: 
+  *   const start = Date.now();
+  *   await fn_to_measure()
+  *   const end = Date.now();
+  *   PerformanceAnalysis.collect('fn_to_measure', start, end)
+  * 
+  * You can choose when to summarize the performance data
+  * for example, you can summarize the performance data before server closed
+  * 
+  *   public async close() {
+      if (this.servers) {
+        ... close server
+      }
+      PerformanceAnalysis.count();
+    }
+  *
+  * Note: If you want to view the performance by each API call, you can use k6 or you can specify the group name when collecting the performance data
+  *       and implement another count & writePerformanceReport funtion to summarize the performance data by group name
+  * 
+  */
 export class PerformanceAnalysis {
   public static collect(
     key: string,
@@ -42,7 +68,7 @@ export class PerformanceAnalysis {
   }
 
   public static count(): boolean {
-    // sort by diff
+    // sort by time diff
     if (isEmpty(performanceRecord)) {
       console.log('performanceRecord is empty');
       return false;
@@ -78,10 +104,8 @@ export class PerformanceAnalysis {
   };
 
   // write to txt file
-  // write by key
   public static writePerformanceReport() {
     const filePath = path.join('./performanceRecord.txt');
-    // write by key
     // print current date, time as humun readable format
     fs.appendFileSync(filePath, `------${new Date().toLocaleString()}\n`);
     for (const key of Object.keys(keyStatistics)) {
@@ -103,8 +127,9 @@ export function getAnalysis() {
   const counted = PerformanceAnalysis.count();
   if (counted && !is_analysis) {
     PerformanceAnalysis.writePerformanceReport();
-    console.log('performance analysis finished');
-    console.log('check the performanceRecord.txt file for details');
+    console.log(
+      'performance analysis finished, check the performanceRecord.txt file for details'
+    );
     is_analysis = true;
   }
 }
