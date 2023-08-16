@@ -1,6 +1,7 @@
 import {
   CacheLayerLoader,
   cacheLayerModule,
+  cacheLayerPersistentFileName,
   CacheLayerStoreFormatType,
   cacheProfileName,
   DataResult,
@@ -89,11 +90,21 @@ it('Cache layer module should add "vulcan.cache" profile and bind "duckdb" type 
 
   expect(dsFromTestDuck.injectedProfiles).toEqual([
     { name: 'test-duck', type: 'duckdb', allow: '*' },
-    { name: cacheProfileName, type: 'duckdb', allow: '*' },
+    {
+      name: cacheProfileName,
+      type: 'duckdb',
+      allow: '*',
+      connection: { ['persistent-path']: cacheLayerPersistentFileName },
+    },
   ]);
   expect(dsFromCacheLayer.injectedProfiles).toEqual([
     { name: 'test-duck', type: 'duckdb', allow: '*' },
-    { name: cacheProfileName, type: 'duckdb', allow: '*' },
+    {
+      name: cacheProfileName,
+      type: 'duckdb',
+      allow: '*',
+      connection: { ['persistent-path']: cacheLayerPersistentFileName },
+    },
   ]);
 });
 

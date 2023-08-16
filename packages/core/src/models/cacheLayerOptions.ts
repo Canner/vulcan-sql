@@ -19,6 +19,11 @@ export interface ICacheLayerOptions {
 // The cache layer profile name is used to load the cache data to table name from cache files
 export const cacheProfileName = 'vulcan.cache';
 
+// The cache layer persistent file name, if the file name is set to ":memory:", it will use in-memory database
+export const cacheLayerPersistentFileName =
+  process.env['VULCAN_CACHE_LAYER_PERSISTENT_FILE_NAME'] ||
+  'vulcan_caching_layer.db';
+
 // The schema name for vulcan used to create table when loading cache files to cache data source
 export const vulcanCacheSchemaName = 'vulcan';
 
