@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/extension-huggingface",
   "description": "Hugging Face feature for VulcanSQL",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"
@@ -23,6 +23,6 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@vulcan-sql/core": "~0.8.0-0"
+    "@vulcan-sql/core": "~0.8.1-0"
   }
 }

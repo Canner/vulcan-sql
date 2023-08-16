@@ -2,7 +2,11 @@ import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
 import * as oas3 from 'openapi3-ts';
 import { BaseStorageService } from '@canner/canner-storage';
-import { APISchema, ArtifactBuilderOptions } from '@vulcan-sql/core';
+import {
+  APISchema,
+  ArtifactBuilderOptions,
+  CacheLayerInfo,
+} from '@vulcan-sql/core';
 import * as storageServiceModule from '../lib/storageService';
 import {
   BuiltInArtifact,
@@ -160,6 +164,12 @@ describe('Test CannerPersistenceStore', () => {
             urlPath: '/orders',
             templateSource: 'sales/orders',
             profiles: [faker.word.noun()],
+            cache: [
+              {
+                ...sinon.stubInterface<CacheLayerInfo>(),
+                profile: faker.lorem.word(),
+              },
+            ],
           },
         ],
         specs: {
@@ -184,6 +194,7 @@ describe('Test CannerPersistenceStore', () => {
             urlPath: '/products/:id',
             templateSource: 'marketing/products',
             profiles: [faker.word.noun()],
+            cache: [],
           },
         ],
         specs: {
@@ -213,11 +224,17 @@ describe('Test CannerPersistenceStore', () => {
           urlPath: `${fakeWorkspaces.ws1.sqlName}/orders`,
           templateSource: `${fakeWorkspaces.ws1.sqlName}/sales/orders`,
           profiles: [`canner-${fakeWorkspaces.ws1.sqlName}`],
+          cache: [
+            {
+              profile: `canner-${fakeWorkspaces.ws1.sqlName}`,
+            },
+          ],
         },
         {
           urlPath: `${fakeWorkspaces.ws2.sqlName}/products/:id`,
           templateSource: `${fakeWorkspaces.ws2.sqlName}/marketing/products`,
           profiles: [`canner-${fakeWorkspaces.ws2.sqlName}`],
+          cache: [],
         },
       ],
       specs: {
