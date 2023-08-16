@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/extension-api-caller",
   "description": "Calling APIs to get data from other sources",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"

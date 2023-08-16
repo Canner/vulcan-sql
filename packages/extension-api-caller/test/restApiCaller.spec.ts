@@ -9,8 +9,7 @@ describe('Test "rest_api" filter', () => {
         extensions: { rest_api: path.join(__dirname, '..', 'src') },
       });
 
-      const sql = `{% set result = 1990 %}SELECT {{ result | 
-        rest_api(url='', arg='begin_date') }}`;
+      const sql = `{% set result = 1990 %}SELECT {{ result | rest_api(url='', arg='begin_date') }}`;
 
       // Act
       await compileAndLoad(sql);
@@ -24,8 +23,22 @@ describe('Test "rest_api" filter', () => {
   );
 
   it(
-    'The call API extensions created by createFilter function should work with template engine',
+    'The rest_api function should work with template engine',
     async () => {
+      const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } = await getTestCompiler({
+        extensions: { rest_api: path.join(__dirname, '..', 'src') },
+      });
+
+      const sql = `{% set result = 1990 %}SELECT {{ result | rest_api(url='http://localhost:3000/api/artists', arg='begin_date') }}`;
+
+      // Act
+      await compileAndLoad(sql);
+      await execute({});
+
+      // Assert
+      const queries = await getExecutedQueries();
+      const bindings = await getCreatedBinding();
+
       const expected = JSON.stringify(
         [
           {
@@ -141,12 +154,20 @@ describe('Test "rest_api" filter', () => {
         ]
       );
 
+      expect(queries[0]).toBe('SELECT $1');
+      expect(bindings[0].get('$1')).toEqual(expected);
+    },
+    50 * 1000
+  );
+
+  it(
+    'The rest_api function should work with HTTP Post request',
+    async () => {
       const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } = await getTestCompiler({
         extensions: { rest_api: path.join(__dirname, '..', 'src') },
       });
 
-      const sql = `{% set result = 1990 %}SELECT {{ result | 
-        rest_api(url='http://localhost:3000/api/artists', arg='begin_date') }}`;
+      const sql = `{% set body = '{"title": "BMW Pencil"}' %}SELECT {{ body | rest_api(url='https://dummyjson.com/products/add', method='POST', arg='body') }}`;
 
       // Act
       await compileAndLoad(sql);
@@ -156,9 +177,13 @@ describe('Test "rest_api" filter', () => {
       const queries = await getExecutedQueries();
       const bindings = await getCreatedBinding();
 
+      const expected = JSON.stringify({
+        "id": 101
+      });
+
       expect(queries[0]).toBe('SELECT $1');
       expect(bindings[0].get('$1')).toEqual(expected);
     },
     50 * 1000
-  );
+  )
 });
