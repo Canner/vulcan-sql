@@ -130,12 +130,22 @@ it('Should work with persistent database', async () => {
   });
   const columns = getColumns();
   const data = await streamToArray(getData());
+  const db = new duckdb.Database(testFile);
+  const result = await getQueryResults(
+    db,
+    'select * from "users" where age < 200 order by id desc'
+  );
   // Assert
   expect(columns.length).toBe(4);
   expect(columns).toContainEqual({ name: 'id', type: 'number' });
   expect(columns).toContainEqual({ name: 'name', type: 'string' });
   expect(columns).toContainEqual({ name: 'age', type: 'number' });
   expect(columns).toContainEqual({ name: 'enabled', type: 'boolean' });
+  expect(data.length).toEqual(result.length);
+  for (let i = 0; i < data.length; i++) {
+    expect(data[i]).toEqual(result[i]);
+  }
+  expect(data).toEqual(result);
   expect(data.length).toBe(2);
   expect(data[0]).toEqual({
     id: 2,
@@ -144,6 +154,47 @@ it('Should work with persistent database', async () => {
     enabled: true,
   });
   expect(data[1]).toEqual({ id: 1, name: 'freda', age: 18, enabled: true });
+});
+
+it('Should return correct data chunk', async () => {
+  // Arrange
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
+      allow: '*',
+    },
+  ]);
+  await dataSource.activate();
+  const bindParams = new Map<string, any>();
+  // Act
+  const { getColumns, getData } = await dataSource.execute({
+    statement: 'select * from "users" order by id desc',
+    bindParams,
+    operations: {} as any,
+    profileName: 'mocked-profile',
+  });
+  const columns = getColumns();
+  const data = await streamToArray(getData());
+  const db = new duckdb.Database(testFile);
+  const result = await getQueryResults(
+    db,
+    'select * from "users" order by id desc'
+  );
+  // Assert
+  expect(columns.length).toBe(4);
+  expect(columns).toContainEqual({ name: 'id', type: 'number' });
+  expect(columns).toContainEqual({ name: 'name', type: 'string' });
+  expect(columns).toContainEqual({ name: 'age', type: 'number' });
+  expect(columns).toContainEqual({ name: 'enabled', type: 'boolean' });
+  expect(data.length).toEqual(result.length);
+  for (let i = 0; i < data.length; i++) {
+    expect(data[i]).toEqual(result[i]);
+  }
+  expect(data.length).toBe(2000 + 3);
 });
 
 it('Should send correct data with chunks', async () => {
