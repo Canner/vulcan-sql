@@ -130,22 +130,12 @@ it('Should work with persistent database', async () => {
   });
   const columns = getColumns();
   const data = await streamToArray(getData());
-  const db = new duckdb.Database(testFile);
-  const result = await getQueryResults(
-    db,
-    'select * from "users" where age < 200 order by id desc'
-  );
   // Assert
   expect(columns.length).toBe(4);
   expect(columns).toContainEqual({ name: 'id', type: 'number' });
   expect(columns).toContainEqual({ name: 'name', type: 'string' });
   expect(columns).toContainEqual({ name: 'age', type: 'number' });
   expect(columns).toContainEqual({ name: 'enabled', type: 'boolean' });
-  expect(data.length).toEqual(result.length);
-  for (let i = 0; i < data.length; i++) {
-    expect(data[i]).toEqual(result[i]);
-  }
-  expect(data).toEqual(result);
   expect(data.length).toBe(2);
   expect(data[0]).toEqual({
     id: 2,
@@ -156,7 +146,7 @@ it('Should work with persistent database', async () => {
   expect(data[1]).toEqual({ id: 1, name: 'freda', age: 18, enabled: true });
 });
 
-it('Should return correct data chunk', async () => {
+it('Should return the same data when using c.all and datasource.execute', async () => {
   // Arrange
   const dataSource = new DuckDBDataSource(null, 'duckdb', [
     {

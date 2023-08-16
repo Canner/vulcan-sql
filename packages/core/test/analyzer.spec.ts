@@ -33,7 +33,6 @@ describe('Performance Analysis', () => {
     await collect('waitOneSec');
     expect(PerformanceAnalysis.count()).toBeTruthy();
   });
-  //   expect performanceRecord.txt exists when getStatistics() is called
   it('should write performance data to file', async () => {
     await collect('waitOneSec');
     await collect('waitAnotherSec');
