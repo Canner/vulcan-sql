@@ -40,6 +40,7 @@ declare module 'duckdb' {
       sql: string,
       ...params: [...any, Callback<Statement>] | []
     ): Statement;
+    stream(sql: any, ...args: any[]): QueryResult;
   }
 
   export class Database {

@@ -14,7 +14,7 @@ import {
   VulcanExtensionId,
 } from '@vulcan-sql/core';
 import * as path from 'path';
-import { buildSQL } from './sqlBuilder';
+import { buildSQL, chunkSize } from './sqlBuilder';
 import { DuckDBExtensionLoader } from './duckdbExtensionLoader';
 
 const getType = (value: any) => {
@@ -99,55 +99,104 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     }
     const { db, configurationParameters, ...options } =
       this.dbMapping.get(profileName)!;
-    const builtSQL = buildSQL(sql, operations);
+    const [firstDataSQL, restDataSQL] = buildSQL(sql, operations);
+
     // create new connection for each query
+    const parameters = Array.from(bindParams.values());
+    this.logRequest(firstDataSQL, parameters, options);
     const connection = db.connect();
     await this.loadExtensions(connection, configurationParameters);
-    const statement = connection.prepare(builtSQL);
-    const parameters = Array.from(bindParams.values());
-    this.logRequest(builtSQL, parameters, options);
-
-    const result = await statement.stream(...parameters);
-    const firstChunk = await result.nextChunk();
+    if (restDataSQL) this.logRequest(restDataSQL, parameters, options);
+    const [firstData, restDataStream] = await this.acquireData(
+      firstDataSQL,
+      restDataSQL,
+      parameters,
+      db
+    );
+    const readable = this.createReadableStream(firstData, restDataStream);
     return {
       getColumns: () => {
-        if (!firstChunk || firstChunk.length === 0) return [];
-        return Object.keys(firstChunk[0]).map((columnName) => ({
+        if (!firstData || firstData.length === 0) return [];
+        return Object.keys(firstData[0]).map((columnName) => ({
           name: columnName,
-          type: getType(firstChunk[0][columnName as any]),
+          type: getType(firstData[0][columnName as any]),
         }));
       },
       getData: () => {
-        const stream = new Readable({
-          objectMode: true,
-          read() {
-            result.nextChunk().then((chunk) => {
-              if (!chunk) {
-                this.push(null);
-                return;
-              }
-              for (const row of chunk) {
-                this.push(row);
-              }
-            });
-          },
-        });
-        // Send the first chunk
-        if (firstChunk) {
-          for (const row of firstChunk) {
-            stream.push(row);
-          }
-        } else {
-          // If there is no data, close the stream.
-          stream.push(null);
-        }
-        return stream;
+        return readable;
       },
     };
   }
 
   public async prepare({ parameterIndex }: RequestParameter) {
     return `$${parameterIndex}`;
+  }
+
+  private createReadableStream(
+    firstData: duckdb.TableData,
+    restDataStream: duckdb.QueryResult | undefined
+  ) {
+    const readable = new Readable({
+      objectMode: true,
+      read: function () {
+        for (const row of firstData) {
+          this.push(row);
+        }
+        this.push(null);
+      },
+    });
+    if (firstData.length >= chunkSize) {
+      readable._read = async function () {
+        if (restDataStream) {
+          for await (const row of restDataStream) {
+            this.push(row);
+          }
+          this.push(null);
+        }
+      };
+      if (firstData) {
+        for (const row of firstData) {
+          readable.push(row);
+        }
+      }
+    }
+    return readable;
+  }
+
+  private async acquireData(
+    firstDataSql: string,
+    restDataSql: string | undefined,
+    parameters: any[],
+    db: duckdb.Database
+  ) {
+    // conn.all() is faster then stream.checkChunk().
+    // For the small size data we use conn.all() to get the data at once
+    // To limit memory use and prevent server crashes, we will use conn.all() to acquire the initial chunk of data, then conn.stream() to receive the remainder of the data.
+    return await Promise.all([
+      new Promise<duckdb.TableData>((resolve, reject) => {
+        const c = db.connect();
+        c.all(
+          firstDataSql,
+          ...parameters,
+          (err: duckdb.DuckDbError | null, res: duckdb.TableData) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(res);
+          }
+        );
+      }),
+      new Promise<duckdb.QueryResult | undefined>((resolve, reject) => {
+        if (!restDataSql) resolve(undefined);
+        try {
+          const c = db.connect();
+          const result = c.stream(restDataSql, ...parameters);
+          resolve(result);
+        } catch (err: any) {
+          reject(err);
+        }
+      }),
+    ]);
   }
 
   private logRequest(
@@ -246,9 +295,25 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     });
   }
 
+  // The dafault duckdb thread is 16
+  // Setting thread below your CPU core number may result in enhanced performance, according to our observations.
+  private async setThread(db: duckdb.Database) {
+    const thread = process.env['DUCKDB_THREADS'];
+
+    if (!thread) return;
+    await new Promise((resolve, reject) => {
+      db.run(`SET threads=${Number(thread)}`, (err: any) => {
+        if (err) reject(err);
+        this.logger.debug(`Set thread to ${thread}`);
+        resolve(true);
+      });
+    });
+  }
+
   private async initDatabase(dbPath: string) {
     const db = new duckdb.Database(dbPath);
     const conn = db.connect();
+    await this.setThread(db);
     await this.installExtensions(conn);
     return db;
   }
