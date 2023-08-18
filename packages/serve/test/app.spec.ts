@@ -386,7 +386,7 @@ describe('Test vulcan server for calling restful APIs', () => {
         .listen(faker.datatype.number({ min: 20000, max: 30000 }));
 
       // arrange input api url
-      const apiUrl = KoaRouter.url(schema.urlPath, ctx.params);
+      const apiUrl = KoaRouter.url('/api' + schema.urlPath, ctx.params);
 
       // arrange expected result
       const expected: RequestParameters = {};

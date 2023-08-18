@@ -141,13 +141,17 @@ export class CannerPersistenceStore extends PersistentStore {
           merged.templates[workspaceSourceName] = value;
         });
         // API Schemas
+        const profile = `canner-${workspaceSqlName}`;
         artifact.schemas.forEach((schema) => {
           // concat the workspace sql name prefix to urlPath, urlPath has the "/" prefix, so concat directly
           schema.urlPath = `${workspaceSqlName}${schema.urlPath}`;
           // concat the workspace sql name prefix to template source, so it could find the "sourceName" in templates
           schema.templateSource = `${workspaceSqlName}/${schema.templateSource}`;
           // replace the profile to the canner enterprise integration used profile name, it will match to the profiles from canner profile reader.
-          schema.profiles = [`canner-${workspaceSqlName}`];
+          schema.profiles = [profile];
+          schema.cache =
+            schema.cache?.map((cacheData) => ({ ...cacheData, profile })) || [];
+
           merged.schemas.push(schema);
         });
         // Specs, only support the oas3 specification for canner enterprise integration used
