@@ -1,0 +1,85 @@
+{
+  "root": "packages/extension-api-caller",
+  "sourceRoot": "packages/extension-api-caller/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts extension-api-caller"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "tsc"
+        },
+        {
+          "projects": "self",
+          "target": "install-dependencies"
+        }
+      ]
+    },
+    "tsc": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/extension-api-caller",
+        "main": "packages/extension-api-caller/src/index.ts",
+        "tsConfig": "packages/extension-api-caller/tsconfig.lib.json",
+        "assets": ["packages/extension-api-caller/*.md"],
+        "buildableProjectDepsInPackageJsonType": "dependencies"
+      },
+      "dependsOn": [
+        {
+          "projects": "dependencies",
+          "target": "build"
+        },
+        {
+          "projects": "self",
+          "target": "install-dependencies"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/extension-api-caller/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/extension-api-caller"],
+      "options": {
+        "jestConfig": "packages/extension-api-caller/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "install-dependencies"
+        }
+      ]
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
+        "cwd": "dist/packages/extension-api-caller"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "install-dependencies": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn",
+        "cwd": "packages/extension-api-caller"
+      }
+    }
+  },
+  "tags": []
+}
