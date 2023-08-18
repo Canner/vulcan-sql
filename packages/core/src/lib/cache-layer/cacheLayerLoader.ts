@@ -94,12 +94,7 @@ export class CacheLayerLoader implements ICacheLayerLoader {
   private getParquetFiles(directory: string): string[] {
     if (!directory || !fs.existsSync(directory)) return [];
     const files = fs.readdirSync(directory);
-    const parquetFiles = [];
-    for (const file of files) {
-      if (/\.parquet$/.test(file)) {
-        parquetFiles.push(file);
-      }
-    }
+    const parquetFiles = files.filter((file) => /\.parquet$/.test(file));
     return parquetFiles;
   }
 }
