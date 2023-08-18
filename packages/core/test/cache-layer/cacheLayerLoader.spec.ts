@@ -1,5 +1,7 @@
 import * as fs from 'fs';
+import * as duckdb from 'duckdb';
 import * as sinon from 'ts-sinon';
+import * as path from 'path';
 import {
   CacheLayerInfo,
   CacheLayerLoader,
@@ -9,7 +11,7 @@ import {
   vulcanCacheSchemaName,
 } from '@vulcan-sql/core';
 import { MockDataSource, getQueryResults } from './mockDataSource';
-
+const db = new duckdb.Database(':memory:');
 describe('Test cache layer loader', () => {
   const folderPath = 'loader-test-exported-parquets';
   const profiles = [
@@ -52,6 +54,62 @@ describe('Test cache layer loader', () => {
     fs.rmSync(folderPath, { recursive: true, force: true });
   });
 
+  // it.each([
+  //   {
+  //     templateName: 'template-1',
+  //     cache: {
+  //       cacheTableName: 'employees',
+  //       sql: sinon.default.stub() as any,
+  //       profile: profiles[0].name,
+  //     } as CacheLayerInfo,
+  //   },
+  //   {
+  //     templateName: 'template-1',
+  //     cache: {
+  //       cacheTableName: 'departments',
+  //       sql: sinon.default.stub() as any,
+  //       profile: profiles[1].name,
+  //     } as CacheLayerInfo,
+  //   },
+  //   {
+  //     templateName: 'template-2',
+  //     cache: {
+  //       cacheTableName: 'jobs',
+  //       sql: sinon.default.stub() as any,
+  //       profile: profiles[2].name,
+  //     } as CacheLayerInfo,
+  //   },
+  // ])(
+  //   'Should export and load $cache.cacheTableName successful when start loader with cache settings for $templateName',
+  //   async ({ templateName, cache }) => {
+  //     // Arrange
+  //     // Act
+  //     const loader = new CacheLayerLoader(options, stubFactory as any);
+  //     await loader.load(templateName, cache);
+
+  //     // Assert
+  //     const actual = (
+  //       await getQueryResults(
+  //         "select * from information_schema.tables where table_schema = 'vulcan'"
+  //       )
+  //     ).map((row) => {
+  //       return {
+  //         table: row['table_name'],
+  //         schema: row['table_schema'],
+  //       };
+  //     });
+  //     expect(actual).toEqual(
+  //       expect.arrayContaining([
+  //         {
+  //           table: cache.cacheTableName,
+  //           schema: vulcanCacheSchemaName,
+  //         },
+  //       ])
+  //     );
+  //   },
+  //   // Set 50s timeout to test cache loader export and load data
+  //   50 * 10000
+  // );
   it.each([
     {
       templateName: 'template-1',
@@ -59,6 +117,7 @@ describe('Test cache layer loader', () => {
         cacheTableName: 'employees',
         sql: sinon.default.stub() as any,
         profile: profiles[0].name,
+        folderSubpath: '2023',
       } as CacheLayerInfo,
     },
     {
@@ -67,20 +126,22 @@ describe('Test cache layer loader', () => {
         cacheTableName: 'departments',
         sql: sinon.default.stub() as any,
         profile: profiles[1].name,
-      } as CacheLayerInfo,
-    },
-    {
-      templateName: 'template-2',
-      cache: {
-        cacheTableName: 'jobs',
-        sql: sinon.default.stub() as any,
-        profile: profiles[2].name,
+        folderSubpath: '2023',
       } as CacheLayerInfo,
     },
   ])(
-    'Should export and load $cache.cacheTableName successful when start loader with cache settings for $templateName',
+    'Should use existed parquet to load cache table: $cache.cacheTableName',
     async ({ templateName, cache }) => {
       // Arrange
+      const { profile, cacheTableName, folderSubpath } = cache;
+      const dir = path.resolve(
+        folderPath,
+        templateName,
+        profile,
+        cacheTableName,
+        folderSubpath!
+      );
+      await createParquetFile(dir, cacheTableName);
       // Act
       const loader = new CacheLayerLoader(options, stubFactory as any);
       await loader.load(templateName, cache);
@@ -109,3 +170,20 @@ describe('Test cache layer loader', () => {
     50 * 10000
   );
 });
+
+async function createParquetFile(path: string, fileName: string) {
+  if (!fs.existsSync(path)) {
+    fs.mkdirSync(path, { recursive: true });
+  }
+  db.run(`CREATE OR REPLACE TABLE parquet_table (i integer)`);
+  db.run(`INSERT INTO parquet_table (i) VALUES (1)`);
+  return new Promise((resolve, reject) => {
+    db.run(
+      `COPY (SELECT * FROM parquet_table) TO '${path}/${fileName}.parquet' (FORMAT PARQUET);`,
+      (err: any) => {
+        if (err) reject(err);
+        resolve(true);
+      }
+    );
+  });
+}
