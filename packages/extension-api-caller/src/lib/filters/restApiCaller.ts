@@ -1,6 +1,6 @@
 import {
   FunctionalFilter,
-  InternalError,
+  UserError,
   createFilterExtension,
   getLogger,
 } from '@vulcan-sql/core';
@@ -11,7 +11,8 @@ export const RestApiCallerFilter: FunctionalFilter = async ({
   args,
   value,
 }) => {
-  if (!args['url']) throw new InternalError('url is required');
+  if (!args['url']) throw new UserError('url is required');
+  if (typeof value !== 'object') throw new UserError('value must be an object');
 
   const logger = getLogger({
     scopeName: 'CORE',
@@ -51,9 +52,11 @@ export const RestApiCallerFilter: FunctionalFilter = async ({
   } catch (error: any) {
     const message = error.response
       ? `response status: ${error.response.status}, response data: ${JSON.stringify(error.response.data)}`
-      : `remote server does not response. request ${error.toJSON()}}`;
-    throw new InternalError(
-      `Failed to execute API request "${url}" data, ${message}`
+      : `remote server does not response. request ${JSON.stringify(error)}}`;
+    throw new UserError(
+      `Failed to execute API request "${url}" data, ${message}`, {
+        httpCode: 500,
+      }
     );
   }
 };
