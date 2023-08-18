@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/extension-debug-tools",
   "description": "A collection of Vulcan extension debug tools",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"
@@ -22,9 +22,9 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@vulcan-sql/core": "~0.8.1-0"
+    "@vulcan-sql/core": "~0.9.0-0"
   },
   "devDependencies": {
-    "@vulcan-sql/test-utility": "~0.8.1-0"
+    "@vulcan-sql/test-utility": "~0.9.0-0"
   }
 }
