@@ -54,62 +54,62 @@ describe('Test cache layer loader', () => {
     fs.rmSync(folderPath, { recursive: true, force: true });
   });
 
-  // it.each([
-  //   {
-  //     templateName: 'template-1',
-  //     cache: {
-  //       cacheTableName: 'employees',
-  //       sql: sinon.default.stub() as any,
-  //       profile: profiles[0].name,
-  //     } as CacheLayerInfo,
-  //   },
-  //   {
-  //     templateName: 'template-1',
-  //     cache: {
-  //       cacheTableName: 'departments',
-  //       sql: sinon.default.stub() as any,
-  //       profile: profiles[1].name,
-  //     } as CacheLayerInfo,
-  //   },
-  //   {
-  //     templateName: 'template-2',
-  //     cache: {
-  //       cacheTableName: 'jobs',
-  //       sql: sinon.default.stub() as any,
-  //       profile: profiles[2].name,
-  //     } as CacheLayerInfo,
-  //   },
-  // ])(
-  //   'Should export and load $cache.cacheTableName successful when start loader with cache settings for $templateName',
-  //   async ({ templateName, cache }) => {
-  //     // Arrange
-  //     // Act
-  //     const loader = new CacheLayerLoader(options, stubFactory as any);
-  //     await loader.load(templateName, cache);
+  it.each([
+    {
+      templateName: 'template-1',
+      cache: {
+        cacheTableName: 'employees',
+        sql: sinon.default.stub() as any,
+        profile: profiles[0].name,
+      } as CacheLayerInfo,
+    },
+    {
+      templateName: 'template-1',
+      cache: {
+        cacheTableName: 'departments',
+        sql: sinon.default.stub() as any,
+        profile: profiles[1].name,
+      } as CacheLayerInfo,
+    },
+    {
+      templateName: 'template-2',
+      cache: {
+        cacheTableName: 'jobs',
+        sql: sinon.default.stub() as any,
+        profile: profiles[2].name,
+      } as CacheLayerInfo,
+    },
+  ])(
+    'Should export and load $cache.cacheTableName successful when start loader with cache settings for $templateName',
+    async ({ templateName, cache }) => {
+      // Arrange
+      // Act
+      const loader = new CacheLayerLoader(options, stubFactory as any);
+      await loader.load(templateName, cache);
 
-  //     // Assert
-  //     const actual = (
-  //       await getQueryResults(
-  //         "select * from information_schema.tables where table_schema = 'vulcan'"
-  //       )
-  //     ).map((row) => {
-  //       return {
-  //         table: row['table_name'],
-  //         schema: row['table_schema'],
-  //       };
-  //     });
-  //     expect(actual).toEqual(
-  //       expect.arrayContaining([
-  //         {
-  //           table: cache.cacheTableName,
-  //           schema: vulcanCacheSchemaName,
-  //         },
-  //       ])
-  //     );
-  //   },
-  //   // Set 50s timeout to test cache loader export and load data
-  //   50 * 10000
-  // );
+      // Assert
+      const actual = (
+        await getQueryResults(
+          "select * from information_schema.tables where table_schema = 'vulcan'"
+        )
+      ).map((row) => {
+        return {
+          table: row['table_name'],
+          schema: row['table_schema'],
+        };
+      });
+      expect(actual).toEqual(
+        expect.arrayContaining([
+          {
+            table: cache.cacheTableName,
+            schema: vulcanCacheSchemaName,
+          },
+        ])
+      );
+    },
+    // Set 50s timeout to test cache loader export and load data
+    50 * 10000
+  );
   it.each([
     {
       templateName: 'template-1',
