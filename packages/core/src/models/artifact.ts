@@ -114,6 +114,8 @@ export class CacheLayerInfo {
   refreshExpression?: RefreshExpression;
   // index key name -> index column
   indexes?: Record<string, string>;
+  // cache folder subpath
+  folderSubpath?: string;
 }
 
 export class APISchema {

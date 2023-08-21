@@ -8,7 +8,11 @@ import {
 import { Profile } from '../../models/profile';
 import { ClassType } from '../../lib/utils/module';
 import { ConfigurationError } from '@vulcan-sql/core/utils';
-import { ICacheLayerOptions, cacheProfileName } from '@vulcan-sql/core/models';
+import {
+  ICacheLayerOptions,
+  cacheLayerPersistentFileName,
+  cacheProfileName,
+} from '@vulcan-sql/core/models';
 import 'reflect-metadata';
 
 export const dataSourceModule = (
@@ -26,6 +30,7 @@ export const dataSourceModule = (
         type: options.loader!.toLocaleLowerCase(),
         // allow '*' to make every user request could use the cache-layer data source.
         allow: '*',
+        connection: { ['persistent-path']: cacheLayerPersistentFileName },
       } as Profile);
     }
 

@@ -3,13 +3,13 @@
 
 # start vulcan server (default goal)
 start: build test-data/moma.db ../../node_modules
-	@vulcan start
+	@vulcan start --watch
 
 # build the required packages
 build: pkg-core pkg-build pkg-serve pkg-catalog-server pkg-cli pkg-extension-driver-duckdb \
 		pkg-extension-authenticator-canner pkg-extension-driver-canner \
 		pkg-extension-driver-clickhouse pkg-extension-driver-bq \
-		pkg-extension-huggingface
+		pkg-extension-huggingface pkg-extension-api-caller
 
 
 # build for core pakge
@@ -65,7 +65,7 @@ pkg-extension-driver-canner: ../../node_modules
 	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
 	rm -rf ./labs/playground1/node_modules/@vulcan-sql/extension-driver-canner; \
 	cp -R ./dist/packages/extension-driver-canner ./labs/playground1/node_modules/@vulcan-sql; \
-	
+
 pkg-extension-driver-clickhouse: ../../node_modules
 	@cd ../..; \
 	yarn nx build extension-driver-clickhouse; \
@@ -89,8 +89,12 @@ pkg-extension-huggingface: ../../node_modules
 	cp -R ./dist/packages/extension-huggingface ./labs/playground1/node_modules/@vulcan-sql; \
 	cp -R ./packages/extension-huggingface/node_modules ./labs/playground1
 
-
-
+pkg-extension-api-caller: ../../node_modules
+	@cd ../..; \
+	yarn nx build extension-api-caller; \
+	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
+	rm -rf ./labs/playground1/node_modules/@vulcan-sql/extension-api-caller; \
+	cp -R ./dist/packages/extension-api-caller ./labs/playground1/node_modules/@vulcan-sql
 
 # build and install for cli pakge
 pkg-cli: ../../node_modules

@@ -104,6 +104,9 @@
       "@vulcan-sql/extension-store-canner": [
         "packages/extension-store-canner/src/index.ts"
       ],
+      "@vulcan-sql/extension-api-caller": [
+        "packages/extension-api-caller/src/index.ts"
+      ],
       "@vulcan-sql/integration-testing": [
         "packages/integration-testing/src/index"
       ],

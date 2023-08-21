@@ -41,3 +41,7 @@
          url_style?: string
          use_ssl?: boolean
    ```
+
+ 4. Environment Variables
+    - DUCKDB_EXECUTE_CHUNK_SIZE: Optional, dafult 2000. The data chunk size, we will acquire this size of data using conn.all() at once and get the rest of data using conn.stream to prevent from OOM, this parameter will affect the **API performance** and **server memory usage**.
+    - DUCKDB_THREADS: Optional, if not been set, use used duckdb default thread value.

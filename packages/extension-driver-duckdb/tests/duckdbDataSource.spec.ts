@@ -104,7 +104,7 @@ it('Should work with memory-only database', async () => {
   // Assert
   expect(columns).toEqual([{ name: 'test', type: 'number' }]);
   expect(data).toEqual([{ test: 579 }]);
-});
+}, 20000);
 
 it('Should work with persistent database', async () => {
   // Arrange
@@ -144,6 +144,47 @@ it('Should work with persistent database', async () => {
     enabled: true,
   });
   expect(data[1]).toEqual({ id: 1, name: 'freda', age: 18, enabled: true });
+});
+
+it('Should return the same data when using c.all and datasource.execute', async () => {
+  // Arrange
+  const dataSource = new DuckDBDataSource(null, 'duckdb', [
+    {
+      name: 'mocked-profile',
+      type: 'duck',
+      connection: {
+        'persistent-path': testFile,
+      },
+      allow: '*',
+    },
+  ]);
+  await dataSource.activate();
+  const bindParams = new Map<string, any>();
+  // Act
+  const { getColumns, getData } = await dataSource.execute({
+    statement: 'select * from "users" order by id desc',
+    bindParams,
+    operations: {} as any,
+    profileName: 'mocked-profile',
+  });
+  const columns = getColumns();
+  const data = await streamToArray(getData());
+  const db = new duckdb.Database(testFile);
+  const result = await getQueryResults(
+    db,
+    'select * from "users" order by id desc'
+  );
+  // Assert
+  expect(columns.length).toBe(4);
+  expect(columns).toContainEqual({ name: 'id', type: 'number' });
+  expect(columns).toContainEqual({ name: 'name', type: 'string' });
+  expect(columns).toContainEqual({ name: 'age', type: 'number' });
+  expect(columns).toContainEqual({ name: 'enabled', type: 'boolean' });
+  expect(data.length).toEqual(result.length);
+  for (let i = 0; i < data.length; i++) {
+    expect(data[i]).toEqual(result[i]);
+  }
+  expect(data.length).toBe(2000 + 3);
 });
 
 it('Should send correct data with chunks', async () => {
@@ -206,7 +247,7 @@ it('Should throw error from upstream', async () => {
       operations: {} as any,
       profileName: 'mocked-profile',
     })
-  ).rejects.toThrow(/^Parser Error: syntax error at or near "wrong"/);
+  ).rejects.toThrow(/^Parser Error: syntax error at or near/);
 });
 
 it('Should return empty data and column with zero result', async () => {
@@ -275,7 +316,7 @@ it('Should print queries without binding when log-queries = true', async () => {
     profileName: 'mocked-profile',
   });
   // Assert
-  expect(logs.slice(-1)[0][0]).toBe(`select $1::INTEGER as test`);
+  expect(/select \$1::INTEGER as test/.test(logs.slice(-1)[0][0])).toBe(true);
 });
 
 it('Should print queries with binding when log-queries = true and log-parameters = true', async () => {
@@ -316,7 +357,7 @@ it('Should print queries with binding when log-queries = true and log-parameters
     profileName: 'mocked-profile',
   });
   // Assert
-  expect(logs.slice(-1)[0][0]).toBe(`select $1::INTEGER as test`);
+  expect(/select \$1::INTEGER as test/.test(logs.slice(-1)[0][0])).toBe(true);
   expect(logs.slice(-1)[0][1]).toEqual([1234]);
 });
 

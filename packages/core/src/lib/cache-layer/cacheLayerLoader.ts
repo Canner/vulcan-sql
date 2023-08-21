@@ -43,31 +43,40 @@ export class CacheLayerLoader implements ICacheLayerLoader {
     templateName: string,
     cache: CacheLayerInfo
   ): Promise<void> {
-    const { cacheTableName, sql, profile, indexes } = cache;
+    const { cacheTableName, sql, profile, indexes, folderSubpath } = cache;
     const type = this.options.type!;
     const dataSource = this.dataSourceFactory(profile);
 
     // generate directory for cache file path to export
     // format => [folderPath]/[schema.templateSource]/[profileName]/[cacheTableName]]/[timestamp]
+    const subpath = folderSubpath || moment.utc().format('YYYYMMDDHHmmss');
     const directory = path.resolve(
       this.options.folderPath!,
       templateName,
       profile,
       cacheTableName,
-      moment.utc().format('YYYYMMDDHHmmss')
+      subpath
     );
-
-    if (!fs.existsSync(directory!))
-      fs.mkdirSync(directory!, { recursive: true });
-
-    // 1. export to cache files according to each schema set the cache value
-    this.logger.debug(`Start to export to ${type} file in "${directory}"`);
-    await dataSource.export({
-      sql,
-      directory,
-      profileName: profile,
-      type,
-    });
+    const parquetFiles = this.getParquetFiles(directory);
+    if (!parquetFiles.length) {
+      if (!fs.existsSync(directory!)) {
+        fs.mkdirSync(directory!, { recursive: true });
+      }
+      // 1. export to cache files according to each schema set the cache value
+      this.logger.debug(`Start to export to ${type} file in "${directory}"`);
+      await dataSource.export({
+        sql,
+        directory,
+        profileName: profile,
+        type,
+      });
+    } else {
+      this.logger.debug(
+        `Parquet file \n ${parquetFiles.join(
+          '\n  '
+        )} found in ${directory}, skip export`
+      );
+    }
     this.logger.debug(`Start to load ${cacheTableName} in "${directory}"`);
     // 2. load the files to cache data source
     await this.cacheStorage.import({
@@ -80,5 +89,12 @@ export class CacheLayerLoader implements ICacheLayerLoader {
       type,
       indexes,
     });
+  }
+
+  private getParquetFiles(directory: string): string[] {
+    if (!directory || !fs.existsSync(directory)) return [];
+    const files = fs.readdirSync(directory);
+    const parquetFiles = files.filter((file) => /\.parquet$/.test(file));
+    return parquetFiles;
   }
 }
