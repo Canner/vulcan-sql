@@ -47,6 +47,11 @@ declare module 'duckdb' {
     /**
      * @param path  a file name for a persistent DB or :memory: for in-memory database
      */
+    constructor(
+      path: string,
+      accessMode?: number | Record<string, string>,
+      callback?: Callback<any>
+    );
     constructor(path: string): Database;
 
     /** Create a new connection to execute query, each connection has own transaction context */
@@ -59,7 +64,7 @@ declare module 'duckdb' {
     /**
      * Wait all scheduled database tasks have completed.
      * @param callback trigger callback function when all scheduled database tasks have completed.
-     */
+     */ s;
     wait(callback?: Callback<void>): void;
     /**
      * Query and trigger callback function when query completed
@@ -121,4 +126,20 @@ declare module 'duckdb' {
     [Symbol.asyncIterator](): Iterator<any>;
     nextChunk(): Promise<any[][]>;
   }
+
+  export const ERROR: number;
+
+  export const OPEN_CREATE: number;
+
+  export const OPEN_FULLMUTEX: number;
+
+  export const OPEN_PRIVATECACHE: number;
+
+  export const OPEN_READONLY: number;
+
+  export const OPEN_READWRITE: number;
+
+  export const OPEN_SHAREDCACHE: number;
+
+  export const INTERRUPT: number;
 }
