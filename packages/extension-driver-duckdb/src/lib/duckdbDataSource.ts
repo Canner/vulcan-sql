@@ -106,6 +106,7 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     this.logRequest(firstDataSQL, parameters, options);
     const connection = db.connect();
     await this.loadExtensions(connection, configurationParameters);
+    await this.setExecConfig(connection);
     if (restDataSQL) this.logRequest(restDataSQL, parameters, options);
     const [firstData, restDataStream] = await this.acquireData(
       firstDataSQL,
@@ -297,25 +298,75 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
 
   // The dafault duckdb thread is 16
   // Setting thread below your CPU core number may result in enhanced performance, according to our observations.
-  private async setThread(db: duckdb.Database) {
-    const thread = process.env['DUCKDB_THREADS'];
+  // private async setThread(db: duckdb.Database) {
+  //   const thread = process.env['DUCKDB_THREADS'];
 
-    if (!thread) return;
-    await new Promise((resolve, reject) => {
-      db.run(`SET threads=${Number(thread)}`, (err: any) => {
+  //   if (!thread) return;
+  //   await new Promise((resolve, reject) => {
+  //     db.run(`SET threads=${Number(thread)}`, (err: any) => {
+  //       if (err) reject(err);
+  //       this.logger.debug(`Set thread to ${thread}`);
+  //       resolve(true);
+  //     });
+  //   });
+  // }
+
+  private async initDatabase(dbPath: string) {
+    const readonlyMode = process.env['DUCKDB_READONLY_MODE'];
+    let db;
+    if (readonlyMode) {
+      db = new duckdb.Database(dbPath, duckdb.OPEN_READONLY);
+      this.logger.debug(`Open database in readonly mode`);
+    } else {
+      db = new duckdb.Database(dbPath);
+      this.logger.debug(`Open database in automatic mode`);
+    }
+    const conn = db.connect();
+    // await this.setThread(db);
+    await this.setInitConfig(conn);
+    await this.installExtensions(conn);
+    await this.getCurrentConfig(conn);
+    return db;
+  }
+
+  private async setConfigList(conn: duckdb.Connection, configs: string[] | []) {
+    if (!configs.length) return;
+    await Promise.all(
+      configs.map((config) => {
+        return new Promise((resolve, reject) => {
+          conn.run(`SET ${config}`, (err: any) => {
+            if (err) reject(err);
+            this.logger.debug(`Set config ${config}`);
+            resolve(true);
+          });
+        });
+      })
+    );
+  }
+
+  private async setInitConfig(conn: duckdb.Connection) {
+    // threads=1, dir='path',
+    const configListStr = process.env['DUCKDB_INIT_CONFIG'];
+    const configs = configListStr?.split(',') || [];
+    await this.setConfigList(conn, configs);
+  }
+  private async setExecConfig(conn: duckdb.Connection) {
+    // threads=1, dir='path',
+    const configListStr = process.env['DUCKDB_EXEC_CONFIG'];
+    const configs = configListStr?.split(',') || [];
+    await this.setConfigList(conn, configs);
+  }
+
+  private async getCurrentConfig(conn: duckdb.Connection) {
+    return await new Promise((resolve, reject) => {
+      conn.all('select * from duckdb_settings()', (err: any, res: any) => {
         if (err) reject(err);
-        this.logger.debug(`Set thread to ${thread}`);
+        for (const config of res) {
+          this.logger.debug(`Duckdb config: ${config.name} = ${config.value}`);
+        }
         resolve(true);
       });
     });
-  }
-
-  private async initDatabase(dbPath: string) {
-    const db = new duckdb.Database(dbPath);
-    const conn = db.connect();
-    await this.setThread(db);
-    await this.installExtensions(conn);
-    return db;
   }
 
   private async installExtensions(
