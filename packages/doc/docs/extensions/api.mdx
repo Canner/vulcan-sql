@@ -1,0 +1,60 @@
+# The API Extension
+
+This extension allows you to call RESTful APIs to other sources, and you can either request, update, or even delete resources to other sources!
+
+## Installation
+
+We need to install an additional package in order to call RESTful APIs:
+
+1. Install package(If you have VulcanSQL in the binary version, you can skip this step)
+
+    ```bash
+    npm i @vulcan-sql/extension-api-caller
+    ```
+2. Setup `vulcan.yaml`
+
+    ```yaml
+    extensions:
+        api: '@vulcan-sql/extension-api-caller' # add this line
+    ```
+
+## Using the API extension
+
+The minimum example
+
+```sql
+SELECT {{ {} | rest_api(url='https://dummyjson.com/products/1') }}
+```
+
+To pass the path parameters
+
+```sql
+{% set a_variable_you_can_define = { "path": { "id": 1 } } %}
+SELECT {{ a_variable_you_can_define | rest_api(url='https://dummyjson.com/products/:id') }}
+```
+
+To pass the query parameters
+
+```sql
+{% set a_variable_you_can_define = { "query": { "q": "phone" }  } %}
+SELECT {{ a_variable_you_can_define | rest_api(url='https://dummyjson.com/products/search') }}
+```
+
+To issue the POST request
+
+```sql
+{% set a_variable_you_can_define = { "body": { "title": "BMW Pencil" } } %}
+SELECT {{ a_variable_you_can_define | rest_api(url='https://dummyjson.com/products/add', method='POST') }}
+```
+
+To pass the headers and multiple fields
+
+```sql
+{% set a_variable_you_can_define = { "headers": { "Content-Type": "application/json" }, "body": { "title": "BMW Pencil" } } %}
+SELECT {{ a_variable_you_can_define | rest_api(url='https://dummyjson.com/products/add', method='POST') }}
+```
+
+## Examples
+
+You can check out this [restapi-caller](https://github.com/Canner/vulcan-sql-examples/tree/main/restapi-caller) example for further details!
+
