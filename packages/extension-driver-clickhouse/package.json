@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/extension-driver-clickhouse",
   "description": "Clickhouse driver for VulcanSQL",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"
@@ -27,6 +27,6 @@
     "@clickhouse/client": "^0.1.1"
   },
   "peerDependencies": {
-    "@vulcan-sql/core": "~0.9.0-0"
+    "@vulcan-sql/core": "~0.9.1-0"
   }
 }
