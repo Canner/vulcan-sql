@@ -182,6 +182,11 @@ const sidebars = {
         },
       ]
     },
+    {
+      type: 'doc',
+      label: 'API',
+      id: 'extensions/api',
+    },
     // {
     //   type: 'category',
     //   label: 'Overview',
