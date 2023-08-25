@@ -97,11 +97,14 @@ You can understand more about [the row-level security mechanism in VulcanSQL her
 
 ## Showcase
 
-Now we are going to show you the code to demonstrate how you can deliver data privacy mechanisms in SQL templates!
+Now we are going to show you the code to demonstrate how you can deliver data privacy mechanisms in VulcanSQL!
+For those who may not familiar with VulcanSQL yet, **VulcanSQL is a Data API framework for data folks to create REST APIs
+easily by writing templated SQL! It's mainly used for sharing data from databases, data warehouses and data lakes!**
+
 If you would like to read the source code or try the example by yourself, 
 welcome to [check it out here](https://github.com/Canner/vulcan-sql-examples/tree/main/data-sharing)!
 
-Below is the sample dataset we'll use in the showcase:
+Below is the dataset we'll use in the showcase:
 
 |id|department|last_name|company_role|annual_salary|
 |---|---|---|---|---|
@@ -206,7 +209,7 @@ The REST API results you'll see based on different users:
 |ONxxxxxxx24|engineering|Cindy|manager|$115,000|
 |NZxxxxxxx24|ceo|Rosa|boss|$150,000|
 
-After observing the result tables shown above and the given SQL templates,
+After observing the result tables shown above and the given SQL template,
 we can clearly figure out several data privacy mechanisms provided by VulcanSQL:
 
 1. Authentication: In the above example, we used HTTP Basic as the authentication method 
@@ -215,9 +218,9 @@ and the password of each user was stored in a text file called `passwd.txt`.
 With these user attributes defined, we can have more fine grained control on what kind of data
 each user should access.
 3. Dynamic Data Masking: `{% masking id partial(2, 'xxxxxxx', 2) %} as id` makes only the first two and
-last two digits of id visible, and the rest is masked.
-4. Column-level Security: We can see that only the user who is in the employer role can see the salary field, 
-so Rosa is the only one in this role.
+last two digits of `id` visible, and the rest is masked.
+4. Column-level Security: We can see that only the user who is in the employer role can see the data in the salary field, 
+so Rosa is the only person who can see other people's salary.
 5. Row-level Security: We can see a user who is not in the employer role can only see the data
 in the same department as he/she.
 
