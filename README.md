@@ -69,6 +69,7 @@ Below are some common scenarios that you may be interested:
   - [Error Handling](https://vulcansql.com/docs/develop/error)
   - [API Parameters Validation](https://vulcansql.com/docs/develop/validator)
   - [Data Privacy](https://vulcansql.com/docs/data-privacy/overview)
+- [Extensions](https://vulcansql.com/docs/extensions/overview)
 - [API Configurations](https://vulcansql.com/docs/api-plugin/overview)
 - [Deployment](https://vulcansql.com/docs/deployment)
 
