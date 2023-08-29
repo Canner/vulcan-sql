@@ -62,6 +62,19 @@ export class CacheLayerLoader implements ICacheLayerLoader {
       if (!fs.existsSync(directory!)) {
         fs.mkdirSync(directory!, { recursive: true });
       }
+      // remove the files in other subfolder before export, cause we will not reuse cache files
+      const folderPath = path.resolve(
+        this.options.folderPath!,
+        templateName,
+        profile,
+        cacheTableName
+      );
+      const folders = fs
+        .readdirSync(folderPath)
+        .filter((file) =>
+          fs.statSync(path.resolve(folderPath, file)).isDirectory()
+        );
+      this.removeParquetFiles(folders, folderPath);
       // 1. export to cache files according to each schema set the cache value
       this.logger.debug(`Start to export to ${type} file in "${directory}"`);
       await dataSource.export({
@@ -96,5 +109,15 @@ export class CacheLayerLoader implements ICacheLayerLoader {
     const files = fs.readdirSync(directory);
     const parquetFiles = files.filter((file) => /\.parquet$/.test(file));
     return parquetFiles;
+  }
+
+  private removeParquetFiles(folders: string[], folderPath: string) {
+    folders.forEach((folder) => {
+      const directory = path.resolve(folderPath, folder);
+      const parquetFiles = this.getParquetFiles(directory);
+      parquetFiles.forEach((file) => {
+        fs.unlinkSync(path.resolve(directory, file));
+      });
+    });
   }
 }
