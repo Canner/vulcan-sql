@@ -169,6 +169,114 @@ describe('Test cache layer loader', () => {
     // Set 50s timeout to test cache loader export and load data
     50 * 10000
   );
+  it(
+    'Should remove the other parquet files after executing export',
+    async () => {
+      // Arrange
+      const templateName = 'template-1';
+      const cache = {
+        cacheTableName: 'employees',
+        sql: sinon.default.stub() as any,
+        profile: profiles[0].name,
+        folderSubpath: '2023',
+      } as CacheLayerInfo;
+      const { profile, cacheTableName, folderSubpath } = cache;
+      const dir = path.resolve(
+        folderPath,
+        templateName,
+        profile,
+        cacheTableName,
+        folderSubpath!
+      );
+      const loader = new CacheLayerLoader(options, stubFactory as any);
+      await loader.load(templateName, cache);
+      expect(fs.readdirSync(dir).length).toBeGreaterThan(0);
+
+      // Act
+      cache.folderSubpath = '2024';
+      await loader.load(templateName, cache);
+
+      // Assert
+      const newDir = path.resolve(
+        folderPath,
+        templateName,
+        profile,
+        cacheTableName,
+        '2024'!
+      );
+      expect(fs.readdirSync(dir).length).toEqual(0);
+      expect(fs.readdirSync(newDir).length).toBeGreaterThan(0);
+    },
+    // Set 50s timeout to test cache loader export and load data
+    50 * 10000
+  );
+  it(
+    'Should not remove files if parquet files were reused',
+    async () => {
+      const templateName = 'template-1';
+      const cache = {
+        cacheTableName: 'employees',
+        sql: sinon.default.stub() as any,
+        profile: profiles[0].name,
+        folderSubpath: '2023',
+      } as CacheLayerInfo;
+      // Arrange
+      const { profile, cacheTableName, folderSubpath } = cache;
+      const dir = path.resolve(
+        folderPath,
+        templateName,
+        profile,
+        cacheTableName,
+        folderSubpath!
+      );
+      const loader = new CacheLayerLoader(options, stubFactory as any);
+      await loader.load(templateName, cache);
+      const parquetFiles = fs.readdirSync(dir);
+
+      // Act
+      await loader.load(templateName, cache);
+
+      // Assert
+      // expect parquetFiles is the same
+      expect(fs.readdirSync(dir)).toEqual(parquetFiles);
+    },
+    // Set 50s timeout to test cache loader export and load data
+    50 * 10000
+  );
+
+  it(
+    'Should remove parquet files of its own folder.',
+    async () => {
+      // Arrange
+      const templateName = 'template-1';
+      const cache = {
+        cacheTableName: 'employees',
+        sql: sinon.default.stub() as any,
+        profile: profiles[0].name,
+        folderSubpath: '2023',
+      } as CacheLayerInfo;
+      const { profile, cacheTableName, folderSubpath } = cache;
+      const loader = new CacheLayerLoader(options, stubFactory as any);
+      await loader.load(templateName, cache);
+      const dirPath = path.resolve(
+        folderPath,
+        templateName,
+        profile,
+        cacheTableName,
+        folderSubpath!
+      );
+      expect(fs.readdirSync(dirPath).length).toBeGreaterThan(0);
+
+      // Act :load another cache table
+      cache.cacheTableName = 'another_employees';
+      await loader.load(templateName, cache);
+
+      // Assert
+      expect(fs.readdirSync(dirPath).length).toBeGreaterThan(0);
+    },
+    // Set 50s timeout to test cache loader export and load data
+    50 * 10000
+  );
 });
 
 async function createParquetFile(path: string, fileName: string) {
