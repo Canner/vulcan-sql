@@ -167,3 +167,43 @@ it('Extension should throw error when no profile defined', async () => {
     `No profile name found`
   );
 });
+
+it('xtension should remove comments in sql statements', async () => {
+  // Arrange
+  const {
+    compiler,
+    loader,
+    builder,
+    executeTemplate,
+    getCreatedQueries,
+    getCreatedBinding,
+  } = await createTestCompiler();
+  const { compiledData } = await compiler.compile(`
+-- this is comment1
+{% req userCount main %} -- this is comment2
+-- this is comment3
+select count(*) as count from user where user.id = {{ context.params.userId }}; -- this is comment4
+-- this is comment5
+{% endreq %}
+
+-- this is comment6
+  `);
+  builder.value.onFirstCall().resolves({
+    getColumns: () => [],
+    getData: () => arrayToStream([{ count: 1 }]),
+  });
+  // Action
+  loader.setSource('test', compiledData);
+  const result = await executeTemplate('test', {
+    userId: 'user-id',
+  });
+  const resultData = await streamToArray(result.getData());
+  const queries = await getCreatedQueries();
+  const binding = await getCreatedBinding();
+  // Assert
+  expect(queries[0].trim()).toBe(
+    `select count(*) as count from user where user.id = $1;`
+  );
+  expect(binding[0].get('$1')).toBe(`user-id`);
+  expect(resultData).toEqual([{ count: 1 }]);
+});

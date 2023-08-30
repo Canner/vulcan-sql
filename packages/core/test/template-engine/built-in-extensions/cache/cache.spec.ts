@@ -174,3 +174,41 @@ select count(*) as count from vulcan.user where user.id = {{ context.params.user
   expect(binding[0].get('$1')).toBe(`user-id`);
   expect(resultData).toEqual([{ count: 1 }]);
 });
+
+it('Extension should remove comments in sql statements', async () => {
+  // Arrange
+  const {
+    compiler,
+    loader,
+    builder,
+    executeTemplate,
+    getCreatedQueries,
+    getCreatedBinding,
+  } = await createTestCompiler();
+  const { compiledData } = await compiler.compile(`
+-- this is comment1
+{% cache %} -- this is comment2
+select count(*) as count from vulcan.user where user.id = {{ context.params.userId }}; -- this is comment3
+{% endcache %} -- this is comment4
+-- this is comment5
+  `);
+  builder.value.onFirstCall().resolves({
+    getColumns: () => [],
+    getData: () => arrayToStream([{ count: 1 }]),
+  });
+  // Action
+  loader.setSource('test', compiledData);
+  const result = await executeTemplate('test', {
+    userId: 'user-id',
+  });
+  const resultData = await streamToArray(result.getData());
+  const queries = await getCreatedQueries();
+  const binding = await getCreatedBinding();
+
+  // Assert, cache tag runner add the "set schema=vulcan;" in the prefix sql statement to make query could get correct cache table of schema.
+  expect(queries[0].trim()).toBe(
+    `set schema=vulcan;\n select count(*) as count from vulcan.user where user.id = $1;`
+  );
+  expect(binding[0].get('$1')).toBe(`user-id`);
+  expect(resultData).toEqual([{ count: 1 }]);
+});

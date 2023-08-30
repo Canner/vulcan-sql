@@ -11,6 +11,14 @@ import { Parameterizer } from '@vulcan-sql/core/data-query';
 import { InternalError } from '../../../utils/errors';
 import { CACHE_MAIN_BUILDER_VAR_NAME } from '../cache/constants';
 
+import {
+  getLogger,
+} from '@vulcan-sql/core';
+
+const logger = getLogger({
+  scopeName: 'CORE',
+});
+
 @VulcanInternalExtension()
 export class ReqTagRunner extends TagRunner {
   public tags = ['req'];
@@ -40,10 +48,12 @@ export class ReqTagRunner extends TagRunner {
     for (let index = 0; index < contentArgs.length; index++) {
       query += await contentArgs[index]();
     }
+
     query = query
       .split(/\r?\n/)
       .filter((line) => line.trim().length > 0)
-      .join('\n');
+      .join('\n')
+      .replace(/--.*(?:\n|$)|\/\*[\s\S]*?\*\//g, '') // remove single-line comments and multi-line comments
 
     let builder: IDataQueryBuilder | undefined;
     // Replace to put the directly query cache builder to original query main builder of  "__wrapper__builder",
