@@ -187,10 +187,17 @@ it('Extension should remove comments in sql statements', async () => {
   } = await createTestCompiler();
   const { compiledData } = await compiler.compile(`
 -- this is comment1
+/*
+this is multiline comments
+*/
 {% cache %} -- this is comment2
 select count(*) as count from vulcan.user where user.id = {{ context.params.userId }}; -- this is comment3
 {% endcache %} -- this is comment4
 -- this is comment5
+
+/*
+ this is multiline comments
+*/
   `);
   builder.value.onFirstCall().resolves({
     getColumns: () => [],

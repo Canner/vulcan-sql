@@ -168,7 +168,7 @@ it('Extension should throw error when no profile defined', async () => {
   );
 });
 
-it('xtension should remove comments in sql statements', async () => {
+it('Extension should remove comments in sql statements', async () => {
   // Arrange
   const {
     compiler,
@@ -180,11 +180,21 @@ it('xtension should remove comments in sql statements', async () => {
   } = await createTestCompiler();
   const { compiledData } = await compiler.compile(`
 -- this is comment1
+/*
+ this is multiline comments
+*/
 {% req userCount main %} -- this is comment2
+/*
+this is multiline comments
+*/
 -- this is comment3
 select count(*) as count from user where user.id = {{ context.params.userId }}; -- this is comment4
 -- this is comment5
 {% endreq %}
+
+/*
+ this is multiline comments
+*/
 
 -- this is comment6
   `);
