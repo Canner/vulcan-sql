@@ -40,10 +40,12 @@ export class ReqTagRunner extends TagRunner {
     for (let index = 0; index < contentArgs.length; index++) {
       query += await contentArgs[index]();
     }
+
     query = query
       .split(/\r?\n/)
       .filter((line) => line.trim().length > 0)
-      .join('\n');
+      .join('\n')
+      .replace(/--.*(?:\n|$)|\/\*[\s\S]*?\*\//g, ''); // remove single-line comments and multi-line comments
 
     let builder: IDataQueryBuilder | undefined;
     // Replace to put the directly query cache builder to original query main builder of  "__wrapper__builder",
