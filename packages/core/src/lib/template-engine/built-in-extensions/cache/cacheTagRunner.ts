@@ -45,7 +45,7 @@ export class CacheTagRunner extends TagRunner {
       .split(/\r?\n/)
       .filter((line) => line.trim().length > 0)
       .join('\n')
-      .replace(/--.*(?:\n|$)|\/\*[\s\S]*?\*\//g, '') // remove single-line comments and multi-line comments
+      .replace(/--.*(?:\n|$)|\/\*[\s\S]*?\*\//g, ''); // remove single-line comments and multi-line comments
 
     // Set the default vulcan created cache table schema, so we could query the cache table directly, not need user to type schema in the SQL.
     query = `set schema=${vulcanCacheSchemaName};`.concat('\n').concat(query);
