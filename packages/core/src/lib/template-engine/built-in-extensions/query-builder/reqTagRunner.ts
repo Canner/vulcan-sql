@@ -11,14 +11,6 @@ import { Parameterizer } from '@vulcan-sql/core/data-query';
 import { InternalError } from '../../../utils/errors';
 import { CACHE_MAIN_BUILDER_VAR_NAME } from '../cache/constants';
 
-import {
-  getLogger,
-} from '@vulcan-sql/core';
-
-const logger = getLogger({
-  scopeName: 'CORE',
-});
-
 @VulcanInternalExtension()
 export class ReqTagRunner extends TagRunner {
   public tags = ['req'];
