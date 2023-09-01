@@ -63,6 +63,18 @@ cache:
 
 In this configuration, the `cache_departments` table will be utilized within the `{% cache %}` tag.
 
+Also, you can add the refresh interval configuration in the yaml file in the cache section using the `refreshTime` keyword.
+
+```yaml
+cache:
+  - cacheTableName: 'cache_departments' # The name of the table in the cache layer storage
+    ...
+    refreshTime: { every: '5m' }
+```
+
+:::info
+The time format used in `refreshTime` should be compliant with the [`ms`](https://www.npmjs.com/package/ms) package.
+:::
 
 ## Reusing Cached Results
 VulcanSQL provides the ability to keep the query result from the cache layer in a variable, which can be reused in subsequent queries. For example:
