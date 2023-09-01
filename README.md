@@ -18,6 +18,9 @@
   <a aria-label="Follow us" href="https://twitter.com/vulcansql">
     <img alt="" src="https://img.shields.io/badge/-@vulcansql-orange?style=for-the-badge&logo=twitter&logoColor=white&labelColor=gray&logoWidth=20">
   </a>
+  <a href="https://img.shields.io/codecov/c/gh/Canner/vulcan-sql" > 
+    <img alt="" src="https://img.shields.io/codecov/c/gh/Canner/vulcan-sql?style=for-the-badge&labelColor=gray&logoColor=white&logoWidth=20"/> 
+  </a>
 </p>
 
 ## What is VulcanSQL

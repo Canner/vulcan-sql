@@ -1,7 +1,7 @@
 {
   "name": "vulcan-sql",
   "version": "0.0.0",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "scripts": {
     "test": "jest",
     "graphql:generator": "graphql-codegen --config packages/catalog-server/codegen.yml"

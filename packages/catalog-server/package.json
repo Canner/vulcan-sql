@@ -20,5 +20,5 @@
     "type": "git",
     "url": "https://github.com/Canner/vulcan-sql.git"
   },
-  "license": "MIT"
+  "license": "Apache-2.0"
 }

@@ -20,7 +20,7 @@
     "type": "git",
     "url": "https://github.com/Canner/vulcan.git"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "peerDependencies": {
     "@vulcan-sql/core": "~0.9.1-0"
   },
