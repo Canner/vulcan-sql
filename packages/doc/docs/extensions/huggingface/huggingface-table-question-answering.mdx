@@ -6,7 +6,7 @@ The [Table Question Answering](https://huggingface.co/docs/api-inference/detaile
 
 The result will be converted to a JSON string from `huggingface_table_question_answering`. You could decompress the JSON string and use the result by itself.
 
-**Sample 1 - send the data from variable by [set tag](https://vulcansql.com/docs/develop/advance#set-variables):**
+**Sample 1 - send the data from variable by [set tag](../../develop/advanced#set-variables):**
 
 ```sql
 {% set data = [
@@ -41,7 +41,7 @@ SELECT {{ data | huggingface_table_question_answering(query="How many repositori
 ]
 ```
 
-**Sample 2 - send the data from [req tag](https://vulcansql.com/docs/develop/predefined-queries):**
+**Sample 2 - send the data from [req tag](../../develop/predefined-queries):**
 
 ```sql
 {% req artists %}

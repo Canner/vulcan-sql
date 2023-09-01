@@ -63,9 +63,9 @@ VulcanSQL currently integrates the table question answering feature by creating 
 `huggingface_table_question_answering` and allows you to apply functions to variables using the 
 pipe operator (`|`).
 
-**Sample 1 - send the data from the variable [`set` tag](https://www.notion.so/VulcanSQL-edb87d04de074125ab19275e6f63d844?pvs=21):**
+**Sample 1 - send the data from the [`set` tag](../docs/develop/advanced#set-variables):**
 
-You could give the dataset with the **[`set` tag](https://www.notion.so/VulcanSQL-edb87d04de074125ab19275e6f63d844?pvs=21)**
+You could give the dataset with the **`set` tag**
 and give the question with the `query` field:
 
 ```sql
@@ -104,7 +104,7 @@ Here is a response returned by `huggingface_table_question_answering`:
 The result will be converted to a JSON string from `huggingface_table_question_answering`.
 You could decompress the JSON string and use the result by yourself.
 
-**Sample 2 - send the data from the `req` tag:**
+**Sample 2 - send the data from the [`req` tag](../docs/develop/predefined-queries):**
 
 You could also use the `req` tag to keep the query result from the previous SQL condition and save it 
 to a variable named `repositories`. Then you can use `.value()` to get the data result and 
