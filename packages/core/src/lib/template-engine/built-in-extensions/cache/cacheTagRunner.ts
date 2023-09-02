@@ -25,7 +25,7 @@ export class CacheTagRunner extends TagRunner {
     this.executor = executor;
   }
 
-  public async run({ context, args, contentArgs }: TagRunnerOptions) {
+  public async run({ context, args, contentArgs, metadata }: TagRunnerOptions) {
     // Get the variable name, if the cache tag has variable name, then we use the variable and keep the builder in the variable, and make user could use by xxx.value() like the req feature.
     // However if the cache tag not has variable name, means you would like to get the result directly after query, then we will replace the original query main builder to the cache builder.
     const name = String(args[0]);
@@ -56,6 +56,9 @@ export class CacheTagRunner extends TagRunner {
       parameterizer
     );
     context.setVariable(name, builder);
+    // pass header to builder
+    const headers = metadata.getHeaders();
+    if (headers) builder.setHeaders(headers);
 
     // Set parameter back for upstream usage
     context.setVariable(PARAMETERIZER_VAR_NAME, parentParameterizer);

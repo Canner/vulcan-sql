@@ -46,6 +46,7 @@ export class QueryExecutor implements IExecutor {
       parameterizer,
       dataSource: this.dataSourceFactory(profileName)!,
       profileName,
+      headers: {},
     });
   }
 }
