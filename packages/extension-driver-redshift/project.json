@@ -1,0 +1,32 @@
+{
+  "root": "packages/extension-driver-redshift",
+  "sourceRoot": "packages/extension-driver-redshift/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/extension-driver-redshift",
+        "main": "packages/extension-driver-redshift/src/index.ts",
+        "tsConfig": "packages/extension-driver-redshift/tsconfig.lib.json",
+        "assets": ["packages/extension-driver-redshift/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/extension-driver-redshift/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/extension-driver-redshift"],
+      "options": {
+        "jestConfig": "packages/extension-driver-redshift/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

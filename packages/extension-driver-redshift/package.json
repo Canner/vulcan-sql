@@ -1,0 +1,5 @@
+{
+  "name": "@vulcan-sql/extension-driver-redshift",
+  "version": "0.0.1",
+  "type": "commonjs"
+}
