@@ -27,4 +27,3 @@ export class RedShiftFakeServer {
   }
 }
 
-// REDSHIFT_ACCESS_KEY_ID=AKIA3FI4OMDSFSBRQL67 REDSHIFT_SECRET_ACCESS_KEY=DmPsIvynQuOD8sticdxIVJehyVAPZz1ZR56qrTCd REDSHIFT_REGION=ap-northeast-1 REDSHIFT_DATABASE=sample_data_dev REDSHIFT_WORKGROUP_NAME=default-workgroup  yarn nx test extension-driver-redshift
