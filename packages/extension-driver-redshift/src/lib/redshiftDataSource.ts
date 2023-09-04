@@ -92,6 +92,7 @@ export class RedShiftDataSource extends DataSource<any, RedshiftOptions> {
       this.logger.debug(
         `Errors occurred, release connection from ${profileName}`
       );
+      redshiftClient.destroy();
       throw e;
     }
   }
@@ -100,8 +101,8 @@ export class RedShiftDataSource extends DataSource<any, RedshiftOptions> {
     return `:${parameterIndex}`;
   }
 
-  private async testConnection(profileName: string) {
-    const { redshiftClient, options } = this.redshiftClientMapping.get(profileName)!;    
+  private async testConnection(profileName: string): Promise<DataResult | undefined> {
+    const { redshiftClient, options } = this.redshiftClientMapping.get(profileName)!; 
     const executeStatementCommandParams: ExecuteStatementCommandInput = {
       Sql: 'select 1',
       Database: options!.database,
@@ -109,8 +110,14 @@ export class RedShiftDataSource extends DataSource<any, RedshiftOptions> {
     };
 
     const executeStatementCommand = new ExecuteStatementCommand(executeStatementCommandParams);
-    const statementCommandResult = await redshiftClient.send(executeStatementCommand);
-    return await this.getResultFromExecuteStatement(statementCommandResult, redshiftClient);
+
+    try {
+      const statementCommandResult = await redshiftClient.send(executeStatementCommand);
+      return await this.getResultFromExecuteStatement(statementCommandResult, redshiftClient);
+    } catch (e) {
+      redshiftClient.destroy();
+      throw e;
+    }
   }
 
   private async getResultFromExecuteStatement(
