@@ -93,10 +93,13 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     bindParams,
     profileName,
     operations,
+    headers,
   }: ExecuteOptions): Promise<DataResult> {
     if (!this.dbMapping.has(profileName)) {
       throw new InternalError(`Profile instance ${profileName} not found`);
     }
+    console.log(`execute duckdb: ${sql}`);
+    console.log({ headers });
     const { db, configurationParameters, ...options } =
       this.dbMapping.get(profileName)!;
     const [firstDataSQL, restDataSQL] = buildSQL(sql, operations);

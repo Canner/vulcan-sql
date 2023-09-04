@@ -24,7 +24,11 @@ export interface PGOptions extends PoolConfig {
 @VulcanExtensionId('canner')
 export class CannerDataSource extends DataSource<any, PGOptions> {
   private logger = this.getLogger();
-  private poolMapping = new Map<string, { pool: Pool; options?: PGOptions }>();
+  protected poolMapping = new Map<
+    string,
+    { pool: Pool; options?: PGOptions }
+  >();
+  protected UserPool = new Map<string, Pool>();
 
   public override async onActivate() {
     const profiles = this.getProfiles().values();
@@ -108,14 +112,14 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     bindParams,
     profileName,
     operations,
+    headers,
   }: ExecuteOptions): Promise<DataResult> {
-    if (!this.poolMapping.has(profileName)) {
-      throw new InternalError(`Profile instance ${profileName} not found`);
-    }
-    const { pool, options } = this.poolMapping.get(profileName)!;
-    this.logger.debug(`Acquiring connection from ${profileName}`);
-    const client = await pool.connect();
     this.logger.debug(`Acquired connection from ${profileName}`);
+    const { options } = this.poolMapping.get(profileName)!;
+    const auth = headers?.['authorization'];
+    const password = auth?.trim().split(' ')[1];
+    const pool = this.getPool(profileName, password);
+    const client = await pool.connect();
     try {
       const builtSQL = buildSQL(sql, operations);
       const cursor = client.query(
@@ -148,6 +152,38 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     for (const { pool } of this.poolMapping.values()) {
       await pool.end();
     }
+  }
+
+  // use protected to make it testable
+  protected getPool(profileName: string, password?: string): Pool {
+    if (!this.poolMapping.has(profileName)) {
+      throw new InternalError(`Profile instance ${profileName} not found`);
+    }
+    const { pool: defaultPool, options: poolOptions } =
+      this.poolMapping.get(profileName)!;
+    this.logger.debug(`Acquiring connection from ${profileName}`);
+    if (!password) {
+      return defaultPool;
+    }
+    const database = poolOptions?.database || '';
+    const userPoolKey = this.getUserPoolKey(password, database);
+    if (this.UserPool.has(userPoolKey)) {
+      const userPool = this.UserPool.get(userPoolKey);
+      if (!userPool) {
+        throw new InternalError(
+          `User pool ${userPoolKey} is not a Pool instance`
+        );
+      }
+      return userPool;
+    }
+    const pool = new Pool({ ...poolOptions, password: password });
+    this.UserPool.set(userPoolKey, pool);
+    return pool;
+  }
+
+  // use protected to make it testable
+  protected getUserPoolKey(pat: string, database?: string) {
+    return `${pat}-${database}`;
   }
 
   private async getResultFromCursor(
