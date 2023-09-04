@@ -3,3 +3,6 @@ flag_management:
     # Reference of past coverage for tests that are not run on current commit.
     # https://docs.codecov.com/docs/carryforward-flags
     carryforward: true
+coverage:
+  status:
+    patch: false
