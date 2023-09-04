@@ -1,7 +1,7 @@
 const typeMapping = new Map<string, string>();
 
 const register = (redshiftType: string, type: string) => {
-    typeMapping.set(redshiftType, type);
+  typeMapping.set(redshiftType, type);
 };
 
 // Reference
@@ -35,6 +35,6 @@ register('timestamp', 'string');
 register('super', 'string');
 
 export const mapFromRedShiftTypeId = (redshiftType: string) => {
-    if (typeMapping.has(redshiftType)) return typeMapping.get(redshiftType)!;
-    return 'string';
+  if (typeMapping.has(redshiftType)) return typeMapping.get(redshiftType)!;
+  return 'string';
 };
