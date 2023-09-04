@@ -23,10 +23,7 @@ import {
   SqlParameter,
 } from '@aws-sdk/client-redshift-data';
 
-export interface RedshiftOptions extends RedshiftDataClientConfig {
-  database: string;
-  workgroupName: string;
-};
+export type RedshiftOptions = RedshiftDataClientConfig & Omit<ExecuteStatementCommandInput, "Sql" | "Parameters">;
 
 type RedShiftDataRow = {
   [column: string]: any;
@@ -78,8 +75,8 @@ export class RedShiftDataSource extends DataSource<any, RedshiftOptions> {
       const builtSQL = buildSQL(sql, operations);
       let executeStatementCommandParams: ExecuteStatementCommandInput = {
         Sql: builtSQL,
-        Database: options!.database,
-        WorkgroupName: options!.workgroupName,
+        Database: options!.Database,
+        WorkgroupName: options!.WorkgroupName,
       };
       if (sqlParams.length) {
         executeStatementCommandParams = {...executeStatementCommandParams, Parameters: sqlParams}
@@ -105,8 +102,8 @@ export class RedShiftDataSource extends DataSource<any, RedshiftOptions> {
     const { redshiftClient, options } = this.redshiftClientMapping.get(profileName)!; 
     const executeStatementCommandParams: ExecuteStatementCommandInput = {
       Sql: 'select 1',
-      Database: options!.database,
-      WorkgroupName: options!.workgroupName,
+      Database: options!.Database,
+      WorkgroupName: options!.WorkgroupName,
     };
 
     const executeStatementCommand = new ExecuteStatementCommand(executeStatementCommandParams);
