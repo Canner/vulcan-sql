@@ -8,7 +8,7 @@ import {
   RequestParameter,
   VulcanExtensionId,
 } from '@vulcan-sql/core';
-import { Pool, PoolConfig, QueryResult } from 'pg';
+import { Pool, PoolClient, PoolConfig, QueryResult } from 'pg';
 import * as Cursor from 'pg-cursor';
 import { Readable } from 'stream';
 import { buildSQL } from './sqlBuilder';
@@ -119,8 +119,9 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     const auth = headers?.['authorization'];
     const password = auth?.trim().split(' ')[1];
     const pool = this.getPool(profileName, password);
-    const client = await pool.connect();
+    let client: PoolClient | undefined;
     try {
+      client = await pool.connect();
       const builtSQL = buildSQL(sql, operations);
       const cursor = client.query(
         new Cursor(builtSQL, Array.from(bindParams.values()))
@@ -131,7 +132,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
         );
         // It is important to close the cursor before releasing connection, or the connection might not able to handle next request.
         await cursor.close();
-        client.release();
+        if (client) client.release();
       });
       // All promises MUST fulfilled in this function or we are not able to release the connection when error occurred
       return await this.getResultFromCursor(cursor, options);
@@ -139,7 +140,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
       this.logger.debug(
         `Errors occurred, release connection from ${profileName}`
       );
-      client.release();
+      if (client) client.release();
       throw e;
     }
   }
