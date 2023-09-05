@@ -95,6 +95,8 @@ export class RedShiftDataSource extends DataSource<any, RedshiftOptions> {
   }
 
   public async prepare({ parameterIndex }: RequestParameter) {
+    // see the section of Running SQL statements with parameters when calling the Amazon Redshift Data API
+    // https://docs.aws.amazon.com/redshift/latest/mgmt/data-api.html
     return `:${parameterIndex}`;
   }
 
@@ -126,6 +128,8 @@ export class RedShiftDataSource extends DataSource<any, RedshiftOptions> {
       Id: statementCommandResult.Id,
     };
 
+    // definition of describeStatementResponse.Status
+    // https://github.com/aws/aws-sdk-js-v3/blob/29056f4ca545f7e5cf951b915bb52178305fc305/clients/client-redshift-data/src/models/models_0.ts#L604
     while (!describeStatementResponse || describeStatementResponse.Status !== 'FINISHED') {
       const describeStatementCommand = new DescribeStatementCommand(describeStatementRequestInput);
       describeStatementResponse = await redshiftClient.send(describeStatementCommand);
