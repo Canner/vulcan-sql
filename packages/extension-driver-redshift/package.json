@@ -22,9 +22,6 @@
     "url": "https://github.com/Canner/vulcan.git"
   },
   "license": "Apache-2.0",
-  "dependencies": {
-    "@aws-sdk/client-redshift-data": "^3.405.0"
-  },
   "peerDependencies": {
     "@vulcan-sql/core": "~0.9.1-0"
   }

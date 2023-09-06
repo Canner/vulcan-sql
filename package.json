@@ -65,7 +65,8 @@
     "toad-scheduler": "^2.2.0",
     "tslib": "^2.3.0",
     "tslog": "^3.3.3",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "@aws-sdk/client-redshift-data": "^3.405.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^6.3.1",
