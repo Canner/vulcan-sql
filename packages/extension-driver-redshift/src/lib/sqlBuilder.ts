@@ -37,4 +37,4 @@ export const buildSQL = (
   builtSQL = addOffset(builtSQL, operations.offset);
   builtSQL += ';';
   return builtSQL;
-}
+};
