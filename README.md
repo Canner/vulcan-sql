@@ -25,7 +25,7 @@
 
 ## What is VulcanSQL
 
-**[VulcanSQL](https://vulcansql.com/) is a Data API Framework for data applications** that helps data folks create and share data APIs faster. It turns your SQL templates into data APIs. No backend skills required.
+**[VulcanSQL](https://vulcansql.com/) is an Analytical Data API Framework**. It aims to help data professionals create APIs from databases, data warehouses or data lakes much easier and faster. It turns your SQL queries into RESTful APIs without any programming language!
 
 ![overview of VulcanSQL](https://i.imgur.com/JvCIZQ1.png)
 
@@ -33,13 +33,13 @@
 
 Use [Online Playground](https://codesandbox.io/p/sandbox/vulcansql-demo-wfd834) to get a taste of VulcanSQL!
 
-## Examples
-
-Need Inspiration?! Discover a [selected compilation of examples](https://github.com/Canner/vulcan-sql-examples) showcasing the use of VulcanSQL!
-
 ## Installation
 
 Please visit [the installation guide](https://vulcansql.com/docs/get-started/installation).
+
+## Examples
+
+Need inspiration? Here are a [selected compilation of examples](https://github.com/Canner/vulcan-sql-examples) showcasing how you can use VulcanSQL!
 
 ## How VulcanSQL works?
 
@@ -49,7 +49,7 @@ VulcanSQL offers a development experience similar to dbt. Just insert variables 
 
 🚀 **Accelerate**
 
-VulcanSQL uses DuckDB as a caching layer, boosting your query speed and API response time . This means faster, smoother data APIs for you and less strain on your data sources.
+VulcanSQL uses DuckDB as a caching layer, boosting your query speed and reducing API response time. This means faster, smoother data APIs for you and less strain on your data sources.
 
 🔥 **Deploy**
 
@@ -82,7 +82,7 @@ Below are some common scenarios that you may be interested:
 
 👏 **Data sharing**: Sharing data with partners, vendors, or customers, which requires a secure and scalable way to expose data.
 
-⚙️ **Internal tools**: Integration with internal tools like AppSmith and Retools, etc.
+⚙️ **Internal tools**: Integration with internal tools like Zapier, AppSmith and Retools, etc.
 
 ## Community
 
