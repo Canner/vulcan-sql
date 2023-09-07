@@ -25,7 +25,7 @@
 
 ## What is VulcanSQL
 
-**[VulcanSQL](https://vulcansql.com/) is an Analytical Data API Framework**. It aims to help data professionals create APIs from databases, data warehouses or data lakes much easier and faster. It turns your SQL queries into RESTful APIs without any programming language!
+**[VulcanSQL](https://vulcansql.com/) is an Analytical Data API Framework**. It aims to help data professionals expose APIs from databases, data warehouses or data lakes much easier and faster. It turns your SQL queries into RESTful APIs without any programming language!
 
 ![overview of VulcanSQL](https://i.imgur.com/JvCIZQ1.png)
 
