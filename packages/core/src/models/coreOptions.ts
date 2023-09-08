@@ -1,6 +1,7 @@
 import { IArtifactBuilderOptions } from './artifactBuilderOptions';
 import { ICacheLayerOptions } from './cacheLayerOptions';
 import { IDocumentOptions } from './documentOptions';
+import { IActivityLoggerOptions } from './loggerOptions';
 import { IProfilesLookupOptions } from './profilesLookupOptions';
 import { ITemplateEngineOptions } from './templateEngineOptions';
 
@@ -24,6 +25,7 @@ export interface ICoreOptions {
   extensions?: ExtensionAliases;
   document?: IDocumentOptions;
   profiles?: IProfilesLookupOptions;
+  'activity-log'?: IActivityLoggerOptions;
   cache?: ICacheLayerOptions;
   [moduleAlias: string]: any;
 }

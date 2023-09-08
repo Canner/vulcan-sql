@@ -52,4 +52,6 @@ export const TYPES = {
   Extension_CompilerLoader: Symbol.for('Extension_CompilerLoader'),
   Extension_DataSource: Symbol.for('Extension_DataSource'),
   Extension_ProfileReader: Symbol.for('ProfileReader'),
+  // Logger
+  Extension_ActivityLogger: Symbol.for('Extension_ActivityLogger'),
 };
