@@ -1,0 +1,27 @@
+# FAQs
+
+## How do you deal with SQL injection attacks?
+
+Because VulcanSQL supports multiple connectors (e.g.: Snowflake, BigQuery, etc.), so we delegate our connectors to handle the SQL injection 
+by their prepared statement through parameterized queries from the connectors' client:
+
+BigQuery: https://cloud.google.com/bigquery/docs/parameterized-queries
+```sql
+SELECT word, word_count FROM `bigquery-public-data.samples.shakespeare`
+WHERE corpus = @corpus AND word_count >= @min_word_count
+ORDER BY word_count DESC
+```
+
+Snowflake: https://docs.snowflake.com/en/developer-guide/node-js/nodejs-driver-execute#binding-statement-parameters
+```sql
+SELECT word, word_count FROM `bigquery-public-data.samples.shakespeare`
+WHERE corpus = :1 AND word_count >= :2
+ORDER BY word_count DESC
+```
+
+Then, we replace the input parameters with parameterized values like $1, $2 ...etc, and record the input values in the 
+`Parameterizer` when sending a query from an API request with query arguments. Finally we organize the SQL statement with 
+parameters query in the `DataQueryBuilder` and send it to the connector to delegate the connector client to handle SQL 
+injection and execute the SQL query.
+
+You could see https://github.com/Canner/vulcan-sql/pull/40 to read it more.

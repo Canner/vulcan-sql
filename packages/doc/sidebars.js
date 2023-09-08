@@ -432,6 +432,10 @@ const sidebars = {
       id: 'references/data-source-profile',
     },
     {
+      type: 'doc',
+      id: 'references/faq',
+    },
+    {
       type: 'html',
       value: '<br/><br/>',
     },
