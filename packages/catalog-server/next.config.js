@@ -12,6 +12,9 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  publicRuntimeConfig: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:4200',
+  },
   serverRuntimeConfig: {
     // Will only be available on the server side
     vulcanSQLHost: process.env.VULCAN_SQL_HOST || 'http://localhost:3000',
