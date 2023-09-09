@@ -17,13 +17,20 @@ export abstract class BaseActivityLogger<ActivityLoggerTypeOption>
 {
   public abstract log(context: any): Promise<void>;
 
+  protected isEnabled(): boolean {
+    const config = this.getConfig();
+    if (!config) return false;
+    if (config.enabled === true) return true;
+    else return false;
+  }
+
   protected getOptions(): ActivityLoggerTypeOption | undefined {
     if (!this.getConfig()) return undefined;
     if (!this.getConfig()['options']) return undefined;
     const option = this.getConfig()['options'][
       this.getExtensionId()!
     ] as ActivityLoggerTypeOption;
-
+    console.log('option', option);
     return option;
   }
 }

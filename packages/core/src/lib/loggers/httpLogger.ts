@@ -6,36 +6,55 @@ import {
   VulcanExtensionId,
   VulcanInternalExtension,
 } from '../../models/extensions';
-import axios from 'axios';
+import axios, { AxiosRequestHeaders } from 'axios';
+import { ConnectionConfig } from '../utils/url';
 
-interface HttpLoggerConfig {
+export interface HttpLoggerConfig {
   connection?: HttpLoggerConnectionConfig;
 }
 
-interface HttpLoggerConnectionConfig {
-  protocol?: string | undefined;
-  host?: string | undefined;
-  port?: number | string;
-  path?: string | undefined;
-  headers?: NodeJS.Dict<string | string[]> | undefined;
+export interface HttpLoggerConnectionConfig extends ConnectionConfig {
+  headers?: Record<string, string | number | boolean> | undefined;
 }
 
 @VulcanInternalExtension('activity-log')
 @VulcanExtensionId(ActivityLoggerType.HTTP_LOGGER)
 export class HttpLogger extends BaseActivityLogger<HttpLoggerConfig> {
+  private logger = this.getLogger();
+
   public async log(payload: any): Promise<void> {
+    if (!this.isEnabled()) return;
     const option = this.getOptions();
-    if (!option) {
-      throw new Error('Http logger option is not defined.');
+    if (!option?.connection) {
+      throw new Error('Http logger connection should be provided');
     }
-    // TODO-ac: should implement http logger
+    const headers = option.connection.headers;
+    const url = this.getUrl(option.connection);
     try {
       // get connection info from option and use axios to send a post requet to the endpoint
-      const { protocol, host, port, path, headers } = option.connection!;
-      const url = `${protocol}://${host}:${port}${path}`;
-      await axios.post(url, payload, { headers: headers as any });
+      await this.sendActivityLog(url, payload, headers);
     } catch (err) {
-      console.error(err);
+      this.logger.debug(
+        `Failed to send activity log to http logger, url: ${url}`
+      );
+      throw err;
     }
   }
+
+  protected sendActivityLog = async (
+    url: string,
+    payload: JSON,
+    headers: AxiosRequestHeaders | undefined
+  ): Promise<void> => {
+    await axios.post(url, payload, {
+      headers: headers,
+    });
+  };
+
+  protected getUrl = (connection: HttpLoggerConnectionConfig): string => {
+    const { ssl, host, port, path = '' } = connection;
+    const protocol = ssl ? 'https' : 'http';
+    const urlbase = `${protocol}://${host}:${port}`;
+    return new URL(path, urlbase).href;
+  };
 }
