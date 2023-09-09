@@ -23,19 +23,15 @@ export class CacheLayerLoader implements ICacheLayerLoader {
   private options: ICacheLayerOptions;
   private cacheStorage: DataSource;
   private logger = getLogger({ scopeName: 'CORE' });
-  private activityLoggers: IActivityLogger;
   constructor(
     @inject(TYPES.CacheLayerOptions) options: CacheLayerOptions,
     @inject(TYPES.Factory_DataSource)
-    dataSourceFactory: interfaces.SimpleFactory<DataSource>,
-    @inject(TYPES.Extension_ActivityLogger)
-    activityLogger: IActivityLogger
+    dataSourceFactory: interfaces.SimpleFactory<DataSource>
   ) {
     this.dataSourceFactory = dataSourceFactory;
     this.options = options;
     // prepare cache data source
     this.cacheStorage = this.dataSourceFactory(cacheProfileName);
-    this.activityLoggers = activityLogger;
   }
 
   /**
@@ -50,7 +46,6 @@ export class CacheLayerLoader implements ICacheLayerLoader {
     const { cacheTableName, sql, profile, indexes, folderSubpath } = cache;
     const type = this.options.type!;
     const dataSource = this.dataSourceFactory(profile);
-    await this.activityLoggers.log({ a: 1 });
 
     // generate directory for cache file path to export
     // format => [folderPath]/[schema.templateSource]/[profileName]/[cacheTableName]]/[timestamp]

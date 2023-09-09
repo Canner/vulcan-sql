@@ -3,10 +3,16 @@ import { uniq } from 'lodash';
 import { ToadScheduler, SimpleIntervalJob, AsyncTask } from 'toad-scheduler';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
-import { APISchema } from '@vulcan-sql/core/models';
+import { APISchema, IActivityLogger } from '@vulcan-sql/core/models';
 import { ConfigurationError } from '../utils/errors';
 import { ICacheLayerLoader } from './cacheLayerLoader';
+import { getLogger } from '../utils';
+import moment = require('moment');
 
+enum RefreshResult {
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
+}
 export interface ICacheLayerRefresher {
   /**
    * Start the job to load the data source to cache storage and created tables from cache settings in schemas
@@ -22,9 +28,15 @@ export interface ICacheLayerRefresher {
 export class CacheLayerRefresher implements ICacheLayerRefresher {
   private cacheLoader: ICacheLayerLoader;
   private scheduler = new ToadScheduler();
+  private activityLogger: IActivityLogger;
+  private logger = getLogger({ scopeName: 'CORE' });
 
-  constructor(@inject(TYPES.CacheLayerLoader) loader: ICacheLayerLoader) {
+  constructor(
+    @inject(TYPES.CacheLayerLoader) loader: ICacheLayerLoader,
+    @inject(TYPES.Extension_ActivityLogger) activityLogger: IActivityLogger
+  ) {
     this.cacheLoader = loader;
+    this.activityLogger = activityLogger;
   }
 
   public async start(
@@ -40,9 +52,10 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
       schemas.map(async (schema) => {
         // skip the schema by return if not set the cache
         if (!schema.cache) return;
+        const { urlPath } = schema;
         return await Promise.all(
           schema.cache.map(async (cache) => {
-            const { cacheTableName, profile, refreshTime } = cache;
+            const { cacheTableName, profile, refreshTime, sql } = cache;
             // replace the '/' tp '_' to avoid the file path issue for templateSource
             const templateName = schema.templateSource.replace('/', '_');
             // If refresh time is set, use the scheduler to schedule the load task for refresh
@@ -54,15 +67,56 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
                 { milliseconds, runImmediately },
                 new AsyncTask(workerId, async () => {
                   // load data the to cache storage
-
-                  await this.cacheLoader.load(templateName, cache);
+                  let refreshResult = RefreshResult.SUCCESS;
+                  const now = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+                  try {
+                    // get the current time in format of UTC
+                    await this.cacheLoader.load(templateName, cache);
+                  } catch (error: any) {
+                    refreshResult = RefreshResult.FAILED;
+                    this.logger.debug(`Failed to refresh cache: ${error}`);
+                  } finally {
+                    // send activity log
+                    const content = {
+                      logTime: now,
+                      urlPath,
+                      sql,
+                      refreshResult,
+                    };
+                    await this.activityLogger.log(content).catch((err: any) => {
+                      this.logger.debug(
+                        `Failed to log activity after refreshing cache: ${err}`
+                      );
+                    });
+                  }
                 }),
                 { preventOverrun: true, id: workerId }
               );
               // add the job to schedule cache refresh task
               this.scheduler.addIntervalJob(refreshJob);
             } else {
-              await this.cacheLoader.load(templateName, cache);
+              let refreshResult = RefreshResult.SUCCESS;
+              const now = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+              try {
+                // get the current time in format of UTC
+                await this.cacheLoader.load(templateName, cache);
+              } catch (error: any) {
+                refreshResult = RefreshResult.FAILED;
+                this.logger.debug(`Failed to refresh cache: ${error}`);
+              } finally {
+                // send activity log
+                const content = {
+                  logTime: now,
+                  urlPath,
+                  sql,
+                  refreshResult,
+                };
+                await this.activityLogger.log(content).catch((err: any) => {
+                  this.logger.debug(
+                    `Failed to log activity after refreshing cache: ${err}`
+                  );
+                });
+              }
             }
           })
         );

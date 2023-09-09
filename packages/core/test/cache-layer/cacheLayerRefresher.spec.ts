@@ -12,11 +12,31 @@ import {
   vulcanCacheSchemaName,
 } from '@vulcan-sql/core';
 import { MockDataSource, getQueryResults } from './mockDataSource';
+import { HttpLogger } from '../../src/lib/loggers/httpLogger';
 
 // This is a helper function that will flush all pending promises in the event loop when use the setInterval and the callback is promise (jest > 27 version).
 // reference: https://gist.github.com/apieceofbart/e6dea8d884d29cf88cdb54ef14ddbcc4
 const flushPromises = () =>
   new Promise(jest.requireActual('timers').setImmediate);
+
+jest.mock('../../src/lib/loggers/httpLogger', () => {
+  const originalModule = jest.requireActual('../../src/lib/loggers/httpLogger');
+  return {
+    ...originalModule,
+    HttpLogger: jest.fn().mockImplementation(() => {
+      return {
+        log: jest.fn().mockResolvedValue(true), // Spy on the add method
+      };
+    }),
+  };
+});
+const mockLogger = new HttpLogger(
+  {
+    enabled: true,
+    options: { 'http-logger': { connection: { host: 'localhost' } } },
+  },
+  'http-logger'
+);
 
 describe('Test cache layer refresher', () => {
   const folderPath = 'refresher-test-exported-parquets';
@@ -65,6 +85,10 @@ describe('Test cache layer refresher', () => {
     fs.rmSync(folderPath, { recursive: true, force: true });
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('Should fail to start when exist duplicate cache table name over than one API schema', async () => {
     // Arrange
     const schemas: Array<APISchema> = [
@@ -98,7 +122,7 @@ describe('Test cache layer refresher', () => {
         ] as Array<CacheLayerInfo>,
       },
     ];
-    const refresher = new CacheLayerRefresher(stubCacheLoader);
+    const refresher = new CacheLayerRefresher(stubCacheLoader, mockLogger);
 
     // Act, Assert
     await expect(() => refresher.start(schemas)).rejects.toThrow(
@@ -149,7 +173,7 @@ describe('Test cache layer refresher', () => {
         ] as Array<CacheLayerInfo>,
       },
     ];
-    const refresher = new CacheLayerRefresher(stubCacheLoader);
+    const refresher = new CacheLayerRefresher(stubCacheLoader, mockLogger);
 
     // Act, Assert
     await expect(() => refresher.start(schemas)).rejects.toThrow(
@@ -195,7 +219,7 @@ describe('Test cache layer refresher', () => {
       ];
       // Act
       const loader = new CacheLayerLoader(options, stubFactory as any);
-      const refresher = new CacheLayerRefresher(loader);
+      const refresher = new CacheLayerRefresher(loader, mockLogger);
       await refresher.start(schemas);
 
       // Assert
@@ -271,7 +295,7 @@ describe('Test cache layer refresher', () => {
 
     // Stub the load method to not do any thing.
     stubCacheLoader.load.resolves();
-    const refresher = new CacheLayerRefresher(stubCacheLoader);
+    const refresher = new CacheLayerRefresher(stubCacheLoader, mockLogger);
     // Act
     await refresher.start(schemas);
 
@@ -304,4 +328,98 @@ describe('Test cache layer refresher', () => {
     refresher.stop();
     jest.clearAllTimers();
   });
+
+  it(
+    'Should send activity log after cacheLoader execute "load" successfully',
+    async () => {
+      // Arrange
+      const schemas: Array<APISchema> = [
+        {
+          ...sinon.stubInterface<APISchema>(),
+          templateSource: 'template-1',
+          profiles: [profiles[0].name, profiles[1].name],
+          cache: [
+            {
+              cacheTableName: 'orders',
+              sql: sinon.default.stub() as any,
+              profile: profiles[0].name,
+            },
+            {
+              cacheTableName: 'products',
+              sql: sinon.default.stub() as any,
+              profile: profiles[1].name,
+            },
+          ] as Array<CacheLayerInfo>,
+        },
+        {
+          ...sinon.stubInterface<APISchema>(),
+          templateSource: 'template-2',
+          profiles: [profiles[2].name],
+          cache: [
+            {
+              cacheTableName: 'users',
+              sql: sinon.default.stub() as any,
+              profile: profiles[2].name,
+            },
+          ] as Array<CacheLayerInfo>,
+        },
+      ];
+      // Act
+      const loader = new CacheLayerLoader(options, stubFactory as any);
+      const refresher = new CacheLayerRefresher(loader, mockLogger);
+      await refresher.start(schemas);
+
+      // Assert
+      expect(mockLogger.log).toHaveBeenCalledTimes(3);
+      refresher.stop();
+    },
+    100 * 1000
+  );
+  // Should send activity log when cacheLoader failed on executing "load"
+  it(
+    'Should send activity log after cacheLoader execute "load" failed',
+    async () => {
+      const schemas: Array<APISchema> = [
+        {
+          ...sinon.stubInterface<APISchema>(),
+          templateSource: 'template-1',
+          profiles: [profiles[0].name, profiles[1].name],
+          cache: [
+            {
+              cacheTableName: 'orders',
+              sql: sinon.default.stub() as any,
+              profile: profiles[0].name,
+            },
+            {
+              cacheTableName: 'products',
+              sql: sinon.default.stub() as any,
+              profile: profiles[1].name,
+            },
+          ] as Array<CacheLayerInfo>,
+        },
+        {
+          ...sinon.stubInterface<APISchema>(),
+          templateSource: 'template-2',
+          profiles: [profiles[2].name],
+          cache: [
+            {
+              cacheTableName: 'users',
+              sql: sinon.default.stub() as any,
+              profile: profiles[2].name,
+            },
+          ] as Array<CacheLayerInfo>,
+        },
+      ];
+      // Act
+      const loader = new CacheLayerLoader(options, stubFactory as any);
+      stubCacheLoader.load.throws();
+      const refresher = new CacheLayerRefresher(loader, mockLogger);
+      await refresher.start(schemas);
+
+      // Assert
+      expect(mockLogger.log).toHaveBeenCalledTimes(3);
+      refresher.stop();
+    },
+    100 * 1000
+  );
 });
