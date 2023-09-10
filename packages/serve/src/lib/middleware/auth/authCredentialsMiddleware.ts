@@ -66,7 +66,7 @@ export class AuthCredentialsMiddleware extends BaseAuthMiddleware {
       if (result.status === AuthStatus.INDETERMINATE) continue;
       // if state is failed, return directly
       if (result.status === AuthStatus.FAIL) {
-        context.status = 401;
+        context.response.status = 401;
         context.body = {
           type: result.type,
           message: result.message || 'verify token failed',

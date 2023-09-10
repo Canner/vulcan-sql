@@ -1,7 +1,7 @@
 import ms, { StringValue } from 'ms';
 import { uniq } from 'lodash';
 import { ToadScheduler, SimpleIntervalJob, AsyncTask } from 'toad-scheduler';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, multiInject } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import { APISchema, IActivityLogger } from '@vulcan-sql/core/models';
 import { ConfigurationError } from '../utils/errors';
@@ -28,15 +28,16 @@ export interface ICacheLayerRefresher {
 export class CacheLayerRefresher implements ICacheLayerRefresher {
   private cacheLoader: ICacheLayerLoader;
   private scheduler = new ToadScheduler();
-  private activityLogger: IActivityLogger;
+  private activityLoggers: IActivityLogger[];
   private logger = getLogger({ scopeName: 'CORE' });
 
   constructor(
     @inject(TYPES.CacheLayerLoader) loader: ICacheLayerLoader,
-    @inject(TYPES.Extension_ActivityLogger) activityLogger: IActivityLogger
+    @multiInject(TYPES.Extension_ActivityLogger)
+    activityLoggers: IActivityLogger[]
   ) {
     this.cacheLoader = loader;
-    this.activityLogger = activityLogger;
+    this.activityLoggers = activityLoggers;
   }
 
   public async start(
@@ -48,6 +49,7 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
     // check if the index name is duplicated more than one API schemas
     this.checkDuplicateIndex(schemas);
     // traverse each cache table of each schema
+    const activityLogger = this.getActivityLogger();
     await Promise.all(
       schemas.map(async (schema) => {
         // skip the schema by return if not set the cache
@@ -83,11 +85,12 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
                       sql,
                       refreshResult,
                     };
-                    await this.activityLogger.log(content).catch((err: any) => {
-                      this.logger.debug(
-                        `Failed to log activity after refreshing cache: ${err}`
-                      );
-                    });
+                    if (activityLogger)
+                      activityLogger.log(content).catch((err: any) => {
+                        this.logger.debug(
+                          `Failed to log activity after refreshing cache: ${err}`
+                        );
+                      });
                   }
                 }),
                 { preventOverrun: true, id: workerId }
@@ -111,11 +114,12 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
                   sql,
                   refreshResult,
                 };
-                await this.activityLogger.log(content).catch((err: any) => {
-                  this.logger.debug(
-                    `Failed to log activity after refreshing cache: ${err}`
-                  );
-                });
+                if (activityLogger)
+                  activityLogger.log(content).catch((err: any) => {
+                    this.logger.debug(
+                      `Failed to log activity after refreshing cache: ${err}`
+                    );
+                  });
               }
             }
           })
@@ -129,6 +133,14 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
    */
   public stop() {
     this.scheduler.stop();
+  }
+
+  private getActivityLogger(): IActivityLogger | undefined {
+    const activityLogger = this.activityLoggers.find((logger) =>
+      logger.isEnabled()
+    );
+
+    return activityLogger;
   }
 
   private checkDuplicateCacheTableName(schemas: APISchema[]) {

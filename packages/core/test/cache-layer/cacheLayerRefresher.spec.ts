@@ -25,6 +25,7 @@ jest.mock('../../src/lib/loggers/httpLogger', () => {
     ...originalModule,
     HttpLogger: jest.fn().mockImplementation(() => {
       return {
+        isEnabled: jest.fn().mockReturnValue(true),
         log: jest.fn().mockResolvedValue(true), // Spy on the add method
       };
     }),
@@ -122,7 +123,7 @@ describe('Test cache layer refresher', () => {
         ] as Array<CacheLayerInfo>,
       },
     ];
-    const refresher = new CacheLayerRefresher(stubCacheLoader, mockLogger);
+    const refresher = new CacheLayerRefresher(stubCacheLoader, [mockLogger]);
 
     // Act, Assert
     await expect(() => refresher.start(schemas)).rejects.toThrow(
@@ -173,7 +174,7 @@ describe('Test cache layer refresher', () => {
         ] as Array<CacheLayerInfo>,
       },
     ];
-    const refresher = new CacheLayerRefresher(stubCacheLoader, mockLogger);
+    const refresher = new CacheLayerRefresher(stubCacheLoader, [mockLogger]);
 
     // Act, Assert
     await expect(() => refresher.start(schemas)).rejects.toThrow(
@@ -219,7 +220,7 @@ describe('Test cache layer refresher', () => {
       ];
       // Act
       const loader = new CacheLayerLoader(options, stubFactory as any);
-      const refresher = new CacheLayerRefresher(loader, mockLogger);
+      const refresher = new CacheLayerRefresher(loader, [mockLogger]);
       await refresher.start(schemas);
 
       // Assert
@@ -295,7 +296,7 @@ describe('Test cache layer refresher', () => {
 
     // Stub the load method to not do any thing.
     stubCacheLoader.load.resolves();
-    const refresher = new CacheLayerRefresher(stubCacheLoader, mockLogger);
+    const refresher = new CacheLayerRefresher(stubCacheLoader, [mockLogger]);
     // Act
     await refresher.start(schemas);
 
@@ -366,7 +367,7 @@ describe('Test cache layer refresher', () => {
       ];
       // Act
       const loader = new CacheLayerLoader(options, stubFactory as any);
-      const refresher = new CacheLayerRefresher(loader, mockLogger);
+      const refresher = new CacheLayerRefresher(loader, [mockLogger]);
       await refresher.start(schemas);
 
       // Assert
@@ -413,7 +414,7 @@ describe('Test cache layer refresher', () => {
       // Act
       const loader = new CacheLayerLoader(options, stubFactory as any);
       stubCacheLoader.load.throws();
-      const refresher = new CacheLayerRefresher(loader, mockLogger);
+      const refresher = new CacheLayerRefresher(loader, [mockLogger]);
       await refresher.start(schemas);
 
       // Assert

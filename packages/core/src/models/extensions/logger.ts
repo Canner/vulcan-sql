@@ -7,6 +7,7 @@ export enum ActivityLoggerType {
 }
 
 export interface IActivityLogger {
+  isEnabled(): boolean;
   log(content: any): Promise<void>;
 }
 
@@ -17,7 +18,7 @@ export abstract class BaseActivityLogger<ActivityLoggerTypeOption>
 {
   public abstract log(context: any): Promise<void>;
 
-  protected isEnabled(): boolean {
+  public isEnabled(): boolean {
     const config = this.getConfig();
     if (!config) return false;
     if (config.enabled === true) return true;
