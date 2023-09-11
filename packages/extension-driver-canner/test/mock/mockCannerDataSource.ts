@@ -22,4 +22,14 @@ export class MockCannerDataSource extends CannerDataSource {
     this.UserPool.set(userPoolKey, pool);
     return pool;
   }
+
+  public setUserPool = (userPool: Pool, password: string, database: string) => {
+    const userPoolKey = this.getUserPoolKey(password, database);
+    this.UserPool.set(userPoolKey, userPool);
+  };
+
+  public getUserPool = (password: string, database: string) => {
+    const userPoolKey = this.getUserPoolKey(password, database);
+    return this.UserPool.get(userPoolKey);
+  };
 }

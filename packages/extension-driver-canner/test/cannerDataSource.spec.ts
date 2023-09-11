@@ -350,6 +350,8 @@ it('Should return the same pool when the profile and authentication is the same'
 
 it('Should return new user pool if user pool not exist', async () => {
   // Arrange
+  const profile1 = pg.getProfile('profile1');
+  const database = <string>profile1.connection.database;
   mockDataSource = new MockCannerDataSource({}, '', [
     pg.getProfile('profile1'),
   ]);
@@ -357,8 +359,46 @@ it('Should return new user pool if user pool not exist', async () => {
   // Act
   const pool1 = mockDataSource.getPool('profile1');
   const pool2 = mockDataSource.getPool('profile1', 'my-authentication');
+  const userPool = mockDataSource.getUserPool('my-authentication', database);
   // Assert
   expect(pool1 == pool2).toBeFalsy();
+  expect(userPool === pool2).toBeTruthy();
+}, 30000);
+
+it('Should return existing user pool if user pool exist', async () => {
+  // Arrange
+  const profile1 = pg.getProfile('profile1');
+  const database = <string>profile1.connection.database;
+  mockDataSource = new MockCannerDataSource({}, '', [
+    pg.getProfile('profile1'),
+  ]);
+  await mockDataSource.activate();
+
+  // Act
+  const pool = mockDataSource.getPool('profile1', 'my-authentication');
+  const userPool = mockDataSource.getUserPool('my-authentication', database);
+  // Assert
+  expect(userPool === pool).toBeTruthy();
+}, 30000);
+
+it('Should return new user pool if user pool exist but not match', async () => {
+  // Arrange
+  const profile1 = pg.getProfile('profile1');
+  const database = <string>profile1.connection.database;
+  mockDataSource = new MockCannerDataSource({}, '', [
+    pg.getProfile('profile1'),
+  ]);
+  await mockDataSource.activate();
+
+  // Act
+  expect(mockDataSource.getUserPool('my-authentication', database)).toBe(
+    undefined
+  );
+  mockDataSource.getPool('profile1', 'my-authentication');
+  // Assert
+  expect(
+    mockDataSource.getUserPool('my-authentication', database)
+  ).toBeDefined();
 }, 30000);
 
 it('Should return different pool with different authentication even the profile is the same', async () => {
