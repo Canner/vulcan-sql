@@ -31,7 +31,6 @@ export abstract class BaseActivityLogger<ActivityLoggerTypeOption>
     const option = this.getConfig()['options'][
       this.getExtensionId()!
     ] as ActivityLoggerTypeOption;
-    console.log('option', option);
     return option;
   }
 }
