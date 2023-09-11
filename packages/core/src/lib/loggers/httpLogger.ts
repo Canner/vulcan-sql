@@ -33,6 +33,7 @@ export class HttpLogger extends BaseActivityLogger<HttpLoggerConfig> {
     try {
       // get connection info from option and use axios to send a post requet to the endpoint
       await this.sendActivityLog(url, payload, headers);
+      this.logger.debug(`Activity log sent`);
     } catch (err) {
       this.logger.debug(
         `Failed to send activity log to http logger, url: ${url}`
@@ -43,7 +44,7 @@ export class HttpLogger extends BaseActivityLogger<HttpLoggerConfig> {
 
   protected sendActivityLog = async (
     url: string,
-    payload: JSON,
+    payload: any,
     headers: AxiosRequestHeaders | undefined
   ): Promise<void> => {
     await axios.post(url, payload, {

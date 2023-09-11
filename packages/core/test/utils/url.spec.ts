@@ -1,4 +1,3 @@
-import { get } from 'lodash';
 import { getUrl, ConnectionConfig } from '../../src/lib/utils/url';
 
 describe('url util functions', () => {

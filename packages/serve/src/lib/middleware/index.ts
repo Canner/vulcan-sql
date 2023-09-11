@@ -7,6 +7,7 @@ export * from './response-format';
 export * from './enforceHttpsMiddleware';
 export * from './docRouterMiddleware';
 export * from './errorHandlerMIddleware';
+export * from './activityLogMiddleware';
 
 import { CorsMiddleware } from './corsMiddleware';
 import {

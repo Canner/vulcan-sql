@@ -74,4 +74,30 @@ describe('Activity logs', () => {
     sinon.stub(httpLogger, 'sendActivityLog').throws();
     await expect(httpLogger.log({})).rejects.toThrow();
   });
+
+  // isEnabled should return false when logger is disabled
+  it.each([
+    {}, // empty config
+    {
+      enabled: false, // not enabled
+    },
+    {
+      enabled: false, // not enabled but has logger
+      options: {
+        'http-logger': { connection: { host: 'localhost', port: 80 } },
+      },
+    },
+    {
+      enabled: true, // enabled but do not have http-logger config
+      options: {
+        'non-http-logger': {},
+      },
+    },
+  ])(
+    'isEnabled should return false when logger is disabled',
+    async (config) => {
+      const httpLogger = createMockHttpLogger(config);
+      expect(httpLogger.isEnabled()).toBe(false);
+    }
+  );
 });

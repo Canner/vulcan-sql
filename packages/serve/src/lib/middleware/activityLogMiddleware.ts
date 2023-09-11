@@ -42,20 +42,20 @@ export class ActivityLogMiddleware extends BuiltInMiddleware<IActivityLoggerOpti
     const body = context.response.body as any;
     const error = body?.message;
     const user = context.state.user;
+    const activityLog = {
+      logTime,
+      duration,
+      method: context.request.method,
+      url: context.request.originalUrl,
+      ip: context.request.ip,
+      header: context.request.header,
+      params: context.params,
+      query: context.request.query,
+      status: context.response.status || context.status,
+      error,
+      user,
+    };
     for (const activityLogger of Object.values(this.activityLoggerMap)) {
-      const activityLog = {
-        logTime,
-        duration,
-        method: context.request.method,
-        url: context.request.originalUrl,
-        ip: context.request.ip,
-        header: context.request.header,
-        params: context.params,
-        query: context.request.query,
-        status: context.response.status,
-        error,
-        user,
-      };
       activityLogger.log(activityLog).catch((e) => {
         logger.debug(`Error when logging activity: ${e}`);
       });

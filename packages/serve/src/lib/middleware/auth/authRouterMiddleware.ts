@@ -40,7 +40,7 @@ export class AuthRouterMiddleware extends BaseAuthMiddleware {
   private mountTokenEndpoint() {
     this.router.post(`/auth/token`, async (context: KoaContext) => {
       if (isEmpty(context.request.body)) {
-        context.response.status = 400;
+        context.status = 400;
         context.body = { message: 'Please provide request parameters.' };
         return;
       }
@@ -50,7 +50,7 @@ export class AuthRouterMiddleware extends BaseAuthMiddleware {
         const msg = `Please provide auth "type", supported types: ${Object.keys(
           this.options
         )}.`;
-        context.response.status = 400;
+        context.status = 400;
         context.body = { message: msg };
         return;
       }
@@ -59,7 +59,7 @@ export class AuthRouterMiddleware extends BaseAuthMiddleware {
         const msg = `auth type "${type}" does not support, only supported: ${Object.keys(
           this.options
         )}.`;
-        context.response.status = 400;
+        context.status = 400;
         context.body = { message: msg };
         return;
       }
@@ -69,7 +69,7 @@ export class AuthRouterMiddleware extends BaseAuthMiddleware {
         context.body = result;
         return;
       } catch (err) {
-        context.response.status = 400;
+        context.status = 400;
         context.body = {
           message: (err as Error).message,
         };
@@ -81,7 +81,7 @@ export class AuthRouterMiddleware extends BaseAuthMiddleware {
     // The route should work after the token authenticated
     this.router.get(`/auth/user-profile`, async (context: KoaContext) => {
       if (!context.state.user) {
-        context.response.status = 404;
+        context.status = 404;
         context.body = {
           message: 'User profile not found.',
         };

@@ -4,7 +4,6 @@ import * as moment from 'moment';
 import { inject, injectable, interfaces } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import {
-  IActivityLogger,
   CacheLayerInfo,
   ICacheLayerOptions,
   cacheProfileName,

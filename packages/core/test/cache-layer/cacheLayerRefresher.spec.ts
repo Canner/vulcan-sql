@@ -423,4 +423,53 @@ describe('Test cache layer refresher', () => {
     },
     100 * 1000
   );
+  // should not send activity log when logger is not enabled
+  it('should not send activity log when logger is not enabled', async () => {
+    const schemas: Array<APISchema> = [
+      {
+        ...sinon.stubInterface<APISchema>(),
+        templateSource: 'template-1',
+        profiles: [profiles[0].name, profiles[1].name],
+        cache: [
+          {
+            cacheTableName: 'orders',
+            sql: sinon.default.stub() as any,
+            profile: profiles[0].name,
+          },
+          {
+            cacheTableName: 'products',
+            sql: sinon.default.stub() as any,
+            profile: profiles[1].name,
+          },
+        ] as Array<CacheLayerInfo>,
+      },
+      {
+        ...sinon.stubInterface<APISchema>(),
+        templateSource: 'template-2',
+        profiles: [profiles[2].name],
+        cache: [
+          {
+            cacheTableName: 'users',
+            sql: sinon.default.stub() as any,
+            profile: profiles[2].name,
+          },
+        ] as Array<CacheLayerInfo>,
+      },
+    ];
+    const mockLogger = new HttpLogger(
+      {
+        enabled: false,
+      },
+      'http-logger'
+    );
+    mockLogger.isEnabled = jest.fn().mockReturnValue(false);
+    // Act
+    const loader = new CacheLayerLoader(options, stubFactory as any);
+    const refresher = new CacheLayerRefresher(loader, [mockLogger]);
+    await refresher.start(schemas);
+
+    // Assert
+    expect(mockLogger.log).toHaveBeenCalledTimes(0);
+    refresher.stop();
+  });
 });

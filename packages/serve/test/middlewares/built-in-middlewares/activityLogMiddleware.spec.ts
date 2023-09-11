@@ -5,7 +5,7 @@ import { IncomingHttpHeaders } from 'http';
 import { ParsedUrlQuery } from 'querystring';
 import { KoaContext } from '@vulcan-sql/serve/models';
 
-import { HttpLogger } from '../../../../core/src/lib/loggers/httpLogger';
+import { HttpLogger } from '@vulcan-sql/core';
 import { ActivityLogMiddleware } from '@vulcan-sql/serve/middleware/activityLogMiddleware';
 
 jest.mock('../../../../core/src/lib/loggers/httpLogger', () => {
@@ -173,5 +173,41 @@ describe('Test activity log middlewares', () => {
     expect(actual[0].params).toEqual(expected.params);
     expect(actual[0].error).toEqual(expected.error);
     expect(actual[0].user).toEqual(expected.user);
+  });
+  // should not log when logger is disabled
+  it('should not log when logger is disabled', async () => {
+    // Arrange
+    const ctx: KoaContext = {
+      ...sinon.stubInterface<KoaContext>(),
+      params: {
+        uuid: faker.datatype.uuid(),
+      },
+      request: {
+        ...sinon.stubInterface<Request>(),
+        query: {
+          ...sinon.stubInterface<ParsedUrlQuery>(),
+          sortby: 'name',
+        },
+      },
+      response: {
+        ...sinon.stubInterface<Response>(),
+        status: 200,
+        body: {
+          result: 'OK',
+        },
+      },
+    };
+    // Act
+    const middleware = new ActivityLogMiddleware(
+      { ...extensionConfig, enabled: false },
+      '',
+      [mockLogger]
+    );
+    await middleware.activate();
+    await middleware.handle(ctx, async () => Promise.resolve());
+
+    // Assert
+    const logMock = mockLogger.log as jest.Mock;
+    expect(logMock).not.toHaveBeenCalled();
   });
 });

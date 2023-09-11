@@ -1,6 +1,7 @@
 import { ExtensionBase } from './base';
 import { TYPES } from '@vulcan-sql/core/types';
 import { VulcanExtension } from './decorators';
+import { isEmpty } from 'lodash';
 
 export enum ActivityLoggerType {
   HTTP_LOGGER = 'http-logger',
@@ -20,8 +21,10 @@ export abstract class BaseActivityLogger<ActivityLoggerTypeOption>
 
   public isEnabled(): boolean {
     const config = this.getConfig();
-    if (!config) return false;
-    if (config.enabled === true) return true;
+    if (!config || isEmpty(config)) return false;
+    if (!config.enabled) return false;
+    if (!config['options']) return false;
+    if (config['options'][this.getExtensionId()!]) return true;
     else return false;
   }
 
