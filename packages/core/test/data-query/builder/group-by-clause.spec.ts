@@ -35,6 +35,7 @@ describe('Test data query builder > group by clause', () => {
         dataSource: stubDataSource,
         parameterizer: stubParameterizer,
         profileName: '',
+        headers: {},
       });
       columns.map((column) => {
         builder = builder.groupBy(column);
@@ -62,6 +63,7 @@ describe('Test data query builder > group by clause', () => {
         dataSource: stubDataSource,
         parameterizer: stubParameterizer,
         profileName: '',
+        headers: {},
       });
       builder.groupBy(first, second, third);
 

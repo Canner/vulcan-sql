@@ -1,5 +1,6 @@
 import { CannerServer } from './cannerServer';
 import { CannerDataSource, PGOptions } from '../src';
+import { MockCannerDataSource } from './mock';
 import { ExportOptions, InternalError, streamToArray } from '@vulcan-sql/core';
 import { Writable } from 'stream';
 import * as sinon from 'ts-sinon';
@@ -8,7 +9,9 @@ import { CannerAdapter } from '../src/lib/cannerAdapter';
 
 const pg = new CannerServer();
 let dataSource: CannerDataSource;
+let mockDataSource: MockCannerDataSource;
 
+const directory = 'tmp_test_canner';
 // restore all sinon mock/stub before each test
 beforeEach(() => {
   sinon.default.restore();
@@ -42,7 +45,7 @@ it('Data source should throw error when activating if any profile is invalid', a
 
 // export method should be executed successfully
 it('Data source should export successfully', async () => {
-  fs.mkdirSync('tmp', { recursive: true });
+  fs.mkdirSync(directory, { recursive: true });
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
 
@@ -50,14 +53,14 @@ it('Data source should export successfully', async () => {
   await expect(
     dataSource.export({
       sql: 'select 1',
-      directory: 'tmp',
+      directory,
       profileName: 'profile1',
     } as ExportOptions)
   ).resolves.not.toThrow();
-  expect(fs.readdirSync('tmp').length).toBe(1);
+  expect(fs.readdirSync(directory).length).toBe(1);
 
   // clean up
-  fs.rmSync('tmp', { recursive: true, force: true });
+  fs.rmSync(directory, { recursive: true, force: true });
 }, 100000);
 
 it('Data source should throw error when fail to export data', async () => {
@@ -73,7 +76,7 @@ it('Data source should throw error when fail to export data', async () => {
       );
     });
 
-  fs.mkdirSync('tmp', { recursive: true });
+  fs.mkdirSync(directory, { recursive: true });
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
 
@@ -81,14 +84,14 @@ it('Data source should throw error when fail to export data', async () => {
   await expect(
     dataSource.export({
       sql: 'select 1',
-      directory: 'tmp',
+      directory,
       profileName: 'profile1',
     } as ExportOptions)
   ).rejects.toThrow();
-  expect(fs.readdirSync('tmp').length).toBe(0);
+  expect(fs.readdirSync(directory).length).toBe(0);
 
   // clean up
-  fs.rmSync('tmp', { recursive: true, force: true });
+  fs.rmSync(directory, { recursive: true, force: true });
 }, 100000);
 
 it('Data source should throw error when given directory is not exist', async () => {
@@ -100,7 +103,7 @@ it('Data source should throw error when given directory is not exist', async () 
   await expect(
     dataSource.export({
       sql: 'select 1',
-      directory: 'tmp',
+      directory: directory,
       profileName: 'profile1',
     } as ExportOptions)
   ).rejects.toThrow();
@@ -110,13 +113,13 @@ it('Data source should throw error when given profile name is not exist', async 
   // Arrange
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
-  fs.mkdirSync('tmp', { recursive: true });
+  fs.mkdirSync(directory, { recursive: true });
 
   // Act, Assert
   await expect(
     dataSource.export({
       sql: 'select 1',
-      directory: 'tmp',
+      directory,
       profileName: 'profile not exist',
     } as ExportOptions)
   ).rejects.toThrow();
@@ -318,3 +321,119 @@ it('Data source should release connection when readable stream is destroyed', as
   expect(rows.length).toBe(1);
   // afterEach hook will timeout if any leak occurred.
 }, 300000);
+
+it('Should return the same pool when the profile is the same', async () => {
+  // Arrange
+  mockDataSource = new MockCannerDataSource({}, '', [
+    pg.getProfile('profile1'),
+  ]);
+  await mockDataSource.activate();
+  // Act
+  const pool1 = mockDataSource.getPool('profile1');
+  const pool2 = mockDataSource.getPool('profile1');
+  // Assert
+  expect(pool1 === pool2).toBeTruthy();
+}, 30000);
+
+it('Should return the same pool when the profile and authentication is the same', async () => {
+  // Arrange
+  mockDataSource = new MockCannerDataSource({}, '', [
+    pg.getProfile('profile1'),
+  ]);
+  await mockDataSource.activate();
+  // Act
+  const pool1 = mockDataSource.getPool('profile1', 'the-same-authentication');
+  const pool2 = mockDataSource.getPool('profile1', 'the-same-authentication');
+  // Assert
+  expect(pool1 === pool2).toBeTruthy();
+}, 30000);
+
+it('Should return new user pool if user pool not exist', async () => {
+  // Arrange
+  const profile1 = pg.getProfile('profile1');
+  const database = <string>profile1.connection.database;
+  mockDataSource = new MockCannerDataSource({}, '', [
+    pg.getProfile('profile1'),
+  ]);
+  await mockDataSource.activate();
+  // Act
+  const pool1 = mockDataSource.getPool('profile1');
+  const pool2 = mockDataSource.getPool('profile1', 'my-authentication');
+  const userPool = mockDataSource.getUserPool('my-authentication', database);
+  // Assert
+  expect(pool1 == pool2).toBeFalsy();
+  expect(userPool === pool2).toBeTruthy();
+}, 30000);
+
+it('Should return existing user pool if user pool exist', async () => {
+  // Arrange
+  const profile1 = pg.getProfile('profile1');
+  const database = <string>profile1.connection.database;
+  mockDataSource = new MockCannerDataSource({}, '', [
+    pg.getProfile('profile1'),
+  ]);
+  await mockDataSource.activate();
+
+  // Act
+  const pool = mockDataSource.getPool('profile1', 'my-authentication');
+  const userPool = mockDataSource.getUserPool('my-authentication', database);
+  // Assert
+  expect(userPool === pool).toBeTruthy();
+}, 30000);
+
+it('Should return new user pool if user pool exist but not match', async () => {
+  // Arrange
+  const profile1 = pg.getProfile('profile1');
+  const database = <string>profile1.connection.database;
+  mockDataSource = new MockCannerDataSource({}, '', [
+    pg.getProfile('profile1'),
+  ]);
+  await mockDataSource.activate();
+
+  // Act
+  expect(mockDataSource.getUserPool('my-authentication', database)).toBe(
+    undefined
+  );
+  mockDataSource.getPool('profile1', 'my-authentication');
+  // Assert
+  expect(
+    mockDataSource.getUserPool('my-authentication', database)
+  ).toBeDefined();
+}, 30000);
+
+it('Should return different pool with different authentication even the profile is the same', async () => {
+  // Arrange
+  mockDataSource = new MockCannerDataSource({}, '', [
+    pg.getProfile('profile1'),
+  ]);
+  await mockDataSource.activate();
+  // Act
+  const pool1 = mockDataSource.getPool('profile1', 'authentication');
+  const pool2 = mockDataSource.getPool('profile1', 'differ-authentication');
+  // Assert
+  expect(pool1 === pool2).toBeFalsy();
+}, 30000);
+
+it('Should throw error when the profile is not exist', async () => {
+  // Arrange
+  mockDataSource = new MockCannerDataSource({}, '', [
+    pg.getProfile('profile1'),
+  ]);
+  await mockDataSource.activate();
+  // Act, Assert
+  expect(() => mockDataSource.getPool('profile2')).toThrow(
+    'Profile instance profile2 not found'
+  );
+}, 30000);
+
+it('Should return default pool when password was not given', async () => {
+  // Arrange
+  mockDataSource = new MockCannerDataSource({}, '', [
+    pg.getProfile('profile1'),
+  ]);
+  await mockDataSource.activate();
+  // Act
+  const pool = mockDataSource.getPool('profile1');
+  // Assert
+  expect(pool).toBeDefined();
+}, 30000);

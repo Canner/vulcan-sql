@@ -23,6 +23,7 @@ const createTestCompilerWithBuilder = async () => {
         statement: query,
         parameterizer,
         dataSource,
+        headers: {},
       });
     }
   );

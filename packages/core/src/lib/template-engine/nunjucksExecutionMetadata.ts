@@ -1,6 +1,6 @@
 import * as nunjucks from 'nunjucks';
 import { ExecuteContext, UserInfo } from './compiler';
-import { KoaRequest } from '@vulcan-sql/core/models';
+import { IncomingHttpHeaders, KoaRequest } from '@vulcan-sql/core/models';
 
 export const ReservedContextKeys = {
   CurrentProfileName: 'RESERVED_CURRENT_PROFILE_NAME',
@@ -12,12 +12,20 @@ export class NunjucksExecutionMetadata {
   private parameters: Record<string, any>;
   private userInfo?: UserInfo;
   private req?: KoaRequest;
+  private headers?: IncomingHttpHeaders;
 
-  constructor({ parameters = {}, profileName, user, req }: ExecuteContext) {
+  constructor({
+    parameters = {},
+    profileName,
+    user,
+    req,
+    headers,
+  }: ExecuteContext) {
     this.parameters = parameters;
     this.profileName = profileName;
     this.userInfo = user;
     this.req = req;
+    this.headers = headers;
   }
 
   /** Load from nunjucks context */
@@ -26,6 +34,7 @@ export class NunjucksExecutionMetadata {
       parameters: context.lookup('context')?.params || {},
       user: context.lookup('context')?.user || {},
       req: context.lookup('context')?.req || {},
+      headers: context.lookup('context')?.headers || {},
       profileName: context.lookup(ReservedContextKeys.CurrentProfileName)!,
     });
   }
@@ -38,6 +47,7 @@ export class NunjucksExecutionMetadata {
         user: this.userInfo,
         req: this.req,
         profile: this.profileName,
+        headers: this.headers,
       },
       [ReservedContextKeys.CurrentProfileName]: this.profileName,
     };
@@ -53,5 +63,9 @@ export class NunjucksExecutionMetadata {
 
   public getRequest() {
     return this.req;
+  }
+
+  public getHeaders() {
+    return this.headers;
   }
 }

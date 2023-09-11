@@ -8,7 +8,7 @@ import {
   RequestParameter,
   VulcanExtensionId,
 } from '@vulcan-sql/core';
-import { Pool, PoolConfig, QueryResult } from 'pg';
+import { Pool, PoolClient, PoolConfig, QueryResult } from 'pg';
 import * as Cursor from 'pg-cursor';
 import { Readable } from 'stream';
 import { buildSQL } from './sqlBuilder';
@@ -24,7 +24,11 @@ export interface PGOptions extends PoolConfig {
 @VulcanExtensionId('canner')
 export class CannerDataSource extends DataSource<any, PGOptions> {
   private logger = this.getLogger();
-  private poolMapping = new Map<string, { pool: Pool; options?: PGOptions }>();
+  protected poolMapping = new Map<
+    string,
+    { pool: Pool; options?: PGOptions }
+  >();
+  protected UserPool = new Map<string, Pool>();
 
   public override async onActivate() {
     const profiles = this.getProfiles().values();
@@ -108,15 +112,16 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     bindParams,
     profileName,
     operations,
+    headers,
   }: ExecuteOptions): Promise<DataResult> {
-    if (!this.poolMapping.has(profileName)) {
-      throw new InternalError(`Profile instance ${profileName} not found`);
-    }
-    const { pool, options } = this.poolMapping.get(profileName)!;
-    this.logger.debug(`Acquiring connection from ${profileName}`);
-    const client = await pool.connect();
     this.logger.debug(`Acquired connection from ${profileName}`);
+    const { options } = this.poolMapping.get(profileName)!;
+    const auth = headers?.['authorization'];
+    const password = auth?.trim().split(' ')[1];
+    const pool = this.getPool(profileName, password);
+    let client: PoolClient | undefined;
     try {
+      client = await pool.connect();
       const builtSQL = buildSQL(sql, operations);
       const cursor = client.query(
         new Cursor(builtSQL, Array.from(bindParams.values()))
@@ -127,7 +132,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
         );
         // It is important to close the cursor before releasing connection, or the connection might not able to handle next request.
         await cursor.close();
-        client.release();
+        if (client) client.release();
       });
       // All promises MUST fulfilled in this function or we are not able to release the connection when error occurred
       return await this.getResultFromCursor(cursor, options);
@@ -135,7 +140,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
       this.logger.debug(
         `Errors occurred, release connection from ${profileName}`
       );
-      client.release();
+      if (client) client.release();
       throw e;
     }
   }
@@ -148,6 +153,33 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     for (const { pool } of this.poolMapping.values()) {
       await pool.end();
     }
+  }
+
+  // use protected to make it testable
+  protected getPool(profileName: string, password?: string): Pool {
+    if (!this.poolMapping.has(profileName)) {
+      throw new InternalError(`Profile instance ${profileName} not found`);
+    }
+    const { pool: defaultPool, options: poolOptions } =
+      this.poolMapping.get(profileName)!;
+    this.logger.debug(`Acquiring connection from ${profileName}`);
+    if (!password) {
+      return defaultPool;
+    }
+    const database = poolOptions?.database || '';
+    const userPoolKey = this.getUserPoolKey(password, database);
+    if (this.UserPool.has(userPoolKey)) {
+      const userPool = this.UserPool.get(userPoolKey);
+      return userPool!;
+    }
+    const pool = new Pool({ ...poolOptions, password: password });
+    this.UserPool.set(userPoolKey, pool);
+    return pool;
+  }
+
+  // use protected to make it testable
+  protected getUserPoolKey(pat: string, database?: string) {
+    return `${pat}-${database}`;
   }
 
   private async getResultFromCursor(

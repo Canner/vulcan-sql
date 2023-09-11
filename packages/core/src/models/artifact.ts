@@ -30,8 +30,10 @@ import {
 import { Type } from 'class-transformer';
 import 'reflect-metadata';
 import { Request as KoaRequest } from 'koa';
+import { IncomingHttpHeaders } from 'http';
 
 export type { KoaRequest };
+export type { IncomingHttpHeaders };
 
 // Pagination mode should always be UPPERCASE because schema parser will transform the user inputs.
 export enum PaginationMode {

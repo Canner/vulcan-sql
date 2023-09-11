@@ -20,7 +20,8 @@ export class GraphQLRoute extends BaseRoute {
     const transformed = await this.prepare(ctx);
     const authUser = ctx.state.user;
     const req = ctx.request as KoaRequest;
-    await this.handle(authUser, transformed, req);
+    const headers = ctx.headers;
+    await this.handle(authUser, transformed, req, headers);
     // TODO: get template engine handled result and return response by checking API schema
     return transformed;
   }

@@ -25,6 +25,7 @@ const createStubBuilder = ({ statement }: { statement: string }) =>
     dataSource: createStub().dataSource,
     parameterizer: createStub().parameterizer,
     profileName: '',
+    headers: {},
   });
 
 jest.mock('uuid');

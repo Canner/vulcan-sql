@@ -13,6 +13,7 @@ const createStubs = ({ statement }: { statement: string }) => {
       dataSource,
       parameterizer,
       profileName: '',
+      headers: {},
     }),
     dataSource,
     parameterizer,

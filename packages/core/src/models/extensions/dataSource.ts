@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Parameterized, SQLClauseOperation } from '@vulcan-sql/core/data-query';
-import { CacheLayerStoreFormatType, Profile } from '@vulcan-sql/core/models';
+import {
+  CacheLayerStoreFormatType,
+  IncomingHttpHeaders,
+  Profile,
+} from '@vulcan-sql/core/models';
 import { TYPES } from '@vulcan-sql/core/types';
 import { inject, multiInject, optional } from 'inversify';
 import { Readable } from 'stream';
@@ -58,6 +62,7 @@ export interface ExecuteOptions {
   /** The parameter bindings, we guarantee the order of the keys in the map is the same as the order when they were used in queries. */
   bindParams: BindParameters;
   profileName: string;
+  headers?: IncomingHttpHeaders;
 }
 
 export type PrepareParameterFunc = {
