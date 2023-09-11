@@ -59,9 +59,9 @@ export class ReqTagRunner extends TagRunner {
       builder = await this.executor.createBuilder(
         profileName,
         query,
-        parameterizer
+        parameterizer,
+        headers
       );
-      if (headers) builder.setHeaders(headers);
       context.setVariable(name, builder);
     }
 

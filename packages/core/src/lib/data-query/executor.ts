@@ -1,5 +1,6 @@
 import {
   DataSource,
+  IncomingHttpHeaders,
   PrepareParameterFunc,
   RequestParameter,
 } from '@vulcan-sql/core/models';
@@ -12,7 +13,8 @@ export interface IExecutor {
   createBuilder(
     profileName: string,
     query: string,
-    parameterizer: IParameterizer
+    parameterizer: IParameterizer,
+    headers?: IncomingHttpHeaders
   ): Promise<IDataQueryBuilder>;
   prepare: PrepareParameterFunc;
 }
@@ -39,14 +41,15 @@ export class QueryExecutor implements IExecutor {
   public async createBuilder(
     profileName: string,
     query: string,
-    parameterizer: IParameterizer
+    parameterizer: IParameterizer,
+    headers?: IncomingHttpHeaders
   ) {
     return new DataQueryBuilder({
       statement: query,
       parameterizer,
       dataSource: this.dataSourceFactory(profileName)!,
       profileName,
-      headers: {},
+      headers: headers || {},
     });
   }
 }
