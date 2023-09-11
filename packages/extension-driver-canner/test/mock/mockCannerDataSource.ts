@@ -16,12 +16,7 @@ export class MockCannerDataSource extends CannerDataSource {
     const userPoolKey = this.getUserPoolKey(password, database);
     if (this.UserPool.has(userPoolKey)) {
       const userPool = this.UserPool.get(userPoolKey);
-      if (!userPool) {
-        throw new InternalError(
-          `User pool ${userPoolKey} is not a Pool instance`
-        );
-      }
-      return userPool;
+      return userPool!;
     }
     const pool = new Pool({ ...poolOptions, password: password });
     this.UserPool.set(userPoolKey, pool);

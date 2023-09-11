@@ -348,7 +348,7 @@ it('Should return the same pool when the profile and authentication is the same'
   expect(pool1 === pool2).toBeTruthy();
 }, 30000);
 
-it('Should return different pool if authentication exist in headers even the profile is the same', async () => {
+it('Should return new user pool if user pool not exist', async () => {
   // Arrange
   mockDataSource = new MockCannerDataSource({}, '', [
     pg.getProfile('profile1'),
@@ -372,4 +372,28 @@ it('Should return different pool with different authentication even the profile 
   const pool2 = mockDataSource.getPool('profile1', 'differ-authentication');
   // Assert
   expect(pool1 === pool2).toBeFalsy();
+}, 30000);
+
+it('Should throw error when the profile is not exist', async () => {
+  // Arrange
+  mockDataSource = new MockCannerDataSource({}, '', [
+    pg.getProfile('profile1'),
+  ]);
+  await mockDataSource.activate();
+  // Act, Assert
+  expect(() => mockDataSource.getPool('profile2')).toThrow(
+    'Profile instance profile2 not found'
+  );
+}, 30000);
+
+it('Should return default pool when password was not given', async () => {
+  // Arrange
+  mockDataSource = new MockCannerDataSource({}, '', [
+    pg.getProfile('profile1'),
+  ]);
+  await mockDataSource.activate();
+  // Act
+  const pool = mockDataSource.getPool('profile1');
+  // Assert
+  expect(pool).toBeDefined();
 }, 30000);
