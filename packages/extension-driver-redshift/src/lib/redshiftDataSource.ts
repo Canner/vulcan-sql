@@ -22,6 +22,7 @@ import {
   GetStatementResultCommand,
   SqlParameter,
 } from '@aws-sdk/client-redshift-data';
+import { backOff } from 'exponential-backoff';
 
 export type RedshiftOptions = RedshiftDataClientConfig & Omit<ExecuteStatementCommandInput, "Sql" | "Parameters">;
 
@@ -89,7 +90,6 @@ export class RedShiftDataSource extends DataSource<any, RedshiftOptions> {
       this.logger.debug(
         `Errors occurred, release connection from ${profileName}`
       );
-      redshiftClient.destroy();
       throw e;
     }
   }
@@ -114,7 +114,9 @@ export class RedShiftDataSource extends DataSource<any, RedshiftOptions> {
       const statementCommandResult = await redshiftClient.send(executeStatementCommand);
       return await this.getResultFromExecuteStatement(statementCommandResult, redshiftClient);
     } catch (e) {
-      redshiftClient.destroy();
+      this.logger.debug(
+        `Errors occurred, release connection from ${profileName}`
+      );
       throw e;
     }
   }
@@ -132,7 +134,7 @@ export class RedShiftDataSource extends DataSource<any, RedshiftOptions> {
     // https://github.com/aws/aws-sdk-js-v3/blob/29056f4ca545f7e5cf951b915bb52178305fc305/clients/client-redshift-data/src/models/models_0.ts#L604
     while (!describeStatementResponse || describeStatementResponse.Status !== 'FINISHED') {
       const describeStatementCommand = new DescribeStatementCommand(describeStatementRequestInput);
-      describeStatementResponse = await redshiftClient.send(describeStatementCommand);
+      describeStatementResponse = await backOff(() =>redshiftClient.send(describeStatementCommand));
 
       if (
         describeStatementResponse.Status === 'ABORTED' || 
@@ -142,15 +144,26 @@ export class RedShiftDataSource extends DataSource<any, RedshiftOptions> {
       }
     }
 
-    const getStatementResultCommandParams: GetStatementResultCommandInput = {
+    let getStatementResultCommandParams: GetStatementResultCommandInput = {
       "Id": describeStatementResponse.Id
     };
-    const getStatementResultCommand = new GetStatementResultCommand(getStatementResultCommandParams);
-    const getStatementResultResponse = await redshiftClient.send(getStatementResultCommand);
+    let getStatementResultCommand = new GetStatementResultCommand(getStatementResultCommandParams);
+    let getStatementResultResponse = await redshiftClient.send(getStatementResultCommand);
+    const records = getStatementResultResponse.Records! || [];
+    const columns = getStatementResultResponse.ColumnMetadata || [];
+
+    while (getStatementResultResponse.NextToken) {
+      getStatementResultCommandParams = {
+        "Id": describeStatementResponse.Id,
+        "NextToken": getStatementResultResponse.NextToken,
+      };
+      getStatementResultCommand = new GetStatementResultCommand(getStatementResultCommandParams);
+      getStatementResultResponse = await redshiftClient.send(getStatementResultCommand);
+      records.push(...(getStatementResultResponse.Records! || []));
+    }
 
     return {
       getColumns: () => {
-        const columns = getStatementResultResponse.ColumnMetadata || [];
         return columns.map((column) => ({
           name: column.name || '',
           type: mapFromRedShiftTypeId(column.typeName?.toLowerCase() || ''),
@@ -159,8 +172,6 @@ export class RedShiftDataSource extends DataSource<any, RedshiftOptions> {
       getData: () => new Readable({
         objectMode: true,
         read() {
-          const records = getStatementResultResponse.Records! || [];
-          const columns = getStatementResultResponse.ColumnMetadata || [];
           for (const record of records) {
             const row: RedShiftDataRow = {};
             for (const [i, recordField] of record.entries()) {
