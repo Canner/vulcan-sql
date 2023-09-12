@@ -5,7 +5,7 @@ import { IncomingHttpHeaders } from 'http';
 import { ParsedUrlQuery } from 'querystring';
 import { KoaContext } from '@vulcan-sql/serve/models';
 
-import { HttpLogger } from '@vulcan-sql/core';
+import { ActivityLogType, HttpLogger } from '@vulcan-sql/core';
 import { ActivityLogMiddleware } from '@vulcan-sql/serve/middleware/activityLogMiddleware';
 
 jest.mock('../../../../core/src/lib/loggers/httpLogger', () => {
@@ -76,6 +76,8 @@ describe('Test activity log middlewares', () => {
     };
 
     const expected = {
+      isSuccess: true,
+      activityLogType: ActivityLogType.API_REQUEST,
       method: ctx.request.method,
       url: ctx.request.originalUrl,
       status: ctx.response.status,
@@ -95,6 +97,8 @@ describe('Test activity log middlewares', () => {
     // Assert
     const logMock = mockLogger.log as jest.Mock;
     const actual = logMock.mock.calls[0];
+    expect(actual[0].isSuccess).toEqual(expected.isSuccess);
+    expect(actual[0].activityLogType).toEqual(expected.activityLogType);
     expect(actual[0].method).toEqual(expected.method);
     expect(actual[0].url).toEqual(expected.url);
     expect(actual[0].status).toEqual(expected.status);
@@ -146,6 +150,8 @@ describe('Test activity log middlewares', () => {
     };
     const body = ctx.response.body as any;
     const expected = {
+      isSucess: false,
+      activityLogType: ActivityLogType.API_REQUEST,
       method: ctx.request.method,
       url: ctx.request.originalUrl,
       status: ctx.response.status,
@@ -165,6 +171,8 @@ describe('Test activity log middlewares', () => {
     // Assert
     const logMock = mockLogger.log as jest.Mock;
     const actual = logMock.mock.calls[0];
+    expect(actual[0].isSuccess).toEqual(expected.isSucess);
+    expect(actual[0].activityLogType).toEqual(expected.activityLogType);
     expect(actual[0].method).toEqual(expected.method);
     expect(actual[0].url).toEqual(expected.url);
     expect(actual[0].status).toEqual(expected.status);

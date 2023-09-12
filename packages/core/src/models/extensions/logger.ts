@@ -7,6 +7,14 @@ export enum ActivityLoggerType {
   HTTP_LOGGER = 'http-logger',
 }
 
+export enum ActivityLogType {
+  CACHE_REFRESH = 'cache-refresh',
+  API_REQUEST = 'api-request',
+}
+export interface ActivityLogContentOptions {
+  isSuccess: boolean;
+  activityLogType: ActivityLogType;
+}
 export interface IActivityLogger {
   isEnabled(): boolean;
   log(content: any): Promise<void>;

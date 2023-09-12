@@ -4,6 +4,8 @@ import {
   VulcanInternalExtension,
   IActivityLoggerOptions,
   getLogger,
+  ActivityLogType,
+  ActivityLogContentOptions,
 } from '@vulcan-sql/core';
 import { Next, KoaContext, BuiltInMiddleware } from '@vulcan-sql/serve/models';
 import { inject, multiInject } from 'inversify';
@@ -42,7 +44,10 @@ export class ActivityLogMiddleware extends BuiltInMiddleware<IActivityLoggerOpti
     const body = context.response.body as any;
     const error = body?.message;
     const user = context.state.user;
+    const status = context.response.status || context.status;
     const activityLog = {
+      activityLogType: ActivityLogType.API_REQUEST,
+      isSuccess: status.toString().startsWith('2') ? true : false,
       logTime,
       duration,
       method: context.request.method,
@@ -51,10 +56,10 @@ export class ActivityLogMiddleware extends BuiltInMiddleware<IActivityLoggerOpti
       header: context.request.header,
       params: context.params,
       query: context.request.query,
-      status: context.response.status || context.status,
+      status,
       error,
       user,
-    };
+    } as ActivityLogContentOptions;
     for (const activityLogger of Object.values(this.activityLoggerMap)) {
       activityLogger.log(activityLog).catch((e) => {
         logger.debug(`Error when logging activity: ${e}`);

@@ -5,6 +5,8 @@ import { inject, injectable, multiInject } from 'inversify';
 import { TYPES } from '@vulcan-sql/core/types';
 import {
   APISchema,
+  ActivityLogContentOptions,
+  ActivityLogType,
   CacheLayerInfo,
   IActivityLogger,
 } from '@vulcan-sql/core/models';
@@ -111,11 +113,12 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
     } finally {
       // send activity log
       const content = {
+        isSuccess: refreshResult === RefreshResult.SUCCESS ? true : false,
+        activityLogType: ActivityLogType.CACHE_REFRESH,
         logTime: now,
         urlPath,
         sql,
-        refreshResult,
-      };
+      } as ActivityLogContentOptions;
       const activityLoggers = this.getActivityLoggers();
       for (const activityLogger of activityLoggers)
         activityLogger.log(content).catch((err: any) => {
