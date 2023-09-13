@@ -152,10 +152,5 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "jest": {
-    "testPathIgnorePatterns" : [
-      "<rootDir>/packages/extension-driver-redshift/src/lib/redshiftDataSource.ts"
-    ]
   }
 }

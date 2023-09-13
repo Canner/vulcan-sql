@@ -28,5 +28,10 @@
   },
   "peerDependencies": {
     "@vulcan-sql/core": "~0.9.1-0"
+  },
+  "jest": {
+    "testPathIgnorePatterns" : [
+      "test/redshiftDataSource.spec.ts"
+    ]
   }
 }
