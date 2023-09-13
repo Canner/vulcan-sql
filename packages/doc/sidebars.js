@@ -78,6 +78,10 @@ const sidebars = {
         },
         {
           type: 'doc',
+          id: 'connectors/redshift',
+        },
+        {
+          type: 'doc',
           id: 'connectors/ksqldb',
         },
       ],
