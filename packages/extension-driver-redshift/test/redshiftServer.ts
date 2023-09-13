@@ -1,13 +1,15 @@
-[
-  'AWS_ACCESS_KEY_ID',
-  'AWS_SECRET_ACCESS_KEY',
-  'AWS_REDSHIFT_DATABASE',
-  'AWS_REDSHIFT_WORKGROUP_NAME',
-].forEach((envName) => {
-  if (!process.env[envName]) throw new Error(`${envName} not defined`);
-});
-
 export class RedShiftFakeServer {
+  constructor() {
+    [
+      'AWS_ACCESS_KEY_ID',
+      'AWS_SECRET_ACCESS_KEY',
+      'AWS_REDSHIFT_DATABASE',
+      'AWS_REDSHIFT_WORKGROUP_NAME',
+    ].forEach((envName) => {
+      if (!process.env[envName]) throw new Error(`${envName} not defined`);
+    });
+  }
+
   public getProfile(name: string) {
     return {
       name,
