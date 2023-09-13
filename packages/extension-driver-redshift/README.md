@@ -54,7 +54,7 @@ To run test, the following environment variables are required:
 
 To enable the test for `test/redshiftDataSource.spec.ts`:
 - remove `.skip` inside `test/redshiftDataSource.spec.ts` to enable the test.
-- remove `/* istanbul ignore file */` in the `test/redshiftDataSource.spec.ts`
+- remove `/* istanbul ignore file */` in the `src/lib/redshiftDataSource.ts`
 
 Local Testing Success Message:(Since the tests run in CI are disabled, so I paste the local testing result here!)
 

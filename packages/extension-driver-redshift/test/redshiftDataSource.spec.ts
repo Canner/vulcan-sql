@@ -1,5 +1,3 @@
-/* istanbul ignore file */
-
 import { RedShiftDataSource } from '../src';
 import { RedShiftFakeServer } from './redshiftServer';
 import { streamToArray } from '@vulcan-sql/core';
