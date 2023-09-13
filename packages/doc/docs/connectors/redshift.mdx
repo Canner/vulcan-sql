@@ -1,0 +1,44 @@
+# Redshift
+
+## Installation
+
+1. Install the package:
+
+   **If you are developing with VulcanSQL's binary version, the package is already bundled in the binary. You can skip this step.**
+
+   ```bash
+   npm i @vulcan-sql/extension-driver-redshift
+   ```
+
+2. Update your `vulcan.yaml` file to enable the extension:
+
+   ```yaml
+   extensions:
+     ...
+     redshift: '@vulcan-sql/extension-driver-redshift' # Add this line
+   ```
+
+3. Create a new profile in your `profiles.yaml` file or in the designated profile paths. For example if you are using Redshift Serverless:
+
+   ```yaml
+   - name: redshift # profile name
+     type: redshift
+     allow: '*'
+     connection:
+      # please see the type definition of RedshiftDataClientConfig
+      # https://github.com/aws/aws-sdk-js-v3/blob/29056f4ca545f7e5cf951b915bb52178305fc305/clients/client-redshift-data/src/RedshiftDataClient.ts#L253C18-L253C42
+      credentials:
+        accessKeyId: <AWS_ACCESS_KEY_ID>
+        secretAccessKey: <AWS_SECRET_ACCESS_KEY>
+      # please see the type definition of ExecuteStatementCommandInput(omit Sql and Parameters)
+      # https://github.com/aws/aws-sdk-js-v3/blob/29056f4ca545f7e5cf951b915bb52178305fc305/clients/client-redshift-data/src/models/models_0.ts#L805C18-L805C39
+      Database: <AWS_REDSHIFT_DATABASE>
+      WorkgroupName: <AWS_REDSHIFT_WORKGROUP_NAME>
+   ```
+
+## Configuration
+
+For more information, please refer to the [Redshift Data API Client documentation](https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-redshift-data) to learn about the available arguments for the Redshift Data Client.
+The configuration is composed of two types defined in Redshift Data API Client, 
+namely [`RedshiftDataClientConfig`](https://github.com/aws/aws-sdk-js-v3/blob/91e51ab99e58091068d1f4173ecf9f457db92df8/clients/client-redshift-data/src/RedshiftDataClient.ts#L253) 
+and [`ExecuteStatementCommandInput`](https://github.com/aws/aws-sdk-js-v3/blob/91e51ab99e58091068d1f4173ecf9f457db92df8/clients/client-redshift-data/src/models/models_0.ts#L805)(without `Sql` and `Parameters`).
