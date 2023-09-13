@@ -2,10 +2,15 @@ import { RedShiftDataSource } from '../src';
 import { RedShiftFakeServer } from './redshiftServer';
 import { streamToArray } from '@vulcan-sql/core';
 
-const redShift = new RedShiftFakeServer();
+let redShift: RedShiftFakeServer;
 let dataSource: RedShiftDataSource;
 
-it('Data source should be activate without any error when all profiles are valid', async () => {
+// All tests in this file are skipped, since it costs money in AWS. As of now, we only run tests in the local environment.
+it.skip('Preparing the data source', async () => {
+  redShift = new RedShiftFakeServer();
+});
+
+it.skip('Data source should be activate without any error when all profiles are valid', async () => {
   // Arrange
   dataSource = new RedShiftDataSource({}, '', [redShift.getProfile('profile1')]);
 
@@ -13,7 +18,7 @@ it('Data source should be activate without any error when all profiles are valid
   await expect(dataSource.activate()).resolves.not.toThrow();
 });
 
-it('Data source should throw error when activating any profile which is invalid', async () => {
+it.skip('Data source should throw error when activating any profile which is invalid', async () => {
   // Arrange
   const invalidProfile = redShift.getProfile('profile1');
   invalidProfile.connection.credentials.accessKeyId = '';
@@ -26,7 +31,7 @@ it('Data source should throw error when activating any profile which is invalid'
   await expect(dataSource.activate()).rejects.toThrow();
 });
 
-it('Data source should return correct rows with 2 chunks', async () => {
+it.skip('Data source should return correct rows with 2 chunks', async () => {
   // Arrange
   dataSource = new RedShiftDataSource({}, '', [redShift.getProfile('profile1')]);
   await dataSource.activate();
@@ -57,7 +62,7 @@ it('Data source should return correct rows with 2 chunks', async () => {
   expect(rows.length).toBe(9);
 }, 30000);
 
-it('Data source should return correct rows with 1 chunk', async () => {
+it.skip('Data source should return correct rows with 1 chunk', async () => {
   // Arrange
   dataSource = new RedShiftDataSource({}, '', [redShift.getProfile('profile1')]);
   await dataSource.activate();
@@ -89,7 +94,7 @@ it('Data source should return correct rows with 1 chunk', async () => {
   expect(rows.length).toBe(5);
 }, 30000);
 
-it('Data source should return empty data with no row', async () => {
+it.skip('Data source should return empty data with no row', async () => {
   // Arrange
   dataSource = new RedShiftDataSource({}, '', [redShift.getProfile('profile1')]);
   await dataSource.activate();
@@ -121,7 +126,7 @@ it('Data source should return empty data with no row', async () => {
   expect(rows.length).toBe(0);
 }, 30000);
 
-it('Data source should work with prepare statements', async () => {
+it.skip('Data source should work with prepare statements', async () => {
   // Arrange
   dataSource = new RedShiftDataSource({}, '', [redShift.getProfile('profile1')]);
   await dataSource.activate();
@@ -153,7 +158,7 @@ it('Data source should work with prepare statements', async () => {
   expect(rows[0].v2).toBe('456');
 }, 30000);
 
-it('Data source should return correct column types', async () => {
+it.skip('Data source should return correct column types', async () => {
   // Arrange
   dataSource = new RedShiftDataSource({}, '', [redShift.getProfile('profile1')]);
   await dataSource.activate();

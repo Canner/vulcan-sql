@@ -51,3 +51,22 @@ To run test, the following environment variables are required:
 - AWS_SECRET_ACCESS_KEY
 - AWS_REDSHIFT_DATABASE
 - AWS_REDSHIFT_WORKGROUP_NAME
+
+Local Testing Success Message:(Since the tests run in CI are disabled, so I paste the local testing result here!)
+
+```bash
+ PASS   extension-driver-redshift  packages/extension-driver-redshift/test/redshiftDataSource.spec.ts (41.595 s)
+
+Test Suites: 2 passed, 2 total
+Tests:       15 passed, 15 total
+Snapshots:   0 total
+Time:        42.048 s
+Ran all test suites.
+
+ —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+ >  NX   Successfully ran target test for project extension-driver-redshift
+
+
+✨  Done in 44.39s.
+```
