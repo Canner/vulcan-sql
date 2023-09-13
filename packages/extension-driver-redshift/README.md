@@ -19,7 +19,7 @@ reference: https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-redshif
     redshift: '@vulcan-sql/extension-driver-redshift'
   ```
 
-3. Create a new profile in `profiles.yaml` or in your profiles' paths.
+3. Create a new profile in `profiles.yaml` or in your profiles' paths. For example if you are using Redshift Serverless:
 
 ```yaml
 - name: redshift # profile name
@@ -29,11 +29,11 @@ reference: https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-redshif
     # please see the type definition of RedshiftDataClientConfig
     # https://github.com/aws/aws-sdk-js-v3/blob/29056f4ca545f7e5cf951b915bb52178305fc305/clients/client-redshift-data/src/RedshiftDataClient.ts#L253C18-L253C42
     credentials:
-      accessKeyId: <REDSHIFT_ACCESS_KEY_ID>
-      secretAccessKey: <REDSHIFT_SECRET_ACCESS_KEY>
+      accessKeyId: <AWS_ACCESS_KEY_ID>
+      secretAccessKey: <AWS_SECRET_ACCESS_KEY>
     # please see the type definition of ExecuteStatementCommandInput(omit Sql and Parameters)
     # https://github.com/aws/aws-sdk-js-v3/blob/29056f4ca545f7e5cf951b915bb52178305fc305/clients/client-redshift-data/src/models/models_0.ts#L805C18-L805C39
-    Database: <REDSHIFT_DATABASE>
+    Database: <AWS_REDSHIFT_DATABASE>
     WorkgroupName: <AWS_REDSHIFT_WORKGROUP_NAME>
 ```
 
