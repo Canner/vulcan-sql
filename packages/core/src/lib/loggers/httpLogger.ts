@@ -7,7 +7,7 @@ import {
   VulcanInternalExtension,
 } from '../../models/extensions';
 import axios, { AxiosRequestHeaders } from 'axios';
-import { ConnectionConfig } from '../utils/url';
+import { ConnectionConfig, getUrl } from '../utils/url';
 
 export interface HttpLoggerConfig {
   connection?: HttpLoggerConnectionConfig;
@@ -29,7 +29,7 @@ export class HttpLogger extends BaseActivityLogger<HttpLoggerConfig> {
       throw new Error('Http logger connection should be provided');
     }
     const headers = option.connection.headers;
-    const url = this.getUrl(option.connection);
+    const url = getUrl(option.connection);
     try {
       // get connection info from option and use axios to send a post requet to the endpoint
       await this.sendActivityLog(url, payload, headers);
@@ -42,20 +42,13 @@ export class HttpLogger extends BaseActivityLogger<HttpLoggerConfig> {
     }
   }
 
-  protected sendActivityLog = async (
+  protected async sendActivityLog(
     url: string,
     payload: any,
     headers: AxiosRequestHeaders | undefined
-  ): Promise<void> => {
+  ): Promise<void> {
     await axios.post(url, payload, {
       headers: headers,
     });
-  };
-
-  protected getUrl = (connection: HttpLoggerConnectionConfig): string => {
-    const { ssl, host, port, path = '' } = connection;
-    const protocol = ssl ? 'https' : 'http';
-    const urlbase = `${protocol}://${host}:${port}`;
-    return new URL(path, urlbase).href;
-  };
+  }
 }

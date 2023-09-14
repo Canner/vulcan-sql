@@ -100,7 +100,6 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
   ) {
     const { urlPath } = schema;
     const { sql } = cache;
-    // if fn is not a function, return
     let refreshResult = RefreshResult.SUCCESS;
     const now = moment.utc().format('YYYY-MM-DD HH:mm:ss');
     const templateName = schema.templateSource.replace('/', '_');

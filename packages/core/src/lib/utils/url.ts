@@ -1,8 +1,8 @@
 export interface ConnectionConfig {
-  ssl?: boolean | undefined;
-  host?: string | undefined;
+  ssl?: boolean;
+  host?: string;
   port?: number | string;
-  path?: string | undefined;
+  path?: string;
 }
 
 export const getUrl = (connection: ConnectionConfig): string => {
