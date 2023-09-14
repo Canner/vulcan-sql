@@ -80,6 +80,7 @@ describe('Test activity log middlewares', () => {
       activityLogType: ActivityLogType.API_REQUEST,
       method: ctx.request.method,
       url: ctx.request.originalUrl,
+      href: ctx.request.href,
       status: ctx.response.status,
       headers: ctx.request.headers,
       error: undefined,
@@ -101,6 +102,7 @@ describe('Test activity log middlewares', () => {
     expect(actual[0].activityLogType).toEqual(expected.activityLogType);
     expect(actual[0].method).toEqual(expected.method);
     expect(actual[0].url).toEqual(expected.url);
+    expect(actual[0].href).toEqual(expected.href);
     expect(actual[0].status).toEqual(expected.status);
     expect(actual[0].headers).toEqual(expected.headers);
     expect(actual[0].ip).toEqual(expected.ip);
@@ -154,6 +156,7 @@ describe('Test activity log middlewares', () => {
       activityLogType: ActivityLogType.API_REQUEST,
       method: ctx.request.method,
       url: ctx.request.originalUrl,
+      href: ctx.request.href,
       status: ctx.response.status,
       headers: ctx.request.headers,
       error: body.message,
@@ -175,6 +178,7 @@ describe('Test activity log middlewares', () => {
     expect(actual[0].activityLogType).toEqual(expected.activityLogType);
     expect(actual[0].method).toEqual(expected.method);
     expect(actual[0].url).toEqual(expected.url);
+    expect(actual[0].href).toEqual(expected.href);
     expect(actual[0].status).toEqual(expected.status);
     expect(actual[0].headers).toEqual(expected.headers);
     expect(actual[0].ip).toEqual(expected.ip);

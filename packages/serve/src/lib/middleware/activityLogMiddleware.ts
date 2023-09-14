@@ -52,6 +52,7 @@ export class ActivityLogMiddleware extends BuiltInMiddleware<IActivityLoggerOpti
       duration,
       method: context.request.method,
       url: context.request.originalUrl,
+      href: context.request.href,
       ip: context.request.ip,
       header: context.request.header,
       params: context.params,
