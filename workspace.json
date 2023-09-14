@@ -6,7 +6,9 @@
     "cli": "packages/cli",
     "core": "packages/core",
     "doc": "packages/doc",
+    "extension-api-caller": "packages/extension-api-caller",
     "extension-authenticator-canner": "packages/extension-authenticator-canner",
+    "extension-authenticator-oidc": "packages/extension-authenticator-oidc",
     "extension-dbt": "packages/extension-dbt",
     "extension-debug-tools": "packages/extension-debug-tools",
     "extension-driver-bq": "packages/extension-driver-bq",
@@ -19,7 +21,6 @@
     "extension-driver-snowflake": "packages/extension-driver-snowflake",
     "extension-huggingface": "packages/extension-huggingface",
     "extension-store-canner": "packages/extension-store-canner",
-    "extension-api-caller": "packages/extension-api-caller",
     "integration-testing": "packages/integration-testing",
     "serve": "packages/serve",
     "test-utility": "packages/test-utility"

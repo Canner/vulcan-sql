@@ -1,0 +1,32 @@
+{
+  "root": "packages/extension-authenticator-oidc",
+  "sourceRoot": "packages/extension-authenticator-oidc/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/extension-authenticator-oidc",
+        "main": "packages/extension-authenticator-oidc/src/index.ts",
+        "tsConfig": "packages/extension-authenticator-oidc/tsconfig.lib.json",
+        "assets": ["packages/extension-authenticator-oidc/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/extension-authenticator-oidc/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/extension-authenticator-oidc"],
+      "options": {
+        "jestConfig": "packages/extension-authenticator-oidc/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
