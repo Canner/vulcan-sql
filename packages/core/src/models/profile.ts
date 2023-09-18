@@ -32,11 +32,3 @@ export interface Profile<C = Record<string, any>> {
   /** Properties that can be used when involking the dataSource method */
   properties?: Record<string, any>;
 }
-
-// profile : by connection/pool/client setting 的變動
-// vulcan.yaml: by project 設定
-// api.yaml: by api/cache 執行設定
-
-// => use additional information when refreshing cache
-// => the userId changed by each api
-// => the root_user_id changed by project
