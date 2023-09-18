@@ -22,7 +22,6 @@ export class CacheLayerLoader implements ICacheLayerLoader {
   private options: ICacheLayerOptions;
   private cacheStorage: DataSource;
   private logger = getLogger({ scopeName: 'CORE' });
-
   constructor(
     @inject(TYPES.CacheLayerOptions) options: CacheLayerOptions,
     @inject(TYPES.Factory_DataSource)

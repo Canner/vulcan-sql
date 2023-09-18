@@ -7,6 +7,7 @@ export * from './response-format';
 export * from './enforceHttpsMiddleware';
 export * from './docRouterMiddleware';
 export * from './errorHandlerMIddleware';
+export * from './activityLogMiddleware';
 
 import { CorsMiddleware } from './corsMiddleware';
 import {
@@ -23,10 +24,12 @@ import { ClassType, ExtensionBase } from '@vulcan-sql/core';
 import { DocRouterMiddleware } from './docRouterMiddleware';
 import { ErrorHandlerMiddleware } from './errorHandlerMIddleware';
 import { CatalogRouterMiddleware } from './catalogRouterMiddleware';
+import { ActivityLogMiddleware } from './activityLogMiddleware';
 
 // The array is the middleware running order
 export const BuiltInRouteMiddlewares: ClassType<ExtensionBase>[] = [
   RequestIdMiddleware,
+  ActivityLogMiddleware,
   ErrorHandlerMiddleware,
   AccessLogMiddleware,
   CorsMiddleware,

@@ -3,6 +3,7 @@ import { ExtensionLoader } from '../../lib/extension-loader';
 import { ICoreOptions } from '../../models/coreOptions';
 import templateEngineModules from '../../lib/template-engine/built-in-extensions';
 import validatorModule from '../../lib/validators/built-in-validators';
+import LoggerModule from '../../lib/loggers';
 import {
   builtInCodeLoader,
   builtInTemplateProvider,
@@ -23,6 +24,7 @@ export const extensionModule = (options: ICoreOptions) =>
     for (const templateEngineModule of templateEngineModules) {
       loader.loadInternalExtensionModule(templateEngineModule);
     }
+    loader.loadInternalExtensionModule(LoggerModule);
     // Validator (single module)
     loader.loadInternalExtensionModule(validatorModule);
     // Template provider (single module)

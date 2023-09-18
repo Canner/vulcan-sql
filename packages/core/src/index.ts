@@ -1,5 +1,6 @@
 export * from './lib/utils';
 export * from './lib/validators';
+export * from './lib/loggers';
 export * from './lib/template-engine';
 export * from './lib/artifact-builder';
 export * from './lib/data-query';

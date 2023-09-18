@@ -76,7 +76,7 @@ export class CannerPATAuthenticator extends BaseAuthenticator<CannerPATOptions> 
           operationName: 'UserMe',
           variables: {},
           query:
-            'query UserMe{userMe {accountRole attributes createdAt email groups {id name} lastName firstName username}}',
+            'query UserMe{userMe {id accountRole attributes createdAt email groups {id name} lastName firstName username}}',
         },
         {
           headers: {
