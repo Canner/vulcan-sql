@@ -118,6 +118,8 @@ export class CacheLayerInfo {
   indexes?: Record<string, string>;
   // cache folder subpath
   folderSubpath?: string;
+  // options pass to the data source
+  options?: any;
 }
 
 export class APISchema {

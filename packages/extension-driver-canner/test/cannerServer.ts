@@ -20,6 +20,7 @@ export class CannerServer {
         database: process.env['CANNER_WORKSPACE_SQL_NAME'],
       } as PGOptions,
       allow: '*',
+      properties: {},
     };
   }
 }

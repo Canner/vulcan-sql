@@ -26,7 +26,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
   private logger = this.getLogger();
   protected poolMapping = new Map<
     string,
-    { pool: Pool; options?: PGOptions }
+    { pool: Pool; options?: PGOptions; properties?: Record<string, any> }
   >();
   protected UserPool = new Map<string, Pool>();
 
@@ -52,6 +52,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
       this.poolMapping.set(profile.name, {
         pool,
         options: profile.connection,
+        properties: profile.properties,
       });
       this.logger.debug(`Profile ${profile.name} initialized`);
     }
@@ -61,6 +62,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     sql,
     directory,
     profileName,
+    options: cannerOptions,
   }: ExportOptions): Promise<void> {
     if (!this.poolMapping.has(profileName)) {
       throw new InternalError(`Profile instance ${profileName} not found`);
@@ -69,12 +71,16 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     if (!fs.existsSync(directory)) {
       throw new InternalError(`Directory ${directory} not found`);
     }
-    const { options: connection } = this.poolMapping.get(profileName)!;
-
+    const { options: connection, properties } =
+      this.poolMapping.get(profileName)!;
     const cannerAdapter = new CannerAdapter(connection);
     try {
       this.logger.debug('Send the async query to the Canner Enterprise');
-      const presignedUrls = await cannerAdapter.createAsyncQueryResultUrls(sql);
+      const header = this.getCannerRequestHeader(properties, cannerOptions);
+      const presignedUrls = await cannerAdapter.createAsyncQueryResultUrls(
+        sql,
+        header
+      );
       this.logger.debug(
         'Start fetching the query result parquet files from URLs'
       );
@@ -84,6 +90,21 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
       this.logger.debug('Failed to export data from canner', error);
       throw error;
     }
+  }
+  private getCannerRequestHeader(
+    properties?: Record<string, any>,
+    cannerOptions?: any
+  ) {
+    const header: Record<string, string> = {};
+    const userId = cannerOptions?.userId;
+    const rootUserId = properties?.['rootUserId'];
+    if (userId && rootUserId) {
+      header[
+        'x-trino-session'
+      ] = `root_user_id=${rootUserId}, canner_user_id=${userId}`;
+      this.logger.debug(`Impersonate used: ${userId}`);
+    }
+    return header;
   }
 
   private async downloadFiles(urls: string[], directory: string) {
