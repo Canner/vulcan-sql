@@ -19,6 +19,8 @@ export interface ExportOptions {
   directory: string;
   // The profile name to select to export data
   profileName: string;
+  // data source options
+  options?: any;
   // export file format type
   type: CacheLayerStoreFormatType | string;
 }

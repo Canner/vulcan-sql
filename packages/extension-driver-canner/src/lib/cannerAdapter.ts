@@ -31,7 +31,10 @@ export class CannerAdapter {
   // When querying Canner enterprise, the Canner enterprise will save the query result as parquet files,
   // and store them in S3. This method will return the S3 urls of the query result.
   // For more Canner API ref: https://docs.cannerdata.com/reference/restful
-  public async createAsyncQueryResultUrls(sql: string): Promise<string[]> {
+  public async createAsyncQueryResultUrls(
+    sql: string,
+    headers?: Record<string, string>
+  ): Promise<string[]> {
     this.logger.debug(`Create async request to Canner.`);
     let data = await this.getWorkspaceRequestData('post', '/v2/async-queries', {
       data: {
@@ -39,6 +42,7 @@ export class CannerAdapter {
         timeout: 600,
         noLimit: true,
       },
+      headers,
     });
 
     const { id: requestId } = data;
@@ -60,12 +64,14 @@ export class CannerAdapter {
   private async getWorkspaceRequestData(
     method: string,
     urlPath: string,
-    options?: Record<string, any>
+    options?: Record<string, any>,
+    headers?: Record<string, string>
   ) {
     await this.prepare();
     try {
       const response = await axios({
         headers: {
+          ...headers,
           Authorization: `Token ${this.PAT}`,
         },
         params: {
