@@ -55,6 +55,7 @@ it('Data source should export successfully', async () => {
       sql: 'select 1',
       directory,
       profileName: 'profile1',
+      options: {},
     } as ExportOptions)
   ).resolves.not.toThrow();
   expect(fs.readdirSync(directory).length).toBe(1);
@@ -86,6 +87,7 @@ it('Data source should throw error when fail to export data', async () => {
       sql: 'select 1',
       directory,
       profileName: 'profile1',
+      options: {},
     } as ExportOptions)
   ).rejects.toThrow();
   expect(fs.readdirSync(directory).length).toBe(0);
@@ -105,6 +107,7 @@ it('Data source should throw error when given directory is not exist', async () 
       sql: 'select 1',
       directory: directory,
       profileName: 'profile1',
+      options: {},
     } as ExportOptions)
   ).rejects.toThrow();
 }, 100000);
@@ -121,6 +124,7 @@ it('Data source should throw error when given profile name is not exist', async 
       sql: 'select 1',
       directory,
       profileName: 'profile not exist',
+      options: {},
     } as ExportOptions)
   ).rejects.toThrow();
 }, 100000);

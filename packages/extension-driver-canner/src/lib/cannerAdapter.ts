@@ -36,14 +36,18 @@ export class CannerAdapter {
     headers?: Record<string, string>
   ): Promise<string[]> {
     this.logger.debug(`Create async request to Canner.`);
-    let data = await this.getWorkspaceRequestData('post', '/v2/async-queries', {
-      data: {
-        sql,
-        timeout: 600,
-        noLimit: true,
+    let data = await this.getWorkspaceRequestData(
+      'post',
+      '/v2/async-queries',
+      {
+        data: {
+          sql,
+          timeout: 600,
+          noLimit: true,
+        },
       },
-      headers,
-    });
+      headers
+    );
 
     const { id: requestId } = data;
     this.logger.debug(`Wait Async request to finished.`);
@@ -70,10 +74,7 @@ export class CannerAdapter {
     await this.prepare();
     try {
       const response = await axios({
-        headers: {
-          ...headers,
-          Authorization: `Token ${this.PAT}`,
-        },
+        headers: { ...headers, Authorization: `Token ${this.PAT}` },
         params: {
           workspaceSqlName: this.workspaceSqlName,
         },
@@ -84,7 +85,9 @@ export class CannerAdapter {
       return response.data;
     } catch (error: any) {
       const message = error.response
-        ? `response status: ${error.response.status}, response data: ${error.response.data}`
+        ? `response status: ${
+            error.response.status
+          }, response data: ${JSON.stringify(error.response.data)}`
         : `remote server does not response. request ${error.toJSON()}}`;
       throw new InternalError(
         `Failed to get workspace request "${urlPath}" data, ${message}`

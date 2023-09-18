@@ -98,6 +98,7 @@ describe('Test CannerProfileReader', () => {
 
       sinon.default.stub(configModule, 'getEnvConfig').returns({
         storage: sinon.stubInterface<configModule.StorageServiceOptions>(),
+        properties: {},
         profile: {
           host,
           password,
@@ -164,6 +165,7 @@ describe('Test CannerProfileReader', () => {
 
     sinon.default.stub(configModule, 'getEnvConfig').returns({
       storage: sinon.stubInterface<configModule.StorageServiceOptions>(),
+      properties: {},
       profile: {
         ...connectionInfo,
       },

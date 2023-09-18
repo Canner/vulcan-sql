@@ -62,7 +62,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     sql,
     directory,
     profileName,
-    options: cannerpOtions,
+    options: cannerOptions,
   }: ExportOptions): Promise<void> {
     if (!this.poolMapping.has(profileName)) {
       throw new InternalError(`Profile instance ${profileName} not found`);
@@ -76,7 +76,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     const cannerAdapter = new CannerAdapter(connection);
     try {
       this.logger.debug('Send the async query to the Canner Enterprise');
-      const header = this.getCannerRequestHeader(properties, cannerpOtions);
+      const header = this.getCannerRequestHeader(properties, cannerOptions);
       const presignedUrls = await cannerAdapter.createAsyncQueryResultUrls(
         sql,
         header
@@ -96,7 +96,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     cannerOptions?: any
   ) {
     const header: Record<string, string> = {};
-    const { userId } = cannerOptions;
+    const userId = cannerOptions?.userId;
     const rootUserId = properties?.['rootUserId'];
     if (userId && rootUserId) {
       header[
