@@ -72,14 +72,14 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
               const refreshJob = new SimpleIntervalJob(
                 { milliseconds, runImmediately },
                 new AsyncTask(workerId, async () => {
-                  await this.sendActivityLogAfterLoad(schema, cache);
+                  await this.loadCacheAndSendActivityLog(schema, cache);
                 }),
                 { preventOverrun: true, id: workerId }
               );
               // add the job to schedule cache refresh task
               this.scheduler.addIntervalJob(refreshJob);
             } else {
-              await this.sendActivityLogAfterLoad(schema, cache);
+              await this.loadCacheAndSendActivityLog(schema, cache);
             }
           })
         );
@@ -94,7 +94,7 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
     this.scheduler.stop();
   }
 
-  private async sendActivityLogAfterLoad(
+  private async loadCacheAndSendActivityLog(
     schema: APISchema,
     cache: CacheLayerInfo
   ) {
