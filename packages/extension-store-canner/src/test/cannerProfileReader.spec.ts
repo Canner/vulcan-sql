@@ -120,6 +120,7 @@ describe('Test CannerProfileReader', () => {
       user: 'canner',
       password: 'secret-password',
       port: 7432,
+      max: 10,
     };
     const expected = [
       {
@@ -129,6 +130,9 @@ describe('Test CannerProfileReader', () => {
           ...connectionInfo,
           database: fakeWorkspaces.ws1.sqlName,
         },
+        properties: {
+          rootUserId: 'fakeRootUserId',
+        },
         allow: '*',
       },
       {
@@ -137,6 +141,9 @@ describe('Test CannerProfileReader', () => {
         connection: {
           ...connectionInfo,
           database: fakeWorkspaces.ws2.sqlName,
+        },
+        properties: {
+          rootUserId: 'fakeRootUserId',
         },
         allow: '*',
       },
@@ -165,7 +172,9 @@ describe('Test CannerProfileReader', () => {
 
     sinon.default.stub(configModule, 'getEnvConfig').returns({
       storage: sinon.stubInterface<configModule.StorageServiceOptions>(),
-      properties: {},
+      properties: {
+        rootUserId: 'fakeRootUserId',
+      },
       profile: {
         ...connectionInfo,
       },

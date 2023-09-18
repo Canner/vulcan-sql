@@ -70,7 +70,7 @@ export const getEnvConfig = (): CannerStoreConfig => {
         Number(process.env['PROFILE_CANNER_DRIVER_CONNECTION_POOL_MAX']) || 10,
     },
     properties: {
-      rootUserId: process.env['PROFILE_ROOT_USER_ID'],
+      rootUserId: process.env['PROFILE_CANNER_DRIVER_ROOT_USER_ID'],
     },
     storage: {
       provider: process.env['STORAGE_PROVIDER'],
