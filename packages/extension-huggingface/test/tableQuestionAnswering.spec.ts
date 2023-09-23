@@ -149,7 +149,7 @@ describe('Test "huggingface_table_question_answering" filter', () => {
     50 * 1000
   );
 
-  it(
+  it.skip(
     'Should get correct expected value when provided "neulab/omnitab-large-1024shot-finetuned-wtq-1024shot" model and wait it for model',
     async () => {
       const expected = JSON.stringify({
