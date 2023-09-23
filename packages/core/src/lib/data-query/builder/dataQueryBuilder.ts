@@ -3,6 +3,7 @@ import {
   Pagination,
   DataResult,
   isOffsetPagination,
+  IncomingHttpHeaders,
 } from '@vulcan-sql/core/models';
 import * as uuid from 'uuid';
 import { find, isEmpty, isNull, isUndefined } from 'lodash';
@@ -411,6 +412,7 @@ export interface IDataQueryBuilder {
   take(size: number, move: number): IDataQueryBuilder;
   // paginate
   paginate(pagination: Pagination): void;
+  setHeaders(headers: IncomingHttpHeaders): void;
   value(): Promise<DataResult>;
   clone(): IDataQueryBuilder;
   parameterizeOperations(): Promise<Partial<Parameterized<SQLClauseOperation>>>;
@@ -425,6 +427,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
   public readonly identifier: string;
   private profileName: string;
   private parameterizer: IParameterizer;
+  private headers: IncomingHttpHeaders;
 
   constructor({
     statement,
@@ -432,12 +435,14 @@ export class DataQueryBuilder implements IDataQueryBuilder {
     parameterizer,
     dataSource,
     profileName,
+    headers,
   }: {
     statement: string;
     operations?: SQLClauseOperation;
     parameterizer: IParameterizer;
     dataSource: DataSource;
     profileName: string;
+    headers: IncomingHttpHeaders;
   }) {
     this.identifier = uuid.v4();
     this.statement = statement;
@@ -453,6 +458,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
       limit: null,
       offset: null,
     };
+    this.headers = headers;
     this.profileName = profileName;
   }
 
@@ -647,6 +653,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
       dataSource: this.dataSource,
       parameterizer: this.parameterizer,
       profileName: this.profileName,
+      headers: this.headers,
     });
     builderCallback(wrappedBuilder);
     this.recordWhere({
@@ -1096,6 +1103,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
       operations: this.operations,
       parameterizer: this.parameterizer.clone(),
       profileName: this.profileName,
+      headers: this.headers,
     });
   }
 
@@ -1105,6 +1113,11 @@ export class DataQueryBuilder implements IDataQueryBuilder {
       throw new InternalError(`Only offset pagination is supported`);
     }
     this.take(pagination.limit, pagination.offset);
+  }
+
+  public setHeaders(headers: IncomingHttpHeaders) {
+    if (!headers) return;
+    this.headers = headers;
   }
 
   public async parameterizeOperations(): Promise<
@@ -1127,6 +1140,7 @@ export class DataQueryBuilder implements IDataQueryBuilder {
       operations: await this.parameterizeOperations(),
       bindParams: this.parameterizer.getBinding(),
       profileName: this.profileName,
+      headers: this.headers,
     });
 
     return result;

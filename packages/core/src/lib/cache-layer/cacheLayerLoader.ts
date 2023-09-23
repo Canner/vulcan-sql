@@ -22,7 +22,6 @@ export class CacheLayerLoader implements ICacheLayerLoader {
   private options: ICacheLayerOptions;
   private cacheStorage: DataSource;
   private logger = getLogger({ scopeName: 'CORE' });
-
   constructor(
     @inject(TYPES.CacheLayerOptions) options: CacheLayerOptions,
     @inject(TYPES.Factory_DataSource)
@@ -43,7 +42,14 @@ export class CacheLayerLoader implements ICacheLayerLoader {
     templateName: string,
     cache: CacheLayerInfo
   ): Promise<void> {
-    const { cacheTableName, sql, profile, indexes, folderSubpath } = cache;
+    const {
+      cacheTableName,
+      sql,
+      profile,
+      indexes,
+      folderSubpath,
+      options: cacheOptions,
+    } = cache;
     const type = this.options.type!;
     const dataSource = this.dataSourceFactory(profile);
 
@@ -82,6 +88,7 @@ export class CacheLayerLoader implements ICacheLayerLoader {
         directory,
         profileName: profile,
         type,
+        options: cacheOptions,
       });
     } else {
       this.logger.debug(

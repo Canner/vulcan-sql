@@ -29,4 +29,6 @@ export interface Profile<C = Record<string, any>> {
   cache?: C;
   /** What users have access to this profile */
   allow: ProfileAllowConstraints;
+  /** Properties that can be used when involking the dataSource method */
+  properties?: Record<string, any>;
 }

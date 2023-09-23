@@ -8,7 +8,7 @@ import {
   RequestParameter,
   VulcanExtensionId,
 } from '@vulcan-sql/core';
-import { Pool, PoolConfig, QueryResult } from 'pg';
+import { Pool, PoolClient, PoolConfig, QueryResult } from 'pg';
 import * as Cursor from 'pg-cursor';
 import { Readable } from 'stream';
 import { buildSQL } from './sqlBuilder';
@@ -24,7 +24,11 @@ export interface PGOptions extends PoolConfig {
 @VulcanExtensionId('canner')
 export class CannerDataSource extends DataSource<any, PGOptions> {
   private logger = this.getLogger();
-  private poolMapping = new Map<string, { pool: Pool; options?: PGOptions }>();
+  protected poolMapping = new Map<
+    string,
+    { pool: Pool; options?: PGOptions; properties?: Record<string, any> }
+  >();
+  protected UserPool = new Map<string, Pool>();
 
   public override async onActivate() {
     const profiles = this.getProfiles().values();
@@ -48,6 +52,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
       this.poolMapping.set(profile.name, {
         pool,
         options: profile.connection,
+        properties: profile.properties,
       });
       this.logger.debug(`Profile ${profile.name} initialized`);
     }
@@ -57,6 +62,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     sql,
     directory,
     profileName,
+    options: cannerOptions,
   }: ExportOptions): Promise<void> {
     if (!this.poolMapping.has(profileName)) {
       throw new InternalError(`Profile instance ${profileName} not found`);
@@ -65,12 +71,16 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     if (!fs.existsSync(directory)) {
       throw new InternalError(`Directory ${directory} not found`);
     }
-    const { options: connection } = this.poolMapping.get(profileName)!;
-
+    const { options: connection, properties } =
+      this.poolMapping.get(profileName)!;
     const cannerAdapter = new CannerAdapter(connection);
     try {
       this.logger.debug('Send the async query to the Canner Enterprise');
-      const presignedUrls = await cannerAdapter.createAsyncQueryResultUrls(sql);
+      const header = this.getCannerRequestHeader(properties, cannerOptions);
+      const presignedUrls = await cannerAdapter.createAsyncQueryResultUrls(
+        sql,
+        header
+      );
       this.logger.debug(
         'Start fetching the query result parquet files from URLs'
       );
@@ -80,6 +90,21 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
       this.logger.debug('Failed to export data from canner', error);
       throw error;
     }
+  }
+  private getCannerRequestHeader(
+    properties?: Record<string, any>,
+    cannerOptions?: any
+  ) {
+    const header: Record<string, string> = {};
+    const userId = cannerOptions?.userId;
+    const rootUserId = properties?.['rootUserId'];
+    if (userId && rootUserId) {
+      header[
+        'x-trino-session'
+      ] = `root_user_id=${rootUserId}, canner_user_id=${userId}`;
+      this.logger.debug(`Impersonate used: ${userId}`);
+    }
+    return header;
   }
 
   private async downloadFiles(urls: string[], directory: string) {
@@ -108,15 +133,16 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     bindParams,
     profileName,
     operations,
+    headers,
   }: ExecuteOptions): Promise<DataResult> {
-    if (!this.poolMapping.has(profileName)) {
-      throw new InternalError(`Profile instance ${profileName} not found`);
-    }
-    const { pool, options } = this.poolMapping.get(profileName)!;
-    this.logger.debug(`Acquiring connection from ${profileName}`);
-    const client = await pool.connect();
     this.logger.debug(`Acquired connection from ${profileName}`);
+    const { options } = this.poolMapping.get(profileName)!;
+    const auth = headers?.['authorization'];
+    const password = auth?.trim().split(' ')[1];
+    const pool = this.getPool(profileName, password);
+    let client: PoolClient | undefined;
     try {
+      client = await pool.connect();
       const builtSQL = buildSQL(sql, operations);
       const cursor = client.query(
         new Cursor(builtSQL, Array.from(bindParams.values()))
@@ -127,7 +153,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
         );
         // It is important to close the cursor before releasing connection, or the connection might not able to handle next request.
         await cursor.close();
-        client.release();
+        if (client) client.release();
       });
       // All promises MUST fulfilled in this function or we are not able to release the connection when error occurred
       return await this.getResultFromCursor(cursor, options);
@@ -135,7 +161,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
       this.logger.debug(
         `Errors occurred, release connection from ${profileName}`
       );
-      client.release();
+      if (client) client.release();
       throw e;
     }
   }
@@ -148,6 +174,33 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     for (const { pool } of this.poolMapping.values()) {
       await pool.end();
     }
+  }
+
+  // use protected to make it testable
+  protected getPool(profileName: string, password?: string): Pool {
+    if (!this.poolMapping.has(profileName)) {
+      throw new InternalError(`Profile instance ${profileName} not found`);
+    }
+    const { pool: defaultPool, options: poolOptions } =
+      this.poolMapping.get(profileName)!;
+    this.logger.debug(`Acquiring connection from ${profileName}`);
+    if (!password) {
+      return defaultPool;
+    }
+    const database = poolOptions?.database || '';
+    const userPoolKey = this.getUserPoolKey(password, database);
+    if (this.UserPool.has(userPoolKey)) {
+      const userPool = this.UserPool.get(userPoolKey);
+      return userPool!;
+    }
+    const pool = new Pool({ ...poolOptions, password: password });
+    this.UserPool.set(userPoolKey, pool);
+    return pool;
+  }
+
+  // use protected to make it testable
+  protected getUserPoolKey(pat: string, database?: string) {
+    return `${pat}-${database}`;
   }
 
   private async getResultFromCursor(

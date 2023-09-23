@@ -63,6 +63,8 @@ export PROFILE_CANNER_DRIVER_PASSWORD=<password>
 export PROFILE_CANNER_DRIVER_HOST=<host>
 # Canner enterprise driver port, the default is 7432
 export PROFILE_CANNER_DRIVER_PORT=<port>
+# Canner enterprise root user id
+export PROFILE_CANNER_DRIVER_ROOT_USER_ID=<userId>
 ```
 
 ### Connect Canner Enterprise used storage.

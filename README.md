@@ -19,27 +19,31 @@
     <img alt="" src="https://img.shields.io/badge/-@vulcansql-orange?style=for-the-badge&logo=twitter&logoColor=white&labelColor=gray&logoWidth=20">
   </a>
   <a href="https://img.shields.io/codecov/c/gh/Canner/vulcan-sql" > 
-    <img alt="" src="https://img.shields.io/codecov/c/gh/Canner/vulcan-sql?style=for-the-badge&labelColor=gray&logoColor=white&logoWidth=20"/> 
+    <img alt="" src="https://img.shields.io/codecov/c/gh/Canner/vulcan-sql?style=for-the-badge&color=orange&labelColor=gray&logoColor=white&logoWidth=20"/> 
   </a>
 </p>
 
-## What is VulcanSQL
+## What is VulcanSQL?
 
-**[VulcanSQL](https://vulcansql.com/) is a Data API Framework for data applications** that helps data folks create and share data APIs faster. It turns your SQL templates into data APIs. No backend skills required.
+**[VulcanSQL](https://vulcansql.com/) is an Analytical Data API Framework for data apps**. It aims to help data professionals deliver RESTful APIs from databases, data warehouses or data lakes much easier and faster. It turns your SQL queries into REST APIs in no time!
 
 ![overview of VulcanSQL](https://i.imgur.com/JvCIZQ1.png)
+
+## What Problems does VulcanSQL aim to solve?
+
+Given the vast amount of analytical data in databases, data warehouses, and data lakes, there is currently no easy method for data professionals to share data with relevant stakeholders for operational business use cases.
 
 ## Online Playground
 
 Use [Online Playground](https://codesandbox.io/p/sandbox/vulcansql-demo-wfd834) to get a taste of VulcanSQL!
 
-## Examples
-
-Need Inspiration?! Discover a [selected compilation of examples](https://github.com/Canner/vulcan-sql-examples) showcasing the use of VulcanSQL!
-
 ## Installation
 
 Please visit [the installation guide](https://vulcansql.com/docs/get-started/installation).
+
+## Examples
+
+Need inspiration? Here are a [selected compilation of examples](https://github.com/Canner/vulcan-sql-examples) showcasing how you can use VulcanSQL!
 
 ## How VulcanSQL works?
 
@@ -49,7 +53,7 @@ VulcanSQL offers a development experience similar to dbt. Just insert variables 
 
 🚀 **Accelerate**
 
-VulcanSQL uses DuckDB as a caching layer, boosting your query speed and API response time . This means faster, smoother data APIs for you and less strain on your data sources.
+VulcanSQL uses DuckDB as a caching layer, boosting your query speed and reducing API response time. This means faster, smoother data APIs for you and less strain on your data sources.
 
 🔥 **Deploy**
 
@@ -82,7 +86,7 @@ Below are some common scenarios that you may be interested:
 
 👏 **Data sharing**: Sharing data with partners, vendors, or customers, which requires a secure and scalable way to expose data.
 
-⚙️ **Internal tools**: Integration with internal tools like AppSmith and Retools, etc.
+⚙️ **Internal tools**: Integration with internal tools like Zapier, AppSmith and Retools, etc.
 
 ## Community
 

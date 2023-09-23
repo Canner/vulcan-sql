@@ -31,15 +31,23 @@ export class CannerAdapter {
   // When querying Canner enterprise, the Canner enterprise will save the query result as parquet files,
   // and store them in S3. This method will return the S3 urls of the query result.
   // For more Canner API ref: https://docs.cannerdata.com/reference/restful
-  public async createAsyncQueryResultUrls(sql: string): Promise<string[]> {
+  public async createAsyncQueryResultUrls(
+    sql: string,
+    headers?: Record<string, string>
+  ): Promise<string[]> {
     this.logger.debug(`Create async request to Canner.`);
-    let data = await this.getWorkspaceRequestData('post', '/v2/async-queries', {
-      data: {
-        sql,
-        timeout: 600,
-        noLimit: true,
+    let data = await this.getWorkspaceRequestData(
+      'post',
+      '/v2/async-queries',
+      {
+        data: {
+          sql,
+          timeout: 600,
+          noLimit: true,
+        },
       },
-    });
+      headers
+    );
 
     const { id: requestId } = data;
     this.logger.debug(`Wait Async request to finished.`);
@@ -60,14 +68,13 @@ export class CannerAdapter {
   private async getWorkspaceRequestData(
     method: string,
     urlPath: string,
-    options?: Record<string, any>
+    options?: Record<string, any>,
+    headers?: Record<string, string>
   ) {
     await this.prepare();
     try {
       const response = await axios({
-        headers: {
-          Authorization: `Token ${this.PAT}`,
-        },
+        headers: { ...headers, Authorization: `Token ${this.PAT}` },
         params: {
           workspaceSqlName: this.workspaceSqlName,
         },
@@ -78,7 +85,9 @@ export class CannerAdapter {
       return response.data;
     } catch (error: any) {
       const message = error.response
-        ? `response status: ${error.response.status}, response data: ${error.response.data}`
+        ? `response status: ${
+            error.response.status
+          }, response data: ${JSON.stringify(error.response.data)}`
         : `remote server does not response. request ${error.toJSON()}}`;
       throw new InternalError(
         `Failed to get workspace request "${urlPath}" data, ${message}`

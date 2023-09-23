@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Parameterized, SQLClauseOperation } from '@vulcan-sql/core/data-query';
-import { CacheLayerStoreFormatType, Profile } from '@vulcan-sql/core/models';
+import {
+  CacheLayerStoreFormatType,
+  IncomingHttpHeaders,
+  Profile,
+} from '@vulcan-sql/core/models';
 import { TYPES } from '@vulcan-sql/core/types';
 import { inject, multiInject, optional } from 'inversify';
 import { Readable } from 'stream';
@@ -15,6 +19,8 @@ export interface ExportOptions {
   directory: string;
   // The profile name to select to export data
   profileName: string;
+  // data source options
+  options?: any;
   // export file format type
   type: CacheLayerStoreFormatType | string;
 }
@@ -58,6 +64,7 @@ export interface ExecuteOptions {
   /** The parameter bindings, we guarantee the order of the keys in the map is the same as the order when they were used in queries. */
   bindParams: BindParameters;
   profileName: string;
+  headers?: IncomingHttpHeaders;
 }
 
 export type PrepareParameterFunc = {

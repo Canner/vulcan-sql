@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { errorCode } from '@vulcan-sql/catalog-server/utils/errorCode';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
 
 enum API {
   Login = '/api/auth/login',
@@ -22,7 +25,7 @@ const handleError = ({ statusCode, errorMessage }) => {
 };
 
 export const axiosInstance = axios.create({
-  baseURL: process.env.API_URL || 'http://localhost:4200',
+  baseURL: publicRuntimeConfig.baseUrl,
   responseType: 'json',
   timeout: 30000,
   headers: {

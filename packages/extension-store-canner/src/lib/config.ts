@@ -1,6 +1,11 @@
 export interface CannerStoreConfig {
   storage: StorageServiceOptions;
+  properties: CannnerDriverProfileProperties;
   profile: CannerDriverProfileOptions;
+}
+
+export interface CannnerDriverProfileProperties {
+  rootUserId?: string;
 }
 
 export interface CannerDriverProfileOptions {
@@ -63,6 +68,9 @@ export const getEnvConfig = (): CannerStoreConfig => {
       port: Number(process.env['PROFILE_CANNER_DRIVER_PORT']) || 7432,
       max:
         Number(process.env['PROFILE_CANNER_DRIVER_CONNECTION_POOL_MAX']) || 10,
+    },
+    properties: {
+      rootUserId: process.env['PROFILE_CANNER_DRIVER_ROOT_USER_ID'],
     },
     storage: {
       provider: process.env['STORAGE_PROVIDER'],

@@ -47,16 +47,20 @@ export class ReqTagRunner extends TagRunner {
       .join('\n')
       .replace(/--.*(?:\n|$)|\/\*[\s\S]*?\*\//g, ''); // remove single-line comments and multi-line comments
 
+    const headers = metadata.getHeaders();
     let builder: IDataQueryBuilder | undefined;
     // Replace to put the directly query cache builder to original query main builder of  "__wrapper__builder",
     // it means we can use the cache builder to execute the query directly and get result to be final result
     builder = context.lookup(CACHE_MAIN_BUILDER_VAR_NAME);
-    if (builder) context.setVariable(name, builder);
-    else {
+    if (builder) {
+      if (headers) builder.setHeaders(headers);
+      context.setVariable(name, builder);
+    } else {
       builder = await this.executor.createBuilder(
         profileName,
         query,
-        parameterizer
+        parameterizer,
+        headers
       );
       context.setVariable(name, builder);
     }

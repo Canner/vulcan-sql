@@ -1,0 +1,32 @@
+{
+  "name": "@vulcan-sql/extension-driver-redshift",
+  "description": "Redshift driver for VulcanSQL",
+  "version": "0.10.0",
+  "type": "commonjs",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "vulcan",
+    "vulcan-sql",
+    "data",
+    "sql",
+    "database",
+    "data-warehouse",
+    "data-lake",
+    "api-builder",
+    "redshift"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Canner/vulcan.git"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@aws-sdk/client-redshift-data": "^3.405.0",
+    "exponential-backoff": "^3.1.1"
+  },
+  "peerDependencies": {
+    "@vulcan-sql/core": "~0.10.0-0"
+  }
+}

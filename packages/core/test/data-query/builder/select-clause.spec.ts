@@ -51,6 +51,7 @@ const createStubBuilder = ({ statement }: { statement: string }) =>
     dataSource: createStub().dataSource,
     parameterizer: createStub().parameterizer,
     profileName: '',
+    headers: {},
   });
 
 describe('Test data query builder > select clause', () => {

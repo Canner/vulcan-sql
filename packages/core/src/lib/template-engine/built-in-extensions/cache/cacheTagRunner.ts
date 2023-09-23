@@ -25,7 +25,7 @@ export class CacheTagRunner extends TagRunner {
     this.executor = executor;
   }
 
-  public async run({ context, args, contentArgs }: TagRunnerOptions) {
+  public async run({ context, args, contentArgs, metadata }: TagRunnerOptions) {
     // Get the variable name, if the cache tag has variable name, then we use the variable and keep the builder in the variable, and make user could use by xxx.value() like the req feature.
     // However if the cache tag not has variable name, means you would like to get the result directly after query, then we will replace the original query main builder to the cache builder.
     const name = String(args[0]);
@@ -50,10 +50,12 @@ export class CacheTagRunner extends TagRunner {
     // Set the default vulcan created cache table schema, so we could query the cache table directly, not need user to type schema in the SQL.
     query = `set schema=${vulcanCacheSchemaName};`.concat('\n').concat(query);
     // Create the builder which access "vulcan.cache" data source for cache layer query
+    const headers = metadata.getHeaders();
     const builder = await this.executor.createBuilder(
       cacheProfileName,
       query,
-      parameterizer
+      parameterizer,
+      headers
     );
     context.setVariable(name, builder);
 
