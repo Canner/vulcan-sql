@@ -39,6 +39,8 @@ export class DateTypeValidator extends InputValidator {
   }
 
   public validateData(value: string, args?: DateInputArgs) {
+    if (isUndefined(value)) return;
+
     let valid = dayjs(value).isValid();
     // if there are args passed
     if (!isUndefined(args)) {
