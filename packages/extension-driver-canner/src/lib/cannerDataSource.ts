@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {
+  DataColumn,
   DataResult,
   DataSource,
   ExecuteOptions,
@@ -8,49 +9,54 @@ import {
   RequestParameter,
   VulcanExtensionId,
 } from '@vulcan-sql/core';
-import { Pool, PoolClient, PoolConfig, QueryResult } from 'pg';
-import * as Cursor from 'pg-cursor';
 import { Readable } from 'stream';
 import { buildSQL } from './sqlBuilder';
-import { mapFromPGTypeId } from './typeMapper';
 import * as fs from 'fs';
 import * as path from 'path';
 import { CannerAdapter } from './cannerAdapter';
+import { isEmpty } from 'lodash';
 
-export interface PGOptions extends PoolConfig {
-  chunkSize?: number;
+interface Options {
+  host: string;
+  database: string;
+  password: string;
+  ssl?: boolean;
 }
 
 @VulcanExtensionId('canner')
-export class CannerDataSource extends DataSource<any, PGOptions> {
+export class CannerDataSource extends DataSource<any, Options> {
   private logger = this.getLogger();
   protected poolMapping = new Map<
     string,
-    { pool: Pool; options?: PGOptions; properties?: Record<string, any> }
+    {
+      pool: CannerAdapter;
+      options: Options;
+      properties?: Record<string, any>;
+    }
   >();
-  protected UserPool = new Map<string, Pool>();
+
+  protected UserPool = new Map<string, CannerAdapter>();
 
   public override async onActivate() {
     const profiles = this.getProfiles().values();
     for (const profile of profiles) {
-      // try to connect by pg wire protocol and make request to api server
+      // try to connect to the sql engine to check if the connection is valid
       this.logger.debug(
-        `Initializing profile: ${profile.name} using pg wire protocol`
+        `Initializing profile: ${profile.name} using sql engine`
       );
-      //=================================================================================================
-      // PG wire protocol
-      const pool = new Pool(profile.connection);
-      // https://node-postgres.com/api/pool#poolconnect
-      // When a client is sitting idly in the pool it can still emit errors because it is connected to a live backend.
-      // If the backend goes down or a network partition is encountered all the idle, connected clients in your application will emit an error through the pool's error event emitter.
-      pool.on('error', (err) => {
-        this.logger.warn(
-          `Pool client of profile instance ${profile.name} connecting failed, detail error, ${err}`
+
+      // profile.connection must be defined
+      if (profile.connection === undefined) {
+        throw new InternalError(
+          `Profile ${profile.name} does not have connection options`
         );
-      });
-      await pool.query('select 1');
+      }
+
+      const cannerAdapter = new CannerAdapter(profile.connection);
+      await cannerAdapter.syncQuery('select 1');
+
       this.poolMapping.set(profile.name, {
-        pool,
+        pool: cannerAdapter,
         options: profile.connection,
         properties: profile.properties,
       });
@@ -91,6 +97,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
       throw error;
     }
   }
+
   private getCannerRequestHeader(
     properties?: Record<string, any>,
     cannerOptions?: any
@@ -136,32 +143,72 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     headers,
   }: ExecuteOptions): Promise<DataResult> {
     this.logger.debug(`Acquired connection from ${profileName}`);
-    const { options } = this.poolMapping.get(profileName)!;
     const auth = headers?.['authorization'];
     const password = auth?.trim().split(' ')[1];
     const pool = this.getPool(profileName, password);
-    let client: PoolClient | undefined;
+    let client: CannerAdapter;
     try {
-      client = await pool.connect();
+      client = pool;
       const builtSQL = buildSQL(sql, operations);
-      const cursor = client.query(
-        new Cursor(builtSQL, Array.from(bindParams.values()))
-      );
-      cursor.once('done', async () => {
-        this.logger.debug(
-          `Data fetched, release connection from ${profileName}`
-        );
-        // It is important to close the cursor before releasing connection, or the connection might not able to handle next request.
-        await cursor.close();
-        if (client) client.release();
+      const statement = this.sqlStatement(builtSQL, bindParams);
+      const { nextData } = await client.syncQuery(statement);
+      const firstChunk = await nextData();
+      let firstRow = firstChunk.data;
+
+      const fetchMore = async () => {
+        if (firstRow === null) {
+          return firstRow;
+        }
+
+        if (isEmpty(firstRow)) {
+          const { data } = await nextData();
+          return data;
+        }
+
+        const rows = [...firstRow];
+        firstRow = [];
+        return rows;
+      };
+
+      const getColumns = (): DataColumn[] => {
+        return firstChunk.columns.map((column: any) => {
+          return {
+            name: column.name,
+            type: column.type,
+          };
+        });
+      };
+
+      const stream = new Readable({
+        objectMode: true,
+        read() {
+          fetchMore()
+            .then((rows) => {
+              // if rows is array, then push to stream
+              if (Array.isArray(rows)) {
+                rows.forEach((row) => {
+                  this.push(row);
+                });
+              } else {
+                this.push(rows);
+              }
+            })
+            .catch((error) => {
+              this.destroy(error);
+            });
+        },
+        // automatically destroy() the stream when it emits 'finish' or errors. Node > 10.16
+        autoDestroy: true,
       });
-      // All promises MUST fulfilled in this function or we are not able to release the connection when error occurred
-      return await this.getResultFromCursor(cursor, options);
+
+      return {
+        getColumns,
+        getData: () => stream,
+      };
     } catch (e: any) {
       this.logger.debug(
         `Errors occurred, release connection from ${profileName}`
       );
-      if (client) client.release();
       throw e;
     }
   }
@@ -170,14 +217,8 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     return `$${parameterIndex}`;
   }
 
-  public async destroy() {
-    for (const { pool } of this.poolMapping.values()) {
-      await pool.end();
-    }
-  }
-
   // use protected to make it testable
-  protected getPool(profileName: string, password?: string): Pool {
+  protected getPool(profileName: string, password?: string): CannerAdapter {
     if (!this.poolMapping.has(profileName)) {
       throw new InternalError(`Profile instance ${profileName} not found`);
     }
@@ -193,7 +234,7 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
       const userPool = this.UserPool.get(userPoolKey);
       return userPool!;
     }
-    const pool = new Pool({ ...poolOptions, password: password });
+    const pool = new CannerAdapter({ ...poolOptions, password });
     this.UserPool.set(userPoolKey, pool);
     return pool;
   }
@@ -203,62 +244,24 @@ export class CannerDataSource extends DataSource<any, PGOptions> {
     return `${pat}-${database}`;
   }
 
-  private async getResultFromCursor(
-    cursor: Cursor,
-    options: PGOptions = {}
-  ): Promise<DataResult> {
-    const { chunkSize = 100 } = options;
-    const cursorRead = this.cursorRead.bind(this);
-    const firstChunk = await cursorRead(cursor, chunkSize);
-    // save first chunk in buffer for incoming requests
-    let bufferedRows = [...firstChunk.rows];
-    let bufferReadIndex = 0;
-    const fetchNext = async () => {
-      if (bufferReadIndex >= bufferedRows.length) {
-        bufferedRows = (await cursorRead(cursor, chunkSize)).rows;
-        bufferReadIndex = 0;
-      }
-      return bufferedRows[bufferReadIndex++] || null;
+  private sqlStatement(statement: string, bindParams: Map<string, string>) {
+    let sqlStatement = statement;
+    const escapeRegExp = (string: string) => {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     };
-    const stream = new Readable({
-      objectMode: true,
-      read() {
-        fetchNext()
-          .then((row) => {
-            this.push(row);
-          })
-          .catch((error) => {
-            this.destroy(error);
-          });
-      },
-      destroy(error: Error | null, cb: (error: Error | null) => void) {
-        // Send done event to notify upstream to release the connection.
-        cursor.emit('done');
-        cb(error);
-      },
-      // automatically destroy() the stream when it emits 'finish' or errors. Node > 10.16
-      autoDestroy: true,
-    });
-    return {
-      getColumns: () =>
-        firstChunk.result.fields.map((field) => ({
-          name: field.name,
-          type: mapFromPGTypeId(field.dataTypeID),
-        })),
-      getData: () => stream,
-    };
-  }
 
-  public async cursorRead(cursor: Cursor, maxRows: number) {
-    return new Promise<{ rows: any[]; result: QueryResult }>(
-      (resolve, reject) => {
-        cursor.read(maxRows, (err, rows, result) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve({ rows, result });
-        });
-      }
-    );
+    const replaceAll = (str: string, find: string, replace: any) => {
+      return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+    };
+
+    bindParams.forEach((value, key) => {
+      sqlStatement = replaceAll(
+        sqlStatement,
+        key as unknown as string,
+        typeof value === 'string' ? `'${value}'` : value
+      );
+    });
+
+    return sqlStatement;
   }
 }
