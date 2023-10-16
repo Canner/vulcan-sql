@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/catalog-server",
   "description": "Catalog server for VulcanSQL",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "publishConfig": {
     "access": "public"
   },
