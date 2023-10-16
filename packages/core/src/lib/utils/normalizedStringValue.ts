@@ -1,3 +1,4 @@
+import { isUndefined } from 'lodash';
 import { UserError } from './errors';
 
 export const canBeNormalized = (type: string) => {
@@ -7,10 +8,14 @@ export const canBeNormalized = (type: string) => {
 };
 
 export const normalizeStringValue = (
-  value: string,
+  value: string | undefined,
   dataName: string,
   dataType: string
 ) => {
+  if (isUndefined(value)) {
+    return undefined;
+  }
+
   switch (dataType.toLowerCase()) {
     case 'number': {
       if (value === '') {
