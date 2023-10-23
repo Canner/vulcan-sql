@@ -37,36 +37,51 @@ export class DuckDBExtensionLoader {
       return;
     }
     try {
-      conn.run(`LOAD ${extensionName}`);
+      await new Promise<void>((resolve, reject) => {
+        conn.run(`LOAD ${extensionName}`, (err: any) => {
+          if (err) reject(err);
+          this.logger.debug('Extension loaded');
+          resolve();
+        });
+      });
     } catch (error) {
       this.logger.debug(`Error when loading extension:${extensionName}`);
       throw error;
     }
+    await Promise.all(
+      Object.entries(extensionConfigurations).map(
+        async ([dbParameterName, configurationKey]) => {
+          const configurationValue =
+            this.configurations[
+              configurationKey as keyof ConfigurationParameters
+            ];
+          // if configuration is not undefined
+          if (configurationValue !== undefined) {
+            return await new Promise<void>((resolve, reject) => {
+              conn.run(
+                `SET ${dbParameterName}='${configurationValue}'`,
+                (err: any) => {
+                  if (err) {
+                    this.logger.debug(
+                      `Configuration error "${dbParameterName}": ${err}`
+                    );
+                    reject(err);
+                  }
 
-    Object.entries(extensionConfigurations).forEach(
-      ([dbParameterName, configurationKey]) => {
-        const configurationValue =
-          this.configurations[
-            configurationKey as keyof ConfigurationParameters
-          ];
-        // if configuration is not undefined
-        if (configurationValue !== undefined) {
-          conn.run(
-            `SET ${dbParameterName}='${configurationValue}'`,
-            (err: any) => {
-              if (err) throw err;
-              this.logger.debug(
-                `Configuration error "${dbParameterName}": ${err}`
+                  this.logger.debug(
+                    `Configuration parameter "${dbParameterName}" set`
+                  );
+                  resolve();
+                }
               );
-            }
-          );
-          this.logger.debug(`Configuration parameter "${dbParameterName}" set`);
-        } else {
-          this.logger.debug(
-            `Configuration "${dbParameterName}" has not been set`
-          );
+            });
+          } else {
+            this.logger.debug(
+              `Configuration "${dbParameterName}" has not been set`
+            );
+          }
         }
-      }
+      )
     );
   }
 }

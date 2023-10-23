@@ -316,7 +316,9 @@ it('Should print queries without binding when log-queries = true', async () => {
     profileName: 'mocked-profile',
   });
   // Assert
-  expect(/select \$1::INTEGER as test/.test(logs.slice(-1)[0][0])).toBe(true);
+  expect(
+    logs.flat(2).find((log) => /select \$1::INTEGER as test/.test(log))
+  ).not.toBe(undefined);
 });
 
 it('Should print queries with binding when log-queries = true and log-parameters = true', async () => {
@@ -357,8 +359,11 @@ it('Should print queries with binding when log-queries = true and log-parameters
     profileName: 'mocked-profile',
   });
   // Assert
-  expect(/select \$1::INTEGER as test/.test(logs.slice(-1)[0][0])).toBe(true);
-  expect(logs.slice(-1)[0][1]).toEqual([1234]);
+  expect(
+    logs.flat(2).find((log) => /select \$1::INTEGER as test/.test(log))
+  ).not.toBe(undefined);
+
+  expect(logs.flat(2)).toContain(1234);
 });
 
 it('Should share db instances for same path besides in-memory only db', async () => {
