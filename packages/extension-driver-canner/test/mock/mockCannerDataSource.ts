@@ -1,9 +1,12 @@
 import { CannerDataSource } from '../../src';
 import { InternalError } from '@vulcan-sql/core';
-import { Pool } from 'pg';
+import { CannerAdapter } from '../../src/lib/cannerAdapter';
 
 export class MockCannerDataSource extends CannerDataSource {
-  public override getPool(profileName: string, password?: string): Pool {
+  public override getPool(
+    profileName: string,
+    password?: string
+  ): CannerAdapter {
     if (!this.poolMapping.has(profileName)) {
       throw new InternalError(`Profile instance ${profileName} not found`);
     }
@@ -18,12 +21,16 @@ export class MockCannerDataSource extends CannerDataSource {
       const userPool = this.UserPool.get(userPoolKey);
       return userPool!;
     }
-    const pool = new Pool({ ...poolOptions, password: password });
+    const pool = new CannerAdapter({ ...poolOptions, password: password });
     this.UserPool.set(userPoolKey, pool);
     return pool;
   }
 
-  public setUserPool = (userPool: Pool, password: string, database: string) => {
+  public setUserPool = (
+    userPool: CannerAdapter,
+    password: string,
+    database: string
+  ) => {
     const userPoolKey = this.getUserPoolKey(password, database);
     this.UserPool.set(userPoolKey, userPool);
   };

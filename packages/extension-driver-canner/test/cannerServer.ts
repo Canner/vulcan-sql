@@ -1,5 +1,4 @@
 /* istanbul ignore file */
-import { PGOptions } from '../src/lib/cannerDataSource';
 
 ['CANNER_HOST', 'CANNER_PAT', 'CANNER_WORKSPACE_SQL_NAME'].forEach(
   (envName) => {
@@ -13,12 +12,12 @@ export class CannerServer {
       name,
       type: 'canner',
       connection: {
-        host: process.env['CANNER_HOST'],
-        port: process.env['CANNER_PORT'] || 7432,
+        host: process.env['CANNER_HOST'] || '127.0.0.1',
+        port: process.env['CANNER_PORT'] || 8081,
         user: process.env['CANNER_USER'] || 'canner',
-        password: process.env['CANNER_PAT'],
-        database: process.env['CANNER_WORKSPACE_SQL_NAME'],
-      } as PGOptions,
+        password: process.env['CANNER_PAT'] || '',
+        database: process.env['CANNER_WORKSPACE_SQL_NAME'] || '',
+      },
       allow: '*',
       properties: {},
     };

@@ -125,58 +125,64 @@ export class CannerAdapter {
 
     const userSession = `canner_user_id=${userId}`;
     headers['x-trino-session'] = userSession;
-    const res = await axios({
-      method: 'post',
-      url: `${this.getTrinoUrl()}/v1/statement`,
-      data: sql,
-      headers,
-    });
-
-    let firstCall = true;
-    let columns: Array<any> = res.data.columns;
-    let objectIdColumns: Array<number> = [];
-    let nextUri: string | undefined;
-
-    const nextData = async (): Promise<NextData> => {
-      if (!nextUri && !firstCall) {
-        this.logger.debug('no more data');
-        return { data: null, columns };
-      }
-
-      const nextRes = firstCall ? res.data : await this.getNextUri(nextUri!);
-      if (!isEmpty(nextRes.columns) && isEmpty(objectIdColumns)) {
-        columns = nextRes.columns!;
-        objectIdColumns = countObjectIdColumnLocations(nextRes.columns);
-      }
-
-      nextUri = nextRes.nextUri;
-      firstCall = false;
-
-      // if nextRes.data is empty, call nextData again
-      if (isEmpty(nextRes.data)) {
-        return await nextData();
-      }
-
-      const formatData = formatObjectIdTypeValue({
-        data: nextRes.data,
-        objectIdColumns,
+    try {
+      const res = await axios({
+        method: 'post',
+        url: `${this.getTrinoUrl()}/v1/statement`,
+        data: sql,
+        headers,
       });
 
-      return {
-        data: formatData.map((item) => {
-          const mergedObject: Record<string, any> = {};
-          columns.forEach((col, index) => {
-            mergedObject[col.name] = item[index];
-          });
-          return mergedObject;
-        }),
-        columns,
-      };
-    };
+      let firstCall = true;
+      let columns: Array<any> = res.data.columns;
+      let objectIdColumns: Array<number> = [];
+      let nextUri: string | undefined;
 
-    return {
-      nextData,
-    };
+      const nextData = async (): Promise<NextData> => {
+        if (!nextUri && !firstCall) {
+          this.logger.debug('no more data');
+          return { data: null, columns };
+        }
+
+        const nextRes = firstCall ? res.data : await this.getNextUri(nextUri!);
+        if (!isEmpty(nextRes.columns) && isEmpty(objectIdColumns)) {
+          columns = nextRes.columns!;
+          objectIdColumns = countObjectIdColumnLocations(nextRes.columns);
+        }
+
+        nextUri = nextRes.nextUri;
+        firstCall = false;
+
+        // if nextRes.data is empty, call nextData again
+        if (isEmpty(nextRes.data)) {
+          return await nextData();
+        }
+
+        const formatData = formatObjectIdTypeValue({
+          data: nextRes.data,
+          objectIdColumns,
+        });
+
+        return {
+          data: formatData.map((item) => {
+            const mergedObject: Record<string, any> = {};
+            columns.forEach((col, index) => {
+              mergedObject[col.name] = item[index];
+            });
+            return mergedObject;
+          }),
+          columns,
+        };
+      };
+
+      return {
+        nextData,
+      };
+    } catch (error: any) {
+      const message = error.message;
+      this.logger.debug(`Failed to sync query, ${message}`);
+      throw message;
+    }
   }
 
   private getNextUri = async (uri: string): Promise<SyncQueryResultData> => {
@@ -251,7 +257,7 @@ export class CannerAdapter {
       return `http://${envConfig.trinoEndpoint}`;
     } else {
       const protocol = this.ssl ? 'https' : 'http';
-      return `${protocol}://localhost:8081`;
+      return `${protocol}://trino:8081`;
     }
   }
 

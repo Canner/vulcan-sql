@@ -1,5 +1,5 @@
 import { CannerServer } from './cannerServer';
-import { CannerDataSource, PGOptions } from '../src';
+import { CannerDataSource } from '../src';
 import { MockCannerDataSource } from './mock';
 import { ExportOptions, InternalError, streamToArray } from '@vulcan-sql/core';
 import { Writable } from 'stream';
@@ -35,7 +35,7 @@ it('Data source should throw error when activating if any profile is invalid', a
       connection: {
         ...profile1.connection,
         password: 'wrong-password',
-      } as PGOptions,
+      },
       allow: '*',
     },
   ]);
@@ -188,7 +188,7 @@ it('Data source should release the connection when finished no matter success or
         ...profile1.connection,
         max: 1, // Limit the pool size to 1, we'll get blocked with any leak.
         min: 1,
-      } as PGOptions,
+      },
       allow: '*',
     },
   ]);
@@ -260,7 +260,7 @@ it('Data source should work with prepare statements', async () => {
   bindParams.set(var2Name, '456');
 
   const { getData } = await dataSource.execute({
-    statement: `select ${var1Name} as v1, ${var2Name} as v2;`,
+    statement: `select ${var1Name} as v1, ${var2Name} as v2`,
     bindParams,
     profileName: 'profile1',
     operations: {} as any,
@@ -288,8 +288,8 @@ it('Data source should return correct column types', async () => {
   data.destroy();
 
   // Assert
-  expect(column[0]).toEqual({ name: 'id', type: 'number' });
-  expect(column[1]).toEqual({ name: 'name', type: 'string' });
+  expect(column[0]).toEqual({ name: 'id', type: 'integer' });
+  expect(column[1]).toEqual({ name: 'name', type: 'varchar(4)' });
   expect(column[2]).toEqual({ name: 'enabled', type: 'boolean' });
 }, 30000);
 
