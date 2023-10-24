@@ -104,15 +104,13 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     // create new connection for each query
     const parameters = Array.from(bindParams.values());
     this.logRequest(firstDataSQL, parameters, options);
-    const connection = db.connect();
-    await this.loadExtensions(connection, configurationParameters);
-    await this.setExecConfig(connection);
     if (restDataSQL) this.logRequest(restDataSQL, parameters, options);
     const [firstData, restDataStream] = await this.acquireData(
       firstDataSQL,
       restDataSQL,
       parameters,
-      db
+      db,
+      configurationParameters
     );
     const readable = this.createReadableStream(firstData, restDataStream);
     return {
@@ -168,15 +166,24 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     firstDataSql: string,
     restDataSql: string | undefined,
     parameters: any[],
-    db: duckdb.Database
+    db: duckdb.Database,
+    configurationParameters: ConfigurationParameters
   ) {
     // conn.all() is faster then stream.checkChunk().
     // For the small size data we use conn.all() to get the data at once
     // To limit memory use and prevent server crashes, we will use conn.all() to acquire the initial chunk of data, then conn.stream() to receive the remainder of the data.
+    const c1 = db.connect();
+    const c2 = db.connect();
+    await Promise.all([
+      await this.loadExtensions(c1, configurationParameters),
+      await this.setExecConfig(c1),
+      await this.loadExtensions(c2, configurationParameters),
+      await this.setExecConfig(c2),
+    ]);
+
     return await Promise.all([
       new Promise<duckdb.TableData>((resolve, reject) => {
-        const c = db.connect();
-        c.all(
+        c1.all(
           firstDataSql,
           ...parameters,
           (err: duckdb.DuckDbError | null, res: duckdb.TableData) => {
@@ -190,8 +197,7 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
       new Promise<duckdb.QueryResult | undefined>((resolve, reject) => {
         if (!restDataSql) resolve(undefined);
         try {
-          const c = db.connect();
-          const result = c.stream(restDataSql, ...parameters);
+          const result = c2.stream(restDataSql, ...parameters);
           resolve(result);
         } catch (err: any) {
           reject(err);
