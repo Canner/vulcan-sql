@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/extension-driver-pg",
   "description": "PG driver for Vulcan SQL",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"
@@ -24,6 +24,6 @@
   },
   "license": "Apache-2.0",
   "peerDependencies": {
-    "@vulcan-sql/core": "~0.10.1-0"
+    "@vulcan-sql/core": "~0.10.2-0"
   }
 }
