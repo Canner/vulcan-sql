@@ -16,7 +16,7 @@ export interface FunctionalFilterOptions {
 
 export type FunctionalFilter = (
   options: FunctionalFilterOptions
-) => Promise<string>;
+) => Promise<any>;
 
 export const createFilterExtension = (
   name: string,
