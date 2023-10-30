@@ -48,7 +48,7 @@ export const RestApiCallerFilter: FunctionalFilter = async ({
     logger.info('API request:', options);
     const results = await axios(options);
     logger.info('API response:', results.data);
-    return JSON.stringify(results.data);
+    return results.data;
   } catch (error: any) {
     const message = error.response
       ? `response status: ${error.response.status}, response data: ${JSON.stringify(error.response.data)}`
