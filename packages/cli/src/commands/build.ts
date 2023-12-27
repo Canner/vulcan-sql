@@ -2,11 +2,12 @@ import * as jsYAML from 'js-yaml';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import * as ora from 'ora';
-import { modulePath } from '../utils';
+import { modulePath, prepareVulcanEngine } from '../utils';
 
 export interface BuildCommandOptions {
   config: string;
   requireFromLocal?: boolean;
+  pull?: boolean;
 }
 
 const defaultOptions: BuildCommandOptions = {
@@ -30,8 +31,9 @@ export const buildVulcan = async (options: BuildCommandOptions) => {
   const { VulcanBuilder } = await import(modulePath('@vulcan-sql/build', options.requireFromLocal));
 
   // Build project
-  const spinner = ora('Building project...').start();
+  const spinner = ora('Building project...\n').start();
   try {
+    await prepareVulcanEngine(config, options);
     const builder = new VulcanBuilder(config);
     await builder.build();
     spinner.succeed('Built successfully.');

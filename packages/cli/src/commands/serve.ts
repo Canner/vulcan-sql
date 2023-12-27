@@ -7,16 +7,20 @@ import {
   logger,
   removeShutdownJob,
 } from '../utils';
+import { Semantic } from '@vulcan-sql/core';
 
 export interface ServeCommandOptions {
   config: string;
   port: number;
   requireFromLocal?: boolean;
+  pull?: boolean;
+  semantics: Semantic[];
 }
 
 const defaultOptions: ServeCommandOptions = {
   config: './vulcan.yaml',
   port: 3000,
+  semantics: [],
 };
 
 export const mergeServeDefaultOption = (

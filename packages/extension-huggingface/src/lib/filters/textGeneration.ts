@@ -2,7 +2,7 @@ import {
   FunctionalFilter,
   InternalError,
   createFilterExtension,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { has, isArray, isEmpty, omit, pick } from 'lodash';
 import {
   HuggingFaceOptions,

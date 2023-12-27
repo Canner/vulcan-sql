@@ -1,0 +1,58 @@
+{
+  "root": "packages/api-layer",
+  "sourceRoot": "packages/api-layer/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts api-layer"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "tsc"
+        }
+      ]
+    },
+    "tsc": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/api-layer",
+        "main": "packages/api-layer/src/index.ts",
+        "tsConfig": "packages/api-layer/tsconfig.lib.json",
+        "assets": ["packages/api-layer/*.md"],
+        "buildableProjectDepsInPackageJsonType": "dependencies"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/api-layer/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/api-layer"],
+      "options": {
+        "jestConfig": "packages/api-layer/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
+        "cwd": "dist/packages/api-layer"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    }
+  },
+  "tags": []
+}

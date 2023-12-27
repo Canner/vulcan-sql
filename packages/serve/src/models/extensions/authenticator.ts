@@ -1,4 +1,4 @@
-import { VulcanExtension, ExtensionBase } from '@vulcan-sql/core';
+import { VulcanExtension, ExtensionBase } from '@vulcan-sql/api-layer';
 import { KoaContext } from '@vulcan-sql/serve/models';
 import { TYPES } from '../../containers/types';
 

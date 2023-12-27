@@ -4,7 +4,7 @@ import { Request, Response } from 'koa';
 import { IncomingHttpHeaders } from 'http';
 import { ParsedUrlQuery } from 'querystring';
 import { KoaContext } from '@vulcan-sql/serve/models';
-import * as core from '@vulcan-sql/core';
+import * as core from '@vulcan-sql/api-layer';
 import * as uuid from 'uuid';
 import {
   AccessLogMiddleware,

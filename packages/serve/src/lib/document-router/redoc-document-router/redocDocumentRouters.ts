@@ -6,7 +6,7 @@ import {
   TYPES as CORE_TYPES,
   VulcanExtensionId,
   VulcanInternalExtension,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import * as nunjucks from 'nunjucks';
 import { Next } from 'koa';
 import * as Router from 'koa-router';

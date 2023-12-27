@@ -1,4 +1,4 @@
-import { ICoreOptions } from '@vulcan-sql/core';
+import { ICoreOptions } from '@vulcan-sql/api-layer';
 import { getDocUrlPrefix } from '../../document-router/utils';
 
 export const checkIsPublicEndpoint = (

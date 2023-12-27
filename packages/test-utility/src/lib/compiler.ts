@@ -15,7 +15,7 @@ import {
   TemplateProviderType,
   TYPES,
   validatorLoaderModule,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 
 export const getTestCompiler = async (config: Partial<ICoreOptions> = {}) => {
   const container = new Container();

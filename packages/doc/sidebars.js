@@ -209,7 +209,7 @@ const sidebars = {
     //   //     items: [
     //   //       {
     //   //         type: 'category',
-    //   //         label: '@vulcan-sql/core',
+    //   //         label: '@vulcan-sql/api-layer',
     //   //         link: { type: 'doc', id: 'extensions/vulcan-sql-core' },
     //   //         items: [
     //   //           {

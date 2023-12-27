@@ -1,6 +1,6 @@
 import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
 import { TransformPaginationMode } from '@vulcan-sql/build/schema-parser/middleware/transformPaginationMode';
-import { PaginationMode } from '@vulcan-sql/core';
+import { PaginationMode } from '@vulcan-sql/api-layer';
 
 it('Should do nothing when there is no pagination mode configured', async () => {
   // Arrange

@@ -8,7 +8,7 @@ import {
   VulcanInternalExtension,
   TYPES as CORE_TYPES,
   DocumentOptions,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { inject, interfaces } from 'inversify';
 import { TYPES } from '@vulcan-sql/serve/containers';
 import * as compose from 'koa-compose';

@@ -3,7 +3,7 @@ import {
   normalizeStringValue,
   OffsetPagination,
   UserError,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { PaginationStrategy } from './strategy';
 
 export class OffsetBasedStrategy extends PaginationStrategy<OffsetPagination> {

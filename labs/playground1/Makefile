@@ -1,16 +1,15 @@
 
-.PHONY: install build start pkg-core pkg-build pkg-serve pkg-cli clean pkg-extension-driver-duckdb
+.PHONY: install build start pkg-api-layer pkg-core pkg-build pkg-serve pkg-cli clean pkg-extension-driver-duckdb
 
 # start vulcan server (default goal)
 start: build test-data/moma.db ../../node_modules
 	@vulcan start --watch
 
 # build the required packages
-build: pkg-core pkg-build pkg-serve pkg-catalog-server pkg-cli pkg-extension-driver-duckdb \
+build: pkg-api-layer pkg-core pkg-build pkg-serve pkg-catalog-server pkg-cli pkg-extension-driver-duckdb \
 		pkg-extension-authenticator-canner pkg-extension-driver-canner \
 		pkg-extension-driver-clickhouse pkg-extension-driver-bq \
-		pkg-extension-huggingface pkg-extension-api-caller
-
+		pkg-extension-huggingface pkg-extension-api-caller pkg-extension-driver-pg
 
 # build for core pakge
 pkg-core: ../../node_modules
@@ -19,6 +18,13 @@ pkg-core: ../../node_modules
 	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
 	rm -rf ./labs/playground1/node_modules/@vulcan-sql/core; \
 	cp -R ./dist/packages/core ./labs/playground1/node_modules/@vulcan-sql
+
+pkg-api-layer: ../../node_modules
+	@cd ../..; \
+	yarn nx build api-layer; \
+	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
+	rm -rf ./labs/playground1/node_modules/@vulcan-sql/api-layer; \
+	cp -R ./dist/packages/api-layer ./labs/playground1/node_modules/@vulcan-sql
 
 # build for build pakge
 pkg-build: ../../node_modules
@@ -95,6 +101,13 @@ pkg-extension-api-caller: ../../node_modules
 	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
 	rm -rf ./labs/playground1/node_modules/@vulcan-sql/extension-api-caller; \
 	cp -R ./dist/packages/extension-api-caller ./labs/playground1/node_modules/@vulcan-sql
+
+pkg-extension-driver-pg: ../../node_modules
+	@cd ../..; \
+	yarn nx build extension-driver-pg; \
+	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
+	rm -rf ./labs/playground1/node_modules/@vulcan-sql/extension-driver-pg; \
+	cp -R ./dist/packages/extension-driver-pg ./labs/playground1/node_modules/@vulcan-sql
 
 # build and install for cli pakge
 pkg-cli: ../../node_modules

@@ -1,5 +1,5 @@
 import { KSqlDbServer } from './ksqlDbServer';
-import { streamToArray } from '@vulcan-sql/core';
+import { streamToArray } from '@vulcan-sql/api-layer';
 import { Writable } from 'stream';
 import { KSQLDBDataSource } from '../src/lib/ksqldbDataSource';
 

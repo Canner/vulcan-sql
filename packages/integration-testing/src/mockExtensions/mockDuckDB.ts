@@ -11,7 +11,7 @@ import {
   ImportOptions,
   RequestParameter,
   VulcanExtensionId,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 
 const db = new duckdb.Database(':memory:');
 

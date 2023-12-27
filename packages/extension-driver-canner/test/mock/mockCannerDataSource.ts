@@ -1,5 +1,5 @@
 import { CannerDataSource } from '../../src';
-import { InternalError } from '@vulcan-sql/core';
+import { InternalError } from '@vulcan-sql/api-layer';
 import { Pool } from 'pg';
 
 export class MockCannerDataSource extends CannerDataSource {

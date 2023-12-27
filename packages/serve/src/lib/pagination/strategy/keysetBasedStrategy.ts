@@ -3,7 +3,7 @@ import {
   PaginationMode,
   KeysetPagination,
   UserError,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { KoaContext } from '@vulcan-sql/serve/models';
 import { PaginationStrategy } from './strategy';
 

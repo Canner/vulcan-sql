@@ -4,7 +4,7 @@ import {
   Profile,
   ProfileAllowConstraints,
   TYPES as CORE_TYPES,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { injectable, multiInject, optional } from 'inversify';
 import { isArray } from 'lodash';
 import { AuthUserInfo } from '../../models/extensions';

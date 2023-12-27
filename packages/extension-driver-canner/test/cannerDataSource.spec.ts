@@ -1,7 +1,7 @@
 import { CannerServer } from './cannerServer';
 import { CannerDataSource, PGOptions } from '../src';
 import { MockCannerDataSource } from './mock';
-import { ExportOptions, InternalError, streamToArray } from '@vulcan-sql/core';
+import { ExportOptions, InternalError, streamToArray } from '@vulcan-sql/api-layer';
 import { Writable } from 'stream';
 import * as sinon from 'ts-sinon';
 import * as fs from 'fs';

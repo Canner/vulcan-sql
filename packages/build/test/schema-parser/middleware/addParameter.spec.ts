@@ -1,4 +1,4 @@
-import { FieldInType } from '@vulcan-sql/core';
+import { FieldInType } from '@vulcan-sql/api-layer';
 import { RawAPISchema } from '../../../src';
 import { AddParameter } from '../../../src/lib/schema-parser/middleware/addParameter';
 

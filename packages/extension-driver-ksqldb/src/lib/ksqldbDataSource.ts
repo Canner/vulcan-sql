@@ -6,7 +6,7 @@ import {
   InternalError,
   RequestParameter,
   VulcanExtensionId,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { Stream } from 'stream';
 import { buildSQL, convertSchemaToColumns } from './sqlBuilder';
 import { mapFromKsqlDbType } from './typeMapper';

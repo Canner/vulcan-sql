@@ -14,7 +14,7 @@ import {
   ConfigurationError,
   VulcanError,
   ICacheLayerRefresher,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { Container, TYPES } from '../containers';
 import { ServeConfig, sslFileOptions } from '../models';
 import { VulcanApplication } from './app';

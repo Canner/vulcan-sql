@@ -5,7 +5,7 @@ import {
   InternalError,
   RequestParameter,
   VulcanExtensionId,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { Pool, PoolConfig, QueryResult } from 'pg';
 import * as Cursor from 'pg-cursor';
 import { Readable } from 'stream';

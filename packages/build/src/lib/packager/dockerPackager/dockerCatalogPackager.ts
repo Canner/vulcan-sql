@@ -1,4 +1,4 @@
-import { VulcanExtensionId, VulcanInternalExtension } from '@vulcan-sql/core';
+import { VulcanExtensionId, VulcanInternalExtension } from '@vulcan-sql/api-layer';
 import { IBuildOptions } from '../../../models/buildOptions';
 import {
   Packager,

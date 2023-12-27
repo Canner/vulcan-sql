@@ -1,6 +1,6 @@
 import { ClickHouseServer } from './clickHouseServer';
 import { ClickHouseDataSource } from '../src';
-import { streamToArray } from '@vulcan-sql/core';
+import { streamToArray } from '@vulcan-sql/api-layer';
 
 let clickHouse: ClickHouseServer;
 let dataSource: ClickHouseDataSource;

@@ -1,6 +1,6 @@
 import { PGServer } from './pgServer';
 import { PGDataSource } from '../src';
-import { streamToArray } from '@vulcan-sql/core';
+import { streamToArray } from '@vulcan-sql/api-layer';
 
 let pg: PGServer;
 let dataSource: PGDataSource;

@@ -10,7 +10,7 @@ import {
   IValidatorLoader,
   TemplateEngine,
   TYPES as CORE_TYPES,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import * as jsYaml from 'js-yaml';
 import { sortBy } from 'lodash';
 import { IBuildOptions, TYPES } from '@vulcan-sql/build';

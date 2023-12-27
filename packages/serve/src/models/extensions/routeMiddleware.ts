@@ -1,9 +1,9 @@
-import { ExtensionBase, VulcanExtension } from '@vulcan-sql/core';
+import { ExtensionBase, VulcanExtension } from '@vulcan-sql/api-layer';
 import { KoaContext, Next } from '@vulcan-sql/serve/models';
 import { inject } from 'inversify';
 import { isUndefined } from 'lodash';
 import { TYPES } from '../../containers/types';
-import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
+import { TYPES as CORE_TYPES } from '@vulcan-sql/api-layer';
 
 export interface BuiltInMiddlewareConfig<Option = any> {
   enabled: boolean;

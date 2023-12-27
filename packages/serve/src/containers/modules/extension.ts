@@ -1,4 +1,4 @@
-import { ExtensionLoader } from '@vulcan-sql/core';
+import { ExtensionLoader } from '@vulcan-sql/api-layer';
 import { AsyncContainerModule } from 'inversify';
 import { ServeConfig } from '../../models/serveOptions';
 import { BuiltInRouteMiddlewares } from '@vulcan-sql/serve/middleware';

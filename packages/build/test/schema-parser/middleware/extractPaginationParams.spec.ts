@@ -5,7 +5,7 @@ import {
   FieldDataType,
   FieldInType,
   PaginationMode,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 
 it('Should do nothing when there is no pagination mode configured', async () => {
   // Arrange

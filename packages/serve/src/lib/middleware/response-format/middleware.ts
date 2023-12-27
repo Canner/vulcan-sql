@@ -4,8 +4,8 @@ import {
   BuiltInMiddleware,
 } from '@vulcan-sql/serve/models';
 import { checkUsableFormat, ResponseFormatterMap } from './helpers';
-import { InternalError, VulcanInternalExtension } from '@vulcan-sql/core';
-import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
+import { InternalError, VulcanInternalExtension } from '@vulcan-sql/api-layer';
+import { TYPES as CORE_TYPES } from '@vulcan-sql/api-layer';
 import { inject, multiInject } from 'inversify';
 import { TYPES } from '@vulcan-sql/serve/containers';
 

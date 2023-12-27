@@ -1,6 +1,6 @@
 import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
 import { ResponseSampler } from '@vulcan-sql/build/schema-parser/middleware/responseSampler';
-import { FieldDataType, TemplateEngine } from '@vulcan-sql/core';
+import { FieldDataType, TemplateEngine } from '@vulcan-sql/api-layer';
 import { Readable } from 'stream';
 import * as sinon from 'ts-sinon';
 

@@ -1,4 +1,4 @@
-import { ConfigurationError } from '@vulcan-sql/core';
+import { ConfigurationError } from '@vulcan-sql/api-layer';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 import { CACHE_METADATA_NAME } from './constants';
 import ms, { StringValue } from 'ms';

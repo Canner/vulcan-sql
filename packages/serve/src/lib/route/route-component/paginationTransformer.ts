@@ -4,7 +4,7 @@ import {
   PaginationMode,
   Pagination,
   ConfigurationError,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import {
   CursorBasedStrategy,
   OffsetBasedStrategy,

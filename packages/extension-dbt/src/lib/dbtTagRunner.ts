@@ -1,4 +1,4 @@
-import { TagRunner, TagRunnerOptions } from '@vulcan-sql/core';
+import { TagRunner, TagRunnerOptions } from '@vulcan-sql/api-layer';
 import { injectable } from 'inversify';
 import * as nunjucks from 'nunjucks';
 

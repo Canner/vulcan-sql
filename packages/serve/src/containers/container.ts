@@ -1,5 +1,5 @@
 import { Container as InversifyContainer } from 'inversify';
-import { Container as CoreContainer, InternalError } from '@vulcan-sql/core';
+import { Container as CoreContainer, InternalError } from '@vulcan-sql/api-layer';
 import {
   applicationModule,
   documentRouterModule,

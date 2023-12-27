@@ -13,7 +13,7 @@ import {
   PasswordFileAuthenticator,
   SimpleTokenAuthenticator,
 } from '@vulcan-sql/serve';
-import { ProjectOptions } from '@vulcan-sql/core';
+import { ProjectOptions } from '@vulcan-sql/api-layer';
 import { IncomingHttpHeaders } from 'http';
 import { Request } from 'koa';
 

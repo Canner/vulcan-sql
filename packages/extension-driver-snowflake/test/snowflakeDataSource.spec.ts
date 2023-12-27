@@ -5,7 +5,7 @@ import {
   CacheLayerStoreFormatType,
   ExportOptions,
   streamToArray,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 
 const snow = new SnowflakeServer();
 let dataSource: SnowflakeDataSource;

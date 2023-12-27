@@ -4,7 +4,7 @@ import {
   BuiltInArtifactKeys,
   DocumentOptions,
   TYPES as CORE_TYPES,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { inject, injectable, interfaces } from 'inversify';
 import { TYPES } from '../../containers/types';
 import { SpecGenerator } from '../../models/extensions';

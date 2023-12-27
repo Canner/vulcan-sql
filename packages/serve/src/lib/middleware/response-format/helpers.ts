@@ -1,4 +1,4 @@
-import { UserError } from '@vulcan-sql/core';
+import { UserError } from '@vulcan-sql/api-layer';
 import { KoaContext } from '@vulcan-sql/serve/models';
 import { BaseResponseFormatter } from '@vulcan-sql/serve/models';
 

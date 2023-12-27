@@ -2,7 +2,7 @@ import {
   APISchema,
   IValidatorLoader,
   TYPES as CORE_TYPES,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { inject } from 'inversify';
 import { chain } from 'lodash';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';

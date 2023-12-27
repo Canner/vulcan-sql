@@ -1,5 +1,5 @@
 import faker from '@faker-js/faker';
-import { PaginationMode } from '@vulcan-sql/core/models';
+import { PaginationMode } from '@vulcan-sql/api-layer/models';
 import { KoaContext } from '@vulcan-sql/serve';
 import { KeysetBasedStrategy } from '@vulcan-sql/serve/pagination';
 import { Request } from 'koa';

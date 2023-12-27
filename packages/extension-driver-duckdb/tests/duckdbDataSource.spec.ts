@@ -2,7 +2,7 @@ import {
   CacheLayerStoreFormatType,
   getLogger,
   streamToArray,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { DuckDBDataSource } from '../src';
 import * as fs from 'fs';
 import * as duckdb from 'duckdb';

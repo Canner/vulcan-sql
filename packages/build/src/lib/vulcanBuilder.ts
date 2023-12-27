@@ -13,7 +13,7 @@ import {
   VulcanArtifactBuilder,
   getLogger,
   ConfigurationError,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { DocumentGenerator } from './document-generator';
 import { interfaces } from 'inversify';
 import { uniq } from 'lodash';

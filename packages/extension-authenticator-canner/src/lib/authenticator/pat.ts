@@ -2,7 +2,7 @@ import {
   ConfigurationError,
   VulcanExtensionId,
   InternalError,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import {
   BaseAuthenticator,
   KoaContext,

@@ -27,6 +27,6 @@
     "@clickhouse/client": "^0.1.1"
   },
   "peerDependencies": {
-    "@vulcan-sql/core": "~0.10.2-0"
+    "@vulcan-sql/api-layer": "~0.10.2-0"
   }
 }

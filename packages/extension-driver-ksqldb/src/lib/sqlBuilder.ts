@@ -1,4 +1,4 @@
-import { Parameterized, SQLClauseOperation } from '@vulcan-sql/core';
+import { Parameterized, SQLClauseOperation } from '@vulcan-sql/api-layer';
 import { isNull, isUndefined, startCase, lowerCase } from 'lodash';
 
 const isNullOrUndefine = (value: any) => isUndefined(value) || isNull(value);

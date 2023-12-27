@@ -4,7 +4,7 @@ import {
   ExecuteOptions,
   RequestParameter,
   VulcanExtensionId,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { newDb } from 'pg-mem';
 import { Stream } from 'stream';
 

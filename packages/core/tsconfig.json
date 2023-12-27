@@ -7,9 +7,10 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "typeRoots": ["../../node_modules/@types"]
+    "noFallthroughCasesInSwitch": true
   },
+  "files": [],
+  "include": [],
   "references": [
     {
       "path": "./tsconfig.lib.json"

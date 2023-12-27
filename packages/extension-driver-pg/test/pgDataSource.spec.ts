@@ -1,6 +1,6 @@
 import { PGServer } from './pgServer';
 import { PGDataSource, PGOptions } from '../src';
-import { streamToArray } from '@vulcan-sql/core';
+import { streamToArray } from '@vulcan-sql/api-layer';
 import { Writable } from 'stream';
 
 const pg = new PGServer();

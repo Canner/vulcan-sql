@@ -1,4 +1,4 @@
-import { CompileTimeExtension } from '@vulcan-sql/core';
+import { CompileTimeExtension } from '@vulcan-sql/api-layer';
 import * as nunjucks from 'nunjucks';
 import * as fs from 'fs';
 import * as path from 'path';

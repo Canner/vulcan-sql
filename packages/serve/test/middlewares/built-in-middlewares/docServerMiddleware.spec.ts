@@ -1,4 +1,4 @@
-import { DocumentOptions } from '@vulcan-sql/core';
+import { DocumentOptions } from '@vulcan-sql/api-layer';
 import { DocRouterMiddleware, DocumentRouter } from '@vulcan-sql/serve';
 import * as compose from 'koa-compose';
 import * as sinon from 'ts-sinon';

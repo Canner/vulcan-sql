@@ -6,7 +6,7 @@ import {
   getLogger,
   ActivityLogType,
   ActivityLogContentOptions,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { Next, KoaContext, BuiltInMiddleware } from '@vulcan-sql/serve/models';
 import { inject, multiInject } from 'inversify';
 import moment = require('moment');

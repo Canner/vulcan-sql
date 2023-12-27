@@ -1,4 +1,4 @@
-import { FieldDataType } from '@vulcan-sql/core';
+import { FieldDataType } from '@vulcan-sql/api-layer';
 import { DeepPartial } from 'ts-essentials';
 import {
   RawAPISchema,

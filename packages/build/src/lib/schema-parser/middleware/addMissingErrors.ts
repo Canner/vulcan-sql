@@ -1,4 +1,4 @@
-import { APISchema } from '@vulcan-sql/core';
+import { APISchema } from '@vulcan-sql/api-layer';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 
 interface ErrorCode {

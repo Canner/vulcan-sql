@@ -1,6 +1,10 @@
 name: '{{ options.projectName }}'
 description: A starter Vulcan project
 version: 0.2.0
+# TODO: customize mdl result file?
+semantic-model:
+  - input: mdls/default.mdl
+    output: mdls/default.json
 template:
   provider: LocalFile
   # Path to .sql files

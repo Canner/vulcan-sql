@@ -5,7 +5,7 @@ import {
   RequestSchema as RequestParameter,
   ResponseProperty,
   ValidatorDefinition,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { injectable } from 'inversify';
 import { DeepPartial } from 'ts-essentials';
 

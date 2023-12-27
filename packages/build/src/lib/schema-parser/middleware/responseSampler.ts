@@ -7,7 +7,7 @@ import {
   ResponseProperty,
   TemplateEngine,
   TYPES as CORE_TYPES,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { unionBy } from 'lodash';
 
 export class ResponseSampler extends SchemaParserMiddleware {

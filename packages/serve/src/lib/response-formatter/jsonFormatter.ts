@@ -4,7 +4,7 @@ import {
   InternalError,
   VulcanExtensionId,
   VulcanInternalExtension,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import {
   BaseResponseFormatter,
   toBuffer,

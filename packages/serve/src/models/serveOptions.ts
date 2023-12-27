@@ -1,4 +1,4 @@
-import { ICoreOptions } from '@vulcan-sql/core';
+import { ICoreOptions } from '@vulcan-sql/api-layer';
 import { APIProviderType } from '@vulcan-sql/serve/route';
 
 export interface sslFileOptions {

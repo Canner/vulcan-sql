@@ -5,6 +5,7 @@
     "catalog-server": "packages/catalog-server",
     "cli": "packages/cli",
     "core": "packages/core",
+    "api-layer": "packages/api-layer",
     "doc": "packages/doc",
     "extension-authenticator-canner": "packages/extension-authenticator-canner",
     "extension-dbt": "packages/extension-dbt",

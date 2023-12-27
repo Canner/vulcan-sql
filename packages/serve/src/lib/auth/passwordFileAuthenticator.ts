@@ -13,7 +13,7 @@ import {
   UserError,
   VulcanExtensionId,
   VulcanInternalExtension,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { isEmpty } from 'lodash';
 import 'koa-bodyparser';
 export interface PasswordFileUserOptions {

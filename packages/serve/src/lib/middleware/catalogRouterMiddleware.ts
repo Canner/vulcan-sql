@@ -4,7 +4,7 @@ import {
   KoaContext,
   Next,
 } from '@vulcan-sql/serve/models';
-import { TYPES as CORE_TYPES, VulcanInternalExtension } from '@vulcan-sql/core';
+import { TYPES as CORE_TYPES, VulcanInternalExtension } from '@vulcan-sql/api-layer';
 import { inject } from 'inversify';
 import { TYPES } from '@vulcan-sql/serve/types';
 

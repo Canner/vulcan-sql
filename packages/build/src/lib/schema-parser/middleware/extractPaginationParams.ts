@@ -4,7 +4,7 @@ import {
   FieldInType,
   PaginationMode,
   RequestSchema,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 
 export class ExtractPaginationParams extends SchemaParserMiddleware {

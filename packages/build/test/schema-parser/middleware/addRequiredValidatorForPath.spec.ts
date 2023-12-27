@@ -1,6 +1,6 @@
 import { RawAPISchema } from '@vulcan-sql/build/schema-parser';
 import { AddRequiredValidatorForPath } from '@vulcan-sql/build/schema-parser/middleware/addRequiredValidatorForPath';
-import { APISchema, FieldInType } from '@vulcan-sql/core';
+import { APISchema, FieldInType } from '@vulcan-sql/api-layer';
 
 it('Should add required validator for parameter in path', async () => {
   // Arrange

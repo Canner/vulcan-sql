@@ -1,5 +1,5 @@
 import faker from '@faker-js/faker';
-import { UserError } from '@vulcan-sql/core';
+import { UserError } from '@vulcan-sql/api-layer';
 import { KoaContext } from '@vulcan-sql/serve';
 import { OffsetBasedStrategy } from '@vulcan-sql/serve/pagination';
 import { Request } from 'koa';

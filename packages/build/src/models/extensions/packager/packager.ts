@@ -1,4 +1,4 @@
-import { ExtensionBase, VulcanExtension } from '@vulcan-sql/core';
+import { ExtensionBase, VulcanExtension } from '@vulcan-sql/api-layer';
 import { TYPES } from '../../../containers/types';
 import { promises as fs } from 'fs';
 import * as path from 'path';

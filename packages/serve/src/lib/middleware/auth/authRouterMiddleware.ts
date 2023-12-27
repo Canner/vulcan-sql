@@ -3,7 +3,7 @@ import { Next, KoaContext, AuthUserInfo } from '@vulcan-sql/serve/models';
 
 import * as Router from 'koa-router';
 import { BaseAuthMiddleware } from './authMiddleware';
-import { VulcanInternalExtension } from '@vulcan-sql/core';
+import { VulcanInternalExtension } from '@vulcan-sql/api-layer';
 
 /** The middleware responsible for mounting endpoint for getting token info or user profile by request.
  *  It seek the 'auth' module name to match data through built-in and customized authenticator by BaseAuthenticator

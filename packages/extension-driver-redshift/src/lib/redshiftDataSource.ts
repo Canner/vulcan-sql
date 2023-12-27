@@ -7,7 +7,7 @@ import {
   InternalError,
   RequestParameter,
   VulcanExtensionId,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { Readable } from 'stream';
 import { buildSQL } from './sqlBuilder';
 import { mapFromRedShiftTypeId } from './typeMapper';

@@ -4,7 +4,7 @@ import {
   VulcanInternalExtension,
   TYPES as CORE_TYPES,
   ICoreOptions,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import {
   AuthSourceOptions,
   AuthSourceTypes,

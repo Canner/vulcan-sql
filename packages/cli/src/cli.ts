@@ -7,6 +7,8 @@ import {
   handleBuild,
   handleServe,
   handleCatalog,
+  handleCli,
+  handleStop,
 } from './commands';
 
 export interface CliProgramOptions {
@@ -55,6 +57,7 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
       'path to Vulcan config file',
       './vulcan.yaml'
     )
+    .option('--pull', 'Pull latest docker images')
     .action(async (options) => {
       await handleBuild({...options, requireFromLocal});
     });
@@ -91,6 +94,7 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
       './vulcan.yaml'
     )
     .option('-p --port <port>', 'server port', '3000')
+    .option('--pull', 'Pull latest docker images')
     .action(async (options) => {
       await handleServe({...options, requireFromLocal});
     });
@@ -105,7 +109,22 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
     )
     .option('-p --port <port>', 'server port', '3000')
     .option('-w --watch', 'watch file changes', false)
+    .option('--pull', 'Pull latest docker images')
     .action(async (options) => {
       await handleStart({...options, requireFromLocal});
+    });
+
+  program
+    .command('cli')
+    .description('Run psql CLI in the specified directory')
+    .action(async () => {
+      await handleCli();
+    });
+
+  program
+    .command('stop')
+    .description('Stop VulcanSQL engine')
+    .action(async () => {
+      await handleStop();
     });
 };

@@ -3,7 +3,7 @@ import * as sinon from 'ts-sinon';
 import { Request } from 'koa';
 import { IncomingHttpHeaders } from 'http';
 import { ParsedUrlQuery } from 'querystring';
-import { asyncReqIdStorage, FieldInType } from '@vulcan-sql/core';
+import { asyncReqIdStorage, FieldInType } from '@vulcan-sql/api-layer';
 import { KoaContext } from '@vulcan-sql/serve/models';
 import * as uuid from 'uuid';
 import { RequestIdMiddleware } from '@vulcan-sql/serve/middleware';

@@ -30,6 +30,6 @@
     "@types/snowflake-sdk": "^1.6.8"
   },
   "peerDependencies": {
-    "@vulcan-sql/core": "~0.10.2-0"
+    "@vulcan-sql/api-layer": "~0.10.2-0"
   }
 }

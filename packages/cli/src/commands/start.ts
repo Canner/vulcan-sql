@@ -38,6 +38,7 @@ const callAfterFulfilled = (func: () => Promise<void>) => {
 export interface StartCommandOptions {
   watch: boolean;
   config: string;
+  pull?: boolean;
 }
 
 const defaultOptions: StartCommandOptions = {
@@ -72,7 +73,7 @@ export const handleStart = async (
     if (stopServer) await stopServer();
     try {
       await buildVulcan(buildOptions);
-      stopServer = (await serveVulcan(serveOptions)).stopServer;
+      stopServer = (await serveVulcan(serveOptions))?.stopServer;
     } catch (e) {
       // Ignore the error to keep watch process works
       if (!startOptions.watch) throw e;

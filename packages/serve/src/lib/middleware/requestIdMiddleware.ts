@@ -3,9 +3,9 @@ import {
   FieldInType,
   asyncReqIdStorage,
   VulcanInternalExtension,
-} from '@vulcan-sql/core';
+} from '@vulcan-sql/api-layer';
 import { BuiltInMiddleware, KoaContext, Next } from '@vulcan-sql/serve/models';
-import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
+import { TYPES as CORE_TYPES } from '@vulcan-sql/api-layer';
 import { inject } from 'inversify';
 
 export interface RequestIdOptions {

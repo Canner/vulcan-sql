@@ -5,3 +5,5 @@ export * from './build';
 export * from './package';
 export * from './serve';
 export * from './catalog';
+export * from './cli';
+export * from './stop';
