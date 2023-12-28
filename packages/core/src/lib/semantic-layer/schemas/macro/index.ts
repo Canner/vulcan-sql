@@ -11,7 +11,7 @@ export class Macro extends Base implements Jsonable {
     super(schema);
   }
 
-  public parseBody<Type>(body: any): Type[] {
+  public parseBody<Type>(): Type[] {
     return [];
   }
 
