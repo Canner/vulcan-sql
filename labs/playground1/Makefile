@@ -1,12 +1,12 @@
 
-.PHONY: install build start pkg-api-layer pkg-core pkg-build pkg-serve pkg-cli clean pkg-extension-driver-duckdb
+.PHONY: install build start pkg-core pkg-build pkg-serve pkg-cli clean pkg-extension-driver-duckdb
 
 # start vulcan server (default goal)
 start: build test-data/moma.db ../../node_modules
 	@vulcan start --watch
 
 # build the required packages
-build: pkg-api-layer pkg-core pkg-build pkg-serve pkg-catalog-server pkg-cli pkg-extension-driver-duckdb \
+build: pkg-core pkg-build pkg-serve pkg-catalog-server pkg-cli pkg-extension-driver-duckdb \
 		pkg-extension-authenticator-canner pkg-extension-driver-canner \
 		pkg-extension-driver-clickhouse pkg-extension-driver-bq \
 		pkg-extension-huggingface pkg-extension-api-caller pkg-extension-driver-pg
@@ -18,13 +18,6 @@ pkg-core: ../../node_modules
 	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
 	rm -rf ./labs/playground1/node_modules/@vulcan-sql/core; \
 	cp -R ./dist/packages/core ./labs/playground1/node_modules/@vulcan-sql
-
-pkg-api-layer: ../../node_modules
-	@cd ../..; \
-	yarn nx build api-layer; \
-	mkdir -p ./labs/playground1/node_modules/@vulcan-sql; \
-	rm -rf ./labs/playground1/node_modules/@vulcan-sql/api-layer; \
-	cp -R ./dist/packages/api-layer ./labs/playground1/node_modules/@vulcan-sql
 
 # build for build pakge
 pkg-build: ../../node_modules
