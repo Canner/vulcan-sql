@@ -18,7 +18,15 @@ import * as path from 'path';
 import { DocumentGenerator } from './document-generator';
 import { interfaces } from 'inversify';
 import { uniq } from 'lodash';
-import { buildSemanticModels, runVulcanEngine, generateSqlTemplates } from './utils';
+import { 
+  buildSemanticModels,
+  runVulcanEngine,
+  generateSqlTemplates,
+  generateServeFiles,
+  generateCLIShell,
+} from './utils';
+import { copyFileSync, promises as fs } from 'fs';
+
 
 const logger = getLogger({ scopeName: 'BUILD' });
 
@@ -87,14 +95,29 @@ export class VulcanBuilder {
       if (semantics.length > 0) {
         logger.warn('At the moment, we only support one mdl file.');
         const semantic = semantics[0];
+        const compiledFileName = config['semantic-model']['filePaths'][0].output;
         const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
-        const compiledFilePath = path.resolve(compiledFolderPath, config['semantic-model']['filePaths'][0].output);
-  
+        const compiledFilePath = path.resolve(compiledFolderPath, compiledFileName);
+
         await runVulcanEngine(semantic, compiledFilePath, shouldPull ?? false);
         await generateSqlTemplates(semantic.toJSON(), config);
   
         if (packagerOptions?.target === 'vulcan-server') {
-          //
+          const targetFolderPath = path.resolve(process.cwd(), 'dist/vulcansql-semantic-engine');
+          await fs.mkdir(targetFolderPath, { recursive: true });
+
+          generateServeFiles(targetFolderPath, semantic);
+          generateCLIShell(targetFolderPath, semantic);
+          copyFileSync(
+            compiledFilePath,
+            path.resolve(targetFolderPath, compiledFileName)
+          );
+          await fs.writeFile(
+            path.join(targetFolderPath, '.env'),
+            `GRAPHMDL_PATH=./${compiledFileName}\n` +
+            `CONFIG_PATH=./config.properties\n` +
+            `LAUNCH_CLI_PATH=./launch-cli.sh\n`
+          );
         }
   
         return semantics;

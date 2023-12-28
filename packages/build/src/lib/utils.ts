@@ -290,7 +290,7 @@ const checkConfigAllSet = (semantic: Semantic) => {
   };
 };
 
-const generateServeFiles = (tmpDir: string, semantic: Semantic) => {
+export const generateServeFiles = (targetDir: string, semantic: Semantic) => {
   const spinner = ora('Generating Serve files').start();
   const properties = new PropertiesEditor('');
   const { config } = semantic;
@@ -318,7 +318,7 @@ const generateServeFiles = (tmpDir: string, semantic: Semantic) => {
 
   // generate config.properties
   writeFileSync(
-    path.resolve(tmpDir, 'config.properties'),
+    path.resolve(targetDir, 'config.properties'),
     properties.format(),
     'utf-8'
   );
@@ -326,13 +326,13 @@ const generateServeFiles = (tmpDir: string, semantic: Semantic) => {
   // generate docker-compose.yml
   copyFileSync(
     path.resolve(templatePath, 'docker', 'docker-compose.yml'),
-    path.resolve(tmpDir, 'docker-compose.yml')
+    path.resolve(targetDir, 'docker-compose.yml')
   );
 
   spinner.succeed('Serve files are generated');
 };
 
-const generateCLIShell = (tmpDir: string, semantic: Semantic) => {
+export const generateCLIShell = (targetDir: string, semantic: Semantic) => {
   const { config } = semantic;
   const shellScript = ['#!/bin/bash'];
 
@@ -345,7 +345,7 @@ const generateCLIShell = (tmpDir: string, semantic: Semantic) => {
   );
 
   writeFileSync(
-    path.resolve(tmpDir, 'launch-cli.sh'),
+    path.resolve(targetDir, 'launch-cli.sh'),
     shellScript.join('\n'),
     'utf-8'
   );
