@@ -60,8 +60,8 @@ export const handleStart = async (
     StartCommandOptions & BuildCommandOptions & ServeCommandOptions
   >
 ): Promise<void> => {
-  const buildOptions = mergeBuildDefaultOption(options);
-  const serveOptions = mergeServeDefaultOption(options);
+  const buildOptions = mergeBuildDefaultOption({shouldStopVulcanEngine: false, ...options});
+  const serveOptions = mergeServeDefaultOption({shouldRunVulcanEngine: false, ...options});
   const startOptions = mergeStartDefaultOption(options);
 
   const configPath = path.resolve(process.cwd(), startOptions.config);

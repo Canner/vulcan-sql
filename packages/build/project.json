@@ -24,7 +24,8 @@
         "assets": [
           "packages/build/*.md",
           "packages/build/src/models/extensions/packager/assets/**/*",
-          "packages/build/src/lib/packager/dockerPackager/assets/**/*"
+          "packages/build/src/lib/packager/dockerPackager/assets/**/*",
+          "packages/build/src/templates/**/*"
         ],
         "buildableProjectDepsInPackageJsonType": "dependencies"
       },

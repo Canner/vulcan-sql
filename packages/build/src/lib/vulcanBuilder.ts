@@ -17,6 +17,7 @@ import {
 import { DocumentGenerator } from './document-generator';
 import { interfaces } from 'inversify';
 import { uniq } from 'lodash';
+import { prepareVulcanEngine } from './prepare';
 
 const logger = getLogger({ scopeName: 'BUILD' });
 
@@ -27,6 +28,9 @@ export class VulcanBuilder {
   }
 
   public async build(packagerOptions?: PackagerOptions) {
+    // build semantic models and start vulcan engine first
+    const {success, semantics} = await prepareVulcanEngine(this.options);
+
     const container = new Container();
     await container.load(this.options);
     const schemaParser = container.get<SchemaParser>(TYPES.SchemaParser);
@@ -77,5 +81,6 @@ export class VulcanBuilder {
     }
 
     await container.unload();
+    return { success, semantics };
   }
 }

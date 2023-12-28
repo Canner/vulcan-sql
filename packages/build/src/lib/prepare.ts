@@ -1,6 +1,6 @@
 import * as ora from 'ora';
 import * as detectPort from 'detect-port';
-import { SemanticJSON, Semantic, Config, ColumnJSON } from '@vulcan-sql/core';
+import { SemanticJSON, Semantic, Config, ColumnJSON, tokenize } from '@vulcan-sql/core';
 import { get } from 'lodash';
 import { readFileSync, writeFileSync, copyFileSync, promises as fs } from 'fs';
 import * as path from 'path';
@@ -8,19 +8,12 @@ import { PropertiesEditor } from 'properties-file/editor';
 import { dirSync } from 'tmp-promise';
 import { execSync } from 'child_process';
 import {
-  StartCommandOptions,
-  BuildCommandOptions,
-  ServeCommandOptions,
-} from '../commands';
-import {
   dockerCompose,
   isDockerInstalled,
   isDockerStarted,
   listDockerNetworks,
   createNetwork,
-  logger,
-  modulePath,
-} from '../utils';
+} from './docker';
 
 
 interface assignFunction {
@@ -476,11 +469,7 @@ interface SemanticModelInputOutput {
   }[];
 }
 
-const compile = async (filepath: string, options: Partial<
-  StartCommandOptions & BuildCommandOptions & ServeCommandOptions
->) => {
-  const { Semantic, tokenize } = await import(modulePath('@vulcan-sql/core', options.requireFromLocal));
-
+const compile = async (filepath: string) => {
   const fileContent = await fs.readFile(filepath, 'utf-8');
   const tokens = tokenize(fileContent);
   const semantic = new Semantic(tokens);
@@ -488,12 +477,7 @@ const compile = async (filepath: string, options: Partial<
   return semantic;
 };
 
-export const buildSemanticModels = async (
-  config: SemanticModelInputOutput,
-  options: Partial<
-    StartCommandOptions & BuildCommandOptions & ServeCommandOptions
-  >
-) => {
+export const buildSemanticModels = async (config: SemanticModelInputOutput) => {
   const spinner = ora('Building semantic models...').start();
 
   try {
@@ -502,7 +486,7 @@ export const buildSemanticModels = async (
     const semantics = []
     if (config.filePaths.length > 0) {
       for (const filePath of config.filePaths) {
-        const semantic = await compile(path.join(inputPath, filePath.input), options);
+        const semantic = await compile(path.join(inputPath, filePath.input));
         semantics.push(semantic);
 
         await fs.writeFile(
@@ -520,18 +504,16 @@ export const buildSemanticModels = async (
   }
 }
 
-export const prepareVulcanEngine = async (config: any, options: Partial<
-  StartCommandOptions & BuildCommandOptions & ServeCommandOptions
->) => {
+export const prepareVulcanEngine = async (config: any, shouldPool?: boolean) => {
   if ('semantic-model' in config) {
-    const { success, semantics } = await buildSemanticModels(config['semantic-model'], options);
+    const { success, semantics } = await buildSemanticModels(config['semantic-model']);
     if (success && semantics.length > 0) {
-      logger.warn('At the moment, we only support one semantic model.');
+      //logger.warn('At the moment, we only support one semantic model.');
       const semantic = semantics[0];
       const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
       const compiledFilePath = path.resolve(compiledFolderPath, config['semantic-model']['filePaths'][0].output);
 
-      await runVulcanEngine(semantic, compiledFilePath, options.pull ?? false);
+      await runVulcanEngine(semantic, compiledFilePath, shouldPool ?? false);
       await generateSqlTemplates(semantic.toJSON(), config);
 
       return {success: true, semantics};

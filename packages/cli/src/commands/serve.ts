@@ -6,8 +6,6 @@ import {
   modulePath,
   logger,
   removeShutdownJob,
-  buildSemanticModels,
-  runVulcanEngine,
 } from '../utils';
 import { Semantic } from '@vulcan-sql/core';
 
@@ -17,6 +15,7 @@ export interface ServeCommandOptions {
   requireFromLocal?: boolean;
   pull?: boolean;
   semantics: Semantic[];
+  shouldRunVulcanEngine?: boolean;
 }
 
 const defaultOptions: ServeCommandOptions = {
@@ -37,9 +36,12 @@ export const mergeServeDefaultOption = (
 export const serveVulcan = async (options: ServeCommandOptions) => {
   const configPath = path.resolve(process.cwd(), options.config);
   const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
+  const shouldRunVulcanEngine = options.shouldRunVulcanEngine ?? true;
 
-  if ('semantic-model' in config) {
-    const { success, semantics } = await buildSemanticModels(config['semantic-model'], options);
+  if ('semantic-model' in config && shouldRunVulcanEngine) {
+    const { buildSemanticModels, runVulcanEngine } = await import(modulePath('@vulcan-sql/build', options.requireFromLocal));
+
+    const { success, semantics } = await buildSemanticModels(config['semantic-model']);
     if (success && semantics.length > 0) {
       logger.warn('At the moment, we only support one semantic model.');
       const semantic = semantics[0];

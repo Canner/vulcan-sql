@@ -2,13 +2,14 @@ import * as jsYAML from 'js-yaml';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import * as ora from 'ora';
-import { modulePath, prepareVulcanEngine } from '../utils';
+import { modulePath } from '../utils';
 import { handleStop } from './stop';
 
 export interface BuildCommandOptions {
   config: string;
   requireFromLocal?: boolean;
   pull?: boolean;
+  shouldStopVulcanEngine?: boolean;
 }
 
 const defaultOptions: BuildCommandOptions = {
@@ -27,6 +28,7 @@ export const mergeBuildDefaultOption = (
 export const buildVulcan = async (options: BuildCommandOptions) => {
   const configPath = path.resolve(process.cwd(), options.config);
   const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
+  const shouldStopVulcanEngine = options.shouldStopVulcanEngine ?? true;
 
   // Import dependencies. We use dynamic import here to import dependencies at runtime.
   const { VulcanBuilder } = await import(modulePath('@vulcan-sql/build', options.requireFromLocal));
@@ -34,11 +36,10 @@ export const buildVulcan = async (options: BuildCommandOptions) => {
   // Build project
   const spinner = ora('Building project...\n').start();
   try {
-    const {success, semantics} = await prepareVulcanEngine(config, options);
     const builder = new VulcanBuilder(config);
-    await builder.build();
+    const {success, semantics} = await builder.build();
     spinner.succeed('Built successfully.');
-    if (success && semantics.length > 0) {
+    if (success && semantics.length > 0 && shouldStopVulcanEngine) {
       handleStop();
     }
   } catch (e) {
