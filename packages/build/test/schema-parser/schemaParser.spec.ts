@@ -7,7 +7,7 @@ import {
 } from '@vulcan-sql/build/models';
 import { SchemaParserOptions } from '@vulcan-sql/build/options';
 import { SchemaParser } from '@vulcan-sql/build/schema-parser';
-import { IValidatorLoader, TYPES as CORE_TYPES } from '@vulcan-sql/api-layer';
+import { IValidatorLoader, TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { Container } from 'inversify';
 import * as sinon from 'ts-sinon';
 

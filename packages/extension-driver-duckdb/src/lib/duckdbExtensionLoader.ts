@@ -1,5 +1,5 @@
 import * as duckdb from 'duckdb';
-import { getLogger } from '@vulcan-sql/api-layer';
+import { getLogger } from '@vulcan-sql/core';
 import { ConfigurationParameters } from './duckdbDataSource';
 
 // DuckDB parameter name : configuration name

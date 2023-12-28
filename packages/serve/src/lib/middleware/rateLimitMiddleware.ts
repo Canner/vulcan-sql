@@ -1,6 +1,6 @@
 import { RateLimit, RateLimitOptions } from 'koa2-ratelimit';
 import { BuiltInMiddleware, KoaContext, Next } from '@vulcan-sql/serve/models';
-import { VulcanInternalExtension, TYPES as CORE_TYPES } from '@vulcan-sql/api-layer';
+import { VulcanInternalExtension, TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { inject } from 'inversify';
 
 export { RateLimitOptions };

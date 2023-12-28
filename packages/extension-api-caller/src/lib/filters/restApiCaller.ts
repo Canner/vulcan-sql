@@ -3,7 +3,7 @@ import {
   UserError,
   createFilterExtension,
   getLogger,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 
 import axios from 'axios';
 

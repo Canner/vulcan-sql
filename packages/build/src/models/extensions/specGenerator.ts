@@ -4,7 +4,7 @@ import {
   ProjectOptions,
   TYPES as CORE_TYPES,
   VulcanExtension,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { inject } from 'inversify';
 import { TYPES } from '../../containers/types';
 

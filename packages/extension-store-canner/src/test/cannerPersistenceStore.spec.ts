@@ -6,7 +6,7 @@ import {
   APISchema,
   ArtifactBuilderOptions,
   CacheLayerInfo,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import * as storageServiceModule from '../lib/storageService';
 import {
   BuiltInArtifact,

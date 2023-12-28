@@ -5,7 +5,7 @@ import {
   InternalError,
   VulcanExtensionId,
   VulcanInternalExtension,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { isArray, isObject, isUndefined } from 'lodash';
 import { KoaContext } from '@vulcan-sql/serve/models';
 import {

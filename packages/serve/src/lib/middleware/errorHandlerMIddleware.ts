@@ -5,7 +5,7 @@ import {
   VulcanError,
   VulcanInternalExtension,
   asyncReqIdStorage,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 
 @VulcanInternalExtension('error-handler')
 export class ErrorHandlerMiddleware extends BuiltInMiddleware {

@@ -2,7 +2,7 @@ import {
   ArtifactBuilderProviderType,
   VulcanExtensionId,
   VulcanInternalExtension,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { IBuildOptions } from '../../../models/buildOptions';
 import {
   Packager,

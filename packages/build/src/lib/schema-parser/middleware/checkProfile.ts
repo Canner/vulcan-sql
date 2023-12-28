@@ -4,7 +4,7 @@ import {
   ConfigurationError,
   DataSource,
   TYPES as CORE_TYPES,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { inject, interfaces } from 'inversify';
 
 export class CheckProfile extends SchemaParserMiddleware {

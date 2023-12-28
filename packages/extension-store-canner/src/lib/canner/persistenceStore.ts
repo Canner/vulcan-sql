@@ -4,7 +4,7 @@ import {
   PersistentStore,
   TYPES,
   VulcanExtensionId,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { inject } from 'inversify';
 import * as oas3 from 'openapi3-ts';
 import { createStorageService } from '../storageService';

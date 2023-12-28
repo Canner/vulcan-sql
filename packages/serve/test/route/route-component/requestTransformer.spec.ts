@@ -6,7 +6,7 @@ import {
   FieldDataType,
   FieldInType,
   RequestSchema,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import {
   IRequestTransformer,
   RequestParameters,

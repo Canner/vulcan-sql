@@ -1,6 +1,6 @@
 {
   "name": "@vulcan-sql/core",
-  "description": "Core package of VulcanSQL",
+  "description": "core package of VulcanSQL",
   "version": "0.10.2",
   "type": "commonjs",
   "publishConfig": {

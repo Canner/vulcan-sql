@@ -7,7 +7,7 @@ import {
   VulcanExtensionId,
   ExportOptions,
   ConfigurationError,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { Readable } from 'stream';
 import { buildSQL } from './bqlSqlBuilder';
 import { mapFromBQTypeId } from './typeMapper';

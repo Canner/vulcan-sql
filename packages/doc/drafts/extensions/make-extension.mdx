@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 Besides using the published extensions, you could also customize extensions by using our base extension components.
 
-VulcanSQL provides 17 categories of extension to make you write your customized extension and put the base extension component into [@vulcan-sql/api-layer](./vulcan-sql-core), [@vulcan-sql/build](./vulcan-sql-build), [@vulcan-sql/serve](./vulcan-sql-serve) separately.
+VulcanSQL provides 17 categories of extension to make you write your customized extension and put the base extension component into [@vulcan-sql/core](./vulcan-sql-core), [@vulcan-sql/build](./vulcan-sql-build), [@vulcan-sql/serve](./vulcan-sql-serve) separately.
 
 You could customize your extension by extending 17 categories base extension components.
 
@@ -23,12 +23,12 @@ You could customize your extension by extending 17 categories base extension com
 
 2. Install VulcanSQL base extension packages.
 
-   Because base extension components existed in [@vulcan-sql/api-layer](./vulcan-sql-core), [@vulcan-sql/build](./vulcan-sql-build), [@vulcan-sql/serve](./vulcan-sql-serve) separately.
+   Because base extension components existed in [@vulcan-sql/core](./vulcan-sql-core), [@vulcan-sql/build](./vulcan-sql-build), [@vulcan-sql/serve](./vulcan-sql-serve) separately.
 
    You could install these 3 packages all or according to which base extension you need to install its package.
 
    ```base
-   my-extension $ npm i @vulcan-sql/api-layer @vulcan-sql/build @vulcan-sql/serve
+   my-extension $ npm i @vulcan-sql/core @vulcan-sql/build @vulcan-sql/serve
    ```
 
 ## Customize extension
@@ -42,7 +42,7 @@ Here is an sample for extending `InputValidator` class to `MyValidator` in the `
 <TabItem value="nodejs-commonjs" label="NodeJS with CommonJS">
 
 ```js
-const { InputValidator } = require('@vulcan-sql/api-layer');
+const { InputValidator } = require('@vulcan-sql/core');
 
 class MyValidator extends InputValidator {
   validateSchema(args) {
@@ -61,7 +61,7 @@ module.exports = { MyValidator };
 <TabItem value="nodejs-es6" label="NodeJS with ES6">
 
 ```js
-import { InputValidator } from '@vulcan-sql/api-layer';
+import { InputValidator } from '@vulcan-sql/core';
 
 export class MyValidator extends InputValidator {
   validateSchema(args) {
@@ -78,7 +78,7 @@ export class MyValidator extends InputValidator {
 <TabItem value="typescript" label="NodeJS with Typescript">
 
 ```ts
-import { InputValidator } from '@vulcan-sql/api-layer';
+import { InputValidator } from '@vulcan-sql/core';
 
 export class MyValidator extends InputValidator {
   public validateSchema(args: any) {

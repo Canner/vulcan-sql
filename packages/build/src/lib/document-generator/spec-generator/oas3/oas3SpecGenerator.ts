@@ -19,7 +19,7 @@ import {
   DocumentSpec,
   ConfigurationError,
   TypeConstraint,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
 
 @VulcanInternalExtension()

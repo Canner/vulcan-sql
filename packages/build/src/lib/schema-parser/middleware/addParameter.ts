@@ -1,4 +1,4 @@
-import { FieldInType, ValidatorDefinition } from '@vulcan-sql/api-layer';
+import { FieldInType, ValidatorDefinition } from '@vulcan-sql/core';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 import { PARAMETER_METADATA_NAME } from './constants';
 

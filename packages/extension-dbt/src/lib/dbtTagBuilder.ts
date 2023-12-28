@@ -1,4 +1,4 @@
-import { TagBuilder } from '@vulcan-sql/api-layer';
+import { TagBuilder } from '@vulcan-sql/core';
 import * as nunjucks from 'nunjucks';
 import { promises as fs } from 'fs';
 import { chain } from 'lodash';

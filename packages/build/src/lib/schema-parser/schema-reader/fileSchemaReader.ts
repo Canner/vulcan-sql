@@ -13,7 +13,7 @@ import {
   VulcanInternalExtension,
   TYPES as CORE_TYPES,
   ConfigurationError,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { inject } from 'inversify';
 import { TYPES } from '@vulcan-sql/build/containers';
 

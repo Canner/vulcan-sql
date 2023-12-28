@@ -5,7 +5,7 @@ import {
   APISchema,
   normalizeStringValue,
   PaginationMode,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import {
   IPaginationTransformer,
   PaginationTransformer,

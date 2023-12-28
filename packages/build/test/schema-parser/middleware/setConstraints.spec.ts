@@ -5,7 +5,7 @@ import {
   MinValueConstraint,
   RequiredConstraint,
   IValidatorLoader,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import * as sinon from 'ts-sinon';
 
 it('Should set and compose constraints', async () => {

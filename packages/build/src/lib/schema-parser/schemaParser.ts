@@ -2,7 +2,7 @@ import {
   APISchema,
   AllTemplateMetadata,
   InternalError,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import {
   SchemaData,
   SchemaFormat,

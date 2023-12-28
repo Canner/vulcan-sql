@@ -5,7 +5,7 @@ import faker from '@faker-js/faker';
 import {
   ArtifactBuilderProviderType,
   ArtifactBuilderSerializerType,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 
 describe('Test VulcanServer', () => {
   let server: VulcanServer;

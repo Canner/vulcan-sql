@@ -5,7 +5,7 @@ import {
   FieldInType,
   normalizeStringValue,
   RequestSchema,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { injectable } from 'inversify';
 import { assign } from 'lodash';
 import { KoaContext } from '@vulcan-sql/serve/models';

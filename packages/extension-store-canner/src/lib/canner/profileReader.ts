@@ -3,7 +3,7 @@ import {
   ProfileReader,
   VulcanExtensionId,
   ConfigurationError,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { CannerStoreConfig, getEnvConfig } from '../config';
 import { createStorageService } from '../storageService';
 import { getIndicatorFilesOfWorkspaces } from './utils';

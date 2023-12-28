@@ -5,7 +5,7 @@ import {
   DataSource,
   TemplateEngine,
   TYPES as CORE_TYPES,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import {
   APIProviderType,
   GraphQLRoute,

@@ -1,4 +1,4 @@
-import { APISchema } from '@vulcan-sql/api-layer';
+import { APISchema } from '@vulcan-sql/core';
 import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
 import * as koaParseBody from 'koa-bodyparser';

@@ -1,6 +1,6 @@
 import { BQDataSource } from '../src';
 import { BQflakeServer } from './bqServer';
-import { ExportOptions, streamToArray } from '@vulcan-sql/api-layer';
+import { ExportOptions, streamToArray } from '@vulcan-sql/core';
 import * as fs from 'fs';
 
 const bigQuery = new BQflakeServer();

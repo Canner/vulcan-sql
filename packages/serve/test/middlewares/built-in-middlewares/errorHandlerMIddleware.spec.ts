@@ -1,4 +1,4 @@
-import { InternalError, UserError } from '@vulcan-sql/api-layer';
+import { InternalError, UserError } from '@vulcan-sql/core';
 import { KoaContext } from '@vulcan-sql/serve';
 import { ErrorHandlerMiddleware } from '@vulcan-sql/serve/middleware';
 import * as sinon from 'ts-sinon';

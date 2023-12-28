@@ -1,5 +1,5 @@
 import { builtInSchemaReader } from '@vulcan-sql/build/schema-parser';
-import { ExtensionLoader } from '@vulcan-sql/api-layer';
+import { ExtensionLoader } from '@vulcan-sql/core';
 import { AsyncContainerModule } from 'inversify';
 import { builtInSpecGenerator } from '../../lib/document-generator';
 import { builtInPackager } from '../../lib/packager';

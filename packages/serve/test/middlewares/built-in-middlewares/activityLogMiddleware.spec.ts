@@ -5,7 +5,7 @@ import { IncomingHttpHeaders } from 'http';
 import { ParsedUrlQuery } from 'querystring';
 import { KoaContext } from '@vulcan-sql/serve/models';
 
-import { ActivityLogType, HttpLogger } from '@vulcan-sql/api-layer';
+import { ActivityLogType, HttpLogger } from '@vulcan-sql/core';
 import { ActivityLogMiddleware } from '@vulcan-sql/serve/middleware/activityLogMiddleware';
 
 jest.mock('../../../../core/src/lib/loggers/httpLogger', () => {

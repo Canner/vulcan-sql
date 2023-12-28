@@ -1,4 +1,4 @@
-import { ICoreOptions } from '@vulcan-sql/api-layer';
+import { ICoreOptions } from '@vulcan-sql/core';
 import { ISchemaParserOptions } from './schemaParserOptions';
 
 export interface IBuildOptions extends ICoreOptions {

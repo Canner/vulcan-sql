@@ -2,7 +2,7 @@ import { SpecGenerator } from '@vulcan-sql/build';
 import { DocumentGenerator } from '@vulcan-sql/build/doc-generator';
 import * as sinon from 'ts-sinon';
 import faker from '@faker-js/faker';
-import { ArtifactBuilder } from '@vulcan-sql/api-layer';
+import { ArtifactBuilder } from '@vulcan-sql/core';
 
 it('Document generator should write YAML files while generating documents', async () => {
   // Arrange

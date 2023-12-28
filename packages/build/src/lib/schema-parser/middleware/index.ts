@@ -1,4 +1,4 @@
-import { ClassType } from '@vulcan-sql/api-layer';
+import { ClassType } from '@vulcan-sql/core';
 import { GenerateUrl } from './generateUrl';
 import { CheckValidator } from './checkValidator';
 import { CheckCache } from './checkCache';

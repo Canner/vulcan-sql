@@ -4,7 +4,7 @@ import {
   VulcanInternalExtension,
   ICoreOptions,
   APISchema,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { Next } from 'koa';
 import * as Router from 'koa-router';
 import { CatalogRouter } from '@vulcan-sql/serve/models';

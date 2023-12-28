@@ -22,6 +22,6 @@
   },
   "license": "Apache-2.0",
   "peerDependencies": {
-    "@vulcan-sql/api-layer": "~0.10.2-0"
+    "@vulcan-sql/core": "~0.10.2-0"
   }
 }

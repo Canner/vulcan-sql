@@ -22,7 +22,7 @@ Functional tag is an async function that accepts some arguments and the content 
 For example, you can write a simple custom tag to add prefix:
 
 ```ts
-import { createTagExtension, FunctionalTag } from '@vulcan-sql/api-layer';
+import { createTagExtension, FunctionalTag } from '@vulcan-sql/core';
 
 const PrefixFunctionalTag: FunctionalTag = async ({ sql }) => {
   return `vulcan-sql-${sql}`;
@@ -70,7 +70,7 @@ You can check the [demo repository](https://github.com/Canner/vulcan-sql-extensi
 :::
 
 ```ts showLineNumbers
-import { createTagExtension, FunctionalTag } from '@vulcan-sql/api-layer';
+import { createTagExtension, FunctionalTag } from '@vulcan-sql/core';
 
 const Mask2FunctionalTag: FunctionalTag = async ({ args, sql }) => {
   let { len = 3, padding = 5 } = args;

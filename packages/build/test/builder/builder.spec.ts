@@ -11,7 +11,7 @@ import {
   ArtifactBuilderSerializerType,
   DocumentSpec,
   TemplateProviderType,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 
 describe('Test VulcanBuilder', () => {
   it('Should build successfully', async () => {

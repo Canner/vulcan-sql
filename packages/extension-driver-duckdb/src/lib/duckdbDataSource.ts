@@ -12,7 +12,7 @@ import {
   InternalError,
   RequestParameter,
   VulcanExtensionId,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import * as path from 'path';
 import { buildSQL, chunkSize } from './sqlBuilder';
 import { DuckDBExtensionLoader } from './duckdbExtensionLoader';

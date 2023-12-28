@@ -1,4 +1,4 @@
-import { ExtensionBase, VulcanExtension } from '@vulcan-sql/api-layer';
+import { ExtensionBase, VulcanExtension } from '@vulcan-sql/core';
 import { TYPES } from '../../containers/types';
 
 export enum SchemaFormat {

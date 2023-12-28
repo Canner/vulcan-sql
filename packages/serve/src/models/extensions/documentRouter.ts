@@ -4,10 +4,10 @@ import {
   DocumentSpec,
   ExtensionBase,
   VulcanExtension,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { TYPES } from '@vulcan-sql/serve/types';
 import { KoaContext, Next } from '@vulcan-sql/serve/models';
-import { TYPES as CORE_TYPES } from '@vulcan-sql/api-layer';
+import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { inject } from 'inversify';
 
 @VulcanExtension(TYPES.Extension_DocumentRouter, { enforcedId: true })

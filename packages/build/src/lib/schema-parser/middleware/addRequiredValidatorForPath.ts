@@ -1,4 +1,4 @@
-import { FieldInType } from '@vulcan-sql/api-layer';
+import { FieldInType } from '@vulcan-sql/core';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 
 // Add the "required" validator when the parameters are in path

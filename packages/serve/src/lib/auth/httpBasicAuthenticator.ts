@@ -12,7 +12,7 @@ import {
   UserError,
   VulcanExtensionId,
   VulcanInternalExtension,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { isEmpty } from 'lodash';
 import 'koa-bodyparser';
 

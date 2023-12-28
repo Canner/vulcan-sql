@@ -6,7 +6,7 @@ import {
   InternalError,
   RequestParameter,
   VulcanExtensionId,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import * as snowflake from 'snowflake-sdk';
 import { Options as PoolOptions, Pool } from 'generic-pool';
 import { buildSQL } from './sqlBuilder';

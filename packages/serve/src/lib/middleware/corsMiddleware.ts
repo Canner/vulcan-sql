@@ -1,6 +1,6 @@
 import * as cors from '@koa/cors';
 import { BuiltInMiddleware, KoaContext, Next } from '@vulcan-sql/serve/models';
-import { VulcanInternalExtension } from '@vulcan-sql/api-layer';
+import { VulcanInternalExtension } from '@vulcan-sql/core';
 
 export type CorsOptions = cors.Options;
 

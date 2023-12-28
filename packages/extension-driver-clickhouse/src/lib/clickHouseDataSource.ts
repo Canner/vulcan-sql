@@ -8,7 +8,7 @@ import {
   InternalError,
   RequestParameter,
   VulcanExtensionId,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { Stream } from 'stream';
 import * as fs from 'fs';
 import {

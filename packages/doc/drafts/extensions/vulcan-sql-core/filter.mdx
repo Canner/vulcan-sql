@@ -17,7 +17,7 @@ Functional filter is an async function that accepts some arguments and the value
 For example: you can write a simple custom filter to add prefix:
 
 ```ts
-import { createFilterExtension, FunctionalFilter } from '@vulcan-sql/api-layer';
+import { createFilterExtension, FunctionalFilter } from '@vulcan-sql/core';
 
 const PrefixFunctionalFilter: FunctionalFilter = async ({ value }) => {
   return `vulcan-sql-${value}`;
@@ -68,7 +68,7 @@ You can check the [demo repository](https://github.com/Canner/vulcan-sql-extensi
 :::
 
 ```ts showLineNumbers
-import { createFilterExtension, FunctionalFilter } from '@vulcan-sql/api-layer';
+import { createFilterExtension, FunctionalFilter } from '@vulcan-sql/core';
 
 const PrefixFunctionFilter: FunctionalFilter = async ({ args, value }) => {
   return `${args.pre || 'vulcan'}-${value}`;

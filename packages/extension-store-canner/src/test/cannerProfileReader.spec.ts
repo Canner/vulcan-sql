@@ -7,7 +7,7 @@ import {
 import { BaseStorageService } from '@canner/canner-storage';
 import * as storageServiceModule from '../lib/storageService';
 import * as configModule from '../lib/config';
-import { Profile } from '@vulcan-sql/api-layer';
+import { Profile } from '@vulcan-sql/core';
 
 describe('Test CannerProfileReader', () => {
   // fake workspaceId

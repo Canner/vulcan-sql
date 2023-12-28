@@ -8,7 +8,7 @@ import {
   CacheLayerStoreFormatType,
   CacheLayerStoreLoaderType,
   ICacheLayerOptions,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import defaultConfig from './projectConfig';
 import { Server } from 'http';
 

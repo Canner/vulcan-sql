@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 import { BaseRoute, RouteOptions } from './baseRoute';
 import { KoaContext } from '@vulcan-sql/serve/models';
-import { KoaRequest } from '@vulcan-sql/api-layer';
+import { KoaRequest } from '@vulcan-sql/core';
 
 export class GraphQLRoute extends BaseRoute {
   public readonly operationName: string;

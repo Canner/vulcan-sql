@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 import { inject, multiInject } from 'inversify';
-import { ConfigurationError, TYPES as CORE_TYPES } from '@vulcan-sql/api-layer';
+import { ConfigurationError, TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import {
   BuiltInMiddleware,
   BaseAuthenticator,

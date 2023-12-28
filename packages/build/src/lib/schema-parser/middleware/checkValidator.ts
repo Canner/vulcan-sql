@@ -5,7 +5,7 @@ import {
   ConfigurationError,
   IValidatorLoader,
   TYPES as CORE_TYPES,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { inject } from 'inversify';
 
 export class CheckValidator extends SchemaParserMiddleware {

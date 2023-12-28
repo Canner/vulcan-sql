@@ -2,7 +2,7 @@ import axios from 'axios';
 import { PGOptions } from './cannerDataSource';
 import { ConnectionOptions } from 'tls';
 import { createEnvConfig } from './config';
-import { InternalError, getLogger } from '@vulcan-sql/api-layer';
+import { InternalError, getLogger } from '@vulcan-sql/core';
 
 const envConfig = createEnvConfig();
 

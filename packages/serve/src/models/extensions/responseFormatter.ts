@@ -1,4 +1,4 @@
-import { DataColumn, ExtensionBase, VulcanExtension } from '@vulcan-sql/api-layer';
+import { DataColumn, ExtensionBase, VulcanExtension } from '@vulcan-sql/core';
 import { has } from 'lodash';
 import * as Stream from 'stream';
 import { TYPES } from '../../containers/types';

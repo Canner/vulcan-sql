@@ -1,4 +1,4 @@
-import { PaginationMode } from '@vulcan-sql/api-layer';
+import { PaginationMode } from '@vulcan-sql/core';
 import { RawAPISchema, SchemaParserMiddleware } from './middleware';
 
 // pagination.mode: offset -> OFFSET

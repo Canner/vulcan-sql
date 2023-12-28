@@ -4,7 +4,7 @@ import {
   PaginationMode,
   CursorPagination,
   UserError,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { PaginationStrategy } from './strategy';
 
 export class CursorBasedStrategy extends PaginationStrategy<CursorPagination> {

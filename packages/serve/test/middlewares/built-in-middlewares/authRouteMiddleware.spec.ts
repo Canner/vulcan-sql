@@ -15,7 +15,7 @@ import {
 } from '@vulcan-sql/serve/models';
 import { Server } from 'http';
 import { BasicAuthenticator } from '@vulcan-sql/serve';
-import { ProjectOptions } from '@vulcan-sql/api-layer';
+import { ProjectOptions } from '@vulcan-sql/core';
 
 const runServer = async (
   options: { enabled?: boolean; options?: AuthOptions },

@@ -2,7 +2,7 @@ import {
   getLogger,
   LoggerOptions,
   VulcanInternalExtension,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import * as bytes from 'bytes';
 import { BuiltInMiddleware, KoaContext, Next } from '@vulcan-sql/serve/models';
 

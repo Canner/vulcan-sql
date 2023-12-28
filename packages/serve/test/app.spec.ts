@@ -21,7 +21,7 @@ import {
   VulcanArtifactBuilder,
   LocalFilePersistentStore,
   JSONSerializer,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import {
   RouteGenerator,
   RequestParameters,

@@ -3,7 +3,7 @@ import {
   TYPES as CORE_TYPES,
   UserError,
   VulcanInternalExtension,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import {
   Next,
   KoaContext,

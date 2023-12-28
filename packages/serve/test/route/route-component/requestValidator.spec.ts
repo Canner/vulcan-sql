@@ -14,7 +14,7 @@ import {
   ValidatorLoader,
   extensionModule,
   TYPES as CORE_TYPES,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { Container } from 'inversify';
 import { TYPES } from '@vulcan-sql/serve/containers';
 

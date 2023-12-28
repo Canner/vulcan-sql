@@ -4,12 +4,12 @@ import {
   TemplateEngine,
   Pagination,
   UserError,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { IRequestValidator } from './requestValidator';
 import { IRequestTransformer, RequestParameters } from './requestTransformer';
 import { IPaginationTransformer } from './paginationTransformer';
 import { Evaluator } from '@vulcan-sql/serve/evaluator';
-import { KoaRequest, IncomingHttpHeaders } from '@vulcan-sql/api-layer';
+import { KoaRequest, IncomingHttpHeaders } from '@vulcan-sql/core';
 
 export interface TransformedRequest {
   reqParams: RequestParameters;

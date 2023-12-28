@@ -1,6 +1,6 @@
 import { RedShiftDataSource } from '../src';
 import { RedShiftFakeServer } from './redshiftServer';
-import { streamToArray } from '@vulcan-sql/api-layer';
+import { streamToArray } from '@vulcan-sql/core';
 
 let redShift: RedShiftFakeServer;
 let dataSource: RedShiftDataSource;

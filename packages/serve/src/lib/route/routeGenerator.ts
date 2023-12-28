@@ -3,7 +3,7 @@ import {
   APISchema,
   ConfigurationError,
   TemplateEngine,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import {
   RestfulRoute,
   GraphQLRoute,
@@ -11,7 +11,7 @@ import {
   IRequestTransformer,
 } from './route-component';
 import { inject, injectable } from 'inversify';
-import { TYPES as CORE_TYPES } from '@vulcan-sql/api-layer';
+import { TYPES as CORE_TYPES } from '@vulcan-sql/core';
 import { TYPES } from '../../containers/types';
 import { Evaluator } from '../evaluator';
 

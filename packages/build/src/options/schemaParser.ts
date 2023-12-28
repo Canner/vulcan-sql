@@ -5,7 +5,7 @@ import {
   SchemaReaderType,
 } from '@vulcan-sql/build/models';
 import { IsOptional, IsString, validateSync } from 'class-validator';
-import { ConfigurationError } from '@vulcan-sql/api-layer';
+import { ConfigurationError } from '@vulcan-sql/core';
 
 @injectable()
 export class SchemaParserOptions implements ISchemaParserOptions {

@@ -1,7 +1,7 @@
 import { isUndefined, omit } from 'lodash';
 import { inject } from 'inversify';
-import { ConfigurationError, TYPES as CORE_TYPES } from '@vulcan-sql/api-layer';
-import { VulcanInternalExtension } from '@vulcan-sql/api-layer';
+import { ConfigurationError, TYPES as CORE_TYPES } from '@vulcan-sql/core';
+import { VulcanInternalExtension } from '@vulcan-sql/core';
 import { BuiltInMiddleware } from '@vulcan-sql/serve/models';
 import { KoaContext, Next } from '@vulcan-sql/serve/models';
 import {

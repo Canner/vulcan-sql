@@ -1,4 +1,4 @@
-import { ArtifactBuilder, ProjectOptions } from '@vulcan-sql/api-layer';
+import { ArtifactBuilder, ProjectOptions } from '@vulcan-sql/core';
 import { RedocDocumentRouters } from '../../src/lib/document-router';
 import * as Koa from 'koa';
 import * as supertest from 'supertest';

@@ -1,4 +1,4 @@
-import { ArtifactBuilderProviderType } from '@vulcan-sql/api-layer';
+import { ArtifactBuilderProviderType } from '@vulcan-sql/core';
 import { NodePackager } from '../../src/lib/packager';
 import * as fs from 'fs';
 

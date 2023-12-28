@@ -4,7 +4,7 @@ import { Request } from 'koa';
 import { IncomingHttpHeaders } from 'http';
 import { AuthSourceNormalizerMiddleware } from '@vulcan-sql/serve/middleware';
 import { AuthSourceTypes, KoaContext } from '@vulcan-sql/serve/models';
-import { ProjectOptions } from '@vulcan-sql/api-layer';
+import { ProjectOptions } from '@vulcan-sql/core';
 
 describe('Test auth source normalizer middleware', () => {
   afterEach(() => {

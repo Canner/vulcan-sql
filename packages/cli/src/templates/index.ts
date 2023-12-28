@@ -11,7 +11,6 @@ const defaultInit = [{
         name: options.projectName,
         dependencies: {
           '@vulcan-sql/core': options.version,
-          '@vulcan-sql/api-layer': options.version,
           '@vulcan-sql/serve': options.version,
         },
         devDependencies: {
@@ -58,7 +57,6 @@ const nodejsQuickStartInit = [{
         name: options.projectName,
         dependencies: {
           '@vulcan-sql/core': options.version,
-          '@vulcan-sql/api-layer': options.version,
           '@vulcan-sql/serve': options.version,
           '@vulcan-sql/extension-driver-duckdb': options.version,
         },

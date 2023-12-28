@@ -4,7 +4,7 @@ import {
   ArtifactBuilderSerializerType,
   TemplateProviderType,
   DocumentSpec,
-} from '@vulcan-sql/api-layer';
+} from '@vulcan-sql/core';
 import { APIProviderType } from '@vulcan-sql/serve';
 import * as path from 'path';
 import faker from '@faker-js/faker';

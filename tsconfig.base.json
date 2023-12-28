@@ -37,47 +37,46 @@
       "@vulcan-sql/chatgpt-plugin": ["packages/chatgpt-plugin/src/index.ts"],
       "@vulcan-sql/cli": ["packages/cli/src/index"],
       "@vulcan-sql/core": ["packages/core/src/index"],
-      "@vulcan-sql/core/schemas": ["packages/core/src/lib/schemas/index"],
-      "@vulcan-sql/core/schemas/*": ["packages/core/src/lib/schemas/*"],
-      "@vulcan-sql/core/semanticizer": ["packages/core/src/lib/semanticizer/index"],
-      "@vulcan-sql/core/semanticizer/*": ["packages/core/src/lib/semanticizer/*"],
-      "@vulcan-sql/core/tokenizer": ["packages/core/src/lib/tokenizer/index"],
-      "@vulcan-sql/core/tokenizer/*": ["packages/core/src/lib/tokenizer/*"],
-      "@vulcan-sql/api-layer": ["packages/api-layer/src/index"],
-      "@vulcan-sql/api-layer/artifact-builder": [
-        "packages/api-layer/src/lib/artifact-builder/index"
+      "@vulcan-sql/core/schemas": ["packages/core/src/lib/semantic-layer/schemas/index"],
+      "@vulcan-sql/core/schemas/*": ["packages/core/src/lib/semantic-layer/schemas/*"],
+      "@vulcan-sql/core/semanticizer": ["packages/core/src/lib/semantic-layer/semanticizer/index"],
+      "@vulcan-sql/core/semanticizer/*": ["packages/core/src/lib/semantic-layer/semanticizer/*"],
+      "@vulcan-sql/core/tokenizer": ["packages/core/src/lib/semantic-layer/tokenizer/index"],
+      "@vulcan-sql/core/tokenizer/*": ["packages/core/src/lib/semantic-layer/tokenizer/*"],
+      "@vulcan-sql/core/artifact-builder": [
+        "packages/core/src/lib/api-layer/artifact-builder/index"
       ],
-      "@vulcan-sql/api-layer/artifact-builder/*": [
-        "packages/api-layer/src/lib/artifact-builder/*"
+      "@vulcan-sql/core/artifact-builder/*": [
+        "packages/core/src/lib/api-layer/artifact-builder/*"
       ],
-      "@vulcan-sql/api-layer/cache-layer": [
-        "packages/api-layer/src/lib/cache-layer/index"
+      "@vulcan-sql/core/cache-layer": [
+        "packages/core/src/lib/api-layer/cache-layer/index"
       ],
-      "@vulcan-sql/api-layer/cache-layer/*": ["packages/api-layer/src/lib/cache-layer/*"],
-      "@vulcan-sql/api-layer/containers": ["packages/api-layer/src/containers/index"],
-      "@vulcan-sql/api-layer/data-query": ["packages/api-layer/src/lib/data-query/index"],
-      "@vulcan-sql/api-layer/data-query/*": ["packages/api-layer/src/lib/data-query/*"],
-      "@vulcan-sql/api-layer/data-source": [
-        "packages/api-layer/src/lib/data-source/index"
+      "@vulcan-sql/core/cache-layer/*": ["packages/core/src/lib/api-layer/cache-layer/*"],
+      "@vulcan-sql/core/containers": ["packages/core/src/containers/index"],
+      "@vulcan-sql/core/data-query": ["packages/core/src/lib/api-layer/data-query/index"],
+      "@vulcan-sql/core/data-query/*": ["packages/core/src/lib/api-layer/data-query/*"],
+      "@vulcan-sql/core/data-source": [
+        "packages/core/src/lib/api-layer/data-source/index"
       ],
-      "@vulcan-sql/api-layer/data-source/*": ["packages/api-layer/src/lib/data-source/*"],
-      "@vulcan-sql/api-layer/models": ["packages/api-layer/src/models/index"],
-      "@vulcan-sql/api-layer/options": ["packages/api-layer/src/options/index"],
-      "@vulcan-sql/api-layer/template-engine": [
-        "packages/api-layer/src/lib/template-engine/index"
+      "@vulcan-sql/core/data-source/*": ["packages/core/src/lib/api-layer/data-source/*"],
+      "@vulcan-sql/core/models": ["packages/core/src/models/index"],
+      "@vulcan-sql/core/options": ["packages/core/src/options/index"],
+      "@vulcan-sql/core/template-engine": [
+        "packages/core/src/lib/api-layer/template-engine/index"
       ],
-      "@vulcan-sql/api-layer/template-engine/*": [
-        "packages/api-layer/src/lib/template-engine/*"
+      "@vulcan-sql/core/template-engine/*": [
+        "packages/core/src/lib/api-layer/template-engine/*"
       ],
-      "@vulcan-sql/api-layer/types": ["packages/api-layer/src/containers/types"],
-      "@vulcan-sql/api-layer/utils": ["packages/api-layer/src/lib/utils/index"],
-      "@vulcan-sql/api-layer/validators": ["packages/api-layer/src/lib/validators/index"],
-      "@vulcan-sql/api-layer/validators/*": ["packages/api-layer/src/lib/validators/*"],
-      "@vulcan-sql/api-layer/validators/built-in-validators": [
-        "packages/api-layer/src/lib/validators/built-in-validators/index"
+      "@vulcan-sql/core/types": ["packages/core/src/containers/types"],
+      "@vulcan-sql/core/utils": ["packages/core/src/lib/api-layer/utils/index"],
+      "@vulcan-sql/core/validators": ["packages/core/src/lib/api-layer/validators/index"],
+      "@vulcan-sql/core/validators/*": ["packages/core/src/lib/api-layer/validators/*"],
+      "@vulcan-sql/core/validators/built-in-validators": [
+        "packages/core/src/lib/api-layer/validators/built-in-validators/index"
       ],
-      "@vulcan-sql/api-layer/validators/built-in-validators/*": [
-        "packages/api-layer/src/lib/validators/built-in-validators/*"
+      "@vulcan-sql/core/validators/built-in-validators/*": [
+        "packages/core/src/lib/api-layer/validators/built-in-validators/*"
       ],
       "@vulcan-sql/extension-api-caller": [
         "packages/extension-api-caller/src/index.ts"
