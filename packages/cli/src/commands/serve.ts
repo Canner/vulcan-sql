@@ -6,6 +6,8 @@ import {
   modulePath,
   logger,
   removeShutdownJob,
+  buildSemanticModels,
+  runVulcanEngine,
 } from '../utils';
 import { Semantic } from '@vulcan-sql/core';
 
@@ -35,6 +37,18 @@ export const mergeServeDefaultOption = (
 export const serveVulcan = async (options: ServeCommandOptions) => {
   const configPath = path.resolve(process.cwd(), options.config);
   const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
+
+  if ('semantic-model' in config) {
+    const { success, semantics } = await buildSemanticModels(config['semantic-model'], options);
+    if (success && semantics.length > 0) {
+      logger.warn('At the moment, we only support one semantic model.');
+      const semantic = semantics[0];
+      const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
+      const compiledFilePath = path.resolve(compiledFolderPath, config['semantic-model']['filePaths'][0].output);
+
+      await runVulcanEngine(semantic, compiledFilePath, options.pull ?? false);
+    }
+  }
 
   // Import dependencies. We use dynamic import here to import dependencies at runtime.
   const { VulcanServer } = await import(modulePath('@vulcan-sql/serve', options.requireFromLocal));

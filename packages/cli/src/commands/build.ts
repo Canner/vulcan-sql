@@ -3,6 +3,7 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import * as ora from 'ora';
 import { modulePath, prepareVulcanEngine } from '../utils';
+import { handleStop } from './stop';
 
 export interface BuildCommandOptions {
   config: string;
@@ -33,10 +34,13 @@ export const buildVulcan = async (options: BuildCommandOptions) => {
   // Build project
   const spinner = ora('Building project...\n').start();
   try {
-    await prepareVulcanEngine(config, options);
+    const {success, semantics} = await prepareVulcanEngine(config, options);
     const builder = new VulcanBuilder(config);
     await builder.build();
     spinner.succeed('Built successfully.');
+    if (success && semantics.length > 0) {
+      handleStop();
+    }
   } catch (e) {
     spinner.fail();
     throw e;

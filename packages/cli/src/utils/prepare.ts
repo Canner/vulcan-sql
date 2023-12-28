@@ -288,7 +288,7 @@ const setLaunchCLIPath = (targetPath: string) => {
   ora('The Launch CLI Path to mount is set').succeed();
 };
 
-const runVulcanEngine = async (semantic: Semantic, compiledFilePath: string, shouldPool: boolean) => {
+export const runVulcanEngine = async (semantic: Semantic, compiledFilePath: string, shouldPool: boolean) => {
   if (!checkTools()) {
     ora('Please install required tools').fail();
     return;
@@ -349,8 +349,19 @@ const runVulcanEngine = async (semantic: Semantic, compiledFilePath: string, sho
     });
 
     spinner.succeed('Vulcan Serve is started');
-    return true;
 
+    let vulcanEngineCliReady = false;
+    while (!vulcanEngineCliReady) {
+      try {
+        execSync('vulcan cli', { stdio: 'ignore' });
+        vulcanEngineCliReady = true;
+      } catch {
+        // ignore
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
+    return true;
     // logger.info('Admin UI is available at http://localhost:3000');
   } catch (e) {
     spinner.fail('Vulcan Serve failed');
@@ -477,7 +488,7 @@ const compile = async (filepath: string, options: Partial<
   return semantic;
 };
 
-const buildSemanticModels = async (
+export const buildSemanticModels = async (
   config: SemanticModelInputOutput,
   options: Partial<
     StartCommandOptions & BuildCommandOptions & ServeCommandOptions
@@ -514,7 +525,7 @@ export const prepareVulcanEngine = async (config: any, options: Partial<
 >) => {
   if ('semantic-model' in config) {
     const { success, semantics } = await buildSemanticModels(config['semantic-model'], options);
-    if (success && semantics) {
+    if (success && semantics.length > 0) {
       logger.warn('At the moment, we only support one semantic model.');
       const semantic = semantics[0];
       const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
@@ -523,16 +534,9 @@ export const prepareVulcanEngine = async (config: any, options: Partial<
       await runVulcanEngine(semantic, compiledFilePath, options.pull ?? false);
       await generateSqlTemplates(semantic.toJSON(), config);
 
-      let vulcanEngineCliReady = false;
-      while (!vulcanEngineCliReady) {
-        try {
-          execSync('vulcan cli', { stdio: 'ignore' });
-          vulcanEngineCliReady = true;
-        } catch {
-          // ignore
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-      }
+      return {success: true, semantics};
     }
   }
+
+  return {success:false, semantics:[]};
 }
