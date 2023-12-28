@@ -18,7 +18,7 @@ import * as path from 'path';
 import { DocumentGenerator } from './document-generator';
 import { interfaces } from 'inversify';
 import { uniq } from 'lodash';
-import { buildSemanticModels, runVulcanEngine, generateSqlTemplates } from './prepare';
+import { buildSemanticModels, runVulcanEngine, generateSqlTemplates } from './utils';
 
 const logger = getLogger({ scopeName: 'BUILD' });
 
@@ -85,7 +85,7 @@ export class VulcanBuilder {
     if ('semantic-model' in config) {
       const semantics = await buildSemanticModels(config['semantic-model']);
       if (semantics.length > 0) {
-        logger.warn('At the moment, we only support one semantic model.');
+        logger.warn('At the moment, we only support one mdl file.');
         const semantic = semantics[0];
         const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
         const compiledFilePath = path.resolve(compiledFolderPath, config['semantic-model']['filePaths'][0].output);

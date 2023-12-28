@@ -7,17 +7,89 @@ import * as path from 'path';
 import { PropertiesEditor } from 'properties-file/editor';
 import { dirSync } from 'tmp-promise';
 import { execSync } from 'child_process';
-import {
-  dockerCompose,
-  isDockerInstalled,
-  isDockerStarted,
-  listDockerNetworks,
-  createNetwork,
-} from './docker';
-import {
-  PackagerOptions,
-} from '@vulcan-sql/build/models';
 
+
+const isDockerInstalled = () => {
+  try {
+    execSync('docker version', { stdio: 'ignore' });
+    return true;
+  } catch (e: any) {
+    if (e.status === 127) {
+      // command not found
+      return false;
+    } else if (e.status === 1) {
+      // docker daemon is not running
+      return true;
+    }
+
+    return false;
+  }
+};
+
+const isDockerStarted = () => {
+  try {
+    execSync('docker ps', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const isDockerComposeInstalled = () => {
+  try {
+    execSync('docker-compose version', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const isDockerComposeV2Installed = () => {
+  try {
+    execSync('docker compose version', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const dockerCompose = (() => {
+  if (isDockerComposeV2Installed()) {
+    return 'docker compose';
+  }
+
+  if (isDockerComposeInstalled()) {
+    return 'docker-compose';
+  }
+
+  return '';
+})();
+
+const listDockerNetworks = () => {
+  try {
+    const result = execSync('docker network ls --format "{{.Name}}"', {
+      stdio: 'pipe',
+    });
+
+    return result
+      .toString()
+      .split('\n')
+      .filter((name) => name !== '');
+  } catch {
+    return [];
+  }
+};
+
+const createNetwork = (name: string) => {
+  try {
+    const result = execSync(`docker network create ${name}`, {
+      stdio: 'inherit',
+    });
+    return result.toString() === name;
+  } catch {
+    return false;
+  }
+};
 
 interface assignFunction {
   (config: Config, cb: assignCallback): void;
@@ -484,19 +556,17 @@ export const buildSemanticModels = async (config: SemanticModelInputOutput) => {
   const spinner = ora('Building semantic models...').start();
 
   try {
-    // Build semantic models at first
     const inputPath = path.resolve(process.cwd(), config.folderPath ?? '.');
-    const semantics = []
+    const semantics = [];
     if (config.filePaths.length > 0) {
-      for (const filePath of config.filePaths) {
-        const semantic = await compile(path.join(inputPath, filePath.input));
-        semantics.push(semantic);
+      const filePath = config.filePaths[0];
+      const semantic = await compile(path.join(inputPath, filePath.input));
+      semantics.push(semantic);
 
-        await fs.writeFile(
-          path.join(inputPath, filePath.output),
-          JSON.stringify(semantic.toJSON(), null, 2)
-        );
-      }
+      await fs.writeFile(
+        path.join(inputPath, filePath.output),
+        JSON.stringify(semantic.toJSON(), null, 2)
+      );
     }
     
     spinner.succeed('Built semantic models successfully.');
