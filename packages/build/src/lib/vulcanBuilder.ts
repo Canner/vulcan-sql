@@ -14,10 +14,11 @@ import {
   getLogger,
   ConfigurationError,
 } from '@vulcan-sql/core';
+import * as path from 'path';
 import { DocumentGenerator } from './document-generator';
 import { interfaces } from 'inversify';
 import { uniq } from 'lodash';
-import { prepareVulcanEngine } from './prepare';
+import { buildSemanticModels, runVulcanEngine, generateSqlTemplates } from './prepare';
 
 const logger = getLogger({ scopeName: 'BUILD' });
 
@@ -80,9 +81,31 @@ export class VulcanBuilder {
     await container.unload();
   }
 
+  private async prepareVulcanEngine(config: any, shouldPull?: boolean, packagerOptions?: PackagerOptions) {
+    if ('semantic-model' in config) {
+      const semantics = await buildSemanticModels(config['semantic-model']);
+      if (semantics.length > 0) {
+        logger.warn('At the moment, we only support one semantic model.');
+        const semantic = semantics[0];
+        const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
+        const compiledFilePath = path.resolve(compiledFolderPath, config['semantic-model']['filePaths'][0].output);
+  
+        await runVulcanEngine(semantic, compiledFilePath, shouldPull ?? false);
+        await generateSqlTemplates(semantic.toJSON(), config);
+  
+        if (packagerOptions?.target === 'vulcan-server') {
+          //
+        }
+  
+        return semantics;
+      }
+    }
+  
+    return [];
+  }
+
   public async build(packagerOptions?: PackagerOptions, shouldPull?: boolean) {
-    // build semantic models and start vulcan engine first
-    const semantics = await prepareVulcanEngine(this.options, shouldPull, packagerOptions);
+    const semantics = await this.prepareVulcanEngine(this.options, shouldPull, packagerOptions);
     await this.buildVulcanAPILayer(packagerOptions);
     return semantics;
   }

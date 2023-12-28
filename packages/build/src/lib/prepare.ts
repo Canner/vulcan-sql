@@ -445,7 +445,7 @@ const writeTemplateFiles = async (
     );
 }
 
-const generateSqlTemplates = async (semantic: SemanticJSON, config: any) => {
+export const generateSqlTemplates = async (semantic: SemanticJSON, config: any) => {
   const templateFolderPath = path.resolve(process.cwd(), config.template?.folderPath?? 'sqls');
   const schemaParserFolderPath = path.resolve(process.cwd(), config['schema-parser']?.folderPath?? 'sqls');
 
@@ -505,27 +505,4 @@ export const buildSemanticModels = async (config: SemanticModelInputOutput) => {
     spinner.fail(`Built semantic models failed.: ${e}`);
     return [];
   }
-}
-
-export const prepareVulcanEngine = async (config: any, shouldPull?: boolean, packagerOptions?: PackagerOptions) => {
-  if ('semantic-model' in config) {
-    const semantics = await buildSemanticModels(config['semantic-model']);
-    if (semantics.length > 0) {
-      //logger.warn('At the moment, we only support one semantic model.');
-      const semantic = semantics[0];
-      const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
-      const compiledFilePath = path.resolve(compiledFolderPath, config['semantic-model']['filePaths'][0].output);
-
-      await runVulcanEngine(semantic, compiledFilePath, shouldPull ?? false);
-      await generateSqlTemplates(semantic.toJSON(), config);
-
-      if (packagerOptions?.target === 'vulcan-server') {
-        //
-      }
-
-      return semantics;
-    }
-  }
-
-  return [];
 }
