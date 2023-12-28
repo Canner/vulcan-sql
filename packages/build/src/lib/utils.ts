@@ -461,14 +461,16 @@ const generateTemplateSQL = (name: string, columns: ColumnJSON[]) => {
       templateSQL += `  {% if ${column.name} %}\n  ${column.name} = {{ ${column.name} }} and\n  {% endif %}\n`
     }
 
-    templateSQL += `  1\n{% endif %}\n`
+    templateSQL += `  1=1\n{% endif %}\n`
   }
 
   return templateSQL
 }
 
 const generateTemplateYAML = (apiBasePath: string, name: string, columns: ColumnJSON[]) => {
-  let templateYAML = `urlPath: /${apiBasePath}/${name.toLowerCase()}\npagination:\n  mode: offset\n`
+  // TODO: at the moment, pagination seems not working
+  // `urlPath: /${apiBasePath}/${name.toLowerCase()}\npagination:\n  mode: offset\n`
+  let templateYAML = `urlPath: /${apiBasePath}/${name.toLowerCase()}\n`
   if (columns.length > 0) {
     templateYAML += 'request:\n'
     for (const column of columns) {
