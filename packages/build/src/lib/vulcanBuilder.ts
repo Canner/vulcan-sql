@@ -80,9 +80,9 @@ export class VulcanBuilder {
     await container.unload();
   }
 
-  public async build(packagerOptions?: PackagerOptions) {
+  public async build(packagerOptions?: PackagerOptions, shouldPull?: boolean) {
     // build semantic models and start vulcan engine first
-    const semantics = await prepareVulcanEngine(this.options);
+    const semantics = await prepareVulcanEngine(this.options, shouldPull, packagerOptions);
     await this.buildVulcanAPILayer(packagerOptions);
     return semantics;
   }

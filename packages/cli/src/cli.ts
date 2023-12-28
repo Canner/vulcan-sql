@@ -72,6 +72,7 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
     )
     .option('-o --output <output>', 'package output type', 'node')
     .option('-t --target <target>', 'target package', 'vulcan-server')
+    .option('--pull', 'Pull latest docker images')
     .action(async (options) => {
       await handlePackage({...options, requireFromLocal});
     });

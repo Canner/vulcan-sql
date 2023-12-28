@@ -16,7 +16,7 @@ export class DockerCatalogPackager extends Packager {
 
   public async package(option: IBuildOptions): Promise<void> {
     const config = this.getConfig() || {};
-    const { folderPath = 'dist' } = config[this.target] || {};
+    const { folderPath = 'dist/vulcansql-catalog-server' } = config[this.target] || {};
     const distFolder = path.resolve(process.cwd(), folderPath);
     await fs.rm(distFolder, { recursive: true, force: true });
     await fs.mkdir(distFolder, { recursive: true });

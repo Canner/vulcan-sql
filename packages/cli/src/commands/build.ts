@@ -37,7 +37,7 @@ export const buildVulcan = async (options: BuildCommandOptions) => {
   const spinner = ora('Building project...\n').start();
   try {
     const builder = new VulcanBuilder(config);
-    const semantics = await builder.build();
+    const semantics = await builder.build(undefined, options.pull);
     spinner.succeed('Built successfully.');
     if (semantics.length > 0 && shouldStopVulcanEngine) {
       handleStop();

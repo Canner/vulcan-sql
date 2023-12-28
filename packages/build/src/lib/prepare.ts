@@ -14,6 +14,9 @@ import {
   listDockerNetworks,
   createNetwork,
 } from './docker';
+import {
+  PackagerOptions,
+} from '@vulcan-sql/build/models';
 
 
 interface assignFunction {
@@ -281,7 +284,7 @@ const setLaunchCLIPath = (targetPath: string) => {
   ora('The Launch CLI Path to mount is set').succeed();
 };
 
-export const runVulcanEngine = async (semantic: Semantic, compiledFilePath: string, shouldPool: boolean) => {
+export const runVulcanEngine = async (semantic: Semantic, compiledFilePath: string, shouldPull: boolean) => {
   if (!checkTools()) {
     ora('Please install required tools').fail();
     return;
@@ -333,7 +336,7 @@ export const runVulcanEngine = async (semantic: Semantic, compiledFilePath: stri
       '--detach',
     ];
 
-    if (shouldPool) {
+    if (shouldPull) {
       commandLines.push('--pull=always');
     }
 
@@ -504,7 +507,7 @@ export const buildSemanticModels = async (config: SemanticModelInputOutput) => {
   }
 }
 
-export const prepareVulcanEngine = async (config: any, shouldPool?: boolean) => {
+export const prepareVulcanEngine = async (config: any, shouldPull?: boolean, packagerOptions?: PackagerOptions) => {
   if ('semantic-model' in config) {
     const semantics = await buildSemanticModels(config['semantic-model']);
     if (semantics.length > 0) {
@@ -513,8 +516,12 @@ export const prepareVulcanEngine = async (config: any, shouldPool?: boolean) => 
       const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
       const compiledFilePath = path.resolve(compiledFolderPath, config['semantic-model']['filePaths'][0].output);
 
-      await runVulcanEngine(semantic, compiledFilePath, shouldPool ?? false);
+      await runVulcanEngine(semantic, compiledFilePath, shouldPull ?? false);
       await generateSqlTemplates(semantic.toJSON(), config);
+
+      if (packagerOptions?.target === 'vulcan-server') {
+        //
+      }
 
       return semantics;
     }

@@ -11,6 +11,7 @@ export interface PackageCommandOptions {
   target: string;
   requireFromLocal?: boolean;
   shouldStopVulcanEngine?: boolean;
+  pull?: boolean;
 }
 
 const defaultOptions: PackageCommandOptions = {
@@ -28,10 +29,10 @@ export const packageVulcan = async (options: PackageCommandOptions) => {
   const { VulcanBuilder } = await import(modulePath('@vulcan-sql/build', options.requireFromLocal));
 
   // Build project
-  const spinner = ora('Packaging project...').start();
+  const spinner = ora('Packaging project...\n').start();
   try {
     const builder = new VulcanBuilder(config);
-    const semantics = await builder.build(options);
+    const semantics = await builder.build(options, options.pull);
     spinner.succeed('Package successfully.');
     if (semantics.length > 0 && shouldStopVulcanEngine) {
       handleStop();

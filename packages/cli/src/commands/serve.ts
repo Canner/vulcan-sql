@@ -48,7 +48,7 @@ export const serveVulcan = async (options: ServeCommandOptions) => {
       const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
       const compiledFilePath = path.resolve(compiledFolderPath, config['semantic-model']['filePaths'][0].output);
 
-      await runVulcanEngine(semantic, compiledFilePath, options.pull ?? false);
+      await runVulcanEngine(semantic, compiledFilePath, options.pull);
     }
   }
 
