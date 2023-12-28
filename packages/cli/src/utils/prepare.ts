@@ -481,12 +481,9 @@ const buildSemanticModels = async (
   config: SemanticModelInputOutput,
   options: Partial<
     StartCommandOptions & BuildCommandOptions & ServeCommandOptions
-  >,
-  spinner?: ora.Ora | undefined
+  >
 ) => {
-  if (!spinner) {
-    spinner = ora('Building semantic models...').start();
-  }
+  const spinner = ora('Building semantic models...').start();
 
   try {
     // Build semantic models at first
