@@ -27,10 +27,7 @@ export class VulcanBuilder {
     this.options = options;
   }
 
-  public async build(packagerOptions?: PackagerOptions) {
-    // build semantic models and start vulcan engine first
-    const {success, semantics} = await prepareVulcanEngine(this.options);
-
+  private async buildVulcanAPILayer(packagerOptions?: PackagerOptions) {
     const container = new Container();
     await container.load(this.options);
     const schemaParser = container.get<SchemaParser>(TYPES.SchemaParser);
@@ -81,6 +78,12 @@ export class VulcanBuilder {
     }
 
     await container.unload();
-    return { success, semantics };
+  }
+
+  public async build(packagerOptions?: PackagerOptions) {
+    // build semantic models and start vulcan engine first
+    const semantics = await prepareVulcanEngine(this.options);
+    await this.buildVulcanAPILayer(packagerOptions);
+    return semantics;
   }
 }

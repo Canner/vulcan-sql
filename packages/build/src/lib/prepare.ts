@@ -497,17 +497,17 @@ export const buildSemanticModels = async (config: SemanticModelInputOutput) => {
     }
     
     spinner.succeed('Built semantic models successfully.');
-    return { success: true, semantics };
+    return semantics;
   } catch (e) {
     spinner.fail(`Built semantic models failed.: ${e}`);
-    return { success: false, semantics: [] };
+    return [];
   }
 }
 
 export const prepareVulcanEngine = async (config: any, shouldPool?: boolean) => {
   if ('semantic-model' in config) {
-    const { success, semantics } = await buildSemanticModels(config['semantic-model']);
-    if (success && semantics.length > 0) {
+    const semantics = await buildSemanticModels(config['semantic-model']);
+    if (semantics.length > 0) {
       //logger.warn('At the moment, we only support one semantic model.');
       const semantic = semantics[0];
       const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
@@ -516,9 +516,9 @@ export const prepareVulcanEngine = async (config: any, shouldPool?: boolean) => 
       await runVulcanEngine(semantic, compiledFilePath, shouldPool ?? false);
       await generateSqlTemplates(semantic.toJSON(), config);
 
-      return {success: true, semantics};
+      return semantics;
     }
   }
 
-  return {success:false, semantics:[]};
+  return [];
 }

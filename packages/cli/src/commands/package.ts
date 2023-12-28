@@ -3,12 +3,14 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import * as ora from 'ora';
 import { modulePath } from '../utils';
+import { handleStop } from './stop';
 
 export interface PackageCommandOptions {
   config: string;
   output: string;
   target: string;
   requireFromLocal?: boolean;
+  shouldStopVulcanEngine?: boolean;
 }
 
 const defaultOptions: PackageCommandOptions = {
@@ -20,6 +22,7 @@ const defaultOptions: PackageCommandOptions = {
 export const packageVulcan = async (options: PackageCommandOptions) => {
   const configPath = path.resolve(process.cwd(), options.config);
   const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
+  const shouldStopVulcanEngine = options.shouldStopVulcanEngine ?? true;
 
   // Import dependencies. We use dynamic import here to import dependencies at runtime.
   const { VulcanBuilder } = await import(modulePath('@vulcan-sql/build', options.requireFromLocal));
@@ -28,8 +31,11 @@ export const packageVulcan = async (options: PackageCommandOptions) => {
   const spinner = ora('Packaging project...').start();
   try {
     const builder = new VulcanBuilder(config);
-    await builder.build(options);
+    const semantics = await builder.build(options);
     spinner.succeed('Package successfully.');
+    if (semantics.length > 0 && shouldStopVulcanEngine) {
+      handleStop();
+    }
   } catch (e) {
     spinner.fail();
     throw e;
