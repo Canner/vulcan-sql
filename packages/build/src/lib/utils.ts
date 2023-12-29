@@ -468,7 +468,7 @@ const generateTemplateSQL = (name: string, columns: ColumnJSON[]) => {
 }
 
 const generateTemplateYAML = (apiBasePath: string, name: string, columns: ColumnJSON[]) => {
-  // TODO: at the moment, pagination seems not working
+  // TODO: at the moment, pagination(offset+limit) is not supported
   // `urlPath: /${apiBasePath}/${name.toLowerCase()}\npagination:\n  mode: offset\n`
   let templateYAML = `urlPath: /${apiBasePath}/${name.toLowerCase()}\n`
   if (columns.length > 0) {

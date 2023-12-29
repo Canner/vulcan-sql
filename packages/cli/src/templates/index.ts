@@ -59,6 +59,7 @@ const nodejsQuickStartInit = [{
           '@vulcan-sql/core': options.version,
           '@vulcan-sql/serve': options.version,
           '@vulcan-sql/extension-driver-duckdb': options.version,
+          '@vulcan-sql/extension-driver-pg': options.version,
         },
         devDependencies: {
           '@vulcan-sql/build': options.version,
