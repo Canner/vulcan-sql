@@ -258,6 +258,11 @@ const makeSureDockerNetworkExists = () => {
 
 const templatePath = path.resolve(__dirname, '..', 'templates');
 
+const setPlatform = (platform: string) => {
+  process.env['PLATFORM'] = platform;
+  ora('The platform to run VulcanSQL Engine is set').succeed();
+};
+
 const setVulcanSQLEnginePath = (targetPath: string) => {
   process.env['GRAPHMDL_PATH'] = targetPath;
   ora('The VulcanSQL Engine Path to mount is set').succeed();
@@ -356,7 +361,7 @@ const setLaunchCLIPath = (targetPath: string) => {
   ora('The Launch CLI Path to mount is set').succeed();
 };
 
-export const runVulcanEngine = async (semantic: Semantic, compiledFilePath: string, shouldPull: boolean) => {
+export const runVulcanEngine = async (semantic: Semantic, compiledFilePath: string, platform: string, shouldPull?: boolean) => {
   if (!checkTools()) {
     ora('Please install required tools').fail();
     return;
@@ -389,6 +394,7 @@ export const runVulcanEngine = async (semantic: Semantic, compiledFilePath: stri
   generateServeFiles(tmpDir.name, semantic);
   generateCLIShell(tmpDir.name, semantic);
 
+  setPlatform(platform);
   setVulcanSQLEnginePath(compiledFilePath);
   setConfigPath(path.resolve(tmpDir.name, 'config.properties'));
   setLaunchCLIPath(path.resolve(tmpDir.name, 'launch-cli.sh'));
@@ -404,7 +410,7 @@ export const runVulcanEngine = async (semantic: Semantic, compiledFilePath: stri
       'vulcansql',
       'up',
       'engine',
-      // 'admin-ui',
+      'admin-ui',
       '--detach',
     ];
 

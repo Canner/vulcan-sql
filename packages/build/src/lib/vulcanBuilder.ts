@@ -89,7 +89,7 @@ export class VulcanBuilder {
     await container.unload();
   }
 
-  private async prepareVulcanEngine(config: any, shouldPull?: boolean, packagerOptions?: PackagerOptions) {
+  private async prepareVulcanEngine(config: any, platform: string, shouldPull?: boolean, packagerOptions?: PackagerOptions) {
     if ('semantic-model' in config) {
       const semantics = await buildSemanticModels(config['semantic-model']);
       if (semantics.length > 0) {
@@ -99,7 +99,7 @@ export class VulcanBuilder {
         const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
         const compiledFilePath = path.resolve(compiledFolderPath, compiledFileName);
 
-        await runVulcanEngine(semantic, compiledFilePath, shouldPull ?? false);
+        await runVulcanEngine(semantic, compiledFilePath, platform, shouldPull);
         await generateSqlTemplates(semantic.toJSON(), config);
   
         if (packagerOptions?.target === 'vulcan-server') {
@@ -114,6 +114,7 @@ export class VulcanBuilder {
           );
           await fs.writeFile(
             path.join(targetFolderPath, '.env'),
+            `PLATFORM=${packagerOptions.platform}\n` +
             `GRAPHMDL_PATH=./${compiledFileName}\n` +
             `CONFIG_PATH=./config.properties\n` +
             `LAUNCH_CLI_PATH=./launch-cli.sh\n`
@@ -127,8 +128,8 @@ export class VulcanBuilder {
     return [];
   }
 
-  public async build(packagerOptions?: PackagerOptions, shouldPull?: boolean) {
-    const semantics = await this.prepareVulcanEngine(this.options, shouldPull, packagerOptions);
+  public async build(platform: string, packagerOptions?: PackagerOptions, shouldPull?: boolean) {
+    const semantics = await this.prepareVulcanEngine(this.options, platform, shouldPull, packagerOptions);
     await this.buildVulcanAPILayer(packagerOptions);
     return semantics;
   }

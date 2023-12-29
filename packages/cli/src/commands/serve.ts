@@ -12,6 +12,7 @@ import { Semantic } from '@vulcan-sql/core';
 export interface ServeCommandOptions {
   config: string;
   port: number;
+  platform: string;
   requireFromLocal?: boolean;
   pull?: boolean;
   semantics: Semantic[];
@@ -22,6 +23,7 @@ const defaultOptions: ServeCommandOptions = {
   config: './vulcan.yaml',
   port: 3000,
   semantics: [],
+  platform: 'linux/amd64',
 };
 
 export const mergeServeDefaultOption = (
@@ -48,7 +50,7 @@ export const serveVulcan = async (options: ServeCommandOptions) => {
       const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
       const compiledFilePath = path.resolve(compiledFolderPath, config['semantic-model']['filePaths'][0].output);
 
-      await runVulcanEngine(semantic, compiledFilePath, options.pull);
+      await runVulcanEngine(semantic, compiledFilePath, options.platform, options.pull);
     }
   }
 

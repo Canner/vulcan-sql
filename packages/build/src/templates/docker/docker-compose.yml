@@ -3,6 +3,7 @@ version: '3.8'
 services:
   engine:
     image: ghcr.io/canner/accio:latest
+    platform: ${PLATFORM}
     ports:
       - 8080:8080
       - 7432:7432
@@ -13,18 +14,19 @@ services:
     networks:
       - vulcansql-net
 
-  # admin-ui:
-  #   image: ghcr.io/canner/admin-ui:latest
-  #   ports:
-  #     - 3000:3000
-  #   volumes:
-  #     - ${GRAPHMDL_PATH}:/usr/src/app/accio.json
-  #   environment:
-  #     - JSON_PATH=/usr/src/app/accio.json
-  #     - PG_DATABASE=tpch_tiny
-  #     - PG_PORT=7432
-  #     - PG_USERNAME=canner-cml
-  #     - PG_PASSWORD=""
+  admin-ui:
+    image: ghcr.io/canner/admin-ui:latest
+    platform: ${PLATFORM}
+    ports:
+      - 4000:3000
+    volumes:
+      - ${GRAPHMDL_PATH}:/usr/src/app/accio.json
+    environment:
+      - JSON_PATH=/usr/src/app/accio.json
+      - PG_DATABASE=tpch_tiny
+      - PG_PORT=7432
+      - PG_USERNAME=canner-cml
+      - PG_PASSWORD=""
 
 networks:
   vulcansql-net:

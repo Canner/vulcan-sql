@@ -38,12 +38,14 @@ const callAfterFulfilled = (func: () => Promise<void>) => {
 export interface StartCommandOptions {
   watch: boolean;
   config: string;
+  platform: string;
   pull?: boolean;
 }
 
 const defaultOptions: StartCommandOptions = {
   config: './vulcan.yaml',
   watch: false,
+  platform: 'linux/amd64',
 };
 
 export const mergeStartDefaultOption = (

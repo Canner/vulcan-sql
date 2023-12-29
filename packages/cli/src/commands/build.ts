@@ -7,6 +7,7 @@ import { handleStop } from './stop';
 
 export interface BuildCommandOptions {
   config: string;
+  platform: string;
   requireFromLocal?: boolean;
   pull?: boolean;
   shouldStopVulcanEngine?: boolean;
@@ -14,6 +15,7 @@ export interface BuildCommandOptions {
 
 const defaultOptions: BuildCommandOptions = {
   config: './vulcan.yaml',
+  platform: 'linux/amd64',
 };
 
 export const mergeBuildDefaultOption = (
@@ -37,7 +39,7 @@ export const buildVulcan = async (options: BuildCommandOptions) => {
   const spinner = ora('Building project...\n').start();
   try {
     const builder = new VulcanBuilder(config);
-    const semantics = await builder.build(undefined, options.pull);
+    const semantics = await builder.build(options.platform, undefined, options.pull);
     spinner.succeed('Built successfully.');
     if (semantics.length > 0 && shouldStopVulcanEngine) {
       handleStop();

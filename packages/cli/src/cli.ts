@@ -50,6 +50,22 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
     });
 
   program
+    .command('start')
+    .description('build and serve Vulcan project')
+    .option(
+      '-c --config <config-path>',
+      'path to Vulcan config file',
+      './vulcan.yaml'
+    )
+    .option('-p --port <port>', 'server port', '3000')
+    .option('-w --watch', 'watch file changes', false)
+    .option('--pull', 'Pull latest docker images')
+    .option('--platform <platform>', 'platform to run Vulcan semantic engine', 'linux/amd64')
+    .action(async (options) => {
+      await handleStart({...options, requireFromLocal});
+    });
+
+  program
     .command('build')
     .description('build Vulcan project')
     .option(
@@ -58,8 +74,24 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
       './vulcan.yaml'
     )
     .option('--pull', 'Pull latest docker images')
+    .option('--platform <platform>', 'platform to run Vulcan semantic engine', 'linux/amd64')
     .action(async (options) => {
       await handleBuild({...options, requireFromLocal});
+    });
+
+  program
+    .command('serve')
+    .description('serve Vulcan project')
+    .option(
+      '-c --config <config-path>',
+      'path to Vulcan config file',
+      './vulcan.yaml'
+    )
+    .option('-p --port <port>', 'server port', '3000')
+    .option('--pull', 'Pull latest docker images')
+    .option('--platform <platform>', 'platform to run Vulcan semantic engine', 'linux/amd64')
+    .action(async (options) => {
+      await handleServe({...options, requireFromLocal});
     });
 
   program
@@ -73,46 +105,9 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
     .option('-o --output <output>', 'package output type', 'node')
     .option('-t --target <target>', 'target package', 'vulcan-server')
     .option('--pull', 'Pull latest docker images')
+    .option('--platform <platform>', 'platform to run Vulcan semantic engine', 'linux/amd64')
     .action(async (options) => {
       await handlePackage({...options, requireFromLocal});
-    });
-
-  program
-    .command('catalog')
-    .alias('catalog-server')
-    .description('serve Vulcan catalog server')
-    .option('-p --port <port>', 'catalog server port', '4200')
-    .action(async (options) => {
-      await handleCatalog({...options, requireFromLocal});
-    });
-
-  program
-    .command('serve')
-    .description('serve Vulcan project')
-    .option(
-      '-c --config <config-path>',
-      'path to Vulcan config file',
-      './vulcan.yaml'
-    )
-    .option('-p --port <port>', 'server port', '3000')
-    .option('--pull', 'Pull latest docker images')
-    .action(async (options) => {
-      await handleServe({...options, requireFromLocal});
-    });
-
-  program
-    .command('start')
-    .description('build and serve Vulcan project')
-    .option(
-      '-c --config <config-path>',
-      'path to Vulcan config file',
-      './vulcan.yaml'
-    )
-    .option('-p --port <port>', 'server port', '3000')
-    .option('-w --watch', 'watch file changes', false)
-    .option('--pull', 'Pull latest docker images')
-    .action(async (options) => {
-      await handleStart({...options, requireFromLocal});
     });
 
   program
@@ -127,5 +122,14 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
     .description('Stop VulcanSQL engine')
     .action(async () => {
       await handleStop();
+    });
+
+  program
+    .command('catalog')
+    .alias('catalog-server')
+    .description('serve Vulcan catalog server')
+    .option('-p --port <port>', 'catalog server port', '4200')
+    .action(async (options) => {
+      await handleCatalog({...options, requireFromLocal});
     });
 };

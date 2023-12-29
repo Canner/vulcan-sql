@@ -12,12 +12,14 @@ export interface PackageCommandOptions {
   requireFromLocal?: boolean;
   shouldStopVulcanEngine?: boolean;
   pull?: boolean;
+  platform: string;
 }
 
 const defaultOptions: PackageCommandOptions = {
   config: './vulcan.yaml',
   output: 'node',
   target: 'vulcan-server',
+  platform: 'linux/amd64',
 };
 
 export const packageVulcan = async (options: PackageCommandOptions) => {
@@ -32,7 +34,7 @@ export const packageVulcan = async (options: PackageCommandOptions) => {
   const spinner = ora('Packaging project...\n').start();
   try {
     const builder = new VulcanBuilder(config);
-    const semantics = await builder.build(options, options.pull);
+    const semantics = await builder.build(options.platform, options, options.pull);
     spinner.succeed('Package successfully.');
     if (semantics.length > 0 && shouldStopVulcanEngine) {
       handleStop();

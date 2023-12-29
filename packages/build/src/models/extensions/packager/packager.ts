@@ -17,6 +17,7 @@ export enum PackagerTarget {
 export interface PackagerOptions {
   output: PackagerType | string;
   target: PackagerTarget | string;
+  platform: string;
 }
 
 export const PackagerName = {
