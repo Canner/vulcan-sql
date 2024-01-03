@@ -4,6 +4,7 @@ import { Column, ColumnJSON, ModelColumn } from './column';
 
 export interface ModelJSON {
   name: string;
+  baseObject: string;
   cached?: boolean;
   refreshTime?: string;
   description: string;
@@ -13,8 +14,26 @@ export interface ModelJSON {
 }
 
 export class Model extends Base implements Jsonable {
+  public baseObject = '';
+
   constructor(schema: RawSchema) {
     super(schema);
+
+    // determine baseObject
+    const modelDecorator = this.getDecoratorByKey('model');
+    if (modelDecorator) {
+      this.baseObject = modelDecorator.value;
+    }
+    const metricDecorator = this.getDecoratorByKey('metric');
+    if (metricDecorator) {
+      this.baseObject = metricDecorator.value;
+    }
+    const cumulativeMetricDecorator =
+      this.getDecoratorByKey('cumulative_metric');
+    if (cumulativeMetricDecorator) {
+      this.baseObject = cumulativeMetricDecorator.value;
+    }
+
     this.body = this.parseBody<Jsonable>(schema.body);
   }
 
@@ -29,6 +48,10 @@ export class Model extends Base implements Jsonable {
       columns: this.body.map((column) => column.toJSON()),
       primaryKey: this.primaryKey,
     } as ModelJSON;
+
+    if (this.baseObject) {
+      json.baseObject = this.baseObject;
+    }
 
     if (this.description) {
       json.description = this.description;

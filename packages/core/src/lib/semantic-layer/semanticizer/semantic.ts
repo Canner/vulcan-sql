@@ -1,4 +1,4 @@
-import { RawSchema } from '../schemas/utils';
+import { RawSchema, retriveDecorator } from '../schemas/utils';
 import {
   Macro,
   Model,
@@ -13,6 +13,8 @@ import {
   MetricJSON,
   EnumValueJson,
   ViewJSONRow,
+  CumulativeMetric,
+  CumulativeMetricJSON,
 } from '../schemas';
 import { Jsonable } from '../schemas/interface/jsonable';
 
@@ -20,6 +22,7 @@ export interface SemanticJSON {
   models: ModelJSON[];
   relationships: RelationJSON[];
   metrics: MetricJSON[];
+  cumulativeMetrics: CumulativeMetricJSON[];
   enumDefinitions: EnumValueJson[];
   views: ViewJSONRow[];
   macros: MacroJSON[];
@@ -31,6 +34,7 @@ export class Semantic implements Jsonable {
   public modelLayers: Model[] = [];
   public relationLayers: Relation[] = [];
   public metricLayers: Metric[] = [];
+  public cumulativeMetricLayers: CumulativeMetric[] = [];
   public view: View | null = null;
   public macroLayers: Macro[] = [];
   public config: Config = new Config({
@@ -53,7 +57,11 @@ export class Semantic implements Jsonable {
           this.relationLayers.push(new Relation(schema));
           break;
         case 'metric':
-          this.metricLayers.push(new Metric(schema));
+          if (retriveDecorator(schema.decorators, 'cumulative')) {
+            this.cumulativeMetricLayers.push(new CumulativeMetric(schema));
+          } else {
+            this.metricLayers.push(new Metric(schema));
+          }
           break;
         case 'config':
           this.config = new Config(schema);
@@ -75,6 +83,9 @@ export class Semantic implements Jsonable {
       models: this.modelLayers.map((model) => model.toJSON()),
       relationships: this.relationLayers.map((relation) => relation.toJSON()),
       metrics: this.metricLayers.map((metric) => metric.toJSON()),
+      cumulativeMetrics: this.cumulativeMetricLayers.map((cumulativeMetric) =>
+        cumulativeMetric.toJSON()
+      ),
       enumDefinitions: this.enumLayers.map((enumLayer) => enumLayer.toJSON()),
       views: this.view ? this.view.toJSON() : [],
       macros: this.macroLayers.map((macro) => macro.toJSON()),

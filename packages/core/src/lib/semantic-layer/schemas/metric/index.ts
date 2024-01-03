@@ -54,9 +54,19 @@ export class Metric extends Base implements Jsonable {
   constructor(schema: RawSchema) {
     super(schema);
 
+    // determine baseObject
     const modelDecorator = this.getDecoratorByKey('model');
     if (modelDecorator) {
       this.baseObject = modelDecorator.value;
+    }
+    const metricDecorator = this.getDecoratorByKey('metric');
+    if (metricDecorator) {
+      this.baseObject = metricDecorator.value;
+    }
+    const cumulativeMetricDecorator =
+      this.getDecoratorByKey('cumulative_metric');
+    if (cumulativeMetricDecorator) {
+      this.baseObject = cumulativeMetricDecorator.value;
     }
 
     const cachedDecorator = this.getDecoratorByKey('cached');

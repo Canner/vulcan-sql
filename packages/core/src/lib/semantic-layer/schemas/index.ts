@@ -7,3 +7,4 @@ export * from './metric';
 export * from './config';
 export * from './view';
 export * from './model/column';
+export * from './cumulative-metric';
