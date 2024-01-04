@@ -361,20 +361,29 @@ const setLaunchCLIPath = (targetPath: string) => {
   ora('The Launch CLI Path to mount is set').succeed();
 };
 
-export const runVulcanEngine = async (semantic: Semantic, compiledFilePath: string, platform: string, shouldPull?: boolean) => {
-  if (!checkTools()) {
-    ora('Please install required tools').fail();
-    return;
-  }
+export const runVulcanEngine = async (
+  semantic: Semantic,
+  compiledFilePath: string,
+  platform: string, shouldPull?: boolean,
+  isWatchMode?: boolean,
+) => {
+  if (!isWatchMode) {
+    if (!checkTools()) {
+      ora('Please install required tools').fail();
+      return;
+    }
+  
+    if (!isDockerStarted()) {
+      ora('Please start docker').fail();
+      return;
+    }
+  
+    if (!(await makeSurePortAvailable())) {
+      ora(`Please make sure port ${neededPorts.join(',')} is available`).fail();
+      return;
+    }
 
-  if (!isDockerStarted()) {
-    ora('Please start docker').fail();
-    return;
-  }
-
-  if (!(await makeSurePortAvailable())) {
-    ora(`Please make sure port ${neededPorts.join(',')} is available`).fail();
-    return;
+    makeSureDockerNetworkExists();
   }
 
   const { isConfigAllSet, missingConfigs } = checkConfigAllSet(semantic);
@@ -387,8 +396,6 @@ export const runVulcanEngine = async (semantic: Semantic, compiledFilePath: stri
     ).fail();
     return;
   }
-
-  makeSureDockerNetworkExists();
 
   const tmpDir = dirSync({ unsafeCleanup: true });
   generateServeFiles(tmpDir.name, semantic);
@@ -442,8 +449,8 @@ export const runVulcanEngine = async (semantic: Semantic, compiledFilePath: stri
     return;
   } finally {
     spinner.stop();
-
   }
+
 }
 
 const generateTemplateSQL = (name: string, columns: ColumnJSON[]) => {

@@ -63,9 +63,9 @@ export const handleStart = async (
     StartCommandOptions & BuildCommandOptions & ServeCommandOptions
   >
 ): Promise<void> => {
-  const buildOptions = mergeBuildDefaultOption({shouldStopVulcanEngine: false, ...options});
   const serveOptions = mergeServeDefaultOption({shouldRunVulcanEngine: false, ...options});
   const startOptions = mergeStartDefaultOption(options);
+  const buildOptions = mergeBuildDefaultOption({shouldStopVulcanEngine: false, isWatchMode: startOptions.watch, ...options});
 
   const configPath = path.resolve(process.cwd(), startOptions.config);
   const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
@@ -73,10 +73,7 @@ export const handleStart = async (
   let stopServer: (() => Promise<any>) | undefined;
 
   const restartServer = async () => {
-    if (stopServer) {
-      handleStop();
-      await stopServer();
-    }
+    if (stopServer) await stopServer();
     try {
       await buildVulcan(buildOptions);
       stopServer = (await serveVulcan(serveOptions))?.stopServer;
