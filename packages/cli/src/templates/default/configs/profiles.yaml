@@ -1,0 +1,11 @@
+# Put your profiles here
+# - name: pg
+#   type: pg
+#   allow: "*"
+#   connection:
+#     host: localhost
+#     port: 7432
+#     user: canner-cml
+#     password: 
+#     database: canner-cml
+#     options: --search_path=[schema_name]

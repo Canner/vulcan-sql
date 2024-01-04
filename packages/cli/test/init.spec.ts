@@ -39,7 +39,7 @@ it('Init command with folder path should create default config in target folder'
   ]);
   // Action
   const config: any = jsYAML.load(
-    await fs.readFile(path.resolve(projectRoot, 'vulcan.yaml'), 'utf8')
+    await fs.readFile(path.resolve(projectRoot, 'configs', 'vulcan.yaml'), 'utf8')
   );
   // Assert
   expect(config.name).toBe(projectName);

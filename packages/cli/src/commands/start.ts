@@ -43,7 +43,7 @@ export interface StartCommandOptions {
 }
 
 const defaultOptions: StartCommandOptions = {
-  config: './vulcan.yaml',
+  config: './configs/vulcan.yaml',
   watch: false,
   platform: 'linux/amd64',
 };
@@ -62,7 +62,7 @@ export const handleStart = async (
     StartCommandOptions & BuildCommandOptions & ServeCommandOptions
   >
 ): Promise<void> => {
-  const buildOptions = mergeBuildDefaultOption({shouldStopVulcanEngine: false, ...options});
+  const buildOptions = mergeBuildDefaultOption({shouldStopVulcanEngine: true, ...options});
   const serveOptions = mergeServeDefaultOption({shouldRunVulcanEngine: false, ...options});
   const startOptions = mergeStartDefaultOption(options);
 
@@ -86,6 +86,20 @@ export const handleStart = async (
 
   if (startOptions.watch) {
     const pathsToWatch: string[] = [];
+
+    // MDL files
+    // logger.warn('At the moment, we only support one mdl file.')
+    // if ('semantic-model' in config && config['semantic-model']['filePaths']?.length > 0) {
+    //   pathsToWatch.push(
+    //     path.resolve(
+    //       `${config['semantic-model']['folderPath']}/${config['semantic-model']['filePaths'][0]['input']}`
+    //     )
+    //   );
+    // } else {
+    //   logger.warn(
+    //     `We can't watch with mdl files, ignore it.`
+    //   );
+    // }
 
     // YAML files
     const schemaReader = config['schema-parser']?.['reader'];

@@ -14,7 +14,7 @@ export interface BuildCommandOptions {
 }
 
 const defaultOptions: BuildCommandOptions = {
-  config: './vulcan.yaml',
+  config: './configs/vulcan.yaml',
   platform: 'linux/amd64',
 };
 

@@ -55,7 +55,7 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
     .option(
       '-c --config <config-path>',
       'path to Vulcan config file',
-      './vulcan.yaml'
+      './configs/vulcan.yaml'
     )
     .option('-p --port <port>', 'server port', '3000')
     .option('-w --watch', 'watch file changes', false)
@@ -71,7 +71,7 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
     .option(
       '-c --config <config-path>',
       'path to Vulcan config file',
-      './vulcan.yaml'
+      './configs/vulcan.yaml'
     )
     .option('--pull', 'Pull latest docker images')
     .option('--platform <platform>', 'platform to run Vulcan semantic engine', 'linux/amd64')
@@ -85,7 +85,7 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
     .option(
       '-c --config <config-path>',
       'path to Vulcan config file',
-      './vulcan.yaml'
+      './configs/vulcan.yaml'
     )
     .option('-p --port <port>', 'server port', '3000')
     .option('--pull', 'Pull latest docker images')
@@ -100,7 +100,7 @@ export const initializeProgram = (program: Command, options?: CliProgramOptions)
     .option(
       '-c --config <config-path>',
       'path to Vulcan config file',
-      './vulcan.yaml'
+      './configs/vulcan.yaml'
     )
     .option('-o --output <output>', 'package output type', 'node')
     .option('-t --target <target>', 'target package', 'vulcan-server')

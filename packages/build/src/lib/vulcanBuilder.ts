@@ -96,14 +96,14 @@ export class VulcanBuilder {
         logger.warn('At the moment, we only support one mdl file.');
         const semantic = semantics[0];
         const compiledFileName = config['semantic-model']['filePaths'][0].output;
-        const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
+        const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.', 'machine-generated');
         const compiledFilePath = path.resolve(compiledFolderPath, compiledFileName);
 
         await runVulcanEngine(semantic, compiledFilePath, platform, shouldPull);
         await generateSqlTemplates(semantic.toJSON(), config);
   
         if (packagerOptions?.target === 'vulcan-server') {
-          const targetFolderPath = path.resolve(process.cwd(), 'dist/vulcansql-semantic-engine');
+          const targetFolderPath = path.resolve(process.cwd(), 'dist/vulcansql-core-server');
           await fs.mkdir(targetFolderPath, { recursive: true });
 
           generateServeFiles(targetFolderPath, semantic);

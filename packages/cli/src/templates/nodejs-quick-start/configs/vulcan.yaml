@@ -2,22 +2,24 @@ name: '{{ options.projectName }}'
 description: A starter Vulcan project
 version: 0.2.0
 semantic-model:
-  - input: mdls/default.mdl
-    output: mdls/default.json
+  folderPath: mdls
+  filePaths:
+    # - input: xxx.mdl
+    #  output: xxx.json
 template:
   provider: LocalFile
   # Path to .sql files
-  folderPath: sqls
+  folderPath: outputs
   codeLoader: InMemory
 artifact:
   provider: LocalFile
   serializer: JSON
   # Path to build result
-  filePath: result.json
+  filePath: outputs/result.json
 schema-parser:
   reader: LocalFile
   # Path to .yaml files
-  folderPath: sqls
+  folderPath: outputs
 document-generator:
   specs:
     - oas3
@@ -36,3 +38,4 @@ response-format:
       - csv
 extensions:
   duckdb: '@vulcan-sql/extension-driver-duckdb'
+  pg: '@vulcan-sql/extension-driver-pg'

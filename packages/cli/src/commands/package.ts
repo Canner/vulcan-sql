@@ -16,7 +16,7 @@ export interface PackageCommandOptions {
 }
 
 const defaultOptions: PackageCommandOptions = {
-  config: './vulcan.yaml',
+  config: './configs/vulcan.yaml',
   output: 'node',
   target: 'vulcan-server',
   platform: 'linux/amd64',

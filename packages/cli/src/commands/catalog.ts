@@ -13,7 +13,7 @@ export interface CatalogCommandOptions {
 }
 
 const defaultOptions: CatalogCommandOptions = {
-  config: './vulcan.yaml',
+  config: './configs/vulcan.yaml',
   port: 4200,
 };
 

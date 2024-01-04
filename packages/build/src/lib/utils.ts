@@ -578,8 +578,10 @@ export const buildSemanticModels = async (config: SemanticModelInputOutput) => {
       const semantic = await compile(path.join(inputPath, filePath.input));
       semantics.push(semantic);
 
+      const ouputPath = path.resolve(inputPath, 'machine-generated');
+      await fs.mkdir(ouputPath, { recursive: true });
       await fs.writeFile(
-        path.join(inputPath, filePath.output),
+        path.join(ouputPath, filePath.output),
         JSON.stringify(semantic.toJSON(), null, 2)
       );
     }

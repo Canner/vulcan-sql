@@ -29,11 +29,11 @@ beforeAll(async () => {
   ]);
   process.chdir(projectRoot);
   const projectConfig = jsYAML.load(
-    await fs.readFile(path.resolve(projectRoot, 'vulcan.yaml'), 'utf-8')
+    await fs.readFile(path.resolve(projectRoot, 'configs', 'vulcan.yaml'), 'utf-8')
   ) as Record<string, any>;
   projectConfig['port'] = testingServerPort;
   fs.writeFile(
-    path.resolve(projectRoot, 'vulcan.yaml'),
+    path.resolve(projectRoot, 'configs', 'vulcan.yaml'),
     jsYAML.dump(projectConfig),
     'utf-8'
   );
@@ -52,7 +52,7 @@ it(
   async () => {
     // Action
     const config: any = jsYAML.load(
-      await fs.readFile(path.resolve(projectRoot, 'vulcan.yaml'), 'utf8')
+      await fs.readFile(path.resolve(projectRoot, 'configs', 'vulcan.yaml'), 'utf8')
     );
     // Assert
     expect(config.name).toBe(projectName);

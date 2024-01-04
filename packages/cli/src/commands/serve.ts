@@ -20,7 +20,7 @@ export interface ServeCommandOptions {
 }
 
 const defaultOptions: ServeCommandOptions = {
-  config: './vulcan.yaml',
+  config: './configs/vulcan.yaml',
   port: 3000,
   semantics: [],
   platform: 'linux/amd64',
@@ -47,7 +47,7 @@ export const serveVulcan = async (options: ServeCommandOptions) => {
     if (semantics.length > 0) {
       logger.warn('At the moment, we only support one semantic model.');
       const semantic = semantics[0];
-      const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.');
+      const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.', 'machine-generated');
       const compiledFilePath = path.resolve(compiledFolderPath, config['semantic-model']['filePaths'][0].output);
 
       await runVulcanEngine(semantic, compiledFilePath, options.platform, options.pull);

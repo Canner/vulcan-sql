@@ -47,6 +47,13 @@ export class NodePackager extends Packager {
       option.artifact.provider === ArtifactBuilderProviderType.LocalFile &&
       option.artifact.filePath
     ) {
+      // if option.artifact.filePath contains /, we need to create the folder first
+      const folder = path.dirname(option.artifact.filePath);
+      if (folder) {
+        await fs.mkdir(path.resolve(distFolder, folder), {
+          recursive: true,
+        });
+      }
       await fs.copyFile(
         path.resolve(process.cwd(), option.artifact.filePath),
         path.resolve(distFolder, option.artifact.filePath)
