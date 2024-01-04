@@ -13,6 +13,7 @@ import * as jsYAML from 'js-yaml';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { addShutdownJob, logger } from '../utils';
+import { handleStop } from './stop';
 
 const callAfterFulfilled = (func: () => Promise<void>) => {
   let busy = false;
@@ -62,7 +63,7 @@ export const handleStart = async (
     StartCommandOptions & BuildCommandOptions & ServeCommandOptions
   >
 ): Promise<void> => {
-  const buildOptions = mergeBuildDefaultOption({shouldStopVulcanEngine: true, ...options});
+  const buildOptions = mergeBuildDefaultOption({shouldStopVulcanEngine: false, ...options});
   const serveOptions = mergeServeDefaultOption({shouldRunVulcanEngine: false, ...options});
   const startOptions = mergeStartDefaultOption(options);
 
@@ -72,7 +73,10 @@ export const handleStart = async (
   let stopServer: (() => Promise<any>) | undefined;
 
   const restartServer = async () => {
-    if (stopServer) await stopServer();
+    if (stopServer) {
+      handleStop();
+      await stopServer();
+    }
     try {
       await buildVulcan(buildOptions);
       stopServer = (await serveVulcan(serveOptions))?.stopServer;
@@ -88,28 +92,27 @@ export const handleStart = async (
     const pathsToWatch: string[] = [];
 
     // MDL files
-    // logger.warn('At the moment, we only support one mdl file.')
-    // if ('semantic-model' in config && config['semantic-model']['filePaths']?.length > 0) {
-    //   pathsToWatch.push(
-    //     path.resolve(
-    //       `${config['semantic-model']['folderPath']}/${config['semantic-model']['filePaths'][0]['input']}`
-    //     )
-    //   );
-    // } else {
-    //   logger.warn(
-    //     `We can't watch with mdl files, ignore it.`
-    //   );
-    // }
+    logger.warn('At the moment, we only support one mdl file.')
+    if ('semantic-model' in config && config['semantic-model']['filePaths']?.length > 0) {
+      pathsToWatch.push(
+        path.resolve(
+          `${config['semantic-model']['folderPath']}/${config['semantic-model']['filePaths'][0]['input']}`
+        )
+      );
+    } else {
+      logger.warn(
+        `We can't watch with mdl files, ignore it.`
+      );
+    }
 
     // YAML files
     const schemaReader = config['schema-parser']?.['reader'];
     if (schemaReader === 'LocalFile') {
-      pathsToWatch.push(
-        `${path
-          .resolve(config['schema-parser']?.['folderPath'])
-          .split(path.sep)
-          .join('/')}/**/*.yaml`
-      );
+      const yamlFolderPath = path.resolve(config['schema-parser']?.['folderPath']).split(path.sep).join('/');
+      pathsToWatch.push(`${yamlFolderPath}/**/*.yaml`);
+      pathsToWatch.push(`!${yamlFolderPath}/models/**/*.yaml`);
+      pathsToWatch.push(`!${yamlFolderPath}/cumulative-metrics/**/*.yaml`);
+      pathsToWatch.push(`!${yamlFolderPath}/metrics/**/*.yaml`);
     } else {
       logger.warn(
         `We can't watch with schema parser reader: ${schemaReader}, ignore it.`
@@ -119,12 +122,11 @@ export const handleStart = async (
     // SQL files
     const templateProvider = config['template']?.['provider'];
     if (templateProvider === 'LocalFile') {
-      pathsToWatch.push(
-        `${path
-          .resolve(config['template']?.['folderPath'])
-          .split(path.sep)
-          .join('/')}/**/*.sql`
-      );
+      const sqlFolderPath = path.resolve(config['schema-parser']?.['folderPath']).split(path.sep).join('/');
+      pathsToWatch.push(`${sqlFolderPath}/**/*.sql`);
+      pathsToWatch.push(`!${sqlFolderPath}/models/**/*.sql`);
+      pathsToWatch.push(`!${sqlFolderPath}/cumulative-metrics/**/*.sql`);
+      pathsToWatch.push(`!${sqlFolderPath}/metrics/**/*.sql`);
     } else {
       logger.warn(
         `We can't watch with template provider: ${templateProvider}, ignore it.`
