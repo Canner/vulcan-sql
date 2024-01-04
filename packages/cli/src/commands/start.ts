@@ -13,7 +13,6 @@ import * as jsYAML from 'js-yaml';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { addShutdownJob, logger } from '../utils';
-import { handleStop } from './stop';
 
 const callAfterFulfilled = (func: () => Promise<void>) => {
   let busy = false;
