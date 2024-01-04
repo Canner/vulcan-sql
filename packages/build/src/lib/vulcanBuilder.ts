@@ -123,7 +123,8 @@ export class VulcanBuilder {
             `PLATFORM=${packagerOptions.platform}\n` +
             `GRAPHMDL_PATH=./${compiledFileName}\n` +
             `CONFIG_PATH=./config.properties\n` +
-            `LAUNCH_CLI_PATH=./launch-cli.sh\n`
+            `LAUNCH_CLI_PATH=./launch-cli.sh\n` +
+            `COMPOSE_PROJECT_NAME=vulcansql\n`
           );
         }
   
