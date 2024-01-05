@@ -2,7 +2,7 @@ import * as jsYAML from 'js-yaml';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import * as ora from 'ora';
-import { modulePath } from '../utils';
+import { modulePath, logger } from '../utils';
 import { handleStop } from './stop';
 
 export interface PackageCommandOptions {
@@ -12,20 +12,22 @@ export interface PackageCommandOptions {
   requireFromLocal?: boolean;
   shouldStopVulcanEngine?: boolean;
   pull?: boolean;
-  platform: string;
+  platform?: string;
 }
 
 const defaultOptions: PackageCommandOptions = {
   config: './configs/vulcan.yaml',
   output: 'node',
   target: 'vulcan-server',
-  platform: 'linux/amd64',
 };
 
 export const packageVulcan = async (options: PackageCommandOptions) => {
   const configPath = path.resolve(process.cwd(), options.config);
   const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
   const shouldStopVulcanEngine = options.shouldStopVulcanEngine ?? true;
+
+  if (!config['containerPlatform']) logger.warn(`No container platform specified, use default: linux/amd64`);
+  options.platform = config['containerPlatform'] ?? 'linux/amd64';
 
   // Import dependencies. We use dynamic import here to import dependencies at runtime.
   const { VulcanBuilder } = await import(modulePath('@vulcan-sql/build', options.requireFromLocal));

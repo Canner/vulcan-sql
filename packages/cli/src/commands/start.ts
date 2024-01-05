@@ -38,14 +38,13 @@ const callAfterFulfilled = (func: () => Promise<void>) => {
 export interface StartCommandOptions {
   watch: boolean;
   config: string;
-  platform: string;
+  platform?: string;
   pull?: boolean;
 }
 
 const defaultOptions: StartCommandOptions = {
   config: './configs/vulcan.yaml',
   watch: false,
-  platform: 'linux/amd64',
 };
 
 export const mergeStartDefaultOption = (
@@ -68,6 +67,11 @@ export const handleStart = async (
 
   const configPath = path.resolve(process.cwd(), startOptions.config);
   const config: any = jsYAML.load(await fs.readFile(configPath, 'utf-8'));
+
+  if (!config['containerPlatform']) logger.warn(`No container platform specified, use default: linux/amd64`);
+  serveOptions.platform = config['containerPlatform'] ?? 'linux/amd64';
+  startOptions.platform = serveOptions.platform;
+  buildOptions.platform = serveOptions.platform;
 
   let stopServer: (() => Promise<any>) | undefined;
 

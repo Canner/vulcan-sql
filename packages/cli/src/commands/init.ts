@@ -11,6 +11,7 @@ import { initTemplates } from '../templates';
 
 export interface InitCommandOptions {
   projectName: string;
+  platform: string;
   version: string;
   template?: string;
 }
@@ -25,6 +26,10 @@ const validators: Record<
   projectName: {
     regex: /^[a-zA-Z0-9_-]+$/,
     errorMessage: `Project name should contain only letters, numbers, or dashes.`,
+  },
+  platform: {
+    regex: /^linux\/(amd64|arm64|arm64\/v8)$/,
+    errorMessage: `Platform should be linux/amd64, linux/arm64, or linux/arm64/v8.`,
   },
 };
 
@@ -170,6 +175,17 @@ export const handleInit = async (
     });
   } else {
     validateAnswer('projectName')(options.projectName);
+  }
+
+  if (!options.platform) {
+    question.push({
+      type: 'list',
+      name: 'platform',
+      message: 'Container platform:',
+      choices: ['linux/amd64', 'linux/arm64', 'linux/arm64/v8'],
+    });
+  } else {
+    validateAnswer('platform')(options.platform);
   }
 
   options = {

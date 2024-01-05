@@ -9,6 +9,7 @@ const defaultInit = [{
     return JSON.stringify(
       {
         name: options.projectName,
+        containerPlatform: options.platform,
         dependencies: {
           '@vulcan-sql/core': options.version,
           '@vulcan-sql/serve': options.version,
@@ -55,6 +56,7 @@ const nodejsQuickStartInit = [{
     return JSON.stringify(
       {
         name: options.projectName,
+        containerPlatform: options.platform,
         dependencies: {
           '@vulcan-sql/core': options.version,
           '@vulcan-sql/serve': options.version,

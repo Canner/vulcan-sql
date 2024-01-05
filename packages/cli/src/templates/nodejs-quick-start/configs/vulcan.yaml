@@ -6,6 +6,7 @@ semantic-model:
   filePaths:
     # - input: xxx.mdl
     #  output: xxx.json
+containerPlatform: '{{ options.platform }}'
 template:
   provider: LocalFile
   # Path to .sql files
