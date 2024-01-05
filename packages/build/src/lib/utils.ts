@@ -462,20 +462,13 @@ const generateTemplateSQL = (name: string, columns: ColumnJSON[]) => {
 
   templateSQL += `\nselect * from ${name}`
   if (columns.length > 0) {
-    templateSQL += '\n{% if '
-    columns.forEach((column, index) => {
-      if (index === columns.length - 1) {
-        templateSQL += `${column.name} %}\nwhere\n`
-      } else {
-        templateSQL += `${column.name} or `
-      }
-    })
+    templateSQL += '\nwhere\n'
 
     for (const column of columns) {
       templateSQL += `  {% if ${column.name} %}\n  ${column.name} = cast({{ ${column.name} }} as ${column.type}) and\n  {% endif %}\n`
     }
 
-    templateSQL += `  1=1\n{% endif %}\n`
+    templateSQL += `  1=1\n`
   }
 
   return templateSQL
@@ -493,13 +486,6 @@ const generateTemplateYAML = (apiBasePath: string, name: string, columns: Column
       templateYAML += `    fieldIn: query\n`
       if (column.description) {
         templateYAML += `    description: ${column.description}\n`
-      }
-      if (column.type === 'INTEGER' || column.type === 'REAL') {
-        templateYAML += `    type: number\n`
-      } else if (column.type === 'BOOLEAN') {
-        templateYAML += `    type: boolean\n`
-      } else {
-        templateYAML += `    type: string\n`
       }
     }
   }
