@@ -1,5 +1,4 @@
 import * as ora from 'ora';
-import * as peggy from 'peggy';
 import * as detectPort from 'detect-port';
 import { SemanticJSON, Semantic, Config, ColumnJSON, tokenize } from '@vulcan-sql/core';
 import { get } from 'lodash';
