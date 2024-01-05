@@ -264,7 +264,7 @@ const setPlatform = (platform: string) => {
 };
 
 const setVulcanSQLEnginePath = (targetPath: string) => {
-  process.env['GRAPHMDL_PATH'] = targetPath;
+  process.env['MDL_PATH'] = targetPath;
   ora('The VulcanSQL Engine Path to mount is set').succeed();
 };
 
@@ -316,8 +316,9 @@ export const generateServeFiles = (targetDir: string, semantic: Semantic) => {
     }
   });
 
-  // hardcode the accio path
-  properties.insert('accio.file', 'etc/acciomdl.json');
+  // hardcode the vulcansql compiled mdl path
+  // TODO: accio -> vulcansql
+  properties.insert('accio.file', 'etc/mdl.json');
   // set client type
   properties.insert('accio.datasource.type', client);
 

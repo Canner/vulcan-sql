@@ -121,7 +121,7 @@ export class VulcanBuilder {
           await fs.writeFile(
             path.join(targetFolderPath, '.env'),
             `PLATFORM=${packagerOptions.platform}\n` +
-            `GRAPHMDL_PATH=./${compiledFileName}\n` +
+            `MDL_PATH=./${compiledFileName}\n` +
             `CONFIG_PATH=./config.properties\n` +
             `LAUNCH_CLI_PATH=./launch-cli.sh\n` +
             `COMPOSE_PROJECT_NAME=vulcansql\n`
