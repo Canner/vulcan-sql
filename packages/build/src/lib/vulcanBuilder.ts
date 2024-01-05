@@ -3,6 +3,7 @@ import {
   Packager,
   PackagerOptions,
 } from '@vulcan-sql/build/models';
+import { Semantic } from '@vulcan-sql/core';
 import { Container, TYPES } from '@vulcan-sql/build/containers';
 import { SchemaParser } from '@vulcan-sql/build/schema-parser';
 import {
@@ -139,15 +140,20 @@ export class VulcanBuilder {
     platform: string,
     packagerOptions?: PackagerOptions,
     shouldPull?: boolean,
-    isWatchMode?: boolean
+    isWatchMode?: boolean,
+    shouldRestartVulcanEngine?: boolean,
   ) {
-    const semantics = await this.prepareVulcanEngine(
-      this.options,
-      platform, 
-      shouldPull,
-      packagerOptions,
-      isWatchMode,
-    );
+    let semantics: Semantic[] = [];
+    if (shouldRestartVulcanEngine) {
+      semantics = await this.prepareVulcanEngine(
+        this.options,
+        platform, 
+        shouldPull,
+        packagerOptions,
+        isWatchMode,
+      );
+    }
+
     await this.buildVulcanAPILayer(packagerOptions);
     return semantics;
   }

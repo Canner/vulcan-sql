@@ -14,23 +14,23 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { addShutdownJob, logger } from '../utils';
 
-const callAfterFulfilled = (func: () => Promise<void>) => {
+const callAfterFulfilled = (func: (shouldRestartVulcanEngine: boolean) => Promise<void>) => {
   let busy = false;
   let waitQueue: (() => void)[] = [];
-  const runJob = () => {
+  const runJob = (shouldRestartVulcanEngine: boolean) => {
     const currentPromises = waitQueue;
     waitQueue = [];
     busy = true;
-    func().finally(() => {
+    func(shouldRestartVulcanEngine).finally(() => {
       currentPromises.forEach((resolve) => resolve());
       busy = false;
-      if (waitQueue.length > 0) runJob();
+      if (waitQueue.length > 0) runJob(shouldRestartVulcanEngine);
     });
   };
-  const callback = () =>
+  const callback = (shouldRestartVulcanEngine: boolean) =>
     new Promise<void>((resolve) => {
       waitQueue.push(resolve);
-      if (!busy) runJob();
+      if (!busy) runJob(shouldRestartVulcanEngine);
     });
   return callback;
 };
@@ -75,10 +75,10 @@ export const handleStart = async (
 
   let stopServer: (() => Promise<any>) | undefined;
 
-  const restartServer = async () => {
+  const restartServer = async (shouldRestartVulcanEngine: boolean) => {
     if (stopServer) await stopServer();
     try {
-      await buildVulcan(buildOptions);
+      await buildVulcan({...buildOptions, shouldRestartVulcanEngine});
       stopServer = (await serveVulcan(serveOptions))?.stopServer;
     } catch (e) {
       // Ignore the error to keep watch process works
@@ -86,15 +86,16 @@ export const handleStart = async (
     }
   };
 
-  await restartServer();
+  await restartServer(true);
 
   if (startOptions.watch) {
-    const pathsToWatch: string[] = [];
+    const mdlPathsToWatch: string[] = [];
+    const sqlPathsToWatch: string[] = [];
 
     // MDL files
     logger.warn('At the moment, we only support one mdl file.')
     if ('semantic-model' in config && config['semantic-model']['filePaths']?.length > 0) {
-      pathsToWatch.push(
+      mdlPathsToWatch.push(
         path.resolve(
           `${config['semantic-model']['folderPath']}/${config['semantic-model']['filePaths'][0]['input']}`
         )
@@ -109,10 +110,10 @@ export const handleStart = async (
     const schemaReader = config['schema-parser']?.['reader'];
     if (schemaReader === 'LocalFile') {
       const yamlFolderPath = path.resolve(config['schema-parser']?.['folderPath']).split(path.sep).join('/');
-      pathsToWatch.push(`${yamlFolderPath}/**/*.yaml`);
-      pathsToWatch.push(`!${yamlFolderPath}/models/**/*.yaml`);
-      pathsToWatch.push(`!${yamlFolderPath}/cumulative-metrics/**/*.yaml`);
-      pathsToWatch.push(`!${yamlFolderPath}/metrics/**/*.yaml`);
+      sqlPathsToWatch.push(`${yamlFolderPath}/**/*.yaml`);
+      sqlPathsToWatch.push(`!${yamlFolderPath}/models/**/*.yaml`);
+      sqlPathsToWatch.push(`!${yamlFolderPath}/cumulative-metrics/**/*.yaml`);
+      sqlPathsToWatch.push(`!${yamlFolderPath}/metrics/**/*.yaml`);
     } else {
       logger.warn(
         `We can't watch with schema parser reader: ${schemaReader}, ignore it.`
@@ -123,10 +124,10 @@ export const handleStart = async (
     const templateProvider = config['template']?.['provider'];
     if (templateProvider === 'LocalFile') {
       const sqlFolderPath = path.resolve(config['schema-parser']?.['folderPath']).split(path.sep).join('/');
-      pathsToWatch.push(`${sqlFolderPath}/**/*.sql`);
-      pathsToWatch.push(`!${sqlFolderPath}/models/**/*.sql`);
-      pathsToWatch.push(`!${sqlFolderPath}/cumulative-metrics/**/*.sql`);
-      pathsToWatch.push(`!${sqlFolderPath}/metrics/**/*.sql`);
+      sqlPathsToWatch.push(`${sqlFolderPath}/**/*.sql`);
+      sqlPathsToWatch.push(`!${sqlFolderPath}/models/**/*.sql`);
+      sqlPathsToWatch.push(`!${sqlFolderPath}/cumulative-metrics/**/*.sql`);
+      sqlPathsToWatch.push(`!${sqlFolderPath}/metrics/**/*.sql`);
     } else {
       logger.warn(
         `We can't watch with template provider: ${templateProvider}, ignore it.`
@@ -134,12 +135,16 @@ export const handleStart = async (
     }
 
     const restartWhenFulfilled = callAfterFulfilled(restartServer);
-    const watcher = chokidar
-      .watch(pathsToWatch, { ignoreInitial: true })
-      .on('all', () => restartWhenFulfilled());
+    const mdlWatcher = chokidar
+      .watch(mdlPathsToWatch, { ignoreInitial: true })
+      .on('all', () => restartWhenFulfilled(true));
+    const sqlWatcher = chokidar
+      .watch(sqlPathsToWatch, { ignoreInitial: true })
+      .on('all', () => restartWhenFulfilled(false));
     addShutdownJob(async () => {
       logger.info(`Stop watching changes...`);
-      await watcher.close();
+      await mdlWatcher.close();
+      await sqlWatcher.close();
     });
     logger.info(`Start watching changes...`);
   }

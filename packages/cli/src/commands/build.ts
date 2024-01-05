@@ -12,6 +12,7 @@ export interface BuildCommandOptions {
   pull?: boolean;
   shouldStopVulcanEngine?: boolean;
   isWatchMode?: boolean;
+  shouldRestartVulcanEngine?: boolean;
 }
 
 const defaultOptions: BuildCommandOptions = {
@@ -42,7 +43,13 @@ export const buildVulcan = async (options: BuildCommandOptions) => {
   const spinner = ora('Building project...\n').start();
   try {
     const builder = new VulcanBuilder(config);
-    const semantics = await builder.build(options.platform, undefined, options.pull, options.isWatchMode);
+    const semantics = await builder.build(
+      options.platform,
+      undefined,
+      options.pull,
+      options.isWatchMode,
+      options.shouldRestartVulcanEngine
+    );
     spinner.succeed('Built successfully.');
     if (semantics.length > 0 && shouldStopVulcanEngine) {
       handleStop();
