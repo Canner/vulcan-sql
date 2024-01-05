@@ -472,7 +472,7 @@ const generateTemplateSQL = (name: string, columns: ColumnJSON[]) => {
     })
 
     for (const column of columns) {
-      templateSQL += `  {% if ${column.name} %}\n  ${column.name} = {{ ${column.name} }} and\n  {% endif %}\n`
+      templateSQL += `  {% if ${column.name} %}\n  ${column.name} = cast({{ ${column.name} }} as ${column.type}) and\n  {% endif %}\n`
     }
 
     templateSQL += `  1=1\n{% endif %}\n`
