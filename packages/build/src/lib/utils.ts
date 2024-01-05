@@ -1,4 +1,5 @@
 import * as ora from 'ora';
+import * as peggy from 'peggy';
 import * as detectPort from 'detect-port';
 import { SemanticJSON, Semantic, Config, ColumnJSON, tokenize } from '@vulcan-sql/core';
 import { get } from 'lodash';
@@ -593,11 +594,15 @@ export const buildSemanticModels = async (config: SemanticModelInputOutput) => {
         JSON.stringify(semantic.toJSON(), null, 2)
       );
     }
-    
+  
     spinner.succeed('Built semantic models successfully.');
     return semantics;
-  } catch (e) {
-    spinner.fail(`Built semantic models failed.: ${e}`);
+  } catch (e: any) {
+    if (Object.getPrototypeOf(e).constructor.name === 'peg$SyntaxError') {
+      spinner.fail(`Parsing failed at near line ${e.location?.start.line}, column ${e.location?.start.column}: ${e.message}`);
+    } else {
+      spinner.fail(`Built semantic models failed.: ${e}`);
+    }
     return [];
   }
 }
