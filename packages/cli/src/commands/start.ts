@@ -14,23 +14,23 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { addShutdownJob, logger } from '../utils';
 
-const callAfterFulfilled = (func: (shouldRestartVulcanEngine: boolean) => Promise<void>) => {
+const callAfterFulfilled = (func: (shouldPrepareVulcanEngine: boolean) => Promise<void>) => {
   let busy = false;
   let waitQueue: (() => void)[] = [];
-  const runJob = (shouldRestartVulcanEngine: boolean) => {
+  const runJob = (shouldPrepareVulcanEngine: boolean) => {
     const currentPromises = waitQueue;
     waitQueue = [];
     busy = true;
-    func(shouldRestartVulcanEngine).finally(() => {
+    func(shouldPrepareVulcanEngine).finally(() => {
       currentPromises.forEach((resolve) => resolve());
       busy = false;
-      if (waitQueue.length > 0) runJob(shouldRestartVulcanEngine);
+      if (waitQueue.length > 0) runJob(shouldPrepareVulcanEngine);
     });
   };
-  const callback = (shouldRestartVulcanEngine: boolean) =>
+  const callback = (shouldPrepareVulcanEngine: boolean) =>
     new Promise<void>((resolve) => {
       waitQueue.push(resolve);
-      if (!busy) runJob(shouldRestartVulcanEngine);
+      if (!busy) runJob(shouldPrepareVulcanEngine);
     });
   return callback;
 };
@@ -75,10 +75,10 @@ export const handleStart = async (
 
   let stopServer: (() => Promise<any>) | undefined;
 
-  const restartServer = async (shouldRestartVulcanEngine: boolean) => {
+  const restartServer = async (shouldPrepareVulcanEngine: boolean) => {
     if (stopServer) await stopServer();
     try {
-      await buildVulcan({...buildOptions, shouldRestartVulcanEngine});
+      await buildVulcan({...buildOptions, shouldPrepareVulcanEngine});
       stopServer = (await serveVulcan(serveOptions))?.stopServer;
     } catch (e) {
       // Ignore the error to keep watch process works

@@ -141,10 +141,10 @@ export class VulcanBuilder {
     packagerOptions?: PackagerOptions,
     shouldPull?: boolean,
     isWatchMode?: boolean,
-    shouldRestartVulcanEngine?: boolean,
+    shouldPrepareVulcanEngine?: boolean,
   ) {
     let semantics: Semantic[] = [];
-    if (shouldRestartVulcanEngine) {
+    if (shouldPrepareVulcanEngine) {
       semantics = await this.prepareVulcanEngine(
         this.options,
         platform, 

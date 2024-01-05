@@ -12,7 +12,7 @@ export interface BuildCommandOptions {
   pull?: boolean;
   shouldStopVulcanEngine?: boolean;
   isWatchMode?: boolean;
-  shouldRestartVulcanEngine?: boolean;
+  shouldPrepareVulcanEngine?: boolean;
 }
 
 const defaultOptions: BuildCommandOptions = {
@@ -48,7 +48,7 @@ export const buildVulcan = async (options: BuildCommandOptions) => {
       undefined,
       options.pull,
       options.isWatchMode,
-      options.shouldRestartVulcanEngine
+      options.shouldPrepareVulcanEngine ?? true,
     );
     spinner.succeed('Built successfully.');
     if (semantics.length > 0 && shouldStopVulcanEngine) {
