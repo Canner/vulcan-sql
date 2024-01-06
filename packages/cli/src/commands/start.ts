@@ -43,7 +43,7 @@ export interface StartCommandOptions {
 }
 
 const defaultOptions: StartCommandOptions = {
-  config: './configs/vulcan.yaml',
+  config: './outputs/api-configs/vulcan.yaml',
   watch: false,
 };
 

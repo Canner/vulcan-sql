@@ -20,7 +20,7 @@ export interface ServeCommandOptions {
 }
 
 const defaultOptions: ServeCommandOptions = {
-  config: './configs/vulcan.yaml',
+  config: './outputs/api-configs/vulcan.yaml',
   port: 3000,
   semantics: [],
 };

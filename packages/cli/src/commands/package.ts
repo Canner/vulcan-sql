@@ -16,7 +16,7 @@ export interface PackageCommandOptions {
 }
 
 const defaultOptions: PackageCommandOptions = {
-  config: './configs/vulcan.yaml',
+  config: './outputs/api-configs/vulcan.yaml',
   output: 'node',
   target: 'vulcan-server',
 };
@@ -36,7 +36,13 @@ export const packageVulcan = async (options: PackageCommandOptions) => {
   const spinner = ora('Packaging project...\n').start();
   try {
     const builder = new VulcanBuilder(config);
-    const semantics = await builder.build(options.platform, options, options.pull);
+    const semantics = await builder.build(
+      options.platform,
+      options.pull,
+      false,
+      true,
+      options,
+    );
     spinner.succeed('Package successfully.');
     if (semantics.length > 0 && shouldStopVulcanEngine) {
       handleStop();

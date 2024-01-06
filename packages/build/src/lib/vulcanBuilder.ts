@@ -138,10 +138,10 @@ export class VulcanBuilder {
 
   public async build(
     platform: string,
+    shouldPull: boolean,
+    isWatchMode: boolean,
+    shouldPrepareVulcanEngine: boolean,
     packagerOptions?: PackagerOptions,
-    shouldPull?: boolean,
-    isWatchMode?: boolean,
-    shouldPrepareVulcanEngine?: boolean,
   ) {
     let semantics: Semantic[] = [];
     if (shouldPrepareVulcanEngine) {

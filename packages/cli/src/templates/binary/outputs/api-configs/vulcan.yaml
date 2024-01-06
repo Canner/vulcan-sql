@@ -10,17 +10,19 @@ containerPlatform: '{{ options.platform }}'
 template:
   provider: LocalFile
   # Path to .sql files
-  folderPath: outputs
+  folderPath: outputs/api-endpoints
   codeLoader: InMemory
 artifact:
   provider: LocalFile
   serializer: JSON
   # Path to build result
-  filePath: outputs/result.json
+  filePath: outputs/api-endpoints/result.json
 schema-parser:
   reader: LocalFile
   # Path to .yaml files
-  folderPath: outputs
+  folderPath: outputs/api-endpoints
+profiles:
+  - outputs/api-configs/profile.yaml
 document-generator:
   specs:
     - oas3
@@ -37,3 +39,6 @@ response-format:
     formats:
       - json
       - csv
+extensions:
+  duckdb: '@vulcan-sql/extension-driver-duckdb'
+  pg: '@vulcan-sql/extension-driver-pg'

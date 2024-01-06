@@ -16,7 +16,7 @@ export interface BuildCommandOptions {
 }
 
 const defaultOptions: BuildCommandOptions = {
-  config: './configs/vulcan.yaml',
+  config: './outputs/api-configs/vulcan.yaml',
 };
 
 export const mergeBuildDefaultOption = (
@@ -45,7 +45,6 @@ export const buildVulcan = async (options: BuildCommandOptions) => {
     const builder = new VulcanBuilder(config);
     const semantics = await builder.build(
       options.platform,
-      undefined,
       options.pull,
       options.isWatchMode,
       options.shouldPrepareVulcanEngine ?? true,
