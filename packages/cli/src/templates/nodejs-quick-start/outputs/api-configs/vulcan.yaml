@@ -1,11 +1,6 @@
 name: '{{ options.projectName }}'
 description: A starter Vulcan project
 version: 0.2.0
-semantic-model:
-  folderPath: mdls
-  filePaths:
-    # - input: xxx.mdl
-    #  output: xxx.json
 containerPlatform: '{{ options.platform }}'
 template:
   provider: LocalFile

@@ -36,7 +36,7 @@ export const packageVulcan = async (options: PackageCommandOptions) => {
   const spinner = ora('Packaging project...\n').start();
   try {
     const builder = new VulcanBuilder(config);
-    const semantics = await builder.build(
+    const semantic = await builder.build(
       options.platform,
       options.pull,
       false,
@@ -44,7 +44,7 @@ export const packageVulcan = async (options: PackageCommandOptions) => {
       options,
     );
     spinner.succeed('Package successfully.');
-    if (semantics.length > 0 && shouldStopVulcanEngine) {
+    if (semantic && shouldStopVulcanEngine) {
       handleStop();
     }
   } catch (e) {

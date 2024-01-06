@@ -545,14 +545,6 @@ export const generateSqlTemplates = async (semantic: SemanticJSON, config: any) 
   }
 }
 
-interface SemanticModelInputOutput {
-  folderPath: string;
-  filePaths: {
-    input: string;
-    output: string;
-  }[];
-}
-
 const compile = async (filepath: string) => {
   const fileContent = await fs.readFile(filepath, 'utf-8');
   const tokens = tokenize(fileContent);
@@ -561,33 +553,45 @@ const compile = async (filepath: string) => {
   return semantic;
 };
 
-export const buildSemanticModels = async (config: SemanticModelInputOutput) => {
+export const buildSemanticModels = async () => {
   const spinner = ora('Building semantic models...').start();
+  let semantic = undefined;
+  let compiledFileName = '';
+  let compiledFolderPath = '';
+  let compiledFilePath = '';
 
   try {
-    const inputPath = path.resolve(process.cwd(), config.folderPath ?? '.');
-    const semantics = [];
-    if (config.filePaths.length > 0) {
-      const filePath = config.filePaths[0];
-      const semantic = await compile(path.join(inputPath, filePath.input));
-      semantics.push(semantic);
+    const inputPath = path.resolve(process.cwd(), 'mdls');
+    // get the number of mdl files of the inputPath folder
+    const mdlFiles = (await fs.readdir(inputPath)).filter(file => file.endsWith('.mdl'));
+    if (mdlFiles.length > 0) {
+      const mdlFile = mdlFiles[0];
+      semantic = await compile(path.join(inputPath, mdlFile));
 
-      const ouputPath = path.resolve(inputPath, 'machine-generated');
-      await fs.mkdir(ouputPath, { recursive: true });
+      const mdlFileName = mdlFile.split('.')[0];
+      compiledFileName = `${mdlFileName}.json`;
+      compiledFolderPath = path.resolve(process.cwd(), 'outputs/compiled-mdls');
+      compiledFilePath = path.resolve(compiledFolderPath, compiledFileName);
+
+      await fs.mkdir(compiledFolderPath, { recursive: true });
       await fs.writeFile(
-        path.join(ouputPath, filePath.output),
+        compiledFilePath,
         JSON.stringify(semantic.toJSON(), null, 2)
       );
     }
   
     spinner.succeed('Built semantic models successfully.');
-    return semantics;
   } catch (e: any) {
     if (Object.getPrototypeOf(e).constructor.name === 'peg$SyntaxError') {
       spinner.fail(`Parsing failed at near line ${e.location?.start.line}, column ${e.location?.start.column}: ${e.message}`);
     } else {
       spinner.fail(`Built semantic models failed.: ${e}`);
     }
-    return [];
   }
+
+  return {
+    semantic,
+    compiledFilePath,
+    compiledFileName,
+  };
 }

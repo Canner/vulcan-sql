@@ -97,43 +97,34 @@ export class VulcanBuilder {
     packagerOptions?: PackagerOptions,
     isWatchMode?: boolean,
   ) {
-    if ('semantic-model' in config) {
-      const semantics = await buildSemanticModels(config['semantic-model']);
-      if (semantics.length > 0) {
-        logger.warn('At the moment, we only support one mdl file.');
-        const semantic = semantics[0];
-        const compiledFileName = config['semantic-model']['filePaths'][0].output;
-        const compiledFolderPath = path.resolve(process.cwd(), config['semantic-model']['folderPath'] ?? '.', 'machine-generated');
-        const compiledFilePath = path.resolve(compiledFolderPath, compiledFileName);
+    logger.warn('At the moment, we only support one mdl file.');
+    const { semantic, compiledFilePath, compiledFileName } = await buildSemanticModels();
+    if (semantic) {
+      await runVulcanEngine(semantic, compiledFilePath, platform, shouldPull, isWatchMode);
+      await generateSqlTemplates(semantic.toJSON(), config);
 
-        await runVulcanEngine(semantic, compiledFilePath, platform, shouldPull, isWatchMode);
-        await generateSqlTemplates(semantic.toJSON(), config);
-  
-        if (packagerOptions?.target === 'vulcan-server') {
-          const targetFolderPath = path.resolve(process.cwd(), 'dist/vulcansql-core-server');
-          await fs.mkdir(targetFolderPath, { recursive: true });
+      if (packagerOptions?.target === 'vulcan-server') {
+        const targetFolderPath = path.resolve(process.cwd(), 'dist/vulcansql-core-server');
+        await fs.mkdir(targetFolderPath, { recursive: true });
 
-          generateServeFiles(targetFolderPath, semantic);
-          generateCLIShell(targetFolderPath, semantic);
-          copyFileSync(
-            compiledFilePath,
-            path.resolve(targetFolderPath, compiledFileName)
-          );
-          await fs.writeFile(
-            path.join(targetFolderPath, '.env'),
-            `PLATFORM=${packagerOptions.platform}\n` +
-            `MDL_PATH=./${compiledFileName}\n` +
-            `CONFIG_PATH=./config.properties\n` +
-            `LAUNCH_CLI_PATH=./launch-cli.sh\n` +
-            `COMPOSE_PROJECT_NAME=vulcansql\n`
-          );
-        }
-  
-        return semantics;
+        generateServeFiles(targetFolderPath, semantic);
+        generateCLIShell(targetFolderPath, semantic);
+        copyFileSync(
+          compiledFilePath,
+          path.resolve(targetFolderPath, compiledFileName)
+        );
+        await fs.writeFile(
+          path.join(targetFolderPath, '.env'),
+          `PLATFORM=${packagerOptions.platform}\n` +
+          `MDL_PATH=./${compiledFileName}\n` +
+          `CONFIG_PATH=./config.properties\n` +
+          `LAUNCH_CLI_PATH=./launch-cli.sh\n` +
+          `COMPOSE_PROJECT_NAME=vulcansql\n`
+        );
       }
     }
   
-    return [];
+    return semantic;
   }
 
   public async build(
@@ -143,9 +134,9 @@ export class VulcanBuilder {
     shouldPrepareVulcanEngine: boolean,
     packagerOptions?: PackagerOptions,
   ) {
-    let semantics: Semantic[] = [];
+    let semantic: Semantic | undefined;
     if (shouldPrepareVulcanEngine) {
-      semantics = await this.prepareVulcanEngine(
+      semantic = await this.prepareVulcanEngine(
         this.options,
         platform, 
         shouldPull,
@@ -155,6 +146,6 @@ export class VulcanBuilder {
     }
 
     await this.buildVulcanAPILayer(packagerOptions);
-    return semantics;
+    return semantic;
   }
 }

@@ -93,18 +93,8 @@ export const handleStart = async (
     const sqlPathsToWatch: string[] = [];
 
     // MDL files
-    logger.warn('At the moment, we only support one mdl file.')
-    if ('semantic-model' in config && config['semantic-model']['filePaths']?.length > 0) {
-      mdlPathsToWatch.push(
-        path.resolve(
-          `${config['semantic-model']['folderPath']}/${config['semantic-model']['filePaths'][0]['input']}`
-        )
-      );
-    } else {
-      logger.warn(
-        `We can't watch with mdl files, ignore it.`
-      );
-    }
+    logger.warn('At the moment, we only support one mdl file.');
+    mdlPathsToWatch.push(path.resolve('mdls/*.mdl'));
 
     // YAML files
     const schemaReader = config['schema-parser']?.['reader'];
