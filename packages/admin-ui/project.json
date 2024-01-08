@@ -1,0 +1,89 @@
+{
+  "name": "admin-ui",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/admin-ui",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/packages/admin-ui"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "packages/admin-ui"
+        },
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "admin-ui:build",
+        "dev": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "admin-ui:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "admin-ui:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nx/next:export",
+      "options": {
+        "buildTarget": "admin-ui:build:production"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "packages/admin-ui/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "packages/admin-ui/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "build-docker": {
+      "dependsOn": [
+        "build"
+      ],
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "cp docker/admin-ui/Dockerfile dist/packages/admin-ui",
+          "cp docker/admin-ui/.dockerignore dist/packages/admin-ui",
+          "docker build -t admin-ui:latest dist/packages/admin-ui"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

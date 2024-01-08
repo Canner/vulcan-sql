@@ -1,0 +1,44 @@
+@import '../../../node_modules/antd//dist/antd.less';
+
+:root {
+  .make-color-variables();
+  --disabled: @disabled-color;
+}
+
+body {
+  min-width: 360px;
+}
+
+// override antd styles
+.ant-table {
+  border: 1px @gray-4 solid;
+  
+  .ant-table-row:last-child .ant-table-cell {
+    border-bottom: none;
+  }
+
+  &.ant-table-empty {
+    border: none;
+
+    .ant-table-cell {
+      border-bottom: none;
+    }
+
+    .ant-empty-normal {
+      margin: 80px 0;
+    }
+  }
+}
+
+@media(prefers-color-scheme: dark) {
+  html body {
+    background: #fff;
+  }
+  h1.next-error-h1 {
+    border-right: 1px solid rgba(0, 0, 0, .3);
+  }
+}
+
+.gml-main {
+  height: 100vh;
+}
