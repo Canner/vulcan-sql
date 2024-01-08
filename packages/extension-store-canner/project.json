@@ -1,80 +1,71 @@
 {
-  "root": "packages/extension-store-canner",
+  "name": "extension-store-canner",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/extension-store-canner/src",
   "targets": {
     "build": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "yarn ts-node ./tools/scripts/replaceAlias.ts extension-store-canner"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "tsc"
         },
         {
-          "projects": "self",
           "target": "install-dependencies"
         }
       ]
     },
     "tsc": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/extension-store-canner",
         "main": "packages/extension-store-canner/src/index.ts",
         "tsConfig": "packages/extension-store-canner/tsconfig.lib.json",
-        "assets": ["packages/extension-store-canner/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "assets": ["packages/extension-store-canner/*.md"]
       },
       "dependsOn": [
         {
-          "projects": "dependencies",
-          "target": "build"
+          "target": "build",
+          "dependencies": true
         },
         {
-          "projects": "self",
           "target": "install-dependencies"
         }
       ]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/extension-store-canner/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/extension-store-canner"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/extension-store-canner"],
       "options": {
-        "jestConfig": "packages/extension-store-canner/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/extension-store-canner/jest.config.ts"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "install-dependencies"
         }
       ]
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
         "cwd": "dist/packages/extension-store-canner"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "build"
         }
       ]
     },
     "install-dependencies": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "yarn",
         "cwd": "packages/extension-store-canner"

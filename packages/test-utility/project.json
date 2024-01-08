@@ -1,60 +1,54 @@
 {
-  "root": "packages/test-utility",
+  "name": "test-utility",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/test-utility/src",
   "targets": {
     "build": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "yarn ts-node ./tools/scripts/replaceAlias.ts test-utility"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "tsc"
         }
       ]
     },
     "tsc": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/test-utility",
         "main": "packages/test-utility/src/index.ts",
         "tsConfig": "packages/test-utility/tsconfig.lib.json",
-        "assets": ["packages/test-utility/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "assets": ["packages/test-utility/*.md"]
       },
       "dependsOn": [
         {
-          "projects": "dependencies",
-          "target": "build"
+          "target": "build",
+          "dependencies": true
         }
       ]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/test-utility/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/test-utility"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/test-utility"],
       "options": {
-        "jestConfig": "packages/test-utility/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/test-utility/jest.config.ts"
       }
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
         "cwd": "dist/packages/test-utility"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "build"
         }
       ]

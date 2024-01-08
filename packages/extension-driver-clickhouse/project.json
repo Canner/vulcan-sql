@@ -1,80 +1,73 @@
 {
-  "root": "packages/extension-driver-clickhouse",
+  "name": "extension-driver-clickhouse",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/extension-driver-clickhouse/src",
   "targets": {
     "build": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "yarn ts-node ./tools/scripts/replaceAlias.ts extension-driver-clickhouse"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "tsc"
         },
         {
-          "projects": "self",
           "target": "install-dependencies"
         }
       ]
     },
     "tsc": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/extension-driver-clickhouse",
         "main": "packages/extension-driver-clickhouse/src/index.ts",
         "tsConfig": "packages/extension-driver-clickhouse/tsconfig.lib.json",
-        "assets": ["packages/extension-driver-clickhouse/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "assets": ["packages/extension-driver-clickhouse/*.md"]
       },
       "dependsOn": [
         {
-          "projects": "dependencies",
-          "target": "build"
+          "target": "build",
+          "dependencies": true
         },
         {
-          "projects": "self",
           "target": "install-dependencies"
         }
       ]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/extension-driver-clickhouse/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/extension-driver-clickhouse"],
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/extension-driver-clickhouse"
+      ],
       "options": {
-        "jestConfig": "packages/extension-driver-clickhouse/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/extension-driver-clickhouse/jest.config.ts"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "install-dependencies"
         }
       ]
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
         "cwd": "dist/packages/extension-driver-clickhouse"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "build"
         }
       ]
     },
     "install-dependencies": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "yarn",
         "cwd": "packages/extension-driver-clickhouse"

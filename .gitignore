@@ -49,3 +49,9 @@ test-vulcan-project*
 .tokens.json
 labs/playground1/outputs/api-endpoints
 labs/playground1/outputs/compiled-mdls
+
+# nx cache files
+.nx
+
+# Next.js
+.next

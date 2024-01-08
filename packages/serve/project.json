@@ -1,28 +1,28 @@
 {
-  "root": "packages/serve",
+  "name": "serve",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/serve/src",
   "targets": {
     "start": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "outputs": [],
       "options": {
         "command": "ts-node --project packages/serve/tsconfig.json packages/serve/src/index.ts"
       }
     },
     "build": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "yarn ts-node ./tools/scripts/replaceAlias.ts serve"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "tsc"
         }
       ]
     },
     "tsc": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/serve",
@@ -31,40 +31,34 @@
         "assets": [
           "packages/serve/*.md",
           "packages/serve/src/lib/document-router/redoc-document-router/template/*.*"
-        ],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        ]
       },
       "dependsOn": [
         {
-          "projects": "dependencies",
-          "target": "build"
+          "target": "build",
+          "dependencies": true
         }
       ]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/serve/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/serve"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/serve"],
       "options": {
-        "jestConfig": "packages/serve/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/serve/jest.config.ts"
       }
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
         "cwd": "dist/packages/serve"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "build"
         }
       ]
