@@ -46,8 +46,8 @@ export function LoginModal(props: LoginModalProps) {
         <Image
           src="/logo.svg"
           alt="vulcan logo"
-          width="40px"
-          height="44.22px"
+          width="40"
+          height="44.22"
         />
         <Title level={3}>Log in</Title>
       </ModalHeader>
