@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { METRIC_TYPE, MetricData, TimeGrain } from '@admin-ui/utils/data/model';
+import { METRIC_TYPE, MetricData, TimeGrain } from '@vulcan-sql/admin-ui/utils/data/model';
 import { Space, Table, Tag, Typography } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 

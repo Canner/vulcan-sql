@@ -1,5 +1,5 @@
 {
-  "name": "@accio/ui",
+  "name": "@vulcan-sql/ui",
   "description": "UI for Accio",
   "version": "0.0.1",
   "type": "commonjs",

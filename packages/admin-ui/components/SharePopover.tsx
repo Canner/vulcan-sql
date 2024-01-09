@@ -1,5 +1,5 @@
 import { Popover, PopoverProps, Typography, Input, Space } from 'antd';
-import { ShareIcon } from '@admin-ui/utils/icons';
+import { ShareIcon } from '@vulcan-sql/admin-ui/utils/icons';
 import styled from 'styled-components';
 
 const { Title, Text } = Typography;

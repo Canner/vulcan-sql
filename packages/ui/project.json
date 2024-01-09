@@ -6,6 +6,17 @@
   "tags": [],
   "targets": {
     "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts ui"
+      },
+      "dependsOn": [
+        {
+          "target": "tsc"
+        }
+      ]
+    },
+    "tsc": {
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -13,7 +24,13 @@
         "main": "packages/ui/src/index.ts",
         "tsConfig": "packages/ui/tsconfig.lib.json",
         "assets": ["packages/ui/*.md"]
-      }
+      },
+      "dependsOn": [
+        {
+          "target": "build",
+          "dependencies": true
+        }
+      ]
     },
     "lint": {
       "executor": "@nx/eslint:lint",
@@ -68,6 +85,18 @@
           "buildTarget": "ui:build-storybook:ci"
         }
       }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
+        "cwd": "dist/packages/ui"
+      },
+      "dependsOn": [
+        {
+          "target": "build"
+        }
+      ]
     }
   }
 }

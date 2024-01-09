@@ -2,20 +2,20 @@ import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
 import { forwardRef, useRef } from 'react';
 import { Layout, Button } from 'antd';
-import { adapter } from '@admin-ui/utils/data/adapter';
-import { MDLJson } from '@admin-ui/utils/data/model';
-import SharePopover from '@admin-ui/components/SharePopover';
+import { adapter } from '@vulcan-sql/admin-ui/utils/data/adapter';
+import { MDLJson } from '@vulcan-sql/admin-ui/utils/data/model';
+import SharePopover from '@vulcan-sql/admin-ui/components/SharePopover';
 import styled from 'styled-components';
 import { readFile } from 'fs/promises';
 import { GetServerSideProps } from 'next';
-import InfoModal, { useInfoModal } from '@admin-ui/components/infoModal';
+import InfoModal, { useInfoModal } from '@vulcan-sql/admin-ui/components/infoModal';
 
 const { Sider, Content, Header } = Layout;
 
-const Sidebar = dynamic(() => import('@admin-ui/components/sidebar'), {
+const Sidebar = dynamic(() => import('@vulcan-sql/admin-ui/components/sidebar'), {
   ssr: false,
 });
-const Diagram = dynamic(() => import('@accio/ui/src/lib/diagram'), {
+const Diagram = dynamic(() => import('@vulcan-sql/ui/src/lib/diagram'), {
   ssr: false,
 });
 // https://github.com/vercel/next.js/issues/4957#issuecomment-413841689
