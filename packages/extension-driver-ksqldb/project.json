@@ -4,6 +4,17 @@
   "sourceRoot": "packages/extension-driver-ksqldb/src",
   "targets": {
     "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts extension-driver-ksqldb"
+      },
+      "dependsOn": [
+        {
+          "target": "tsc"
+        }
+      ]
+    },
+    "tsc": {
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
@@ -11,7 +22,13 @@
         "main": "packages/extension-driver-ksqldb/src/index.ts",
         "tsConfig": "packages/extension-driver-ksqldb/tsconfig.lib.json",
         "assets": ["packages/extension-driver-ksqldb/*.md"]
-      }
+      },
+      "dependsOn": [
+        {
+          "target": "build",
+          "dependencies": true
+        }
+      ]
     },
     "lint": {
       "executor": "@nx/eslint:lint",
