@@ -43,7 +43,6 @@ export interface Model {
   description?: string;
   refSql: string;
   columns: ModelColumn[];
-  primaryKey: string;
 }
 
 export interface ModelColumn {
