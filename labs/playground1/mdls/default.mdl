@@ -1,0 +1,136 @@
+config {
+  project: "canner-cml"
+  schema: "hubspot"
+  engine: "bigquery"
+  credential_file: "/Users/cyyeh/Desktop/canner/repos/vulcansql-demo/canner-cml-998350a27620.json"
+}
+
+Macro first_response_time = () => { TIMESTAMP_DIFF(first_agent_reply_at, created_date, MINUTE) }
+Macro resolution_time = () => { TIMESTAMP_DIFF(closed_date, created_date, MINUTE) }
+Macro sla_break_or_not = (rule: Macro) => { {{ rule() }} >= {{ sla_max_minutes() }} }
+Macro sla_max_minutes = () => { 
+  case
+    when {{ customer_level() }} = 'GOLD' and severity = 'CRITICAL' then 60
+    when {{ customer_level() }} = 'GOLD' and severity = 'HIGH' then 120
+    when {{ customer_level() }} = 'GOLD' and severity = 'MEDIUM' then 240
+    when {{ customer_level() }} = 'GOLD' and severity = 'LOW' then 480
+    when {{ customer_level() }} = 'SILVER' and severity = 'CRITICAL' then 90
+    when {{ customer_level() }} = 'SILVER' and severity = 'HIGH' then 240
+    when {{ customer_level() }} = 'SILVER' and severity = 'MEDIUM' then 480
+    when {{ customer_level() }} = 'SILVER' and severity = 'LOW' then 960
+    when {{ customer_level() }} = 'BRONZE' and severity = 'CRITICAL' then 120
+    when {{ customer_level() }} = 'BRONZE' and severity = 'HIGH' then 240
+    when {{ customer_level() }} = 'BRONZE' and severity = 'MEDIUM' then 720
+    when {{ customer_level() }} = 'BRONZE' and severity = 'LOW' then 1440
+  end
+}
+Macro customer_level = () => {
+  case
+    when customer.total_deal_size > 10000000 then 'GOLD'
+    when customer.total_deal_size > 5000000 then 'SILVER'
+    else 'BRONZE'
+  end
+}
+Macro MoM = () => {
+  (COUNT(*) - COALESCE(LAG(COUNT(*)) OVER (ORDER BY create_date_month), 0)) / 
+  COALESCE(LAG(COUNT(*)) OVER (ORDER BY create_date_month), 1)
+}
+
+Model Model_Customer @sql(select * from "canner-cml".hubspot.hubspot__companies) {
+  customer_id: INTEGER! @primaryKey @expr(company_id)
+  company_name: VARCHAR @expr(company_name)
+  total_deal_size: REAL @calc(sum(deals.amount))
+
+  deals: Model_Deal[] @relation(CustomerDeals)
+}
+
+Model Model_Deal @sql(select * from "canner-cml".hubspot.hubspot__deals) {
+  company_id: INTEGER @expr(company_id)
+  deal_name: VARCHAR @expr(deal_name)
+  owner_name: VARCHAR @expr(owner_full_name)
+  amount: REAL @expr(amount)
+}
+
+Model Model_Ticket @sql(select * from "canner-cml".hubspot.hubspot__tickets where company_id is not null) @desc(This is like a folder that holds records of all customer service issues or requests, specifically for a certain company.) {
+  ticket_id: INTEGER! @primaryKey @expr(ticket_id) @desc(This is the unique number given to each service issue or request, like a tracking number for a package.)
+  owner_name: VARCHAR @expr(owner_full_name) @desc(The name of the person in the company who is handling this issue.)
+  created_date: TIMESTAMP @expr(created_date) @desc(The date and time when the issue was reported or created.)
+  closed_date: TIMESTAMP @expr(closed_date) @desc(The date and time when the issue was resolved or closed.)
+  first_agent_reply_at: TIMESTAMP @expr(first_agent_reply_at) @desc(This shows when a customer service agent first responded to the issue.)
+  ticket_status: VARCHAR @expr(pipeline_stage_label) @desc(This describes what stage the issue is in, like whether it’s still being looked into or has been resolved.)
+  ticket_category: VARCHAR @expr(ticket_category) @desc(The type or category of the issue, such as billing, technical support, etc.)
+  is_closed: BOOLEAN @expr(is_closed) @desc(This tells you whether the issue has been closed or is still open.)
+  company_id: INTEGER @expr(CAST(company_id AS INTEGER)) @desc(A unique number identifying the company the ticket is associated with.)
+  owner_id: INTEGER @expr(owner_id) @desc(A unique number identifying the specific person handling the issue.)
+  subject: VARCHAR @expr(ticket_subject) @desc(The title or brief description of the issue.)
+  content: VARCHAR @expr(ticket_content) @desc(More detailed information about what the issue is.)
+  severity: VARCHAR @expr(ticket_priority) @desc(How serious or urgent the issue is.)
+  sla_break_by_first_response_time: BOOLEAN @calc({{ sla_break_or_not(first_response_time) }}) @desc(Indicates whether the time taken to first respond to the ticket broke any agreed-upon response time (like a deadline for first reply).)
+  sla_break_by_resolution_time: BOOLEAN @calc({{ sla_break_or_not(resolution_time) }}) @desc(Indicates whether the time taken to resolve the issue broke any agreed-upon resolution time (like a deadline for solving the problem).)
+  create_date_month: TIMESTAMP @expr(DATE_TRUNC('MONTH', created_date)) @desc(The month and year when the ticket was created, used for organizing or sorting tickets by date.)
+
+  customer: Model_Customer @relation(CustomerTicket) @desc(The model also has a connection to a Model_Customer, which is like another folder that keeps records of customers. This connection helps to understand which customer is linked to which service ticket.)
+}
+
+Metric Metric_FirstResponseTime @model(Model_Ticket) @desc(first response time of tickets) {
+  customer_id: INTEGER! @dim(customer.customer_id)
+  owner_id: INTEGER @dim(owner_id)
+  date: TIMESTAMP @dim(created_date)
+
+  max: REAL @measure(MAX({{ first_response_time() }}))
+  min: REAL @measure(MIN({{ first_response_time() }}))
+}
+
+Metric Metric_ResolutionTime @model(Model_Ticket) @desc(resolution time of tickets) {
+  customer_id: INTEGER! @dim(customer.customer_id)
+  owner_id: INTEGER @dim(owner_id)
+  date: TIMESTAMP @dim(created_date)
+
+  max: REAL @measure(MAX({{ resolution_time() }}))
+  min: REAL @measure(MIN({{ resolution_time() }}))
+}
+
+Metric Metric_TicketWorkload @model(Model_Ticket) @desc(workload of tickets) {
+  customer_id: INTEGER! @dim(customer.customer_id)
+  owner_id: INTEGER @dim(owner_id)
+  date: TIMESTAMP @dim(created_date)
+
+  total_count: INTEGER @measure(count_if(is_closed = true) + count_if(is_closed = false))
+  not_closed_count: INTEGER @measure(count_if(is_closed = false))
+}
+
+Metric Metric_SLABreakByFirstResponseTime @model(Model_Ticket) @desc(SLA break by resolution time of tickets) {
+  customer_id: INTEGER! @dim(customer.customer_id)
+  owner_id: INTEGER @dim(owner_id)
+  date: TIMESTAMP @dim(created_date)
+
+  count: INTEGER @measure(count_if(sla_break_by_first_response_time))
+  ticket_ids: _INTEGER @measure(ARRAY_AGG(if(sla_break_by_first_response_time, ticket_id, null)))
+}
+
+Metric Metric_SLABreakByResolutionTime @model(Model_Ticket) @desc(SLA break by resolution time of tickets) {
+  customer_id: INTEGER! @dim(customer.customer_id)
+  owner_id: INTEGER @dim(owner_id)
+  date: TIMESTAMP @dim(created_date)
+
+  count: INTEGER @measure(count_if(sla_break_by_resolution_time))
+  ticket_ids: _INTEGER @measure(ARRAY_AGG(if(sla_break_by_resolution_time, ticket_ids, null)))
+}
+
+Metric Metric_TicketsMoM @model(Model_Ticket) @desc(MoM of tickets) {
+  customer_id: INTEGER! @dim(customer.customer_id)
+  owner_id: INTEGER @dim(owner_id)
+  create_date_month: TIMESTAMP @dim(create_date_month)
+
+  MoM: INTEGER @measure({{ MoM() }})
+}
+
+Relation CustomerDeals @condition(Model_Customer.customer_id = Model_Deal.company_id) {
+  models: [Model_Customer, Model_Deal]
+  type: "ONE_TO_MANY"
+}
+
+Relation CustomerTicket @condition(Model_Customer.customer_id = Model_Ticket.company_id) {
+  models: [Model_Customer, Model_Ticket]
+  type: "ONE_TO_MANY"
+}

@@ -47,3 +47,5 @@ test-vulcan-project*
 
 # application files
 .tokens.json
+labs/playground1/outputs/api-endpoints
+labs/playground1/outputs/compiled-mdls

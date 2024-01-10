@@ -1,12 +1,12 @@
 {
   "name": "my-first-vulcan-project",
   "dependencies": {
-    "@vulcan-sql/core": "0.7.2",
-    "@vulcan-sql/extension-driver-duckdb": "0.7.2",
-    "@vulcan-sql/extension-driver-bq": "0.7.2",
-    "@vulcan-sql/serve": "0.7.2"
+    "@vulcan-sql/core": "0.10.2",
+    "@vulcan-sql/extension-driver-bq": "0.10.2",
+    "@vulcan-sql/serve": "0.10.2",
+    "@vulcan-sql/catalog-server": "0.10.2"
   },
   "devDependencies": {
-    "@vulcan-sql/build": "0.7.2"
+    "@vulcan-sql/build": "0.10.2"
   }
 }
