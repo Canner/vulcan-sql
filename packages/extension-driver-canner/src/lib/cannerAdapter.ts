@@ -44,6 +44,7 @@ export class CannerAdapter {
           sql,
           timeout: 600,
           noLimit: true,
+          cacheRefresh: true, // not use cached result
         },
       },
       headers
