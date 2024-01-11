@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/extension-driver-bq",
   "description": "BigQuery driver for Vulcan SQL",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"
@@ -24,6 +24,6 @@
   },
   "license": "Apache-2.0",
   "peerDependencies": {
-    "@vulcan-sql/core": "~0.10.2-0"
+    "@vulcan-sql/core": "~0.10.3-0"
   }
 }
