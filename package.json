@@ -147,6 +147,7 @@
     "eslint-plugin-cypress": "2.15.1",
     "eslint-plugin-import": "2.27.5",
     "eslint-plugin-jsx-a11y": "6.7.1",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-hooks": "4.4.0",
     "from2": "^2.3.0",
