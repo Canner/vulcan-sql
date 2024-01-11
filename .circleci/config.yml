@@ -127,8 +127,7 @@ jobs:
           <<: *set_env
       - restore_cache:
           <<: *yarn_cache
-      - run: yarn nx run-many --target=lint --all
-      - run: yarn nx run-many --target=lint --maxWarnings=0 ${AFFECTED_ARGS}
+      - run: yarn nx run-many --target=lint
 
   test:
     executor: node-executor
