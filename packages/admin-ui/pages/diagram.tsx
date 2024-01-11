@@ -30,7 +30,7 @@ export default function DiagramTest() {
   };
 
   return (
-    <Layout className="gml-main">
+    <Layout className="adm-main">
       <TestDataSelect value={selectedValue} onSelect={onSelect} />
       <Diagram data={selectedData} onInfoIconClick={onInfoIconClick} />
       <InfoModal

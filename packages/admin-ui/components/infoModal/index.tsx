@@ -1,8 +1,8 @@
 import { Fragment, memo, useMemo, useState } from 'react';
 import { MetricData, ModelData, NODE_TYPE } from '@vulcan-sql/admin-ui/utils/data/model';
 import { Button, Modal, ModalProps } from 'antd';
-import ModelInfo from './modelInfo';
-import MetricInfo from './metricInfo';
+import ModelInfo from './ModelInfo';
+import MetricInfo from './MetricInfo';
 
 interface Props<T> extends ModalProps {
   data?: T;
