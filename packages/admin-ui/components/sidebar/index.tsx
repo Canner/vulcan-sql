@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import SidebarTree from './SidebarTree';
+import LogoBar from '@vulcan-sql/admin-ui/components/LogoBar';
 import { getMetricTreeData, getModelTreeData } from './utils';
 import { AdaptedData } from '@vulcan-sql/admin-ui/utils/data/adapter';
 
@@ -59,10 +60,6 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   padding: 12px 16px;
-
-  img {
-    margin-right: 8px;
-  }
 `;
 
 interface Props {
@@ -76,7 +73,7 @@ export default function Sidebar(props: Props) {
   return (
     <Layout>
       <Header>
-        <span>Data Modeling</span>
+        <LogoBar />
       </Header>
 
       <SidebarTree
