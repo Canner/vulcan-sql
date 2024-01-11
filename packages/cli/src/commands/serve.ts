@@ -42,7 +42,7 @@ export const serveVulcan = async (options: ServeCommandOptions) => {
   if (!config['containerPlatform']) logger.warn(`No container platform specified, use default: linux/amd64`);
   options.platform = config['containerPlatform'] ?? 'linux/amd64';
 
-  if ('semantic-model' in config && shouldRunVulcanEngine) {
+  if (shouldRunVulcanEngine) {
     const { buildSemanticModels, runVulcanEngine } = await import(modulePath('@vulcan-sql/build', options.requireFromLocal));
 
     logger.warn('At the moment, we only support one semantic model.');
