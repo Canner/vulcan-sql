@@ -1,13 +1,15 @@
-import { Layout } from 'antd';
-
-const { Sider, Content } = Layout;
+import SiderLayout from '@vulcan-sql/admin-ui/components/layouts/SiderLayout';
 
 export default function Explore() {
-  return <Layout className="adm-main">
-    <Sider width={272}>
-      </Sider>
-      <Content>
-        Explore
-      </Content>
-  </Layout>;
+  return (
+    <SiderLayout
+      sidebar={{
+        // TODO: adjust sidebar component
+        data: { models: [], metrics: [] },
+        onSelect: () => {},
+      }}
+    >
+      Explore
+    </SiderLayout>
+  );
 }

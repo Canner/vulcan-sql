@@ -1,7 +1,8 @@
 import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
 import { forwardRef, useRef } from 'react';
-import { Layout, Button } from 'antd';
+import { Button } from 'antd';
+import SiderLayout from '@vulcan-sql/admin-ui/components/layouts/SiderLayout';
 import { adapter } from '@vulcan-sql/admin-ui/utils/data/adapter';
 import { MDLJson } from '@vulcan-sql/admin-ui/utils/data/model';
 import ContentHeader from '@vulcan-sql/admin-ui/components/ContentHeader';
@@ -9,13 +10,10 @@ import SharePopover from '@vulcan-sql/admin-ui/components/SharePopover';
 import styled from 'styled-components';
 import { readFile } from 'fs/promises';
 import { GetServerSideProps } from 'next';
-import InfoModal, { useInfoModal } from '@vulcan-sql/admin-ui/components/infoModal';
+import InfoModal, {
+  useInfoModal,
+} from '@vulcan-sql/admin-ui/components/infoModal';
 
-const { Sider, Content } = Layout;
-
-const Sidebar = dynamic(() => import('@vulcan-sql/admin-ui/components/sidebar'), {
-  ssr: false,
-});
 const Diagram = dynamic(() => import('@vulcan-sql/ui/src/lib/diagram'), {
   ssr: false,
 });
@@ -23,8 +21,6 @@ const Diagram = dynamic(() => import('@vulcan-sql/ui/src/lib/diagram'), {
 const ForwardDiagram = forwardRef(function ForwardDiagram(props: any, ref) {
   return <Diagram {...props} forwardRef={ref} />;
 });
-
-
 
 const DiagramWrapper = styled.div`
   position: relative;
@@ -62,32 +58,32 @@ export function Modeling({ mdlJson, connections }) {
   };
 
   return (
-    <Layout className="adm-main">
-      <Sider width={272}>
-        <Sidebar data={adaptedData} onSelect={onSelect} />
-      </Sider>
-      <Content>
-        <ContentHeader>
-          <SharePopover sources={infoSources}>
-            <Button type="link">Share</Button>
-          </SharePopover>
-        </ContentHeader>
-        <DiagramWrapper>
-          <ForwardDiagram
-            ref={diagramRef}
-            data={adaptedData}
-            onInfoIconClick={onInfoIconClick}
-          />
-        </DiagramWrapper>
-        <InfoModal
-          visible={infoModalProps.visible}
-          title={infoModalProps.title}
-          data={infoModalProps.data}
-          onOk={closeInfoModal}
-          onCancel={closeInfoModal}
+    <SiderLayout
+      sidebar={{
+        data: adaptedData,
+        onSelect,
+      }}
+    >
+      <ContentHeader>
+        <SharePopover sources={infoSources}>
+          <Button type="link">Share</Button>
+        </SharePopover>
+      </ContentHeader>
+      <DiagramWrapper>
+        <ForwardDiagram
+          ref={diagramRef}
+          data={adaptedData}
+          onInfoIconClick={onInfoIconClick}
         />
-      </Content>
-    </Layout>
+      </DiagramWrapper>
+      <InfoModal
+        visible={infoModalProps.visible}
+        title={infoModalProps.title}
+        data={infoModalProps.data}
+        onOk={closeInfoModal}
+        onCancel={closeInfoModal}
+      />
+    </SiderLayout>
   );
 }
 

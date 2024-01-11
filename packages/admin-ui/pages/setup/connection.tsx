@@ -1,5 +1,5 @@
-import { Layout } from 'antd';
+import SimpleLayout from '@vulcan-sql/admin-ui/components/layouts/SimpleLayout';
 
 export default function SetupConnection() {
-  return <Layout className="adm-main">Connection</Layout>;
+  return <SimpleLayout>Connection</SimpleLayout>;
 }
