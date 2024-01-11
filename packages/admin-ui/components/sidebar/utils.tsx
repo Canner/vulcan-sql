@@ -20,14 +20,14 @@ const ColumnNode = ({ title, relationship, primary }) => {
     <>
       {relationship && (
         <span
-          className="gml-node-relationship"
+          className="adm-node-relationship"
           title={`${relationship.name}: ${relationship.joinType}`}
         >
           <RelationshipIcon />
         </span>
       )}
       {primary && (
-        <span className="gml-node-primary" title="Primary Key">
+        <span className="adm-node-primary" title="Primary Key">
           <PrimaryKeyIcon />
         </span>
       )}
@@ -46,7 +46,7 @@ const MetricColumnNode = ({ title }) => {
 export const getEmpty = (title) => {
   return [
     {
-      className: 'gml-node gml-node-empty gml-node-select-none',
+      className: 'adm-node adm-node-empty adm-node-select-none',
       title,
       key: 'empty' + title,
       selectable: false,
@@ -58,7 +58,7 @@ export const getColumn = (columns: ModelColumnData[]): TreeNode[] => {
   return columns.map((column): TreeNode => {
     return {
       icon: <span title={column.type}>{getColumnTypeIcon(column.type)}</span>,
-      className: 'gml-node gml-node-column gml-node-select-none',
+      className: 'adm-node adm-node-column adm-node-select-none',
       title: (
         <ColumnNode
           title={column.name}
@@ -76,7 +76,7 @@ export const getColumn = (columns: ModelColumnData[]): TreeNode[] => {
 export const getModel = (models: ModelData[]) => {
   return models.map((model): TreeNode => {
     return {
-      className: 'gml-node gml-node-model',
+      className: 'adm-node adm-node-model',
       icon: <ModelIcon style={{ marginTop: -2 }} />,
       title: <ParentNode title={model.name} />,
       key: model.id,
@@ -89,7 +89,7 @@ export const getMetricColumn = (columns: ModelColumnData[]): TreeNode[] => {
   return columns.map((column): TreeNode => {
     return {
       icon: <span title={column.type}>{getColumnTypeIcon(column.type)}</span>,
-      className: 'gml-node gml-node-column gml-node-select-none',
+      className: 'adm-node adm-node-column adm-node-select-none',
       title: <MetricColumnNode title={column.name} />,
       key: column.id,
       selectable: false,
@@ -101,7 +101,7 @@ export const getMetricColumn = (columns: ModelColumnData[]): TreeNode[] => {
 export const getMetrics = (metrics) => {
   return metrics.map((metric) => {
     return {
-      className: 'gml-node gml-node-model',
+      className: 'adm-node adm-node-model',
       icon: <MetricIcon style={{ marginTop: -2 }} />,
       title: <ParentNode title={metric.name} />,
       key: metric.id,
@@ -115,10 +115,10 @@ export const getModelTreeData = (data): TreeNode[] => {
 
   return [
     {
-      className: 'gml-node-group',
+      className: 'adm-node-group',
       title: (
         <>
-          Models <span className="gml-node-group-count">({models.length})</span>
+          Models <span className="adm-node-group-count">({models.length})</span>
         </>
       ),
       key: 'models',
@@ -134,11 +134,11 @@ export const getMetricTreeData = (data): TreeNode[] => {
 
   return [
     {
-      className: 'gml-node-group',
+      className: 'adm-node-group',
       title: (
         <>
           Metrics{' '}
-          <span className="gml-node-group-count">({metrics.length})</span>
+          <span className="adm-node-group-count">({metrics.length})</span>
         </>
       ),
       key: 'metrics',

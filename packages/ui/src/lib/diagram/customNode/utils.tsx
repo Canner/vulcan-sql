@@ -42,7 +42,7 @@ export const NodeHeader = styled.div`
     cursor: move;
   }
 
-  .gml-model-header {
+  .adm-model-header {
     display: flex;
     align-items: center;
 
@@ -73,7 +73,7 @@ export const NodeColumn = styled.div`
     flex-shrink: 0;
   }
 
-  .gml-column-title {
+  .adm-column-title {
     display: flex;
     align-items: center;
     min-width: 1px;

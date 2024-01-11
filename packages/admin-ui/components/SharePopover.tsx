@@ -8,12 +8,12 @@ const Content = styled.div`
   width: 423px;
   padding: 4px 0;
 
-  .gml-share-title {
+  .adm-share-title {
     font-size: 14px;
     margin-bottom: 16px;
   }
 
-  .gml-share-subtitle {
+  .adm-share-subtitle {
     margin-bottom: 8px;
   }
 `;
@@ -38,7 +38,7 @@ export default function SharePopover(props: Props) {
 
   const content = (
     <Content>
-      <Title className="gml-share-title">
+      <Title className="adm-share-title">
         <Space>
           <ShareIcon />
           Share
@@ -51,7 +51,7 @@ export default function SharePopover(props: Props) {
       <Space style={{ width: '100%' }} direction="vertical" size={[0, 16]}>
         {sources.map(({ title, type, value }) => (
           <div key={title}>
-            <div className="gml-share-subtitle">{title}</div>
+            <div className="adm-share-subtitle">{title}</div>
             <StyledInput
               type={type}
               readOnly

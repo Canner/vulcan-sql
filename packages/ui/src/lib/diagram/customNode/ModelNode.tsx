@@ -43,7 +43,7 @@ export const ModelNode = ({ data }: CustomNodeProps<Model>) => {
   return (
     <StyledNode>
       <NodeHeader className="dragHandle">
-        <span className="gml-model-header">
+        <span className="adm-model-header">
           <ModelIcon />
           {data.originalData.name}
         </span>

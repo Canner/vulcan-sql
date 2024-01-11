@@ -15,7 +15,7 @@ const NodeColumn = styled.div`
     flex-shrink: 0;
   }
 
-  .gml-column-title {
+  .adm-column-title {
     display: flex;
     align-items: center;
     min-width: 1px;
@@ -65,7 +65,7 @@ export default function Column(props: ColumnProps) {
       onMouseEnter={mouseEnter}
       onMouseLeave={mouseLeave}
     >
-      <div className="gml-column-title">
+      <div className="adm-column-title">
         <span title={type}>{icon}</span>
         <span title={name}>{name}</span>
       </div>

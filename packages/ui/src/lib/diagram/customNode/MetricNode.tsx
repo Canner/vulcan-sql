@@ -21,7 +21,7 @@ export const MetricNode = ({ data }: CustomNodeProps<Metric>) => {
   return (
     <StyledNode>
       <NodeHeader className="dragHandle" color="var(--citrus-6)">
-        <span className="gml-model-header">
+        <span className="adm-model-header">
           <MetricIcon />
           {data.originalData.name}
         </span>
