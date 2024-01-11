@@ -1,6 +1,6 @@
 import { Select } from 'antd';
 import styled from 'styled-components';
-import testData from '@admin-ui/testData';
+import testData from '@vulcan-sql/admin-ui/testData';
 
 const StyledSelect = styled(Select)`
   position: absolute;

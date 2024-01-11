@@ -1,16 +1,16 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { Layout } from 'antd';
-import { adapter } from '@admin-ui/utils/data/adapter';
-import { MDLJson } from '@admin-ui/utils/data/model';
-import testData from '@admin-ui/testData';
-import InfoModal, { useInfoModal } from '@admin-ui/components/infoModal';
+import { adapter } from '@vulcan-sql/admin-ui/utils/data/adapter';
+import { MDLJson } from '@vulcan-sql/admin-ui/utils/data/model';
+import testData from '@vulcan-sql/admin-ui/testData';
+import InfoModal, { useInfoModal } from '@vulcan-sql/admin-ui/components/infoModal';
 
 const TestDataSelect = dynamic(
-  () => import('@admin-ui/components/TestDataSelect'),
+  () => import('@vulcan-sql/admin-ui/components/TestDataSelect'),
   { ssr: false }
 );
-const Diagram = dynamic(() => import('@accio/ui/src/lib/diagram'), {
+const Diagram = dynamic(() => import('@vulcan-sql/ui/src/lib/diagram'), {
   ssr: false,
 });
 

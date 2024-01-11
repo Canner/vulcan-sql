@@ -168,7 +168,7 @@ export class Transformer {
           (name) => name === targetModel?.name
         );
 
-        this.edges.push(
+        targetModel && this.edges.push(
           this.createEdge({
             type: EDGE_TYPE.MODEL,
             joinType,
@@ -187,7 +187,7 @@ export class Transformer {
   private addMetricEdge(data: Metric) {
     const { baseModel } = data;
     const targetModel = this.models.find((model) => model.name === baseModel)!;
-    this.edges.push(
+    targetModel && this.edges.push(
       this.createEdge({
         type: EDGE_TYPE.METRIC,
         sourceModel: data,

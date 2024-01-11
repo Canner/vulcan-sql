@@ -1,4 +1,4 @@
-/* eslint @nrwl/nx/enforce-module-boundaries: 0 */
+/* eslint @nx/enforce-module-boundaries: 0 */
 /* istanbul ignore file */
 import * as glob from 'glob';
 import * as path from 'path';

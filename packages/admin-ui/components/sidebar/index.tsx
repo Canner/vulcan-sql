@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import SidebarTree from './SidebarTree';
 import { getMetricTreeData, getModelTreeData } from './utils';
-import { AdaptedData } from '@admin-ui/utils/data/adapter';
+import { AdaptedData } from '@vulcan-sql/admin-ui/utils/data/adapter';
 
 const Layout = styled.div`
   position: relative;

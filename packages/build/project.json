@@ -1,21 +1,21 @@
 {
-  "root": "packages/build",
+  "name": "build",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/build/src",
   "targets": {
     "build": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "yarn ts-node ./tools/scripts/replaceAlias.ts build"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "tsc"
         }
       ]
     },
     "tsc": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/build",
@@ -26,40 +26,34 @@
           "packages/build/src/models/extensions/packager/assets/**/*",
           "packages/build/src/lib/packager/dockerPackager/assets/**/*",
           "packages/build/src/templates/**/*"
-        ],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        ]
       },
       "dependsOn": [
         {
-          "projects": "dependencies",
-          "target": "build"
+          "target": "build",
+          "dependencies": true
         }
       ]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/build/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/build"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/build"],
       "options": {
-        "jestConfig": "packages/build/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/build/jest.config.ts"
       }
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
         "cwd": "dist/packages/build"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "build"
         }
       ]

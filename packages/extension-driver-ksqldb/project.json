@@ -1,47 +1,59 @@
 {
-  "root": "packages/extension-driver-ksqldb",
+  "name": "extension-driver-ksqldb",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/extension-driver-ksqldb/src",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "yarn ts-node ./tools/scripts/replaceAlias.ts extension-driver-ksqldb"
+      },
+      "dependsOn": [
+        {
+          "target": "tsc"
+        }
+      ]
+    },
+    "tsc": {
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/extension-driver-ksqldb",
         "main": "packages/extension-driver-ksqldb/src/index.ts",
         "tsConfig": "packages/extension-driver-ksqldb/tsconfig.lib.json",
         "assets": ["packages/extension-driver-ksqldb/*.md"]
-      }
-    },
-    "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/extension-driver-ksqldb/**/*.ts"]
-      }
-    },
-    "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/extension-driver-ksqldb"],
-      "options": {
-        "jestConfig": "packages/extension-driver-ksqldb/jest.config.ts",
-        "passWithNoTests": true
       },
       "dependsOn": [
         {
-          "projects": "self",
+          "target": "build",
+          "dependencies": true
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/packages/extension-driver-ksqldb"],
+      "options": {
+        "jestConfig": "packages/extension-driver-ksqldb/jest.config.ts"
+      },
+      "dependsOn": [
+        {
           "target": "install-dependencies"
         }
       ]
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
         "cwd": "dist/packages/extension-driver-ksqldb"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "build"
         }
       ]

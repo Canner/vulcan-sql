@@ -1,4 +1,5 @@
 // The type for class T
+// eslint-disable-next-line @typescript-eslint/ban-types
 export interface ClassType<T> extends Function {
   new (...args: any[]): T;
 }

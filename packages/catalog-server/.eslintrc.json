@@ -1,11 +1,11 @@
 {
   "extends": [
-    "plugin:@nrwl/nx/react-typescript",
-    "../../.eslintrc.json",
+    "plugin:@nx/react-typescript",
     "next",
-    "next/core-web-vitals"
+    "next/core-web-vitals",
+    "../../.eslintrc.json"
   ],
-  "ignorePatterns": ["!**/*", "lib/__generated__/*"],
+  "ignorePatterns": ["!**/*", "lib/__generated__/*", ".next/**/*"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -14,7 +14,8 @@
           "error",
           "packages/catalog-server/pages"
         ],
-        "@next/next/no-img-element": "off"
+        "@next/next/no-img-element": "off",
+        "react-hooks/exhaustive-deps": "off"
       }
     },
     {
@@ -26,10 +27,10 @@
       "rules": {}
     }
   ],
+  "rules": {
+    "@next/next/no-html-link-for-pages": "off"
+  },
   "env": {
     "jest": true
-  },
-  "rules": {
-    "react-hooks/exhaustive-deps": "off"
   }
 }

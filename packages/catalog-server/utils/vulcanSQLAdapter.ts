@@ -120,4 +120,6 @@ class VulcanSQLAdapter {
   }
 }
 
-export default new VulcanSQLAdapter();
+const vulcanSQLAdapter = new VulcanSQLAdapter();
+
+export default vulcanSQLAdapter;

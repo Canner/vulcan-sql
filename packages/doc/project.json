@@ -1,34 +1,33 @@
 {
-  "root": "packages/doc",
+  "name": "doc",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "targets": {
     "build": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "yarn docusaurus build",
         "cwd": "packages/doc"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "install-dependencies"
         }
       ]
     },
     "start": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "yarn docusaurus start",
         "cwd": "packages/doc"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "install-dependencies"
         }
       ]
     },
     "install-dependencies": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "yarn",
         "cwd": "packages/doc"

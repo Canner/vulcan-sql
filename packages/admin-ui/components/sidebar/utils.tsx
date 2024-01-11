@@ -1,13 +1,13 @@
 import { DataNode } from 'antd/lib/tree';
-import { getColumnTypeIcon } from '@admin-ui/utils/columnType';
+import { getColumnTypeIcon } from '@vulcan-sql/admin-ui/utils/columnType';
 import {
   MetricIcon,
   ModelIcon,
   PrimaryKeyIcon,
   RelationshipIcon,
-} from '@admin-ui/utils/icons';
+} from '@vulcan-sql/admin-ui/utils/icons';
 import { TitleNode } from './TitleNode';
-import { ModelColumnData, ModelData } from '@admin-ui/utils/data/model';
+import { ModelColumnData, ModelData } from '@vulcan-sql/admin-ui/utils/data/model';
 
 type TreeNode = DataNode;
 

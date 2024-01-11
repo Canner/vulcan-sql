@@ -1,60 +1,56 @@
 {
-  "root": "packages/extension-authenticator-canner",
+  "name": "extension-authenticator-canner",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/extension-authenticator-canner/src",
   "targets": {
     "build": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "yarn ts-node ./tools/scripts/replaceAlias.ts extension-authenticator-canner"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "tsc"
         }
       ]
     },
     "tsc": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/extension-authenticator-canner",
         "main": "packages/extension-authenticator-canner/src/index.ts",
         "tsConfig": "packages/extension-authenticator-canner/tsconfig.lib.json",
-        "assets": ["packages/extension-authenticator-canner/*.md"],
-        "buildableProjectDepsInPackageJsonType": "dependencies"
+        "assets": ["packages/extension-authenticator-canner/*.md"]
       },
       "dependsOn": [
         {
-          "projects": "dependencies",
-          "target": "build"
+          "target": "build",
+          "dependencies": true
         }
       ]
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["packages/extension-authenticator-canner/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/extension-authenticator-canner"],
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/packages/extension-authenticator-canner"
+      ],
       "options": {
-        "jestConfig": "packages/extension-authenticator-canner/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/extension-authenticator-canner/jest.config.ts"
       }
     },
     "publish": {
-      "executor": "@nrwl/workspace:run-commands",
+      "executor": "nx:run-commands",
       "options": {
         "command": "node ../../../tools/scripts/publish.mjs {args.tag} {args.version}",
         "cwd": "dist/packages/extension-authenticator-canner"
       },
       "dependsOn": [
         {
-          "projects": "self",
           "target": "build"
         }
       ]
