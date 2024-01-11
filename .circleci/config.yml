@@ -128,7 +128,13 @@ jobs:
       - restore_cache:
           <<: *yarn_cache
       - run: yarn nx run-many --target=lint
-
+      - run: 
+          command: |
+            if [ "${AFFECTED_ARGS}" == "--all" ]; then
+              yarn nx run-many --target=lint --maxWarnings=0
+            else
+              yarn nx affected --target=lint --maxWarnings=0 ${AFFECTED_ARGS}
+            fi
   test:
     executor: node-executor
     steps:
@@ -150,7 +156,13 @@ jobs:
           command: |
             echo "$GOOGLE_CREDENTIALS_BASE64_DATA" | base64 --decode > gcp-ci-sa.json
         # Clear coverage folder
-      - run: yarn nx affected --target=test --ci --coverage --coverageReporters=lcov ${AFFECTED_ARGS}
+      - run:
+          command: |
+            if [ "${AFFECTED_ARGS}" == "--all" ]; then
+              yarn nx run-many --target=test --ci --coverage --coverageReporters=lcov
+            else
+              yarn nx affected --target=test --ci --coverage --coverageReporters=lcov ${AFFECTED_ARGS}
+            fi
       - run:
           name: upload reports with flags
           command: |
@@ -182,7 +194,12 @@ jobs:
       - run:
           name: NPM publish
           # running with yarn nx causes npm config issues
-          command: ./node_modules/.bin/nx affected --target=publish ${AFFECTED_ARGS} --tag dev
+          command: |
+            if [ "${AFFECTED_ARGS}" == "--all" ]; then
+              ./node_modules/.bin/nx run-many --target=publish --tag dev
+            else
+              ./node_modules/.bin/nx affected --target=publish ${AFFECTED_ARGS} --tag dev
+            fi
           environment:
             READY_FOR_PUBLISH: 'true'
       - run:
@@ -190,7 +207,12 @@ jobs:
           command: echo "${GITHUB_PAT}" | docker login ghcr.io -u ${GITHUB_USER} --password-stdin
       - run:
           name: Docker publish
-          command: yarn nx affected --target=publish:docker ${AFFECTED_ARGS} --tag dev
+          command: |
+            if [ "${AFFECTED_ARGS}" == "--all" ]; then
+              yarn nx run-many --target=publish:docker --tag dev
+            else
+              yarn nx affected --target=publish:docker ${AFFECTED_ARGS} --tag dev
+            fi
           environment:
             READY_FOR_PUBLISH: 'true'
       # After a success build, move the tag nightly-build to HEAD
