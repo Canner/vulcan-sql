@@ -1,0 +1,37 @@
+.make-spacing-classes(@i: 10) when (@i >= 0) {
+  .make-spacing-classes(@i - 1);
+  @preset: {
+    m: margin;
+    p: padding;
+  };
+  @base-spacing: 4px;
+  @spacing: @i * @base-spacing;
+
+  each(@preset, {
+    .@{key}-@{i} {
+      @{value}: @spacing;
+    }
+    .@{key}x-@{i} {
+      @{value}-left: @spacing;
+      @{value}-right: @spacing;
+    }
+    .@{key}y-@{i} {
+      @{value}-top: @spacing;
+      @{value}-bottom: @spacing;
+    }
+    .@{key}t-@{i} {
+      @{value}-top: @spacing;
+    }
+    .@{key}l-@{i} {
+      @{value}-left: @spacing;
+    }
+    .@{key}r-@{i} {
+      @{value}-right: @spacing;
+    }
+    .@{key}b-@{i} {
+      @{value}-bottom: @spacing;
+    }
+  });
+}
+
+.make-spacing-classes();

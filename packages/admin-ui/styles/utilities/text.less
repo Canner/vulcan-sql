@@ -1,0 +1,15 @@
+.make-text-classes() {
+  @preset-text: {
+    base: @font-size-base;
+    sm: @font-size-sm;
+    md: @font-size-lg;
+    lg: @font-size-lg + 2px;
+  }
+  each(@preset-text, {
+    .text-@{key} {
+      font-size: @value;
+    }
+  });
+}
+
+.make-text-classes();
