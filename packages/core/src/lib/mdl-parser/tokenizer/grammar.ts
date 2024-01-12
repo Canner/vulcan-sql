@@ -201,7 +201,7 @@ accepted_all
 }
 
 identifier '識別字'
-= !("Macro") [a-zA-Z_0-9]+ {return text()}
+= !("Macro"i) [a-zA-Z_0-9]+ {return text()}
 
 _ '空白'
 = whitespace+
