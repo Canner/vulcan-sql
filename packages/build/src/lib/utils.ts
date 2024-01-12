@@ -8,7 +8,6 @@ import { PropertiesEditor } from 'properties-file/editor';
 import { dirSync } from 'tmp-promise';
 import { execSync } from 'child_process';
 
-
 const isDockerInstalled = () => {
   try {
     execSync('docker version', { stdio: 'ignore' });
@@ -317,8 +316,8 @@ export const generateServeFiles = (targetDir: string, semantic: Semantic) => {
   });
 
   // hardcode the vulcansql compiled mdl path
-  // TODO: accio -> vulcansql
-  properties.insert('accio.file', 'etc/mdl.json');
+  // TODO: accio -> vulcansql?
+  properties.insert('accio.directory', '/usr/src/app/mdls');
   // set client type
   properties.insert('accio.datasource.type', client);
 
@@ -555,6 +554,8 @@ const compile = async (filepath: string) => {
 
 export const buildSemanticModels = async () => {
   const spinner = ora('Building semantic models...').start();
+  spinner.info('At the moment, we only support one mdl file.');
+
   let semantic = undefined;
   let compiledFileName = '';
   let compiledFolderPath = '';
@@ -592,6 +593,5 @@ export const buildSemanticModels = async () => {
   return {
     semantic,
     compiledFilePath,
-    compiledFileName,
   };
 }

@@ -45,7 +45,6 @@ export const serveVulcan = async (options: ServeCommandOptions) => {
   if (shouldRunVulcanEngine) {
     const { buildSemanticModels, runVulcanEngine } = await import(modulePath('@vulcan-sql/build', options.requireFromLocal));
 
-    logger.warn('At the moment, we only support one semantic model.');
     const { semantic, compiledFilePath } = await buildSemanticModels();
     if (semantic) {
       await runVulcanEngine(semantic, compiledFilePath, options.platform, options.pull);

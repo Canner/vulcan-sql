@@ -97,26 +97,26 @@ export class VulcanBuilder {
     packagerOptions?: PackagerOptions,
     isWatchMode?: boolean,
   ) {
-    logger.warn('At the moment, we only support one mdl file.');
-    const { semantic, compiledFilePath, compiledFileName } = await buildSemanticModels();
+    const { semantic, compiledFilePath } = await buildSemanticModels();
     if (semantic) {
       await runVulcanEngine(semantic, compiledFilePath, platform, shouldPull, isWatchMode);
       await generateSqlTemplates(semantic.toJSON(), config);
 
       if (packagerOptions?.target === 'vulcan-server') {
         const targetFolderPath = path.resolve(process.cwd(), 'dist/vulcansql-core-server');
-        await fs.mkdir(targetFolderPath, { recursive: true });
+        const mdlFolderPath = path.resolve(targetFolderPath, 'mdls');
+        await fs.mkdir(mdlFolderPath, { recursive: true });
 
         generateServeFiles(targetFolderPath, semantic);
         generateCLIShell(targetFolderPath, semantic);
         copyFileSync(
           compiledFilePath,
-          path.resolve(targetFolderPath, compiledFileName)
+          path.resolve(mdlFolderPath, 'manifest.json')
         );
         await fs.writeFile(
           path.join(targetFolderPath, '.env'),
           `PLATFORM=${packagerOptions.platform}\n` +
-          `MDL_PATH=./${compiledFileName}\n` +
+          `MDL_PATH=./mdls\n` +
           `CONFIG_PATH=./config.properties\n` +
           `LAUNCH_CLI_PATH=./launch-cli.sh\n` +
           `COMPOSE_PROJECT_NAME=vulcansql\n`

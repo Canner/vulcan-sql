@@ -93,7 +93,6 @@ export const handleStart = async (
     const sqlPathsToWatch: string[] = [];
 
     // MDL files
-    logger.warn('At the moment, we only support one mdl file.');
     mdlPathsToWatch.push(path.resolve('mdls/*.mdl'));
 
     // YAML files
