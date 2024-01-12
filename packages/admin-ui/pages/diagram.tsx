@@ -1,8 +1,7 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { Layout } from 'antd';
-import { adapter } from '@vulcan-sql/admin-ui/utils/data/adapter';
-import { MDLJson } from '@vulcan-sql/admin-ui/utils/data/model';
+import { adapter, MDLJson } from '@vulcan-sql/admin-ui/utils/data';
 import testData from '@vulcan-sql/admin-ui/testData';
 import InfoModal, { useInfoModal } from '@vulcan-sql/admin-ui/components/infoModal';
 

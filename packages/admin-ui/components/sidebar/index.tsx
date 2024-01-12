@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import SidebarTree from './SidebarTree';
 import LogoBar from '@vulcan-sql/admin-ui/components/LogoBar';
 import { getMetricTreeData, getModelTreeData } from './utils';
-import { AdaptedData } from '@vulcan-sql/admin-ui/utils/data/adapter';
+import { AdaptedData } from '@vulcan-sql/admin-ui/utils/data';
 
 const Layout = styled.div`
   position: relative;

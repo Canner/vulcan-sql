@@ -7,7 +7,7 @@ import {
   RelationshipIcon,
 } from '@vulcan-sql/admin-ui/utils/icons';
 import { TitleNode } from './TitleNode';
-import { ModelColumnData, ModelData } from '@vulcan-sql/admin-ui/utils/data/model';
+import { ModelColumnData, ModelData } from '@vulcan-sql/admin-ui/utils/data';
 
 type TreeNode = DataNode;
 
