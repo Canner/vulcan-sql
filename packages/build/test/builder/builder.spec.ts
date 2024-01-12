@@ -5,6 +5,7 @@ import {
   PackagerType,
   PackagerTarget,
   SchemaReaderType,
+  PackagerOptions,
 } from '@vulcan-sql/build/models';
 import {
   ArtifactBuilderProviderType,
@@ -42,8 +43,8 @@ describe('Test VulcanBuilder', () => {
     const packageOptions = {
       output: PackagerType.Node,
       target: PackagerTarget.VulcanServer,
-    };
-    await expect(builder.build(packageOptions)).resolves.not.toThrow();
+    } as PackagerOptions;
+    await expect(builder.build('linux/amd64', false, false, false, packageOptions)).resolves.not.toThrow();
   });
 
   it('Should build failed when duplicate urlPath existed in schemas', async () => {
@@ -74,8 +75,8 @@ describe('Test VulcanBuilder', () => {
     const packageOptions = {
       output: PackagerType.Node,
       target: PackagerTarget.VulcanServer,
-    };
-    await expect(builder.build(packageOptions)).rejects.toThrow(
+    } as PackagerOptions;
+    await expect(builder.build('linux/amd64', false, false, false, packageOptions)).rejects.toThrow(
       'Duplicate "urlPath" found in schemas, please check your definition of each schemas.'
     );
   });
