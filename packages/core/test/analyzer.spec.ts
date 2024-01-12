@@ -1,4 +1,4 @@
-import { PerformanceAnalysis, getAnalysis } from '../src/lib/utils/analyzer';
+import { PerformanceAnalysis, getAnalysis } from '../src/lib/api-layer/utils/analyzer';
 import * as fs from 'fs';
 
 async function waitOneSec(): Promise<void> {

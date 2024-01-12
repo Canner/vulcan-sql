@@ -12,15 +12,15 @@ import {
   vulcanCacheSchemaName,
 } from '@vulcan-sql/core';
 import { MockDataSource, getQueryResults } from './mockDataSource';
-import { HttpLogger } from '../../src/lib/loggers/httpLogger';
+import { HttpLogger } from '../../src/lib/api-layer/loggers/httpLogger';
 
 // This is a helper function that will flush all pending promises in the event loop when use the setInterval and the callback is promise (jest > 27 version).
 // reference: https://gist.github.com/apieceofbart/e6dea8d884d29cf88cdb54ef14ddbcc4
 const flushPromises = () =>
   new Promise(jest.requireActual('timers').setImmediate);
 
-jest.mock('../../src/lib/loggers/httpLogger', () => {
-  const originalModule = jest.requireActual('../../src/lib/loggers/httpLogger');
+jest.mock('../../src/lib/api-layer/loggers/httpLogger', () => {
+  const originalModule = jest.requireActual('../../src/lib/api-layer/loggers/httpLogger');
   return {
     ...originalModule,
     HttpLogger: jest.fn().mockImplementation(() => {

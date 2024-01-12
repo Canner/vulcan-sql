@@ -1,4 +1,4 @@
-import { getUrl, ConnectionConfig } from '../../src/lib/utils/url';
+import { getUrl, ConnectionConfig } from '../../src/lib/api-layer/utils/url';
 
 describe('url util functions', () => {
   it('should return url if all connection properties were set', () => {

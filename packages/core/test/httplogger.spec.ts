@@ -1,5 +1,5 @@
 import sinon from 'ts-sinon';
-import { HttpLogger } from '../src/lib/loggers/httpLogger';
+import { HttpLogger } from '../src/lib/api-layer/loggers/httpLogger';
 class MockHttpLogger extends HttpLogger {
   public override sendActivityLog = jest.fn();
 }
