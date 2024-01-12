@@ -407,7 +407,7 @@ export const runVulcanEngine = async (
   setConfigPath(path.resolve(tmpDir.name, 'config.properties'));
   setLaunchCLIPath(path.resolve(tmpDir.name, 'launch-cli.sh'));
 
-  const spinner = ora('Starting VulcanSQL Serve').start();
+  const spinner = ora('Starting VulcanSQL Serve\n').start();
 
   try {
     const commandLines = [
