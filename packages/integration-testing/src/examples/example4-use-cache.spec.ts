@@ -85,7 +85,12 @@ beforeAll(async () => {
     } as ICacheLayerOptions,
   };
   const builder = new VulcanBuilder(projectConfig);
-  await builder.build();
+  await builder.build(
+    'linux/amd64',
+    false,
+    false,
+    false,
+  );
   vulcanServer = new VulcanServer(projectConfig);
   httpServer = (await vulcanServer.start())['http'];
 }, 100 * 1000);

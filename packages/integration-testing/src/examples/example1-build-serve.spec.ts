@@ -32,7 +32,12 @@ it.each([
   'Example 1: Build and serve should work',
   async (userId, expected) => {
     const builder = new VulcanBuilder(projectConfig);
-    await builder.build();
+    await builder.build(
+      'linux/amd64',
+      false,
+      false,
+      false,
+    );
     server = new VulcanServer(projectConfig);
     const httpServer = (await server.start())['http'];
 

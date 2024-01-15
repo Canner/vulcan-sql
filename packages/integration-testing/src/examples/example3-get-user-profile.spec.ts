@@ -58,7 +58,12 @@ describe('Example3: get user profile by GET /auth/user-profile API with Authoriz
     'Example 3-1: set Authorization in header with default options',
     async ({ name, password, attr }) => {
       const builder = new VulcanBuilder(projectConfig);
-      await builder.build();
+      await builder.build(
+        'linux/amd64',
+        false,
+        false,
+        false,        
+      );
       server = new VulcanServer(projectConfig);
       const httpServer = (await server.start())['http'];
 
@@ -81,7 +86,12 @@ describe('Example3: get user profile by GET /auth/user-profile API with Authoriz
     'Example 3-2: set Authorization in querying with default options',
     async ({ name, password, attr }) => {
       const builder = new VulcanBuilder(projectConfig);
-      await builder.build();
+      await builder.build(
+        'linux/amd64',
+        false,
+        false,
+        false,
+      );
       server = new VulcanServer(projectConfig);
       const httpServer = (await server.start())['http'];
 
@@ -113,7 +123,12 @@ describe('Example3: get user profile by GET /auth/user-profile API with Authoriz
         },
       };
       const builder = new VulcanBuilder(projectConfig);
-      await builder.build();
+      await builder.build(
+        'linux/amd64',
+        false,
+        false,
+        false,
+      );
       server = new VulcanServer(projectConfig);
       const httpServer = (await server.start())['http'];
 
@@ -146,7 +161,12 @@ describe('Example3: get user profile by GET /auth/user-profile API with Authoriz
         },
       };
       const builder = new VulcanBuilder(projectConfig);
-      await builder.build();
+      await builder.build(
+        'linux/amd64',
+        false,
+        false,
+        false,
+      );
       server = new VulcanServer(projectConfig);
       const httpServer = (await server.start())['http'];
 
