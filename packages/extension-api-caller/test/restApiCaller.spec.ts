@@ -36,13 +36,13 @@ describe('Test "rest_api" filter', () => {
         stock: 94,
         brand: 'Apple',
         category: 'smartphones',
-        thumbnail: 'https://i.dummyjson.com/data/products/1/thumbnail.jpg',
+        thumbnail: 'https://cdn.dummyjson.com/product-images/1/thumbnail.jpg',
         images: [
-          'https://i.dummyjson.com/data/products/1/1.jpg',
-          'https://i.dummyjson.com/data/products/1/2.jpg',
-          'https://i.dummyjson.com/data/products/1/3.jpg',
-          'https://i.dummyjson.com/data/products/1/4.jpg',
-          'https://i.dummyjson.com/data/products/1/thumbnail.jpg'
+          'https://cdn.dummyjson.com/product-images/1/1.jpg',
+          'https://cdn.dummyjson.com/product-images/1/2.jpg',
+          'https://cdn.dummyjson.com/product-images/1/3.jpg',
+          'https://cdn.dummyjson.com/product-images/1/4.jpg',
+          'https://cdn.dummyjson.com/product-images/1/thumbnail.jpg'
         ]
       });
 
@@ -81,13 +81,13 @@ describe('Test "rest_api" filter', () => {
             "stock": 94,
             "brand": "Apple",
             "category": "smartphones",
-            "thumbnail": "https://i.dummyjson.com/data/products/1/thumbnail.jpg",
+            "thumbnail": "https://cdn.dummyjson.com/product-images/1/thumbnail.jpg",
             "images": [
-              "https://i.dummyjson.com/data/products/1/1.jpg",
-              "https://i.dummyjson.com/data/products/1/2.jpg",
-              "https://i.dummyjson.com/data/products/1/3.jpg",
-              "https://i.dummyjson.com/data/products/1/4.jpg",
-              "https://i.dummyjson.com/data/products/1/thumbnail.jpg"
+              "https://cdn.dummyjson.com/product-images/1/1.jpg",
+              "https://cdn.dummyjson.com/product-images/1/2.jpg",
+              "https://cdn.dummyjson.com/product-images/1/3.jpg",
+              "https://cdn.dummyjson.com/product-images/1/4.jpg",
+              "https://cdn.dummyjson.com/product-images/1/thumbnail.jpg"
             ]
           },
           {
@@ -100,12 +100,12 @@ describe('Test "rest_api" filter', () => {
             "stock": 34,
             "brand": "Apple",
             "category": "smartphones",
-            "thumbnail": "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
+            "thumbnail": "https://cdn.dummyjson.com/product-images/2/thumbnail.jpg",
             "images": [
-              "https://i.dummyjson.com/data/products/2/1.jpg",
-              "https://i.dummyjson.com/data/products/2/2.jpg",
-              "https://i.dummyjson.com/data/products/2/3.jpg",
-              "https://i.dummyjson.com/data/products/2/thumbnail.jpg"
+              "https://cdn.dummyjson.com/product-images/2/1.jpg",
+              "https://cdn.dummyjson.com/product-images/2/2.jpg",
+              "https://cdn.dummyjson.com/product-images/2/3.jpg",
+              "https://cdn.dummyjson.com/product-images/2/thumbnail.jpg"
             ]
           },
           {
@@ -118,12 +118,12 @@ describe('Test "rest_api" filter', () => {
             "stock": 17,
             "brand": "LouisWill",
             "category": "womens-bags",
-            "thumbnail": "https://i.dummyjson.com/data/products/71/thumbnail.jpg",
+            "thumbnail": "https://cdn.dummyjson.com/product-images/71/thumbnail.jpg",
             "images": [
-              "https://i.dummyjson.com/data/products/71/1.jpg",
-              "https://i.dummyjson.com/data/products/71/2.jpg",
-              "https://i.dummyjson.com/data/products/71/3.webp",
-              "https://i.dummyjson.com/data/products/71/thumbnail.jpg"
+              "https://cdn.dummyjson.com/product-images/71/1.jpg",
+              "https://cdn.dummyjson.com/product-images/71/2.jpg",
+              "https://cdn.dummyjson.com/product-images/71/3.webp",
+              "https://cdn.dummyjson.com/product-images/71/thumbnail.jpg"
             ]
           },
           {
@@ -136,13 +136,13 @@ describe('Test "rest_api" filter', () => {
             "stock": 22,
             "brand": "Car Aux",
             "category": "automotive",
-            "thumbnail": "https://i.dummyjson.com/data/products/86/thumbnail.jpg",
+            "thumbnail": "https://cdn.dummyjson.com/product-images/86/thumbnail.jpg",
             "images": [
-              "https://i.dummyjson.com/data/products/86/1.jpg",
-              "https://i.dummyjson.com/data/products/86/2.webp",
-              "https://i.dummyjson.com/data/products/86/3.jpg",
-              "https://i.dummyjson.com/data/products/86/4.jpg",
-              "https://i.dummyjson.com/data/products/86/thumbnail.jpg"
+              "https://cdn.dummyjson.com/product-images/86/1.jpg",
+              "https://cdn.dummyjson.com/product-images/86/2.webp",
+              "https://cdn.dummyjson.com/product-images/86/3.jpg",
+              "https://cdn.dummyjson.com/product-images/86/4.jpg",
+              "https://cdn.dummyjson.com/product-images/86/thumbnail.jpg"
             ]
           }
         ],
