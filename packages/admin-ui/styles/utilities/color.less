@@ -4,10 +4,10 @@
   each(range(1, 10), {
     @colorVar: ~'var(--@{color}-@{index})';
     .bg-@{color}-@{index} {
-      background-color: @colorVar;
+      background-color: @colorVar !important;
     }
     .@{color}-@{index} {
-      color: @colorVar;
+      color: @colorVar !important;
     }
   })
 }

@@ -7,9 +7,17 @@
   }
   each(@preset-text, {
     .text-@{key} {
-      font-size: @value;
+      font-size: @value !important;
     }
   });
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+.text-right {
+  text-align: right !important;
 }
 
 .make-text-classes();

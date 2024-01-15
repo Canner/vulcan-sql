@@ -1,4 +1,4 @@
-.make-spacing-classes(@i: 10) when (@i >= 0) {
+.make-spacing-classes(@i: 12) when (@i >= 0) {
   .make-spacing-classes(@i - 1);
   @preset: {
     m: margin;
@@ -9,27 +9,27 @@
 
   each(@preset, {
     .@{key}-@{i} {
-      @{value}: @spacing;
+      @{value}: @spacing !important;
     }
     .@{key}x-@{i} {
-      @{value}-left: @spacing;
-      @{value}-right: @spacing;
+      @{value}-left: @spacing !important;
+      @{value}-right: @spacing !important;
     }
     .@{key}y-@{i} {
-      @{value}-top: @spacing;
-      @{value}-bottom: @spacing;
+      @{value}-top: @spacing !important;
+      @{value}-bottom: @spacing !important;
     }
     .@{key}t-@{i} {
-      @{value}-top: @spacing;
+      @{value}-top: @spacing !important;
     }
     .@{key}l-@{i} {
-      @{value}-left: @spacing;
+      @{value}-left: @spacing !important;
     }
     .@{key}r-@{i} {
-      @{value}-right: @spacing;
+      @{value}-right: @spacing !important;
     }
     .@{key}b-@{i} {
-      @{value}-bottom: @spacing;
+      @{value}-bottom: @spacing !important;
     }
   });
 }
