@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/serve",
   "description": "VulcanSQL package for serving projects",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"
@@ -22,7 +22,7 @@
   },
   "license": "Apache-2.0",
   "peerDependencies": {
-    "@vulcan-sql/core": "~0.10.2-0"
+    "@vulcan-sql/core": "~0.10.3-0"
   },
   "dependencies": {
     "redoc": "2.0.0-rc.76"
