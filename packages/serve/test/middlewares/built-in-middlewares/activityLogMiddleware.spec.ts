@@ -8,9 +8,9 @@ import { KoaContext } from '@vulcan-sql/serve/models';
 import { ActivityLogType, HttpLogger } from '@vulcan-sql/core';
 import { ActivityLogMiddleware } from '@vulcan-sql/serve/middleware/activityLogMiddleware';
 
-jest.mock('../../../../core/src/lib/loggers/httpLogger', () => {
+jest.mock('../../../../core/src/lib/api-layer/loggers/httpLogger', () => {
   const originalModule = jest.requireActual(
-    '../../../../core/src/lib/loggers/httpLogger'
+    '../../../../core/src/lib/api-layer/loggers/httpLogger'
   );
   return {
     ...originalModule,
