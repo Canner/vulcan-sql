@@ -1,21 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
-
-export enum JOIN_TYPE {
-  MANY_TO_ONE = 'MANY_TO_ONE',
-  ONE_TO_MANY = 'ONE_TO_MANY',
-  ONE_TO_ONE = 'ONE_TO_ONE',
-}
-
-export enum METRIC_TYPE {
-  DIMENSION = 'dimension',
-  MEASURE = 'measure',
-  TIME_GRAIN = 'timeGrain',
-}
-
-export enum NODE_TYPE {
-  MODEL = 'model',
-  METRIC = 'metric',
-}
+import {
+  JOIN_TYPE,
+  METRIC_TYPE,
+  NODE_TYPE,
+} from '@vulcan-sql/admin-ui/utils/enum';
 
 export interface MDLJson {
   catalog: string;

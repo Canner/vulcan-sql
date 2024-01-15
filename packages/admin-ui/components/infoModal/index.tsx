@@ -1,5 +1,6 @@
 import { Fragment, memo, useMemo, useState } from 'react';
-import { MetricData, ModelData, NODE_TYPE } from '@vulcan-sql/admin-ui/utils/data';
+import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
+import { MetricData, ModelData } from '@vulcan-sql/admin-ui/utils/data';
 import { Button, Modal, ModalProps } from 'antd';
 import ModelInfo from './ModelInfo';
 import MetricInfo from './MetricInfo';

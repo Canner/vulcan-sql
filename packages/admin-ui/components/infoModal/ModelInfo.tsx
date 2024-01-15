@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { JOIN_TYPE, ModelData, Relationship } from '@vulcan-sql/admin-ui/utils/data/model';
+import { JOIN_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
+import { ModelData, Relationship } from '@vulcan-sql/admin-ui/utils/data/model';
 import { Space, Table, Typography } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 

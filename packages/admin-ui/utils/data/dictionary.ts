@@ -1,4 +1,4 @@
-import { JOIN_TYPE } from "./model";
+import { JOIN_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 
 export const getJoinTypeText = (type) =>
   ({
