@@ -92,6 +92,14 @@
           "target": "build:docker"
         }
       ]
+    },
+    "generate-gql": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "yarn graphql-codegen --config packages/catalog-server/codegen.yml"
+        ]
+      }
     }
   },
   "tags": []

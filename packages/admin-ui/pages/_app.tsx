@@ -1,5 +1,7 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import apolloClient from '@vulcan-sql/admin-ui/apollo/client';
+import { ApolloProvider } from '@apollo/client';
 require('../styles/index.less');
 
 function App({ Component, pageProps }: AppProps) {
@@ -8,9 +10,11 @@ function App({ Component, pageProps }: AppProps) {
       <Head>
         <title>Admin ui</title>
       </Head>
-      <main className="app">
-        <Component {...pageProps} />
-      </main>
+      <ApolloProvider client={apolloClient}>
+        <main className="app">
+          <Component {...pageProps} />
+        </main>
+      </ApolloProvider>
     </>
   );
 }

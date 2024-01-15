@@ -71,6 +71,14 @@
           "docker build -t admin-ui:latest dist/packages/admin-ui"
         ]
       }
+    },
+    "generate-gql": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "yarn graphql-codegen --config packages/admin-ui/codegen.yml"
+        ]
+      }
     }
   },
   "tags": []
