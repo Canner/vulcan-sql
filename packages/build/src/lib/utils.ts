@@ -609,6 +609,11 @@ export const buildSemanticModels = async () => {
       compiledFolderPath = path.resolve(process.cwd(), 'outputs/compiled-mdls');
       compiledFilePath = path.resolve(compiledFolderPath, compiledFileName);
 
+      // remove old compiled files
+      if (fs.existsSync(compiledFolderPath)) {
+        fs.rmSync(compiledFolderPath, { recursive: true, force: true });
+      }
+
       await afs.mkdir(compiledFolderPath, { recursive: true });
       await afs.writeFile(
         compiledFilePath,
