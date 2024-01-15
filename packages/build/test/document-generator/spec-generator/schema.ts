@@ -131,6 +131,7 @@ export const getConfig = (): IBuildOptions => {
     template: {} as any,
     artifact: {} as any,
     'schema-parser': {} as any,
+    containerPlatform: 'linux/amd64',
     extensions: {} as any,
   };
 };

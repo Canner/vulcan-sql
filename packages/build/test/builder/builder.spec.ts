@@ -19,6 +19,10 @@ describe('Test VulcanBuilder', () => {
     // Arrange
     process.chdir(__dirname);
     const options: IBuildOptions = {
+      containerPlatform: 'linux/amd64',
+      shouldPull: false,
+      isWatchMode: false,
+      shouldPrepareVulcanEngine: false,
       'schema-parser': {
         reader: SchemaReaderType.LocalFile,
         folderPath: 'source/valid',
@@ -44,13 +48,17 @@ describe('Test VulcanBuilder', () => {
       output: PackagerType.Node,
       target: PackagerTarget.VulcanServer,
     } as PackagerOptions;
-    await expect(builder.build('linux/amd64', false, false, false, packageOptions)).resolves.not.toThrow();
+    await expect(builder.build(packageOptions)).resolves.not.toThrow();
   });
 
   it('Should build failed when duplicate urlPath existed in schemas', async () => {
     // Arrange
     process.chdir(__dirname);
     const options: IBuildOptions = {
+      containerPlatform: 'linux/amd64',
+      shouldPull: false,
+      isWatchMode: false,
+      shouldPrepareVulcanEngine: false,
       'schema-parser': {
         reader: SchemaReaderType.LocalFile,
         folderPath: 'source/invalid',
@@ -76,7 +84,7 @@ describe('Test VulcanBuilder', () => {
       output: PackagerType.Node,
       target: PackagerTarget.VulcanServer,
     } as PackagerOptions;
-    await expect(builder.build('linux/amd64', false, false, false, packageOptions)).rejects.toThrow(
+    await expect(builder.build(packageOptions)).rejects.toThrow(
       'Duplicate "urlPath" found in schemas, please check your definition of each schemas.'
     );
   });

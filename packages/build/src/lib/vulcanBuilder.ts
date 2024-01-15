@@ -91,15 +91,18 @@ export class VulcanBuilder {
   }
 
   private async prepareVulcanEngine(
-    config: any,
-    platform: string,
-    shouldPull?: boolean,
+    config: IBuildOptions,
     packagerOptions?: PackagerOptions,
-    isWatchMode?: boolean,
   ) {
     const { semantic, compiledFilePath } = await buildSemanticModels();
     if (semantic) {
-      await runVulcanEngine(semantic, compiledFilePath, platform, shouldPull, isWatchMode);
+      await runVulcanEngine(
+        semantic,
+        compiledFilePath,
+        config.containerPlatform,
+        config.shouldPull,
+        config.isWatchMode
+      );
       await generateSqlTemplates(semantic.toJSON(), config);
 
       if (packagerOptions?.target === 'vulcan-server') {
@@ -115,7 +118,7 @@ export class VulcanBuilder {
         );
         await fs.writeFile(
           path.join(targetFolderPath, '.env'),
-          `PLATFORM=${packagerOptions.platform}\n` +
+          `PLATFORM=${config.containerPlatform}\n` +
           `MDL_PATH=./mdls\n` +
           `CONFIG_PATH=./config.properties\n` +
           `LAUNCH_CLI_PATH=./launch-cli.sh\n` +
@@ -128,20 +131,13 @@ export class VulcanBuilder {
   }
 
   public async build(
-    platform: string,
-    shouldPull: boolean,
-    isWatchMode: boolean,
-    shouldPrepareVulcanEngine: boolean,
     packagerOptions?: PackagerOptions,
   ) {
     let semantic: Semantic | undefined;
-    if (shouldPrepareVulcanEngine) {
+    if (this.options.shouldPrepareVulcanEngine) {
       semantic = await this.prepareVulcanEngine(
         this.options,
-        platform, 
-        shouldPull,
         packagerOptions,
-        isWatchMode,
       );
     }
 

@@ -27,7 +27,10 @@ export const packageVulcan = async (options: PackageCommandOptions) => {
   const shouldStopVulcanEngine = options.shouldStopVulcanEngine ?? true;
 
   if (!config['containerPlatform']) logger.warn(`No container platform specified, use default: linux/amd64`);
-  options.platform = config['containerPlatform'] ?? 'linux/amd64';
+  config['containerPlatform'] = config['containerPlatform'] ?? 'linux/amd64';
+  config['shouldPull'] = options.pull ?? false;
+  config['isWatchMode'] = false;
+  config['shouldPrepareVulcanEngine'] = true;
 
   // Import dependencies. We use dynamic import here to import dependencies at runtime.
   const { VulcanBuilder } = await import(modulePath('@vulcan-sql/build', options.requireFromLocal));
@@ -37,11 +40,10 @@ export const packageVulcan = async (options: PackageCommandOptions) => {
   try {
     const builder = new VulcanBuilder(config);
     const semantic = await builder.build(
-      options.platform,
-      options.pull,
-      false,
-      true,
-      options,
+      {
+        target: options.target,
+        output: options.output,
+      }
     );
     spinner.succeed('Package successfully.');
     if (semantic && shouldStopVulcanEngine) {
