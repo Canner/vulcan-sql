@@ -31,13 +31,14 @@ it.each([
 ])(
   'Example 1: Build and serve should work',
   async (userId, expected) => {
-    const builder = new VulcanBuilder(projectConfig);
-    await builder.build(
-      'linux/amd64',
-      false,
-      false,
-      false,
-    );
+    const builder = new VulcanBuilder({
+      ...projectConfig,
+      containerPlatform: 'linux/amd64',
+      shouldPull: false,
+      isWatchMode: false,
+      shouldPrepareVulcanEngine: false,
+    });
+    await builder.build();
     server = new VulcanServer(projectConfig);
     const httpServer = (await server.start())['http'];
 

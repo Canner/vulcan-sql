@@ -33,6 +33,10 @@ it.each([...users])(
     // Arrange
     const projectConfig: ServeConfig & IBuildOptions = {
       ...defaultConfig,
+      containerPlatform: 'linux/amd64',
+      shouldPull: false,
+      isWatchMode: false,
+      shouldPrepareVulcanEngine: false,
       auth: {
         enabled: true,
         options: {
@@ -55,12 +59,7 @@ it.each([...users])(
     };
     const expected = Buffer.from(`${name}:${password}`).toString('base64');
     const builder = new VulcanBuilder(projectConfig);
-    await builder.build(
-      'linux/amd64',
-      false,
-      false,
-      false,      
-    );
+    await builder.build();
     server = new VulcanServer(projectConfig);
     const httpServer = (await server.start())['http'];
     // Act

@@ -78,6 +78,10 @@ beforeAll(async () => {
 
   const projectConfig: ServeConfig & IBuildOptions = {
     ...defaultConfig,
+    containerPlatform: 'linux/amd64',
+    shouldPull: false,
+    isWatchMode: false,
+    shouldPrepareVulcanEngine: false,
     cache: {
       type: CacheLayerStoreFormatType.parquet,
       folderPath: path.resolve(__dirname, folderPath),
@@ -85,12 +89,7 @@ beforeAll(async () => {
     } as ICacheLayerOptions,
   };
   const builder = new VulcanBuilder(projectConfig);
-  await builder.build(
-    'linux/amd64',
-    false,
-    false,
-    false,
-  );
+  await builder.build();
   vulcanServer = new VulcanServer(projectConfig);
   httpServer = (await vulcanServer.start())['http'];
 }, 100 * 1000);
