@@ -1,11 +1,13 @@
-# Put your profiles here
+- name: duckdb
+  type: duckdb
+  allow: "*"
 # - name: pg
 #   type: pg
 #   allow: "*"
 #   connection:
 #     host: localhost
 #     port: 7432
-#     user: canner-cml
+#     user: 
 #     password: 
-#     database: canner-cml
+#     database: 
 #     options: --search_path=[schema_name]

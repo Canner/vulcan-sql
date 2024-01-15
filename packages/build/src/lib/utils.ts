@@ -2,7 +2,8 @@ import * as ora from 'ora';
 import * as detectPort from 'detect-port';
 import { SemanticJSON, Semantic, Config, ColumnJSON, tokenize } from '@vulcan-sql/core';
 import { get } from 'lodash';
-import { readFileSync, writeFileSync, copyFileSync, promises as fs } from 'fs';
+import * as fs from 'fs';
+import { readFileSync, writeFileSync, copyFileSync, promises as afs } from 'fs';
 import * as path from 'path';
 import { PropertiesEditor } from 'properties-file/editor';
 import { dirSync } from 'tmp-promise';
@@ -364,7 +365,8 @@ const setLaunchCLIPath = (targetPath: string) => {
 export const runVulcanEngine = async (
   semantic: Semantic,
   compiledFilePath: string,
-  platform: string, shouldPull?: boolean,
+  platform: string,
+  shouldPull?: boolean,
   isWatchMode?: boolean,
 ) => {
   if (!isWatchMode) {
@@ -410,6 +412,7 @@ export const runVulcanEngine = async (
 
   try {
     const commandLines = [
+      `PLATFORM=${platform} MDL_PATH=${compiledFilePath} CONFIG_PATH=${path.resolve(tmpDir.name, 'config.properties')} LAUNCH_CLI_PATH=${path.resolve(tmpDir.name, 'launch-cli.sh')}`,
       dockerCompose,
       '--project-directory',
       tmpDir.name,
@@ -503,8 +506,8 @@ const writeTemplateFiles = async (
     // write template file
     const templateSQL = generateTemplateSQL(name, columns)
     const modelsFolderPath = path.resolve(templateFolderPath, apiBasePath);
-    await fs.mkdir(modelsFolderPath, { recursive: true });
-    await fs.writeFile(
+    await afs.mkdir(modelsFolderPath, { recursive: true });
+    await afs.writeFile(
       path.join(modelsFolderPath, `${name}.sql`),
       templateSQL
     );
@@ -512,16 +515,48 @@ const writeTemplateFiles = async (
     // write schema file
     const templateYAML = generateTemplateYAML(apiBasePath, name, columns);
     const schemasFolderPath = path.resolve(schemaParserFolderPath, apiBasePath);
-    await fs.mkdir(schemasFolderPath, { recursive: true });
-    await fs.writeFile(
+    await afs.mkdir(schemasFolderPath, { recursive: true });
+    await afs.writeFile(
       path.join(schemasFolderPath, `${name}.yaml`),
       templateYAML
     );
 }
 
+const removeTemplateFiles = (templateFolderPath: string, schemaParserFolderPath: string) => {
+  const modelsFolderPath = path.resolve(templateFolderPath, 'models');
+  if (fs.existsSync(modelsFolderPath)) {
+    fs.rmSync(modelsFolderPath, { recursive: true, force: true });
+  }
+  const modelsSchemaFolderPath = path.resolve(schemaParserFolderPath, 'models');
+  if (fs.existsSync(modelsSchemaFolderPath)) {
+    fs.rmSync(modelsSchemaFolderPath, { recursive: true, force: true });
+  }
+
+  const metricsFolderPath = path.resolve(templateFolderPath, 'metrics');
+  if (fs.existsSync(metricsFolderPath)) {
+    fs.rmSync(metricsFolderPath, { recursive: true, force: true });
+  }
+  const metricsSchemaFolderPath = path.resolve(schemaParserFolderPath, 'metrics');
+  if (fs.existsSync(metricsSchemaFolderPath)) {
+    fs.rmSync(metricsSchemaFolderPath, { recursive: true, force: true });
+  }
+
+  const cumulativeMetricsFolderPath = path.resolve(templateFolderPath, 'cumulative-metrics');
+  if (fs.existsSync(cumulativeMetricsFolderPath)) {
+    fs.rmSync(cumulativeMetricsFolderPath, { recursive: true, force: true });
+  }
+  const cumulativeMetricsSchemaFolderPath = path.resolve(schemaParserFolderPath, 'cumulative-metrics');
+  if (fs.existsSync(cumulativeMetricsSchemaFolderPath)) {
+    fs.rmSync(cumulativeMetricsSchemaFolderPath, { recursive: true, force: true });
+  }
+}
+
 export const generateSqlTemplates = async (semantic: SemanticJSON, config: any) => {
   const templateFolderPath = path.resolve(process.cwd(), config.template?.folderPath?? 'sqls');
   const schemaParserFolderPath = path.resolve(process.cwd(), config['schema-parser']?.folderPath?? 'sqls');
+
+  // remove old template files
+  removeTemplateFiles(templateFolderPath, schemaParserFolderPath);
 
   for (const model of semantic.models) {
     const columns = model.columns.filter(column => 'expression' in column).map(column => column);
@@ -545,7 +580,7 @@ export const generateSqlTemplates = async (semantic: SemanticJSON, config: any) 
 }
 
 const compile = async (filepath: string) => {
-  const fileContent = await fs.readFile(filepath, 'utf-8');
+  const fileContent = await afs.readFile(filepath, 'utf-8');
   const tokens = tokenize(fileContent);
   const semantic = new Semantic(tokens);
 
@@ -564,7 +599,7 @@ export const buildSemanticModels = async () => {
   try {
     const inputPath = path.resolve(process.cwd(), 'mdls');
     // get the number of mdl files of the inputPath folder
-    const mdlFiles = (await fs.readdir(inputPath)).filter(file => file.endsWith('.mdl'));
+    const mdlFiles = (await afs.readdir(inputPath)).filter(file => file.endsWith('.mdl'));
     if (mdlFiles.length > 0) {
       const mdlFile = mdlFiles[0];
       semantic = await compile(path.join(inputPath, mdlFile));
@@ -574,8 +609,8 @@ export const buildSemanticModels = async () => {
       compiledFolderPath = path.resolve(process.cwd(), 'outputs/compiled-mdls');
       compiledFilePath = path.resolve(compiledFolderPath, compiledFileName);
 
-      await fs.mkdir(compiledFolderPath, { recursive: true });
-      await fs.writeFile(
+      await afs.mkdir(compiledFolderPath, { recursive: true });
+      await afs.writeFile(
         compiledFilePath,
         JSON.stringify(semantic.toJSON(), null, 2)
       );

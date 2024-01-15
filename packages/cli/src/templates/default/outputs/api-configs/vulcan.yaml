@@ -17,7 +17,7 @@ schema-parser:
   # Path to .yaml files
   folderPath: outputs/api-endpoints
 profiles:
-  - outputs/api-configs/profile.yaml
+  - outputs/api-configs/profiles.yaml
 document-generator:
   specs:
     - oas3
@@ -34,3 +34,6 @@ response-format:
     formats:
       - json
       - csv
+extensions:
+  duckdb: '@vulcan-sql/extension-driver-duckdb'
+  pg: '@vulcan-sql/extension-driver-pg'
