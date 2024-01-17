@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { DATA_SOURCES, SETUP } from '@vulcan-sql/admin-ui/utils/enum';
+import { useRouter } from 'next/router';
 
 export default function useSetupConnection() {
   const [stepKey, setStepKey] = useState(SETUP.STARTER);
   const [dataSource, setDataSource] = useState(DATA_SOURCES.BIG_QUERY);
+  const router = useRouter();
 
   const submitDataSource = async (data: any) => {
     // TODO: implement submitDataSource API
+    router.push('/setup/models');
   };
 
   const onBack = () => {

@@ -5,7 +5,7 @@ interface Props {
   onBack: () => void;
 }
 
-export default function DefineRelations(props: Props) {
+export default function RecommendRelations(props: Props) {
   const { onBack, onNext } = props;
 
   const submit = () => {
@@ -14,7 +14,7 @@ export default function DefineRelations(props: Props) {
 
   return (
     <div>
-      Define Relations
+      Recommend Relations
       <Row gutter={16} className="pt-6">
         <Col span={12}>
           <Button onClick={onBack} size="large" block>

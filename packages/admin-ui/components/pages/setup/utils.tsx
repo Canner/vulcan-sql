@@ -1,6 +1,7 @@
 import Starter from './Starter';
 import ConnectDataSource from './ConnectDataSource';
 import CreateModels from './CreateModels';
+import RecommendRelations from './RecommandRelations';
 import DefineRelations from './DefineRelations';
 import {
   SETUP,
@@ -41,6 +42,10 @@ export const SETUP_STEPS = {
   [SETUP.CREATE_MODELS]: {
     step: 1,
     component: CreateModels,
+  },
+  [SETUP.RECOMMEND_RELATIONS]: {
+    step: 2,
+    component: RecommendRelations,
   },
   [SETUP.DEFINE_RELATIONS]: {
     step: 2,
