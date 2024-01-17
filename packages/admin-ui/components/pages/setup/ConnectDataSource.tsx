@@ -69,7 +69,7 @@ export default function ConnectDataSource(props: Props) {
             </DataSource>
           </Col>
           <Col className="text-right" span={12}>
-            Learn {current.label} <Link href="">setup guide</Link>.
+            Learn {current.label} <Link href={current.guide}>setup guide</Link>.
           </Col>
         </Row>
         <current.component />

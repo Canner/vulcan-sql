@@ -4,3 +4,8 @@ export enum SETUP {
   CREATE_MODELS = 'createModels',
   DEFINE_RELATIONS = 'defineRelations',
 }
+
+export enum DEMO_TEMPLATES {
+  CRM = 'CRM',
+  ECORMERCE = 'Ecommerce',
+}

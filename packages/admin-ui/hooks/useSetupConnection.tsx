@@ -17,8 +17,12 @@ export default function useSetupConnection() {
 
   const onNext = (data?: { dataSource: DATA_SOURCES }) => {
     if (stepKey === SETUP.STARTER) {
-      setDataSource(data?.dataSource);
-      setStepKey(SETUP.CREATE_DATA_SOURCE);
+      if (data.dataSource) {
+        setDataSource(data?.dataSource);
+        setStepKey(SETUP.CREATE_DATA_SOURCE);
+      } else {
+        // TODO: implement template chosen
+      }
     } else if (stepKey === SETUP.CREATE_DATA_SOURCE) {
       submitDataSource(data);
     }
