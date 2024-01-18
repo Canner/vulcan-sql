@@ -1,7 +1,7 @@
 {
   "name": "@vulcan-sql/extension-store-canner",
   "description": "Canner persistence store for Vulcan SQL",
-  "version": "0.10.3",
+  "version": "0.10.4",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"
@@ -24,7 +24,7 @@
   },
   "license": "Apache-2.0",
   "peerDependencies": {
-    "@vulcan-sql/core": "~0.10.3-0"
+    "@vulcan-sql/core": "~0.10.4-0"
   },
   "dependencies": {
     "@canner/canner-storage": "^0.0.7"
