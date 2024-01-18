@@ -35,7 +35,11 @@ export const buildSQL = (
   sql: string,
   operations: Partial<Parameterized<SQLClauseOperation>>
 ): string[] => {
-  if (isNoOP(operations) && !/^select/.test(sql.toLowerCase()))
+  if (
+    isNoOP(operations) &&
+    !/^select/.test(sql.toLowerCase()) &&
+    !/^with recursive/.test(sql.toLowerCase())
+  )
     return [sql, ''];
   let builtSQL = '';
   builtSQL += `SELECT * FROM (${removeEndingSemiColon(sql)})`;
