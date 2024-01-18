@@ -100,7 +100,6 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
     const { db, configurationParameters, ...options } =
       this.dbMapping.get(profileName)!;
     const [firstDataSQL, restDataSQL] = buildSQL(sql, operations);
-
     // create new connection for each query
     const parameters = Array.from(bindParams.values());
     this.logRequest(firstDataSQL, parameters, options);
@@ -144,7 +143,7 @@ export class DuckDBDataSource extends DataSource<any, DuckDBOptions> {
         this.push(null);
       },
     });
-    if (firstData.length >= chunkSize) {
+    if (firstData.length >= chunkSize && restDataStream) {
       readable._read = async function () {
         if (restDataStream) {
           for await (const row of restDataStream) {
