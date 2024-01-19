@@ -9,12 +9,11 @@ export default function SetupModels() {
 
   const current = useMemo(() => SETUP_STEPS[stepKey], [stepKey]);
 
-  return <SimpleLayout>
-  <ContainerCard step={current.step} maxWidth={current.maxWidth}>
-    <current.component
-      onNext={onNext}
-      onBack={onBack}
-    />
-  </ContainerCard>
-</SimpleLayout>
+  return (
+    <SimpleLayout>
+      <ContainerCard step={current.step} maxWidth={current.maxWidth}>
+        <current.component onNext={onNext} onBack={onBack} />
+      </ContainerCard>
+    </SimpleLayout>
+  );
 }

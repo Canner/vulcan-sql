@@ -31,6 +31,31 @@
     .@{key}b-@{i} {
       @{value}-bottom: @spacing !important;
     }
+
+    // Negative spacing
+    .-@{key}-@{i} {
+      @{value}: -@spacing !important;
+    }
+    .-@{key}x-@{i} {
+      @{value}-left: -@spacing !important;
+      @{value}-right: -@spacing !important;
+    }
+    .-@{key}y-@{i} {
+      @{value}-top: -@spacing !important;
+      @{value}-bottom: -@spacing !important;
+    }
+    .-@{key}t-@{i} {
+      @{value}-top: -@spacing !important;
+    }
+    .-@{key}l-@{i} {
+      @{value}-left: -@spacing !important;
+    }
+    .-@{key}r-@{i} {
+      @{value}-right: -@spacing !important;
+    }
+    .-@{key}b-@{i} {
+      @{value}-bottom: -@spacing !important;
+    }
   });
 }
 

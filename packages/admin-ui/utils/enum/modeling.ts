@@ -13,4 +13,8 @@ export enum METRIC_TYPE {
 export enum NODE_TYPE {
   MODEL = 'model',
   METRIC = 'metric',
+  VIEW = 'view',
+  RELATION = 'relation',
+  FIELD = 'field',
+  CACULATED_FIELD = 'calculatedField',
 }
