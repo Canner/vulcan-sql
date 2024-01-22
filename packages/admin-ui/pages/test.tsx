@@ -1,9 +1,11 @@
 import dynamic from 'next/dynamic';
-import { Form } from 'antd';
+import { Form, Button } from 'antd';
 import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { useForm } from 'antd/lib/form/Form';
 import { useEffect } from 'react';
 import useModelFieldOptions from '../hooks/useModelFieldOptions';
+import AddCaculatedFieldModal from '@vulcan-sql/admin-ui/components/modal/AddCaculatedFieldModal';
+import useModalAction from '../hooks/useModalAction';
 
 const ModelFieldSelector = dynamic(
   () => import('@vulcan-sql/admin-ui/components/modelFieldSelector'),
@@ -18,6 +20,8 @@ const initialValue = [
 
 export default function Test() {
   const [form] = useForm();
+
+  const modal = useModalAction();
 
   const fieldOptions = useModelFieldOptions();
   const modelFields = Form.useWatch('modelFields', form);
@@ -38,6 +42,15 @@ export default function Test() {
           <code>{JSON.stringify(modelFields, undefined, 2)}</code>
         </pre>
       </div>
+
+      <Button onClick={modal.openModal}>Add caculated field</Button>
+
+      <AddCaculatedFieldModal
+        model="customer"
+        {...modal.state}
+        onSubmit={() => {}}
+        onClose={modal.closeModal}
+      />
     </Form>
   );
 }
