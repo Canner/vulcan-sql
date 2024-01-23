@@ -40,6 +40,13 @@ const FieldHeader = styled.div`
   border-bottom: 1px var(--gray-4) solid;
 `;
 
+const StyledSelect = styled(Select)`
+  &.ant-select-status-error.ant-select:not(.ant-select-disabled):not(.ant-select-customize-input)
+    .ant-select-selector {
+    border-color: transparent !important;
+  }
+`;
+
 export interface FieldOption {
   label: string | JSX.Element;
   value?: string;
@@ -79,7 +86,7 @@ export default function FieldSelect(props: IterableComponent<Props>) {
       {selectedField?.nodeType === NODE_TYPE.MODEL && (
         <div className="gray-7 text-sm px-3 pt-1">Relations</div>
       )}
-      <Select
+      <StyledSelect
         bordered={false}
         options={options}
         placeholder="Select field"

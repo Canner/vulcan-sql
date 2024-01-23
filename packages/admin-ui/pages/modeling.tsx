@@ -11,7 +11,7 @@ import { readFile } from 'fs/promises';
 import { GetServerSideProps } from 'next';
 import InfoModal, {
   useInfoModal,
-} from '@vulcan-sql/admin-ui/components/infoModal';
+} from '@vulcan-sql/admin-ui/components/modals/infoModal';
 
 const Diagram = dynamic(() => import('@vulcan-sql/ui/src/lib/diagram'), {
   ssr: false,
