@@ -1,4 +1,5 @@
 import { Modal, Form, Input, Typography } from 'antd';
+import { FunctionOutlined } from '@ant-design/icons';
 import ModelFieldSelector from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector';
 import DescriptiveSelector from '@vulcan-sql/admin-ui/components/selectors/DescriptiveSelector';
 import useModelFieldOptions from '@vulcan-sql/admin-ui/hooks/useModelFieldOptions';
@@ -98,27 +99,41 @@ export default function AddCaculatedFieldModal(props: Props) {
           />
         </Form.Item>
         <div className="py-1" />
-        {expression === CUSTOM_EXPRESSION_VALUE ? (
-          <Form.Item
-            name="customExpression"
-            rules={[
-              {
-                required: true,
-                message: ERROR_TEXTS.ADD_CACULATED_FIELD.CUSTOM_FIELD.REQUIRED,
-              },
-            ]}
-          >
-            <Input.TextArea />
-          </Form.Item>
-        ) : (
-          <Form.Item
-            name="modelField"
-            rules={[{ validator: modelFieldSelectorValidator }]}
-          >
-            <ModelFieldSelector model={model} options={modelFieldOptions} />
-          </Form.Item>
-        )}
+        <ExpressionArgument
+          model={model}
+          modelFieldOptions={modelFieldOptions}
+          expression={expression}
+        />
       </Form>
     </Modal>
   );
 }
+
+const ExpressionArgument = ({ expression, modelFieldOptions, model }) => {
+  if (!expression) return null;
+
+  return expression === CUSTOM_EXPRESSION_VALUE ? (
+    <div className="bg-gray-2 px-10 py-4">
+      <Form.Item
+        label="Expression"
+        required
+        name="customExpression"
+        rules={[
+          {
+            required: true,
+            message: ERROR_TEXTS.ADD_CACULATED_FIELD.CUSTOM_FIELD.REQUIRED,
+          },
+        ]}
+      >
+        <Input addonBefore={<FunctionOutlined />} />
+      </Form.Item>
+    </div>
+  ) : (
+    <Form.Item
+      name="modelField"
+      rules={[{ validator: modelFieldSelectorValidator }]}
+    >
+      <ModelFieldSelector model={model} options={modelFieldOptions} />
+    </Form.Item>
+  );
+};

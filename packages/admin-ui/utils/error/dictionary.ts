@@ -21,7 +21,7 @@ export const ERROR_TEXTS = {
       REQUIRED: 'Please select a field.',
     },
     CUSTOM_FIELD: {
-      REQUIRED: 'Please input custom expression.',
+      REQUIRED: 'Please input expression.',
     },
   },
 };
