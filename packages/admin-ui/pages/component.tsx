@@ -6,6 +6,7 @@ import { useForm } from 'antd/lib/form/Form';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import useModelFieldOptions from '@vulcan-sql/admin-ui/hooks/useModelFieldOptions';
 import AddCaculatedFieldModal from '@vulcan-sql/admin-ui/components/modals/AddCaculatedFieldModal';
+import AddRelationModal from '@vulcan-sql/admin-ui/components/modals/AddRelationModal';
 
 const ModelFieldSelector = dynamic(
   () => import('@vulcan-sql/admin-ui/components/selectors/modelFieldSelector'),
@@ -22,6 +23,7 @@ export default function Component() {
   const [form] = useForm();
 
   const addCaculatedFieldModal = useModalAction();
+  const addRelationModal = useModalAction();
 
   const fieldOptions = useModelFieldOptions();
   const modelFields = Form.useWatch('modelFields', form);
@@ -47,6 +49,8 @@ export default function Component() {
         Add caculated field
       </Button>
 
+      <Button onClick={addRelationModal.openModal}>Add relation field</Button>
+
       <AddCaculatedFieldModal
         model="Customer"
         {...addCaculatedFieldModal.state}
@@ -63,6 +67,28 @@ export default function Component() {
           ],
           // expression: 'customExpression',
           // customExpression: 'test',
+        }}
+      />
+
+      <AddRelationModal
+        model="Customer"
+        {...addRelationModal.state}
+        onSubmit={async (values) => {
+          console.log(values);
+        }}
+        onClose={addRelationModal.closeModal}
+        defaultValue={{
+          relationType: 'ONE_TO_ONE',
+          fromField: {
+            model: 'Customer',
+            field: 'orders',
+          },
+          toField: {
+            model: 'Lineitem',
+            field: 'discount',
+          },
+          relationName: 'customer_orders',
+          description: 'customer_orders_description',
         }}
       />
     </Form>
