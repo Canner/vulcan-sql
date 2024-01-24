@@ -33,7 +33,8 @@
     }
   ],
   "rules": {
-    "@next/next/no-html-link-for-pages": "off"
+    "@next/next/no-html-link-for-pages": "off",
+    "react/no-unescaped-entities": 0
   },
   "env": {
     "jest": true

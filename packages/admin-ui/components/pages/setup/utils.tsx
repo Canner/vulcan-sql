@@ -1,7 +1,7 @@
 import Starter from './Starter';
 import ConnectDataSource from './ConnectDataSource';
 import CreateModels from './CreateModels';
-import RecommendRelations from './RecommandRelations';
+import RecommendRelations from './RecommendRelations';
 import DefineRelations from './DefineRelations';
 import {
   SETUP,
