@@ -18,7 +18,7 @@ const initialValue = [
   { nodeType: NODE_TYPE.FIELD, name: 'orders', type: 'Orders' },
 ];
 
-export default function Test() {
+export default function Component() {
   const [form] = useForm();
 
   const modal = useModalAction();
