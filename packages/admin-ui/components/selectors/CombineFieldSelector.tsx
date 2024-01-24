@@ -1,21 +1,5 @@
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Select } from 'antd';
-
-const Wrapper = styled.div`
-  .ant-select:first-child {
-    width: 210px;
-    .ant-select-selector {
-      border-right: 0;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-  }
-  .ant-select:last-child .ant-select-selector {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-`;
+import { Select, Input } from 'antd';
 
 interface Value {
   model?: string;
@@ -74,8 +58,9 @@ export default function CombineFieldSelector(props: Props) {
   };
 
   return (
-    <Wrapper className="d-flex">
+    <Input.Group className="d-flex" compact>
       <Select
+        style={{ width: 120 }}
         options={modelOptions}
         onChange={changeModel}
         placeholder="Model"
@@ -83,12 +68,13 @@ export default function CombineFieldSelector(props: Props) {
         disabled={modelDisabled}
       />
       <Select
+        className="flex-grow-1"
         options={fieldOptions}
         onChange={changeField}
         placeholder="Field"
         value={value?.field || fieldValue}
         disabled={fieldDisabled}
       />
-    </Wrapper>
+    </Input.Group>
   );
 }
