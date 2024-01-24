@@ -1,11 +1,11 @@
 import dynamic from 'next/dynamic';
+import { useEffect } from 'react';
 import { Form, Button } from 'antd';
 import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { useForm } from 'antd/lib/form/Form';
-import { useEffect } from 'react';
-import useModelFieldOptions from '../hooks/useModelFieldOptions';
+import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
+import useModelFieldOptions from '@vulcan-sql/admin-ui/hooks/useModelFieldOptions';
 import AddCaculatedFieldModal from '@vulcan-sql/admin-ui/components/modals/AddCaculatedFieldModal';
-import useModalAction from '../hooks/useModalAction';
 
 const ModelFieldSelector = dynamic(
   () => import('@vulcan-sql/admin-ui/components/selectors/modelFieldSelector'),
@@ -21,7 +21,7 @@ const initialValue = [
 export default function Component() {
   const [form] = useForm();
 
-  const modal = useModalAction();
+  const addCaculatedFieldModal = useModalAction();
 
   const fieldOptions = useModelFieldOptions();
   const modelFields = Form.useWatch('modelFields', form);
@@ -43,15 +43,27 @@ export default function Component() {
         </pre>
       </div>
 
-      <Button onClick={modal.openModal}>Add caculated field</Button>
+      <Button onClick={addCaculatedFieldModal.openModal}>
+        Add caculated field
+      </Button>
 
       <AddCaculatedFieldModal
-        model="customer"
-        {...modal.state}
+        model="Customer"
+        {...addCaculatedFieldModal.state}
         onSubmit={async (values) => {
           console.log(values);
         }}
-        onClose={modal.closeModal}
+        onClose={addCaculatedFieldModal.closeModal}
+        defaultValue={{
+          fieldName: 'test',
+          expression: 'Sum',
+          modelField: [
+            { nodeType: NODE_TYPE.MODEL, name: 'Orders' },
+            { nodeType: NODE_TYPE.FIELD, name: 'orders', type: 'Orders' },
+          ],
+          // expression: 'customExpression',
+          // customExpression: 'test',
+        }}
       />
     </Form>
   );

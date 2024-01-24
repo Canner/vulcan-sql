@@ -1,6 +1,7 @@
 import { Modal, Form, Input, Typography } from 'antd';
 import { FunctionOutlined } from '@ant-design/icons';
 import ModelFieldSelector from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector';
+import { FieldValue } from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector/FieldSelect';
 import DescriptiveSelector from '@vulcan-sql/admin-ui/components/selectors/DescriptiveSelector';
 import useModelFieldOptions from '@vulcan-sql/admin-ui/hooks/useModelFieldOptions';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
@@ -16,10 +17,16 @@ interface Props {
   onSubmit: (values: any) => Promise<void>;
   onClose: () => void;
   loading?: boolean;
+  defaultValue?: {
+    fieldName: string;
+    expression: string;
+    modelField?: FieldValue[];
+    customExpression?: string;
+  };
 }
 
 export default function AddCaculatedFieldModal(props: Props) {
-  const { model, visible, loading, onSubmit, onClose } = props;
+  const { model, visible, loading, onSubmit, onClose, defaultValue } = props;
   const [form] = Form.useForm();
   const expression = Form.useWatch('expression', form);
 
@@ -38,7 +45,7 @@ export default function AddCaculatedFieldModal(props: Props) {
 
   return (
     <Modal
-      title="Add caculated fields"
+      title="Add caculated field"
       width={750}
       visible={visible}
       okText="Submit"
@@ -56,7 +63,17 @@ export default function AddCaculatedFieldModal(props: Props) {
         </Link>
       </div>
 
-      <Form form={form} preserve={false} layout="vertical">
+      <Form
+        form={form}
+        preserve={false}
+        layout="vertical"
+        initialValues={{
+          fieldName: defaultValue?.fieldName,
+          expression: defaultValue?.expression,
+          modelField: defaultValue?.modelField,
+          customExpression: defaultValue?.customExpression,
+        }}
+      >
         <Form.Item
           label="Field name"
           name="fieldName"
@@ -131,7 +148,13 @@ const ExpressionArgument = ({ expression, modelFieldOptions, model }) => {
   ) : (
     <Form.Item
       name="modelField"
-      rules={[{ validator: modelFieldSelectorValidator }]}
+      rules={[
+        {
+          validator: modelFieldSelectorValidator(
+            ERROR_TEXTS.ADD_CACULATED_FIELD.MODEL_FIELD
+          ),
+        },
+      ]}
     >
       <ModelFieldSelector model={model} options={modelFieldOptions} />
     </Form.Item>

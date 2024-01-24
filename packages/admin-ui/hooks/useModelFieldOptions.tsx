@@ -1,6 +1,6 @@
 import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { compactObject } from '@vulcan-sql/admin-ui/utils/helper';
-import { getNodeTypeIcon } from '../utils/nodeType';
+import { getNodeTypeIcon } from '@vulcan-sql/admin-ui/utils/nodeType';
 
 interface SelectValue {
   nodeType: NODE_TYPE;
