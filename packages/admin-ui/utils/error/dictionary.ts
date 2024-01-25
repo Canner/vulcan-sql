@@ -24,4 +24,18 @@ export const ERROR_TEXTS = {
       REQUIRED: 'Please input expression.',
     },
   },
+  ADD_RELATION: {
+    NAME: {
+      REQUIRED: 'Please input name.',
+    },
+    FROM_FIELD: {
+      REQUIRED: 'Please select a field.',
+    },
+    TO_FIELD: {
+      REQUIRED: 'Please select a field.',
+    },
+    RELATION_TYPE: {
+      REQUIRED: 'Please select a relation type.',
+    },
+  },
 };
