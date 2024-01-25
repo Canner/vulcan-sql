@@ -4,7 +4,10 @@ import { Button, Typography, Row, Col } from 'antd';
 import styled from 'styled-components';
 import { DATA_SOURCES } from '@vulcan-sql/admin-ui/utils/enum';
 import { ButtonOption, getDataSources, getTemplates } from './utils';
-import { makeIterable } from '@vulcan-sql/admin-ui/utils/iteration';
+import {
+  makeIterable,
+  IterableComponent,
+} from '@vulcan-sql/admin-ui/utils/iteration';
 
 const ButtonItem = styled(Button)`
   border: 1px var(--gray-4) solid;
@@ -36,7 +39,9 @@ const CommingSoon = styled.div`
 `;
 
 const ButtonTemplate = (
-  props: ButtonOption & { value: string; onSelect: (value: string) => void }
+  props: IterableComponent<
+    ButtonOption & { value: string; onSelect: (value: string) => void }
+  >
 ) => {
   const { value, disabled, logo, label, onSelect } = props;
   return (

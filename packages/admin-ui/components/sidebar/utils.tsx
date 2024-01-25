@@ -57,7 +57,7 @@ export const getEmpty = (title) => {
 export const getColumn = (columns: ModelColumnData[]): TreeNode[] => {
   return columns.map((column): TreeNode => {
     return {
-      icon: <span title={column.type}>{getColumnTypeIcon(column.type)}</span>,
+      icon: <span title={column.type}>{getColumnTypeIcon(column)}</span>,
       className: 'adm-node adm-node-column adm-node-select-none',
       title: (
         <ColumnNode
@@ -88,7 +88,7 @@ export const getModel = (models: ModelData[]) => {
 export const getMetricColumn = (columns: ModelColumnData[]): TreeNode[] => {
   return columns.map((column): TreeNode => {
     return {
-      icon: <span title={column.type}>{getColumnTypeIcon(column.type)}</span>,
+      icon: <span title={column.type}>{getColumnTypeIcon(column)}</span>,
       className: 'adm-node adm-node-column adm-node-select-none',
       title: <MetricColumnNode title={column.name} />,
       key: column.id,

@@ -23,7 +23,10 @@ export default function BigQueryProperties() {
         name="displayName"
         extra="The name will be called in VulcanSQL."
         rules={[
-          { required: true, message: ERROR_TEXTS.CONNECTION.DISPLAY_NAME },
+          {
+            required: true,
+            message: ERROR_TEXTS.CONNECTION.DISPLAY_NAME.REQUIRED,
+          },
         ]}
       >
         <Input placeholder="Our BigQuery" />
@@ -32,7 +35,12 @@ export default function BigQueryProperties() {
         label="Project ID"
         required
         name="projectId"
-        rules={[{ required: true, message: ERROR_TEXTS.CONNECTION.PROJECT_ID }]}
+        rules={[
+          {
+            required: true,
+            message: ERROR_TEXTS.CONNECTION.PROJECT_ID.REQUIRED,
+          },
+        ]}
       >
         <Input placeholder="Project-123" />
       </Form.Item>
@@ -40,7 +48,12 @@ export default function BigQueryProperties() {
         label="Credentials"
         required
         name="credential"
-        rules={[{ required: true, message: ERROR_TEXTS.CONNECTION.CREDENTIAL }]}
+        rules={[
+          {
+            required: true,
+            message: ERROR_TEXTS.CONNECTION.CREDENTIAL.REQUIRED,
+          },
+        ]}
       >
         <Upload
           accept=".json"

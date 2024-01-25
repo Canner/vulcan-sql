@@ -10,8 +10,9 @@ import {
 } from './icons';
 import { COLUMN_TYPE } from './enum';
 
-export const getColumnTypeIcon = (columnType: string) => {
-  switch (columnType.toUpperCase()) {
+export const getColumnTypeIcon = (payload: { type: string }, attrs?: any) => {
+  const { type } = payload;
+  switch (type.toUpperCase()) {
     case COLUMN_TYPE.INTEGER:
     case COLUMN_TYPE.TINYINT:
     case COLUMN_TYPE.SMALLINT:
@@ -20,32 +21,32 @@ export const getColumnTypeIcon = (columnType: string) => {
     case COLUMN_TYPE.DECIMAL:
     case COLUMN_TYPE.DOUBLE:
     case COLUMN_TYPE.REAL:
-      return <NumericIcon />;
+      return <NumericIcon {...attrs} />;
 
     case COLUMN_TYPE.BOOLEAN:
-      return <TickIcon />;
+      return <TickIcon {...attrs} />;
 
     case COLUMN_TYPE.CHAR:
     case COLUMN_TYPE.JSON:
     case COLUMN_TYPE.VARBINARY:
     case COLUMN_TYPE.VARCHAR:
-      return <StringIcon />;
+      return <StringIcon {...attrs} />;
 
     case COLUMN_TYPE.TEXT:
-      return <TextIcon />;
+      return <TextIcon {...attrs} />;
 
     case COLUMN_TYPE.DATE:
     case COLUMN_TYPE.TIME:
     case COLUMN_TYPE.TIMESTAMP:
-      return <CalendarIcon />;
+      return <CalendarIcon {...attrs} />;
 
     case COLUMN_TYPE.MONGO_ARRAY:
-      return <ArrayBracketsIcon />;
+      return <ArrayBracketsIcon {...attrs} />;
 
     case COLUMN_TYPE.MONGO_ROW:
-      return <JsonBracesIcon />;
+      return <JsonBracesIcon {...attrs} />;
 
     default:
-      return <ColumnsIcon />;
+      return <ColumnsIcon {...attrs} />;
   }
 };

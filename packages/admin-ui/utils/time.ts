@@ -1,2 +1,2 @@
-export const wait = (ms = 1) =>
+export const nextTick = (ms = 1) =>
   new Promise((resolve) => setTimeout(resolve, ms));

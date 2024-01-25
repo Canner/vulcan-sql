@@ -3,7 +3,9 @@ import { useEffect, useState } from 'react';
 import { Layout } from 'antd';
 import { adapter, MDLJson } from '@vulcan-sql/admin-ui/utils/data';
 import testData from '@vulcan-sql/admin-ui/testData';
-import InfoModal, { useInfoModal } from '@vulcan-sql/admin-ui/components/infoModal';
+import InfoModal, {
+  useInfoModal,
+} from '@vulcan-sql/admin-ui/components/modals/infoModal';
 
 const TestDataSelect = dynamic(
   () => import('@vulcan-sql/admin-ui/components/TestDataSelect'),
