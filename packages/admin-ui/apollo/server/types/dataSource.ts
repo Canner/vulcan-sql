@@ -1,8 +1,15 @@
 export enum DataSourceName {
-  BIG_QUERY = 'BigQuery',
+  BIG_QUERY = 'BIG_QUERY',
 }
 
-export interface DataSource {
-  name: DataSourceName;
+interface BaseDataSource {
+  type: DataSourceName;
+}
+
+export interface UsableDataSource extends BaseDataSource {
   requiredProperties: string[];
+}
+
+export interface DataSource extends BaseDataSource {
+  properties: any;
 }

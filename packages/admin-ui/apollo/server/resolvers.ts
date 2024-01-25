@@ -1,5 +1,9 @@
 import GraphQLJSON from 'graphql-type-json';
-import { DataSource, DataSourceName } from './types/dataSource';
+import {
+  UsableDataSource,
+  DataSourceName,
+  DataSource,
+} from './types/dataSource';
 
 export const resolvers = {
   JSON: GraphQLJSON,
@@ -9,9 +13,14 @@ export const resolvers = {
     usableDataSource: () =>
       [
         {
-          name: DataSourceName.BIG_QUERY,
+          type: DataSourceName.BIG_QUERY,
           requiredProperties: ['displayName', 'projectId', 'credentials'],
         },
-      ] as DataSource[],
+      ] as UsableDataSource[],
+  },
+  Mutation: {
+    SaveDataSource: (_, args: { data: DataSource }) => {
+      return args.data;
+    },
   },
 };
