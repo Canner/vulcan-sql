@@ -13,3 +13,8 @@ export interface UsableDataSource extends BaseDataSource {
 export interface DataSource extends BaseDataSource {
   properties: any;
 }
+
+export interface CompactColumn {
+  name: string;
+  tableName: string;
+}

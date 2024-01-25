@@ -3,7 +3,9 @@ import {
   UsableDataSource,
   DataSourceName,
   DataSource,
-} from './types/dataSource';
+  CompactColumn,
+  Relation,
+} from './types';
 
 export const resolvers = {
   JSON: GraphQLJSON,
@@ -19,12 +21,45 @@ export const resolvers = {
       ] as UsableDataSource[],
 
     listTables: () => ['orders', 'customers', 'products'],
+
+    autoGenerateRelation: () => [],
+
+    listColumns: () =>
+      [
+        {
+          name: 'id',
+          tableName: 'orders',
+        },
+        {
+          name: 'customerId',
+          tableName: 'orders',
+        },
+        {
+          name: 'id',
+          tableName: 'customers',
+        },
+        {
+          name: 'name',
+          tableName: 'customers',
+        },
+        {
+          name: 'id',
+          tableName: 'products',
+        },
+        {
+          name: 'name',
+          tableName: 'products',
+        },
+      ] as CompactColumn[],
   },
   Mutation: {
     saveDataSource: (_, args: { data: DataSource }) => {
       return args.data;
     },
     saveTables: (_, args: { data: string[] }) => {
+      return args.data;
+    },
+    saveRelations: (_, args: { data: Relation[] }) => {
       return args.data;
     },
   },
