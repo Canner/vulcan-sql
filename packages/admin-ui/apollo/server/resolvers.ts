@@ -17,9 +17,14 @@ export const resolvers = {
           requiredProperties: ['displayName', 'projectId', 'credentials'],
         },
       ] as UsableDataSource[],
+
+    listTables: () => ['orders', 'customers', 'products'],
   },
   Mutation: {
-    SaveDataSource: (_, args: { data: DataSource }) => {
+    saveDataSource: (_, args: { data: DataSource }) => {
+      return args.data;
+    },
+    saveTables: (_, args: { data: string[] }) => {
       return args.data;
     },
   },

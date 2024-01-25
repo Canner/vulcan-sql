@@ -25,9 +25,11 @@ export const typeDefs = gql`
   type Query {
     hello: String!
     usableDataSource: [UsableDataSource!]!
+    listTables: [String!]!
   }
 
   type Mutation {
-    SaveDataSource(data: DataSourceInput!): DataSource!
+    saveDataSource(data: DataSourceInput!): DataSource!
+    saveTables(data: [String!]!): [String!]!
   }
 `;
