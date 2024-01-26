@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Modal, Form, Input, Typography } from 'antd';
 import FunctionOutlined from '@ant-design/icons/FunctionOutlined';
 import ModelFieldSelector from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector';
@@ -18,6 +19,7 @@ interface Props {
   onClose: () => void;
   loading?: boolean;
   defaultValue?: {
+    [key: string]: any;
     fieldName: string;
     expression: string;
     modelField?: FieldValue[];
@@ -30,6 +32,10 @@ export default function AddCaculatedFieldModal(props: Props) {
   const [form] = Form.useForm();
   const expression = Form.useWatch('expression', form);
 
+  useEffect(() => {
+    form.setFieldsValue(defaultValue || {});
+  }, [defaultValue]);
+
   const modelFieldOptions = useModelFieldOptions();
   const expressionOptions = useExpressionFieldOptions();
 
@@ -37,7 +43,7 @@ export default function AddCaculatedFieldModal(props: Props) {
     form
       .validateFields()
       .then(async (values) => {
-        await onSubmit(values);
+        await onSubmit({ ...defaultValue, ...values });
         onClose();
       })
       .catch(console.error);
@@ -54,6 +60,7 @@ export default function AddCaculatedFieldModal(props: Props) {
       confirmLoading={loading}
       maskClosable={false}
       destroyOnClose
+      afterClose={() => form.resetFields()}
     >
       <div className="mb-4">
         Morem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
@@ -63,17 +70,7 @@ export default function AddCaculatedFieldModal(props: Props) {
         </Link>
       </div>
 
-      <Form
-        form={form}
-        preserve={false}
-        layout="vertical"
-        initialValues={{
-          fieldName: defaultValue?.fieldName,
-          expression: defaultValue?.expression,
-          modelField: defaultValue?.modelField,
-          customExpression: defaultValue?.customExpression,
-        }}
-      >
+      <Form form={form} preserve={false} layout="vertical">
         <Form.Item
           label="Field name"
           name="fieldName"

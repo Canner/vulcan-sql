@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Modal, Form, Input, Select, Row, Col } from 'antd';
 import { isEmpty } from 'lodash';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
@@ -13,12 +14,12 @@ interface Props {
   onSubmit: (values: RelationsDataType) => Promise<void>;
   onClose: () => void;
   loading?: boolean;
-  defaultValue?: Pick<
+  defaultValue?: { [key: string]: any } & Pick<
     RelationsDataType,
     'relationType' | 'fromField' | 'toField' | 'relationName'
   > & {
-    description?: string;
-  };
+      description?: string;
+    };
   allowSetDescription?: boolean;
 }
 
@@ -33,6 +34,10 @@ function RelationModal(props: Props) {
     visible,
   } = props;
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue(defaultValue || {});
+  }, [defaultValue]);
 
   const relationTypeOptions = Object.keys(JOIN_TYPE).map((key) => ({
     label: getJoinTypeText(key),
@@ -49,7 +54,7 @@ function RelationModal(props: Props) {
     form
       .validateFields()
       .then(async (values) => {
-        await onSubmit(values);
+        await onSubmit({ ...defaultValue, ...values });
         onClose();
       })
       .catch(console.error);
@@ -66,19 +71,9 @@ function RelationModal(props: Props) {
       confirmLoading={loading}
       maskClosable={false}
       destroyOnClose
+      afterClose={() => form.resetFields()}
     >
-      <Form
-        form={form}
-        preserve={false}
-        layout="vertical"
-        initialValues={{
-          relationType: defaultValue?.relationType,
-          fromField: defaultValue?.fromField,
-          toField: defaultValue?.toField,
-          relationName: defaultValue?.relationName,
-          description: defaultValue?.description,
-        }}
-      >
+      <Form form={form} preserve={false} layout="vertical">
         <Form.Item
           label="Name"
           name="relationName"
