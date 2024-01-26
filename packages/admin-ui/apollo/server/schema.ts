@@ -56,18 +56,78 @@ export const typeDefs = gql`
     tableName: String!
   }
 
+  enum ModelType {
+    TABLE
+    CUSTOM
+  }
+
+  input CustomFieldInput {
+    name: String!
+    expression: String!
+  }
+
+  input CaculatedFieldInput {
+    name: String!
+    expression: String!
+  }
+
+  input CreateModelInput {
+    type: ModelType!
+    tableName: String
+    fields: [String!]!
+    customFields: [CustomFieldInput!]
+    caculatedFields: [CaculatedFieldInput!]
+  }
+
+  type CompactModel {
+    name: String!
+    refSql: String!
+    primaryKey: String
+    cached: Boolean!
+    refreshTime: String!
+    description: String
+  }
+
+  type DetailedColumn {
+    name: String!
+    type: String!
+    isCalculated: Boolean!
+    notNull: Boolean!
+    properties: JSON!
+  }
+
+  type DetailedModel {
+    name: String!
+    refSql: String!
+    primaryKey: String
+    cached: Boolean!
+    refreshTime: String!
+    description: String
+    columns: [DetailedColumn!]!
+    properties: JSON!
+  }
+
   type Query {
-    hello: String!
+    # On Boarding Steps
     usableDataSource: [UsableDataSource!]!
     listTables: [String!]!
     autoGenerateRelation: [Relation!]!
     listColumns: [CompactColumn!]!
     manifest: JSON!
+
+    # Modeling Page
+    listModels: [CompactModel!]!
+    getModel(where: String!): DetailedModel!
   }
 
   type Mutation {
+    # On Boarding Steps
     saveDataSource(data: DataSourceInput!): DataSource!
     saveTables(data: [String!]!): [String!]!
     saveRelations(data: [RelationInput!]!): [Relation!]!
+
+    # Modeling Page
+    createModel(data: CreateModelInput!): JSON!
+    updateModel(data: CreateModelInput!): JSON!
   }
 `;
