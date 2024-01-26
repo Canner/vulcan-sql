@@ -6,6 +6,7 @@ import {
   CompactColumn,
   Relation,
 } from './types';
+import * as demoManifest from './manifest.json';
 
 export const resolvers = {
   JSON: GraphQLJSON,
@@ -51,6 +52,8 @@ export const resolvers = {
           tableName: 'products',
         },
       ] as CompactColumn[],
+
+    manifest: () => demoManifest,
   },
   Mutation: {
     saveDataSource: (_, args: { data: DataSource }) => {

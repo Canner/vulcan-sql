@@ -62,6 +62,7 @@ export const typeDefs = gql`
     listTables: [String!]!
     autoGenerateRelation: [Relation!]!
     listColumns: [CompactColumn!]!
+    manifest: JSON!
   }
 
   type Mutation {
