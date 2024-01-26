@@ -1,21 +1,13 @@
 import { Layout } from 'antd';
-import styled from 'styled-components';
-import LogoBar from '../LogoBar';
+import HeaderBar from '@vulcan-sql/admin-ui/components/HeaderBar';
 
-const { Header, Content } = Layout;
-
-const StyledHeader = styled(Header)`
-  height: 54px;
-  border-bottom: 1.5px solid var(--Netural-Color-4, #f0f0f0);
-`;
+const { Content } = Layout;
 
 export default function SimpleLayout(props) {
   return (
     <Layout className="adm-main bg-gray-3">
-      <StyledHeader>
-        <LogoBar />
-      </StyledHeader>
-      <Content>{props.children}</Content>
+      <HeaderBar />
+      <Content className="adm-content">{props.children}</Content>
     </Layout>
   );
 }

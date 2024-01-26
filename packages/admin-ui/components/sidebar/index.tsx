@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import SidebarTree from './SidebarTree';
-import LogoBar from '@vulcan-sql/admin-ui/components/LogoBar';
 import { getMetricTreeData, getModelTreeData } from './utils';
 import { AdaptedData } from '@vulcan-sql/admin-ui/utils/data';
 
@@ -11,6 +10,7 @@ const Layout = styled.div`
   color: var(--gray-8);
   padding-bottom: 24px;
   overflow-x: hidden;
+  padding-top: 16px;
 
   .ant-dropdown-menu-item {
     min-height: 39px;
@@ -56,12 +56,6 @@ const Layout = styled.div`
   }
 `;
 
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-`;
-
 interface Props {
   data: AdaptedData;
   onSelect?: (selectKeys) => void;
@@ -72,10 +66,6 @@ export default function Sidebar(props: Props) {
 
   return (
     <Layout>
-      <Header>
-        <LogoBar />
-      </Header>
-
       <SidebarTree
         treeData={getModelTreeData(data)}
         onSelect={onSelect}
