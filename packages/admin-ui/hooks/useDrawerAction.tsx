@@ -1,15 +1,15 @@
 import { useState } from 'react';
 
-export default function useModalAction() {
+export default function useDrawerAction() {
   const [visible, setVisible] = useState(false);
   const [defaultValue, setDefaultValue] = useState(null);
 
-  const openModal = (value?: any) => {
+  const openDrawer = (value?: any) => {
     value && setDefaultValue(value);
     setVisible(true);
   };
 
-  const closeModal = () => {
+  const closeDrawer = () => {
     setVisible(false);
     setDefaultValue(null);
   };
@@ -19,7 +19,7 @@ export default function useModalAction() {
       visible,
       defaultValue,
     },
-    openModal,
-    closeModal,
+    openDrawer,
+    closeDrawer,
   };
 }

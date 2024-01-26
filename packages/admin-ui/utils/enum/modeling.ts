@@ -18,3 +18,15 @@ export enum NODE_TYPE {
   FIELD = 'field',
   CACULATED_FIELD = 'calculatedField',
 }
+
+export enum CACHED_PERIOD {
+  DAY = 'd',
+  HOUR = 'h',
+  MINUTE = 'm',
+  SECOND = 's',
+}
+
+export enum MODEL_STEP {
+  ONE = '1',
+  TWO = '2',
+}
