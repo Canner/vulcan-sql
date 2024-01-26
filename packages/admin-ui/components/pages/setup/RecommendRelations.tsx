@@ -3,6 +3,7 @@ import { Button, Col, Form, Row, Typography } from 'antd';
 import SelectionRelationTable, {
   RelationsDataType,
 } from '@vulcan-sql/admin-ui/components/table/SelectionRelationTable';
+import { SelectedRecommendRelationsProps } from '@vulcan-sql/admin-ui/components/pages/setup/DefineRelations';
 
 const { Title, Text } = Typography;
 
@@ -12,7 +13,7 @@ interface Props {
     name: string;
     relations: RelationsDataType[];
   }>;
-  onNext: (data: any) => void;
+  onNext: (data: SelectedRecommendRelationsProps) => void;
   onBack: () => void;
 }
 
