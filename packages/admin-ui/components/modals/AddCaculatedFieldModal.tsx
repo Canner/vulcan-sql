@@ -1,5 +1,5 @@
 import { Modal, Form, Input, Typography } from 'antd';
-import { FunctionOutlined } from '@ant-design/icons';
+import FunctionOutlined from '@ant-design/icons/FunctionOutlined';
 import ModelFieldSelector from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector';
 import { FieldValue } from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector/FieldSelect';
 import DescriptiveSelector from '@vulcan-sql/admin-ui/components/selectors/DescriptiveSelector';
