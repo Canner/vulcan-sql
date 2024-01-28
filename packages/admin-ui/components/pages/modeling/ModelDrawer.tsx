@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Drawer, Form, FormInstance } from 'antd';
-import { MODEL_STEP } from '@vulcan-sql/admin-ui/utils/enum';
+import { FORM_MODE, MODEL_STEP } from '@vulcan-sql/admin-ui/utils/enum';
 import ModelBasicForm, {
   ButtonGroup as ModelBasicButtonGroup,
   ButtonProps as ModelBasicButtonProps,
@@ -12,12 +12,17 @@ import ModelDetailForm, {
 
 interface Props {
   visible: boolean;
+  formMode: FORM_MODE;
   onClose: () => void;
   onSubmit: (values: any) => Promise<void>;
   defaultValue?: any;
 }
 
-const DynamicForm = (props: { step: MODEL_STEP; form: FormInstance }) => {
+const DynamicForm = (props: {
+  formMode: FORM_MODE;
+  step: MODEL_STEP;
+  form: FormInstance;
+}) => {
   return (
     {
       [MODEL_STEP.ONE]: <ModelBasicForm {...props} />,
@@ -27,7 +32,8 @@ const DynamicForm = (props: { step: MODEL_STEP; form: FormInstance }) => {
 };
 
 const DynamicButtonGroup = (
-  props: { step: MODEL_STEP } & ModelBasicButtonProps & ModelDetailButtonProps
+  props: { step: MODEL_STEP; form: FormInstance } & ModelBasicButtonProps &
+    ModelDetailButtonProps
 ) => {
   return (
     {
@@ -37,8 +43,14 @@ const DynamicButtonGroup = (
   );
 };
 
-export default function CreateModelDrawer(props: Props) {
-  const { visible, defaultValue, onClose, onSubmit } = props;
+const getDrawerTitle = (formMode: FORM_MODE) =>
+  ({
+    [FORM_MODE.CREATE]: 'Create a model',
+    [FORM_MODE.EDIT]: 'Update a model',
+  }[formMode]);
+
+export default function ModelDrawer(props: Props) {
+  const { visible, formMode, defaultValue, onClose, onSubmit } = props;
   const [internalValues, setInternalValues] = useState(defaultValue || null);
   const [step, setStep] = useState(MODEL_STEP.ONE);
   const [form] = Form.useForm();
@@ -89,7 +101,7 @@ export default function CreateModelDrawer(props: Props) {
   return (
     <Drawer
       visible={visible}
-      title={defaultValue ? 'Update a model' : 'Create a model'}
+      title={getDrawerTitle(formMode)}
       width={750}
       closable
       destroyOnClose
@@ -98,6 +110,7 @@ export default function CreateModelDrawer(props: Props) {
       footer={
         <DynamicButtonGroup
           step={step}
+          form={form}
           onCancel={onClose}
           onBack={back}
           onNext={next}
@@ -107,7 +120,7 @@ export default function CreateModelDrawer(props: Props) {
       }
       extra={<>Step {step}/2</>}
     >
-      <DynamicForm step={step} form={form} />
+      <DynamicForm formMode={formMode} step={step} form={form} />
     </Drawer>
   );
 }

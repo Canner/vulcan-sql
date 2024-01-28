@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, Switch, Input, Select, Space, FormInstance } from 'antd';
 import { getCachePeriodText } from '@vulcan-sql/admin-ui/utils/data';
 import { CACHED_PERIOD } from '@vulcan-sql/admin-ui/utils/enum';
@@ -26,13 +26,13 @@ const CachedPeriodControl = (props: {
     }
   };
 
-  const inputChange = (duration) => {
-    setInternalValue({ ...internalValue, duration });
-    syncOnChange();
+  useEffect(syncOnChange, [internalValue]);
+
+  const inputChange = (event) => {
+    setInternalValue({ ...internalValue, duration: event.target.value });
   };
   const selectChange = (durationUnit) => {
     setInternalValue({ ...internalValue, durationUnit });
-    syncOnChange();
   };
 
   return (

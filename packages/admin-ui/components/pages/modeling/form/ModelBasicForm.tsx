@@ -1,6 +1,7 @@
 import { Form, FormInstance, Space, Button } from 'antd';
 import BasicInfoProperties from './BasicInfoProperties';
 import CacheProperties from './CacheProperties';
+import { FORM_MODE } from '@vulcan-sql/admin-ui/utils/enum';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 
 export interface ButtonProps {
@@ -8,7 +9,10 @@ export interface ButtonProps {
   onNext: () => void;
 }
 
-export default function ModelBasicForm(props: { form: FormInstance }) {
+export default function ModelBasicForm(props: {
+  form: FormInstance;
+  formMode: FORM_MODE;
+}) {
   const { form } = props;
   return (
     <Form form={form} layout="vertical">

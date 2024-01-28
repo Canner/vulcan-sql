@@ -8,18 +8,20 @@ import { getJoinTypeText } from '@vulcan-sql/admin-ui/utils/data';
 import useCombineFieldOptions from '@vulcan-sql/admin-ui/hooks/useCombineFieldOptions';
 import { RelationsDataType } from '@vulcan-sql/admin-ui/components/table/SelectionRelationTable';
 
+export type RelationFieldValue = { [key: string]: any } & Pick<
+  RelationsDataType,
+  'relationType' | 'fromField' | 'toField' | 'relationName'
+> & {
+    description?: string;
+  };
+
 interface Props {
   model: string;
   visible: boolean;
   onSubmit: (values: RelationsDataType) => Promise<void>;
   onClose: () => void;
   loading?: boolean;
-  defaultValue?: { [key: string]: any } & Pick<
-    RelationsDataType,
-    'relationType' | 'fromField' | 'toField' | 'relationName'
-  > & {
-      description?: string;
-    };
+  defaultValue?: RelationFieldValue;
   allowSetDescription?: boolean;
 }
 
@@ -37,7 +39,7 @@ function RelationModal(props: Props) {
 
   useEffect(() => {
     form.setFieldsValue(defaultValue || {});
-  }, [defaultValue]);
+  }, [form, defaultValue]);
 
   const relationTypeOptions = Object.keys(JOIN_TYPE).map((key) => ({
     label: getJoinTypeText(key),

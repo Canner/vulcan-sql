@@ -1,9 +1,10 @@
-import { useRef, useContext } from 'react';
+import { useRef, useContext, useMemo } from 'react';
 import styled from 'styled-components';
 import FieldSelect, { FieldValue, FieldOption } from './FieldSelect';
 import { nextTick } from '@vulcan-sql/admin-ui/utils/time';
 import { makeIterable } from '@vulcan-sql/admin-ui/utils/iteration';
 import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
+import { parseJson } from '@vulcan-sql/admin-ui/utils/helper';
 import {
   FormItemInputContext,
   FormItemStatusContextProps,
@@ -36,11 +37,13 @@ export default function RelationsSelector(props: Props) {
     useContext<FormItemStatusContextProps>(FormItemInputContext);
   const { status } = formItemContext;
 
-  const initialData = [{ name: model, nodeType: NODE_TYPE.MODEL }];
-  const data = initialData.concat(value);
+  const data = useMemo(() => {
+    const modelValue = [{ name: model, nodeType: NODE_TYPE.MODEL }];
+    return [modelValue, value].flat();
+  }, [model, value]);
 
   const change = async (selectValue, index) => {
-    const parsePayload = JSON.parse(selectValue);
+    const parsePayload = parseJson(selectValue) as FieldValue;
 
     const prevValue = value.slice(0, index);
     const nextValue = [...prevValue, parsePayload];

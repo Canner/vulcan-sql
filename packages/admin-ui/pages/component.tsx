@@ -54,7 +54,7 @@ export default function Component() {
           addCaculatedFieldModal.openModal({
             fieldName: 'test',
             expression: 'Sum',
-            modelField: [
+            modelFields: [
               { nodeType: NODE_TYPE.MODEL, name: 'Orders' },
               { nodeType: NODE_TYPE.FIELD, name: 'orders', type: 'Orders' },
             ],
@@ -68,7 +68,7 @@ export default function Component() {
 
       <Button onClick={addRelationModal.openModal}>Add relation field</Button>
 
-      <Button onClick={modelDrawer.openDrawer}>Model drawer</Button>
+      <Button onClick={() => modelDrawer.openDrawer()}>Model drawer</Button>
 
       <AddCaculatedFieldModal
         model="Customer"
@@ -80,7 +80,7 @@ export default function Component() {
         // defaultValue={{
         //   fieldName: 'test',
         //   expression: 'Sum',
-        //   modelField: [
+        //   modelFields: [
         //     { nodeType: NODE_TYPE.MODEL, name: 'Orders' },
         //     { nodeType: NODE_TYPE.FIELD, name: 'orders', type: 'Orders' },
         //   ],

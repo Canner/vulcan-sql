@@ -4,7 +4,9 @@ import FunctionOutlined from '@ant-design/icons/FunctionOutlined';
 import ModelFieldSelector from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector';
 import { FieldValue } from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector/FieldSelect';
 import DescriptiveSelector from '@vulcan-sql/admin-ui/components/selectors/DescriptiveSelector';
-import useModelFieldOptions from '@vulcan-sql/admin-ui/hooks/useModelFieldOptions';
+import useModelFieldOptions, {
+  ModelFieldResposeData,
+} from '@vulcan-sql/admin-ui/hooks/useModelFieldOptions';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import { modelFieldSelectorValidator } from '@vulcan-sql/admin-ui/utils/validator';
 import useExpressionFieldOptions, {
@@ -12,31 +14,44 @@ import useExpressionFieldOptions, {
 } from '@vulcan-sql/admin-ui/hooks/useExpressionFieldOptions';
 import Link from 'next/link';
 
+export type CaculatedFieldValue = {
+  [key: string]: any;
+  fieldName: string;
+  expression: string;
+  modelFields?: FieldValue[];
+  customExpression?: string;
+};
+
 interface Props {
   model: string;
   visible: boolean;
   onSubmit: (values: any) => Promise<void>;
   onClose: () => void;
   loading?: boolean;
-  defaultValue?: {
-    [key: string]: any;
-    fieldName: string;
-    expression: string;
-    modelField?: FieldValue[];
-    customExpression?: string;
-  };
+  defaultValue?: CaculatedFieldValue;
+
+  // The transientData is used to get the model fields which are not created in DB yet.
+  transientData?: ModelFieldResposeData[];
 }
 
 export default function AddCaculatedFieldModal(props: Props) {
-  const { model, visible, loading, onSubmit, onClose, defaultValue } = props;
+  const {
+    model,
+    transientData,
+    visible,
+    loading,
+    onSubmit,
+    onClose,
+    defaultValue,
+  } = props;
   const [form] = Form.useForm();
   const expression = Form.useWatch('expression', form);
 
   useEffect(() => {
     form.setFieldsValue(defaultValue || {});
-  }, [defaultValue]);
+  }, [form, defaultValue]);
 
-  const modelFieldOptions = useModelFieldOptions();
+  const modelFieldOptions = useModelFieldOptions(transientData);
   const expressionOptions = useExpressionFieldOptions();
 
   const submit = () => {
@@ -144,7 +159,7 @@ const ExpressionArgument = ({ expression, modelFieldOptions, model }) => {
     </div>
   ) : (
     <Form.Item
-      name="modelField"
+      name="modelFields"
       rules={[
         {
           validator: modelFieldSelectorValidator(

@@ -1,31 +1,35 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Table, Button, TableColumnProps, Space } from 'antd';
 import EditOutlined from '@ant-design/icons/EditOutlined';
 import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 
-interface Props {
+interface Props<MData> {
   columns: TableColumnProps<any>[];
   value?: Record<string, any>[];
+  disabled?: boolean;
   onChange?: (value: Record<string, any>[]) => void;
+  modalProps?: Partial<MData>;
 }
 
 const setupInternalId = (value: any[]) => {
   return value.map((item) => ({ ...item, _id: uuidv4() }));
 };
 
-export const makeTableFormControl = (ModalComponent: React.FC<any>) => {
-  const TableFormControl = (props: Props) => {
-    const { columns, onChange, value } = props;
+export const makeTableFormControl = <MData,>(
+  ModalComponent: React.FC<Partial<MData>>
+) => {
+  const TableFormControl = (props: Props<MData>) => {
+    const { columns, onChange, value, modalProps, disabled } = props;
     const [internalValue, setInternalValue] = useState(
       setupInternalId(value || [])
     );
     const modalComponent = useModalAction();
 
-    const syncOnChange = () => {
+    useEffect(() => {
       onChange && onChange(internalValue);
-    };
+    }, [internalValue]);
 
     const tableColumns: TableColumnProps<typeof internalValue>[] = useMemo(
       () => [
@@ -34,7 +38,6 @@ export const makeTableFormControl = (ModalComponent: React.FC<any>) => {
           key: 'action',
           width: 80,
           render: (record) => {
-            console.log('edit', record);
             return (
               <Space>
                 <Button
@@ -47,7 +50,7 @@ export const makeTableFormControl = (ModalComponent: React.FC<any>) => {
                 <Button
                   type="text"
                   className="px-2"
-                  onClick={() => removeCaculatedField(record)}
+                  onClick={() => removeData(record._id)}
                 >
                   <DeleteOutlined />
                 </Button>
@@ -56,18 +59,14 @@ export const makeTableFormControl = (ModalComponent: React.FC<any>) => {
           },
         },
       ],
-      []
+      [internalValue]
     );
 
-    const removeCaculatedField = (item) => {
-      setInternalValue(
-        internalValue.filter((record) => record._id !== item._id)
-      );
-      syncOnChange();
+    const removeData = (id) => {
+      setInternalValue(internalValue.filter((record) => record._id !== id));
     };
 
     const submitModal = (item) => {
-      console.log('submit', item);
       const isNewItem = !item._id;
       if (isNewItem) item._id = uuidv4();
 
@@ -78,7 +77,6 @@ export const makeTableFormControl = (ModalComponent: React.FC<any>) => {
               record._id === item._id ? { ...record, ...item } : record
             )
       );
-      syncOnChange();
     };
 
     return (
@@ -95,11 +93,16 @@ export const makeTableFormControl = (ModalComponent: React.FC<any>) => {
             }}
           />
         )}
-        <Button className="mt-2" onClick={() => modalComponent.openModal()}>
+        <Button
+          className="mt-2"
+          onClick={() => modalComponent.openModal()}
+          disabled={disabled}
+        >
           Add
         </Button>
         <ModalComponent
           {...modalComponent.state}
+          {...modalProps}
           onClose={modalComponent.closeModal}
           onSubmit={submitModal}
         />
