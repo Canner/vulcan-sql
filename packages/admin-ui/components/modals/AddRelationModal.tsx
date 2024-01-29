@@ -1,33 +1,37 @@
 import { Modal, Form, Input, Select, Row, Col } from 'antd';
+import { isEmpty } from 'lodash';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import CombineFieldSelector from '@vulcan-sql/admin-ui/components/selectors/CombineFieldSelector';
 import { JOIN_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { getJoinTypeText } from '@vulcan-sql/admin-ui/utils/data';
 import useCombineFieldOptions from '@vulcan-sql/admin-ui/hooks/useCombineFieldOptions';
+import { RelationsDataType } from '@vulcan-sql/admin-ui/components/table/SelectionRelationTable';
 
 interface Props {
   model: string;
   visible: boolean;
-  onSubmit: (values: any) => Promise<void>;
+  onSubmit: (values: RelationsDataType) => Promise<void>;
   onClose: () => void;
   loading?: boolean;
-  defaultValue?: {
-    relationType: string;
-    fromField: {
-      model: string;
-      field: string;
-    };
-    toField: {
-      model: string;
-      field: string;
-    };
-    relationName: string;
-    description: string;
+  defaultValue?: Pick<
+    RelationsDataType,
+    'relationType' | 'fromField' | 'toField' | 'relationName'
+  > & {
+    description?: string;
   };
+  allowSetDescription?: boolean;
 }
 
-export default function AddRelationModal(props: Props) {
-  const { model, visible, loading, onSubmit, onClose, defaultValue } = props;
+function RelationModal(props: Props) {
+  const {
+    allowSetDescription = true,
+    defaultValue,
+    loading,
+    model,
+    onClose,
+    onSubmit,
+    visible,
+  } = props;
   const [form] = Form.useForm();
 
   const relationTypeOptions = Object.keys(JOIN_TYPE).map((key) => ({
@@ -53,7 +57,7 @@ export default function AddRelationModal(props: Props) {
 
   return (
     <Modal
-      title="Add relation"
+      title={`${isEmpty(defaultValue) ? 'Add' : 'Update'} relation`}
       width={750}
       visible={visible}
       okText="Submit"
@@ -146,10 +150,18 @@ export default function AddRelationModal(props: Props) {
             placeholder="Select a relation type"
           />
         </Form.Item>
-        <Form.Item label="Description" name="description">
-          <Input.TextArea showCount maxLength={300} />
-        </Form.Item>
+        {allowSetDescription && (
+          <Form.Item label="Description" name="description">
+            <Input.TextArea showCount maxLength={300} />
+          </Form.Item>
+        )}
       </Form>
     </Modal>
   );
+}
+
+export default function AddRelationModal(props: Props) {
+  if (!props.visible) return null;
+
+  return <RelationModal {...props} />;
 }

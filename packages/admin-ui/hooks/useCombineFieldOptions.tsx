@@ -53,7 +53,6 @@ export default function useCombineFieldOptions(props: Props) {
   }, [response]);
 
   const fieldOptions = useMemo(() => {
-    if (!baseModel) return [];
     const model = response.find((item) => item.name === baseModel);
     return (model?.columns || []).map((column) => ({
       label: column.name,
