@@ -6,6 +6,10 @@ import {
   CompactColumn,
   Relation,
   CreateModelPayload,
+  UpdateModelPayload,
+  UpdateModelWhere,
+  DeleteModelWhere,
+  GetModelWhere,
 } from './types';
 import * as demoManifest from './manifest.json';
 import { pick } from 'lodash';
@@ -63,10 +67,10 @@ export const resolvers = {
         ]),
       }));
     },
-    getModel: (_, args: { where: string }) => {
+    getModel: (_, args: { where: GetModelWhere }) => {
       const { where } = args;
       const { models } = demoManifest;
-      const model = models.find((model) => model.name === where);
+      const model = models.find((model) => model.name === where.name);
       return {
         ...pick(model, [
           'name',
@@ -128,7 +132,47 @@ export const resolvers = {
             properties: {},
           })),
         ],
+        properties: {
+          displayName: data.displayName,
+          description: data.description,
+        },
       };
+    },
+    updateModel: (
+      _,
+      args: { where: UpdateModelWhere; data: UpdateModelPayload }
+    ) => {
+      const { where, data } = args;
+      const { models } = demoManifest;
+      const model =
+        models.find((model) => model.name === where.name) || models[0];
+      return {
+        ...pick(model, [
+          'name',
+          'refSql',
+          'primaryKey',
+          'cached',
+          'refreshTime',
+          'description',
+        ]),
+        columns: model.columns.map((column) => ({
+          ...pick(column, [
+            'name',
+            'type',
+            'isCalculated',
+            'notNull',
+            'properties',
+          ]),
+        })),
+        properties: {
+          ...model.properties,
+          displayName: data.displayName,
+          description: data.description,
+        },
+      };
+    },
+    deleteModel: (_, args: { where: DeleteModelWhere }) => {
+      return true;
     },
   },
 };

@@ -27,6 +27,8 @@ enum ModelType {
 export interface CreateModelPayload {
   type: ModelType;
   tableName: string;
+  displayName: string;
+  description?: string;
   fields?: string[];
   customFields?: {
     name: string;
@@ -37,3 +39,14 @@ export interface CreateModelPayload {
     expression: string;
   }[];
 }
+
+export interface ModelWhere {
+  name: string;
+}
+
+export type UpdateModelWhere = ModelWhere;
+export type UpdateModelPayload = Partial<Omit<CreateModelPayload, 'tableName'>>;
+
+export type DeleteModelWhere = ModelWhere;
+
+export type GetModelWhere = ModelWhere;

@@ -73,7 +73,22 @@ export const typeDefs = gql`
 
   input CreateModelInput {
     type: ModelType!
-    tableName: String
+    tableName: String!
+    displayName: String!
+    description: String
+    fields: [String!]!
+    customFields: [CustomFieldInput!]
+    caculatedFields: [CaculatedFieldInput!]
+  }
+
+  input ModelWhereInput {
+    name: String!
+  }
+
+  input UpdateModelInput {
+    type: ModelType!
+    displayName: String!
+    description: String
     fields: [String!]!
     customFields: [CustomFieldInput!]
     caculatedFields: [CaculatedFieldInput!]
@@ -117,7 +132,7 @@ export const typeDefs = gql`
 
     # Modeling Page
     listModels: [CompactModel!]!
-    getModel(where: String!): DetailedModel!
+    getModel(where: ModelWhereInput!): DetailedModel!
   }
 
   type Mutation {
@@ -128,6 +143,7 @@ export const typeDefs = gql`
 
     # Modeling Page
     createModel(data: CreateModelInput!): JSON!
-    updateModel(data: CreateModelInput!): JSON!
+    updateModel(where: ModelWhereInput!, data: UpdateModelInput!): JSON!
+    deleteModel(where: ModelWhereInput!): Boolean!
   }
 `;
