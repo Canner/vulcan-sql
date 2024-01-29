@@ -10,9 +10,9 @@ const StyledContentLayout = styled(Layout)`
 `;
 
 export default function SiderLayout(props) {
-  const { sidebar } = props;
+  const { connections, sidebar } = props;
   return (
-    <SimpleLayout>
+    <SimpleLayout connections={connections}>
       <Layout className="adm-layout">
         <Sider width={280}>
           <Sidebar {...sidebar} />

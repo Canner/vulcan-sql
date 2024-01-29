@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { Button, ButtonProps, Layout, Space } from 'antd';
 import LogoBar from '@vulcan-sql/admin-ui/components/LogoBar';
+import SharePopover from '@vulcan-sql/admin-ui/components/SharePopover';
 
 const { Header } = Layout;
 
@@ -33,32 +34,57 @@ const StyledHeader = styled(Header)`
   padding: 10px 16px;
 `;
 
-export default function HeaderBar() {
+export interface Connections {
+  database: string;
+  port: string;
+  username: string;
+  password: string;
+}
+
+export default function HeaderBar(props: { connections?: Connections }) {
+  const { connections = {} as Connections } = props;
   const router = useRouter();
   const { pathname } = router;
   const showNav = !pathname.startsWith(Path.Onboarding);
 
+  const infoSources = [
+    { title: 'Database', type: 'text', value: connections?.database },
+    { title: 'Port', type: 'text', value: connections?.port },
+    { title: 'Username', type: 'text', value: connections?.username },
+    { title: 'Password', type: 'password', value: connections?.password },
+  ];
+
   return (
     <StyledHeader>
-      <Space size={[24, 0]}>
-        <LogoBar />
+      <div
+        className="d-flex justify-space-between"
+        style={{ marginTop: -2, alignItems: 'self-end' }}
+      >
+        <Space size={[24, 0]}>
+          <LogoBar />
+          {showNav && (
+            <Space size={[16, 0]}>
+              <StyledButton
+                $isHighlight={pathname.startsWith(Path.Explore)}
+                onClick={() => router.push(Path.Explore)}
+              >
+                Explore
+              </StyledButton>
+              <StyledButton
+                $isHighlight={pathname.startsWith(Path.Modeling)}
+                onClick={() => router.push(Path.Modeling)}
+              >
+                Modeling
+              </StyledButton>
+            </Space>
+          )}
+        </Space>
         {showNav && (
-          <Space size={[16, 0]}>
-            <StyledButton
-              $isHighlight={pathname.startsWith(Path.Explore)}
-              onClick={() => router.push(Path.Explore)}
-            >
-              Explore
-            </StyledButton>
-            <StyledButton
-              $isHighlight={pathname.startsWith(Path.Modeling)}
-              onClick={() => router.push(Path.Modeling)}
-            >
-              Modeling
-            </StyledButton>
-          </Space>
+          <SharePopover sources={infoSources}>
+            <Button type="primary">Share</Button>
+          </SharePopover>
         )}
-      </Space>
+      </div>
     </StyledHeader>
   );
 }

@@ -45,7 +45,7 @@ export default function SharePopover(props: Props) {
         </Space>
       </Title>
       <div style={{ marginBottom: 16 }}>
-        You can connect it to query via postgresql wire protocol.
+        You can connect it to query via SQL protocol.
       </div>
 
       <Space style={{ width: '100%' }} direction="vertical" size={[0, 16]}>
