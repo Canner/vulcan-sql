@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Drawer, Form, FormInstance } from 'antd';
 import { FORM_MODE, MODEL_STEP } from '@vulcan-sql/admin-ui/utils/enum';
 import ModelBasicForm, {
@@ -55,10 +55,12 @@ export default function ModelDrawer(props: Props) {
   const [step, setStep] = useState(MODEL_STEP.ONE);
   const [form] = Form.useForm();
 
+  useEffect(() => {
+    form.setFieldsValue(defaultValue || {});
+  }, [form, defaultValue]);
+
   const afterVisibleChange = (visible: boolean) => {
-    if (visible) {
-      form.setFieldsValue(defaultValue || {});
-    } else {
+    if (!visible) {
       setStep(MODEL_STEP.ONE);
       form.resetFields();
       setInternalValues(null);

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Table, Button, TableColumnProps, Space } from 'antd';
+import { Table, Button, TableColumnProps, Space, Popconfirm } from 'antd';
 import EditOutlined from '@ant-design/icons/EditOutlined';
 import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
@@ -39,7 +39,7 @@ export const makeTableFormControl = <MData,>(
           width: 80,
           render: (record) => {
             return (
-              <Space>
+              <Space className="d-flex justify-end">
                 <Button
                   type="text"
                   className="px-2"
@@ -47,13 +47,18 @@ export const makeTableFormControl = <MData,>(
                 >
                   <EditOutlined />
                 </Button>
-                <Button
-                  type="text"
-                  className="px-2"
-                  onClick={() => removeData(record._id)}
+
+                <Popconfirm
+                  title="Sure to delete?"
+                  okText="Delete"
+                  motion={null}
+                  okButtonProps={{ danger: true }}
+                  onConfirm={() => removeData(record._id)}
                 >
-                  <DeleteOutlined />
-                </Button>
+                  <Button type="text" className="px-2">
+                    <DeleteOutlined />
+                  </Button>
+                </Popconfirm>
               </Space>
             );
           },

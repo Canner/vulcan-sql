@@ -41,13 +41,17 @@ export default function Selector(props: Props) {
     );
   }, [options]);
 
-  const antdValue = useMemo(() => JSON.stringify(value), []);
+  const antdValue = useMemo(() => {
+    return Array.isArray(value)
+      ? value.map((item) => JSON.stringify(item))
+      : JSON.stringify(value);
+  }, [value]);
 
   return (
     <Select
       value={antdValue}
-      onChange={handleChange}
       options={antdSelectOptions}
+      onChange={handleChange}
       {...restProps}
     />
   );

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Form, FormInstance, Radio, Select, Button, Space } from 'antd';
 import { FORM_MODE } from '@vulcan-sql/admin-ui/utils/enum';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
@@ -59,6 +59,17 @@ export default function ModelDetailForm(props: {
     dataSourceTableColumnOptions,
     autoCompleteSource,
   } = useModelDetailFormOptions({ selectedTable: table });
+
+  // Reset fields when table is changed.
+  useEffect(() => {
+    const allColumnNames = dataSourceTableColumnOptions.map(
+      (option) => option.value?.name
+    );
+    const isTableChange = fields.some(
+      (field) => !allColumnNames.includes(field.name)
+    );
+    if (isTableChange) form.setFieldsValue({ fields: [] });
+  }, [dataSourceTableColumnOptions]);
 
   const onSourceChange = (value) => {
     if (sourceType !== value) {
@@ -158,7 +169,6 @@ export default function ModelDetailForm(props: {
       <Form.Item label="Caculated fields" name="caculatedFields">
         <CaculatedFieldTableFormControl
           modalProps={{ model: modelName, transientData }}
-          disabled={!fields.length}
         />
       </Form.Item>
 

@@ -16,6 +16,10 @@ export default function useModelDetailFormOptions(props: Props) {
       name: 'customer',
       columns: [{ name: 'custKey', type: 'UUID' }],
     },
+    {
+      name: 'order',
+      columns: [{ name: 'orderKey', type: 'UUID' }],
+    },
   ];
 
   const dataSourceTableOptions = useMemo(() => {

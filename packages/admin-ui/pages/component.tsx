@@ -117,6 +117,29 @@ export default function Component() {
         onSubmit={async (values) => {
           console.log(values);
         }}
+        defaultValue={{
+          modelName: 'Customer',
+          description: 'customer_description',
+          table: 'customer',
+          fields: [
+            {
+              name: 'custKey',
+              type: 'UUID',
+            },
+          ],
+          caculatedFields: [
+            {
+              fieldName: 'test',
+              expression: 'Sum',
+              modelFields: [
+                { nodeType: NODE_TYPE.MODEL, name: 'customer' },
+                { nodeType: NODE_TYPE.FIELD, name: 'custKey', type: 'UUID' },
+              ],
+            },
+          ],
+          cached: true,
+          cachedPeriod: '1m',
+        }}
       />
     </Form>
   );
