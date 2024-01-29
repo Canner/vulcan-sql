@@ -3,7 +3,7 @@ import { JOIN_TYPE, SETUP } from '@vulcan-sql/admin-ui/utils/enum';
 import { useRouter } from 'next/router';
 import { SelectedRecommendRelationsProps } from '@vulcan-sql/admin-ui/components/pages/setup/DefineRelations';
 
-export default function useSetupConnection() {
+export default function useSetupRelations() {
   const [stepKey, setStepKey] = useState(SETUP.RECOMMEND_RELATIONS);
   const [selectedRecommendRelations, setSelectedRecommendRelations] = useState<
     SelectedRecommendRelationsProps | undefined
@@ -30,8 +30,6 @@ export default function useSetupConnection() {
     selectedRecommendRelations: SelectedRecommendRelationsProps;
     relations: SelectedRecommendRelationsProps;
   }) => {
-    setStepKey(SETUP.DEFINE_RELATIONS);
-
     if (stepKey === SETUP.RECOMMEND_RELATIONS) {
       setSelectedRecommendRelations(data.selectedRecommendRelations);
       setStepKey(SETUP.DEFINE_RELATIONS);
