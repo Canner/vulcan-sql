@@ -17,6 +17,7 @@ type SetupStep = {
     props?: React.ComponentProps<typeof Starter> &
       React.ComponentProps<typeof ConnectDataSource> &
       React.ComponentProps<typeof CreateModels> &
+      React.ComponentProps<typeof RecommendRelations> &
       React.ComponentProps<typeof DefineRelations>
   ) => JSX.Element;
   maxWidth?: number;
