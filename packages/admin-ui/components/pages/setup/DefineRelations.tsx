@@ -7,9 +7,9 @@ import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 import EditOutlined from '@ant-design/icons/EditOutlined';
 import PlusOutlined from '@ant-design/icons/PlusOutlined';
 import SelectionRelationTable, {
-  defaultColumns,
   RelationsDataType,
 } from '@vulcan-sql/admin-ui/components/table/SelectionRelationTable';
+import { columns as defaultColumns } from '@vulcan-sql/admin-ui/components/pages/setup/RecommendRelations';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import AddRelationModal from '@vulcan-sql/admin-ui/components/modals/AddRelationModal';
 
