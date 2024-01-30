@@ -1,14 +1,44 @@
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import styled from 'styled-components';
-import { Col, Row, RowProps, Table } from 'antd';
+import { Collapse, Row, RowProps, Table } from 'antd';
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import { JOIN_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { ModelIcon } from '@vulcan-sql/admin-ui/utils/icons';
 
-const StyledTable = styled(Table)`
-  .ant-table-thead > tr > th {
-    color: var(--gray-7);
+const { Panel } = Collapse;
+
+const StyledCollapse = styled(Collapse)`
+  &.ant-collapse {
     background-color: white;
+    border-color: var(--gray-4);
+
+    > .ant-collapse-item > .ant-collapse-header {
+      padding: 16px 12px;
+      align-items: center;
+    }
+
+    > .ant-collapse-item,
+    .ant-collapse-content {
+      border-color: var(--gray-4);
+    }
+
+    .ant-collapse-content-box {
+      padding: 0px;
+    }
+
+    .ant-table {
+      border: none;
+
+      &.ant-table-empty {
+        .ant-table-tbody > .ant-table-placeholder > .ant-table-cell {
+          border-top: 1px var(--gray-4) solid;
+        }
+
+        .ant-empty-normal {
+          margin: 16px 0;
+        }
+      }
+    }
   }
 `;
 
@@ -37,7 +67,12 @@ interface SelectionRelationTableProps {
   columns: ColumnsType<RelationsDataType>;
   dataSource: RelationsDataType[];
   enableRowSelection?: boolean;
-  extra?: React.ReactNode;
+  extra?: (
+    onCollapseOpen: (
+      event: React.MouseEvent<HTMLElement, MouseEvent>,
+      key: string
+    ) => void
+  ) => React.ReactNode;
   onChange?: (value: any | null) => void;
   title: string;
 }
@@ -48,6 +83,8 @@ function SelectionRelationTable(
 ) {
   const { columns, dataSource, extra, enableRowSelection, onChange, title } =
     props;
+
+  const collapseState = useCollapseState(title);
 
   const isRowSelection = Boolean(enableRowSelection);
 
@@ -65,25 +102,64 @@ function SelectionRelationTable(
       : undefined;
 
   return (
-    <StyledTable
-      ref={ref}
-      className="ant-table-has-header"
-      columns={columns}
-      dataSource={dataSource}
-      rowKey={(record) => JSON.stringify(record)}
-      rowSelection={rowSelection}
-      title={() => (
-        <StyledRow wrap={false} gutter={8} $isRowSelection={isRowSelection}>
-          <Col flex="1 0">
+    <StyledCollapse
+      key={title}
+      defaultActiveKey={collapseState.collapseDefaultActiveKey}
+      onChange={collapseState.onChangeCollapsePanelState}
+    >
+      <Panel
+        extra={extra && extra(collapseState.onCollapseOpen)}
+        header={
+          <StyledRow
+            wrap={false}
+            gutter={8}
+            align="middle"
+            $isRowSelection={isRowSelection}
+          >
             <ModelIcon className="pr-2" style={{ fontSize: 16 }} />
             {title}
-          </Col>
-          <Col flex="none">{extra}</Col>
-        </StyledRow>
-      )}
-      pagination={false}
-    />
+          </StyledRow>
+        }
+        key={title}
+        showArrow={false}
+      >
+        <Table
+          ref={ref}
+          columns={columns}
+          dataSource={dataSource}
+          rowKey={(record) => JSON.stringify(record)}
+          rowSelection={rowSelection}
+          pagination={{ hideOnSinglePage: true, pageSize: 50, size: 'small' }}
+        />
+      </Panel>
+    </StyledCollapse>
   );
 }
 
 export default forwardRef(SelectionRelationTable);
+
+function useCollapseState(tableTitleName: string) {
+  const [collapseDefaultActiveKey, setCollapseDefaultActiveKey] = useState<
+    string[]
+  >([tableTitleName]);
+
+  const onChangeCollapsePanelState = (key: string | string[]) =>
+    setCollapseDefaultActiveKey(key as string[]);
+
+  const onCollapseOpen = (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    key: string
+  ) => {
+    // Make sure the panel is open
+    onChangeCollapsePanelState([key]);
+    if (collapseDefaultActiveKey.includes(key)) {
+      event.stopPropagation();
+    }
+  };
+
+  return {
+    collapseDefaultActiveKey,
+    onChangeCollapsePanelState,
+    onCollapseOpen,
+  };
+}

@@ -74,16 +74,19 @@ function EditableRelationTable(props: EditableRelationTableProps) {
         columns={columns}
         dataSource={relations}
         title={modelName}
-        extra={
+        extra={(onCollapseOpen) => (
           <Button
-            onClick={() => onSetRelation({ modelName })}
+            onClick={(event) => {
+              onSetRelation({ modelName });
+              onCollapseOpen(event, modelName);
+            }}
             size="small"
             title="Add relation"
           >
             <PlusOutlined />
             Add relation
           </Button>
-        }
+        )}
       />
     </div>
   );
