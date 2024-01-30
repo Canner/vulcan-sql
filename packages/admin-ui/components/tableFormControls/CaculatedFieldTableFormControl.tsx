@@ -17,16 +17,17 @@ export default function CaculatedFieldTableFormControl(props: Props) {
         {
           title: 'Name',
           dataIndex: 'fieldName',
+          width: 180,
         },
         {
           title: 'Expression',
           dataIndex: 'expression',
           render: (expression, record) => {
             // TODO: clarify the interface with backend
-            const argumentFields = (
-              record.modelFields.slice(1, record.modelFields.length) || []
-            ).map((field) => field.name);
-            const argumentTexts = argumentFields.join(', ');
+            const argumentFields = record.modelFields.map(
+              (field) => field.name
+            );
+            const argumentTexts = argumentFields.join('.');
             return `${expression}${argumentTexts ? `(${argumentTexts})` : ''}`;
           },
         },
