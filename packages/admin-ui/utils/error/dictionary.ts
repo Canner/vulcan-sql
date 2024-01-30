@@ -38,4 +38,18 @@ export const ERROR_TEXTS = {
       REQUIRED: 'Please select a relation type.',
     },
   },
+  MODELING_CREATE_MODEL: {
+    NAME: {
+      REQUIRED: 'Please input model name.',
+    },
+    TABLE: {
+      REQUIRED: 'Please select a table.',
+    },
+    CUSTOM_SQL: {
+      REQUIRED: 'Please input SQL.',
+    },
+    FIELDS: {
+      REQUIRED: 'Please select fields.',
+    },
+  },
 };

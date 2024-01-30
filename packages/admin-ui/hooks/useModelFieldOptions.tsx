@@ -8,42 +8,59 @@ interface SelectValue {
   type?: string;
 }
 
-export default function useModelFieldOptions() {
-  const response = [
-    {
-      name: 'Customer',
-      columns: [
-        {
-          name: 'orders',
-          properties: { type: 'Orders' },
-        },
-      ],
-    },
-    {
-      name: 'Orders',
-      columns: [
-        {
-          name: 'lineitem',
-          properties: { type: 'Lineitem' },
-        },
-      ],
-    },
-    {
-      name: 'Lineitem',
-      columns: [
-        {
-          name: 'extendedprice',
-          properties: { type: 'REAL' },
-        },
-        {
-          name: 'discount',
-          properties: { type: 'REAL' },
-        },
-      ],
-    },
-  ];
+export interface ModelFieldResposeData {
+  name: string;
+  columns: {
+    name: string;
+    properties: {
+      type: string;
+    };
+  }[];
+}
 
-  const currentModel = response.shift();
+export default function useModelFieldOptions(
+  transientData?: ModelFieldResposeData[]
+) {
+  const response = transientData
+    ? transientData
+    : [
+        {
+          name: 'Customer',
+          columns: [
+            {
+              name: 'orders',
+              properties: { type: 'Orders' },
+            },
+          ],
+        },
+        {
+          name: 'Orders',
+          columns: [
+            {
+              name: 'lineitem',
+              properties: { type: 'Lineitem' },
+            },
+          ],
+        },
+        {
+          name: 'Lineitem',
+          columns: [
+            {
+              name: 'extendedprice',
+              properties: { type: 'REAL' },
+            },
+            {
+              name: 'discount',
+              properties: { type: 'REAL' },
+            },
+          ],
+        },
+      ];
+
+  const currentModel = response[0];
+  const lineage = response.slice(1, response.length);
+
+  if (currentModel === undefined) return [];
 
   const convertor = (item: any) => {
     const isModel = !!item.columns;
@@ -65,12 +82,14 @@ export default function useModelFieldOptions() {
           {item.name}
         </div>
       ),
-      value: JSON.stringify(value),
+      value,
     };
   };
 
-  const columns = currentModel.columns.map(convertor);
-  const relations = [{ label: 'Relations', options: response.map(convertor) }];
+  const columns = currentModel.columns.map(convertor) || [];
+  const relations = lineage.length
+    ? [{ label: 'Relations', options: lineage.map(convertor) }]
+    : [];
 
   return [columns, relations].flat();
 }

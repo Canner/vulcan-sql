@@ -1,8 +1,10 @@
-import { Select } from 'antd';
 import styled from 'styled-components';
 import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { ModelIcon } from '@vulcan-sql/admin-ui/utils/icons';
 import { IterableComponent } from '@vulcan-sql/admin-ui/utils/iteration';
+import Selector, {
+  Option,
+} from '@vulcan-sql/admin-ui/components/selectors/Selector';
 
 const FieldBox = styled.div`
   border-radius: 4px;
@@ -40,18 +42,14 @@ const FieldHeader = styled.div`
   border-bottom: 1px var(--gray-4) solid;
 `;
 
-const StyledSelect = styled(Select)`
+const StyledSelector = styled(Selector)`
   &.ant-select-status-error.ant-select:not(.ant-select-disabled):not(.ant-select-customize-input)
     .ant-select-selector {
     border-color: transparent !important;
   }
 `;
 
-export interface FieldOption {
-  label: string | JSX.Element;
-  value?: string;
-  options?: FieldOption[];
-}
+export type FieldOption = Option;
 
 export interface FieldValue {
   nodeType: NODE_TYPE;
@@ -69,10 +67,6 @@ export default function FieldSelect(props: IterableComponent<Props>) {
   const currentIndex = data.findIndex((item) => item.name === name);
   const selectedField = data[currentIndex + 1];
 
-  const selectedFieldValue = selectedField
-    ? JSON.stringify(selectedField)
-    : undefined;
-
   return nodeType === NODE_TYPE.MODEL ? (
     <FieldBox className="adm-fieldBox flex-shrink-0">
       <FieldHeader className="py-1 px-3">
@@ -80,18 +74,19 @@ export default function FieldSelect(props: IterableComponent<Props>) {
         <div className="text-truncate flex-grow-1" title={name}>
           {name}
         </div>
-        <div className="flex-shrink-0 cursor-pointer">+</div>
       </FieldHeader>
 
       {selectedField?.nodeType === NODE_TYPE.MODEL && (
         <div className="gray-7 text-sm px-3 pt-1">Relations</div>
       )}
-      <StyledSelect
+
+      <StyledSelector
         bordered={false}
         options={options}
+        optionLabelProp="label"
         placeholder="Select field"
         suffixIcon={null}
-        value={selectedFieldValue}
+        value={selectedField}
         onSelect={(value) => {
           onChange && onChange(value, index);
         }}

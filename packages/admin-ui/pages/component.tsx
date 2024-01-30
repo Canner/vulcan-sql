@@ -7,6 +7,8 @@ import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import useModelFieldOptions from '@vulcan-sql/admin-ui/hooks/useModelFieldOptions';
 import AddCaculatedFieldModal from '@vulcan-sql/admin-ui/components/modals/AddCaculatedFieldModal';
 import AddRelationModal from '@vulcan-sql/admin-ui/components/modals/AddRelationModal';
+import ModelDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/ModelDrawer';
+import useDrawerAction from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
 
 const ModelFieldSelector = dynamic(
   () => import('@vulcan-sql/admin-ui/components/selectors/modelFieldSelector'),
@@ -24,6 +26,8 @@ export default function Component() {
 
   const addCaculatedFieldModal = useModalAction();
   const addRelationModal = useModalAction();
+
+  const modelDrawer = useDrawerAction();
 
   const fieldOptions = useModelFieldOptions();
   const modelFields = Form.useWatch('modelFields', form);
@@ -45,11 +49,26 @@ export default function Component() {
         </pre>
       </div>
 
-      <Button onClick={addCaculatedFieldModal.openModal}>
+      <Button
+        onClick={() =>
+          addCaculatedFieldModal.openModal({
+            fieldName: 'test',
+            expression: 'Sum',
+            modelFields: [
+              { nodeType: NODE_TYPE.MODEL, name: 'Orders' },
+              { nodeType: NODE_TYPE.FIELD, name: 'orders', type: 'Orders' },
+            ],
+            // expression: 'customExpression',
+            // customExpression: 'test',
+          })
+        }
+      >
         Add caculated field
       </Button>
 
       <Button onClick={addRelationModal.openModal}>Add relation field</Button>
+
+      <Button onClick={() => modelDrawer.openDrawer()}>Model drawer</Button>
 
       <AddCaculatedFieldModal
         model="Customer"
@@ -58,16 +77,16 @@ export default function Component() {
           console.log(values);
         }}
         onClose={addCaculatedFieldModal.closeModal}
-        defaultValue={{
-          fieldName: 'test',
-          expression: 'Sum',
-          modelField: [
-            { nodeType: NODE_TYPE.MODEL, name: 'Orders' },
-            { nodeType: NODE_TYPE.FIELD, name: 'orders', type: 'Orders' },
-          ],
-          // expression: 'customExpression',
-          // customExpression: 'test',
-        }}
+        // defaultValue={{
+        //   fieldName: 'test',
+        //   expression: 'Sum',
+        //   modelFields: [
+        //     { nodeType: NODE_TYPE.MODEL, name: 'Orders' },
+        //     { nodeType: NODE_TYPE.FIELD, name: 'orders', type: 'Orders' },
+        //   ],
+        //   // expression: 'customExpression',
+        //   // customExpression: 'test',
+        // }}
       />
 
       <AddRelationModal
@@ -89,6 +108,37 @@ export default function Component() {
           },
           relationName: 'customer_orders',
           description: 'customer_orders_description',
+        }}
+      />
+
+      <ModelDrawer
+        {...modelDrawer.state}
+        onClose={modelDrawer.closeDrawer}
+        onSubmit={async (values) => {
+          console.log(values);
+        }}
+        defaultValue={{
+          modelName: 'Customer',
+          description: 'customer_description',
+          table: 'customer',
+          fields: [
+            {
+              name: 'custKey',
+              type: 'UUID',
+            },
+          ],
+          caculatedFields: [
+            {
+              fieldName: 'test',
+              expression: 'Sum',
+              modelFields: [
+                { nodeType: NODE_TYPE.MODEL, name: 'customer' },
+                { nodeType: NODE_TYPE.FIELD, name: 'custKey', type: 'UUID' },
+              ],
+            },
+          ],
+          cached: true,
+          cachedPeriod: '1m',
         }}
       />
     </Form>

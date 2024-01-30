@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { FORM_MODE } from '@vulcan-sql/admin-ui/utils/enum';
 
-export default function useModalAction() {
+export default function useDrawerAction() {
   const [visible, setVisible] = useState(false);
   const [formMode, setFormMode] = useState(FORM_MODE.CREATE);
   const [defaultValue, setDefaultValue] = useState(null);
 
-  const openModal = (value?: any) => {
+  const openDrawer = (value?: any) => {
     value && setDefaultValue(value);
     value && setFormMode(FORM_MODE.EDIT);
     setVisible(true);
   };
 
-  const closeModal = () => {
+  const closeDrawer = () => {
     setVisible(false);
     setDefaultValue(null);
     setFormMode(FORM_MODE.CREATE);
@@ -24,7 +24,7 @@ export default function useModalAction() {
       formMode,
       defaultValue,
     },
-    openModal,
-    closeModal,
+    openDrawer,
+    closeDrawer,
   };
 }

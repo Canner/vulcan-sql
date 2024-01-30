@@ -11,10 +11,8 @@ export type IterableComponent<T = any> = {
   key: string;
 } & T;
 
-export const makeIterable =
-  (Template: React.FC<IterableComponent<any>>) =>
-  // eslint-disable-next-line react/display-name
-  (props: Props) => {
+export const makeIterable = (Template: React.FC<IterableComponent<any>>) => {
+  const Iterator = (props: Props) => {
     const { data, keyIndex = 'key', ...restProps } = props;
     const result = data.map((item, index) => {
       const key =
@@ -31,3 +29,6 @@ export const makeIterable =
     });
     return <>{result}</>;
   };
+
+  return Iterator;
+};

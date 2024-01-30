@@ -1,9 +1,12 @@
+import { useEffect } from 'react';
 import { Modal, Form, Input, Typography } from 'antd';
 import FunctionOutlined from '@ant-design/icons/FunctionOutlined';
 import ModelFieldSelector from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector';
 import { FieldValue } from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector/FieldSelect';
 import DescriptiveSelector from '@vulcan-sql/admin-ui/components/selectors/DescriptiveSelector';
-import useModelFieldOptions from '@vulcan-sql/admin-ui/hooks/useModelFieldOptions';
+import useModelFieldOptions, {
+  ModelFieldResposeData,
+} from '@vulcan-sql/admin-ui/hooks/useModelFieldOptions';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import { modelFieldSelectorValidator } from '@vulcan-sql/admin-ui/utils/validator';
 import useExpressionFieldOptions, {
@@ -11,33 +14,51 @@ import useExpressionFieldOptions, {
 } from '@vulcan-sql/admin-ui/hooks/useExpressionFieldOptions';
 import Link from 'next/link';
 
+export type CaculatedFieldValue = {
+  [key: string]: any;
+  fieldName: string;
+  expression: string;
+  modelFields?: FieldValue[];
+  customExpression?: string;
+};
+
 interface Props {
   model: string;
   visible: boolean;
   onSubmit: (values: any) => Promise<void>;
   onClose: () => void;
   loading?: boolean;
-  defaultValue?: {
-    fieldName: string;
-    expression: string;
-    modelField?: FieldValue[];
-    customExpression?: string;
-  };
+  defaultValue?: CaculatedFieldValue;
+
+  // The transientData is used to get the model fields which are not created in DB yet.
+  transientData?: ModelFieldResposeData[];
 }
 
 export default function AddCaculatedFieldModal(props: Props) {
-  const { model, visible, loading, onSubmit, onClose, defaultValue } = props;
+  const {
+    model,
+    transientData,
+    visible,
+    loading,
+    onSubmit,
+    onClose,
+    defaultValue,
+  } = props;
   const [form] = Form.useForm();
   const expression = Form.useWatch('expression', form);
 
-  const modelFieldOptions = useModelFieldOptions();
+  useEffect(() => {
+    form.setFieldsValue(defaultValue || {});
+  }, [form, defaultValue]);
+
+  const modelFieldOptions = useModelFieldOptions(transientData);
   const expressionOptions = useExpressionFieldOptions();
 
   const submit = () => {
     form
       .validateFields()
       .then(async (values) => {
-        await onSubmit(values);
+        await onSubmit({ ...defaultValue, ...values });
         onClose();
       })
       .catch(console.error);
@@ -54,6 +75,7 @@ export default function AddCaculatedFieldModal(props: Props) {
       confirmLoading={loading}
       maskClosable={false}
       destroyOnClose
+      afterClose={() => form.resetFields()}
     >
       <div className="mb-4">
         Morem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate
@@ -63,17 +85,7 @@ export default function AddCaculatedFieldModal(props: Props) {
         </Link>
       </div>
 
-      <Form
-        form={form}
-        preserve={false}
-        layout="vertical"
-        initialValues={{
-          fieldName: defaultValue?.fieldName,
-          expression: defaultValue?.expression,
-          modelField: defaultValue?.modelField,
-          customExpression: defaultValue?.customExpression,
-        }}
-      >
+      <Form form={form} preserve={false} layout="vertical">
         <Form.Item
           label="Field name"
           name="fieldName"
@@ -147,7 +159,7 @@ const ExpressionArgument = ({ expression, modelFieldOptions, model }) => {
     </div>
   ) : (
     <Form.Item
-      name="modelField"
+      name="modelFields"
       rules={[
         {
           validator: modelFieldSelectorValidator(

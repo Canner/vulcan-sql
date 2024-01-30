@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Modal, Form, Input, Select, Row, Col } from 'antd';
 import { isEmpty } from 'lodash';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
@@ -7,18 +8,20 @@ import { getJoinTypeText } from '@vulcan-sql/admin-ui/utils/data';
 import useCombineFieldOptions from '@vulcan-sql/admin-ui/hooks/useCombineFieldOptions';
 import { RelationsDataType } from '@vulcan-sql/admin-ui/components/table/SelectionRelationTable';
 
+export type RelationFieldValue = { [key: string]: any } & Pick<
+  RelationsDataType,
+  'relationType' | 'fromField' | 'toField' | 'relationName'
+> & {
+    description?: string;
+  };
+
 interface Props {
   model: string;
   visible: boolean;
   onSubmit: (values: RelationsDataType) => Promise<void>;
   onClose: () => void;
   loading?: boolean;
-  defaultValue?: Pick<
-    RelationsDataType,
-    'relationType' | 'fromField' | 'toField' | 'relationName'
-  > & {
-    description?: string;
-  };
+  defaultValue?: RelationFieldValue;
   allowSetDescription?: boolean;
 }
 
@@ -33,6 +36,10 @@ function RelationModal(props: Props) {
     visible,
   } = props;
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue(defaultValue || {});
+  }, [form, defaultValue]);
 
   const relationTypeOptions = Object.keys(JOIN_TYPE).map((key) => ({
     label: getJoinTypeText(key),
@@ -49,7 +56,7 @@ function RelationModal(props: Props) {
     form
       .validateFields()
       .then(async (values) => {
-        await onSubmit(values);
+        await onSubmit({ ...defaultValue, ...values });
         onClose();
       })
       .catch(console.error);
@@ -66,19 +73,9 @@ function RelationModal(props: Props) {
       confirmLoading={loading}
       maskClosable={false}
       destroyOnClose
+      afterClose={() => form.resetFields()}
     >
-      <Form
-        form={form}
-        preserve={false}
-        layout="vertical"
-        initialValues={{
-          relationType: defaultValue?.relationType,
-          fromField: defaultValue?.fromField,
-          toField: defaultValue?.toField,
-          relationName: defaultValue?.relationName,
-          description: defaultValue?.description,
-        }}
-      >
+      <Form form={form} preserve={false} layout="vertical">
         <Form.Item
           label="Name"
           name="relationName"

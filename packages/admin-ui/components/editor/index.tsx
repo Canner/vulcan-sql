@@ -1,5 +1,9 @@
-import { forwardRef, useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useRef, useContext } from 'react';
 import AceEditor from '@vulcan-sql/admin-ui/components/editor/AceEditor';
+import {
+  FormItemInputContext,
+  FormItemStatusContextProps,
+} from 'antd/lib/form/context';
 
 export interface SQLEditorAutoCompleteSourceWordInfo {
   // Show main string
@@ -19,6 +23,10 @@ function SQLEditor(props: Props, ref: any) {
   const { autoCompleteSource } = props;
 
   const editorRef = useRef<any>();
+
+  const formItemContext =
+    useContext<FormItemStatusContextProps>(FormItemInputContext);
+  const { status } = formItemContext;
 
   useEffect(() => {
     const getCompletions = (editor, _session, _pos, _prefix, callback) => {
@@ -44,6 +52,7 @@ function SQLEditor(props: Props, ref: any) {
   return (
     <div ref={ref}>
       <AceEditor
+        className={status ? `ace_editor-${status}` : ''}
         editorProps={{ $blockScrolling: true }}
         enableBasicAutocompletion
         enableLiveAutocompletion
