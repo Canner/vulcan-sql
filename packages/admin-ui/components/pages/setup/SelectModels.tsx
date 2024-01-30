@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Button, Col, Form, Row, Typography } from 'antd';
+import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import MultiSelectBox from '@vulcan-sql/admin-ui/components/table/MultiSelectBox';
 
 const { Title, Text } = Typography;
@@ -54,7 +55,12 @@ export default function SelectModels(props: Props) {
         <Form form={form} layout="vertical" style={{ marginTop: 8 }}>
           <Form.Item
             name="models"
-            rules={[{ required: true, message: 'Please select a table.' }]}
+            rules={[
+              {
+                required: true,
+                message: ERROR_TEXTS.SETUP_MODEL.TABLE.REQUIRED,
+              },
+            ]}
           >
             <MultiSelectBox columns={columns} items={items} />
           </Form.Item>

@@ -89,4 +89,12 @@ export const ERROR_TEXTS = {
       REQUIRED: 'Please select a model or metric.',
     },
   },
+  SETUP_MODEL: {
+    TABLE: {
+      REQUIRED: 'Please select at least one table.',
+    },
+    FIELDS: {
+      REQUIRED: 'Please select at least one field.',
+    },
+  },
 };

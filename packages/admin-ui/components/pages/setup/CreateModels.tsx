@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import Link from 'next/link';
 import { Button, Col, Form, Row, Typography } from 'antd';
 import { getColumnTypeIcon } from '@vulcan-sql/admin-ui/utils/columnType';
+import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import {
   makeIterable,
   IterableComponent,
@@ -41,7 +42,12 @@ const SelectModelTemplate: IterableComponent = ({ name, fields }) => (
     className="mt-6"
     key={name}
     name={name}
-    rules={[{ required: true, message: 'Please select a field.' }]}
+    rules={[
+      {
+        required: true,
+        message: ERROR_TEXTS.SETUP_MODEL.FIELDS.REQUIRED,
+      },
+    ]}
   >
     <SelectionRelationTable
       columns={columns}
