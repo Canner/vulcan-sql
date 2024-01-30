@@ -76,6 +76,8 @@ export const typeDefs = gql`
     tableName: String!
     displayName: String!
     description: String
+    cached: Boolean!
+    refreshTime: String
     fields: [String!]!
     customFields: [CustomFieldInput!]
     caculatedFields: [CaculatedFieldInput!]
@@ -89,6 +91,8 @@ export const typeDefs = gql`
     type: ModelType!
     displayName: String!
     description: String
+    cached: Boolean!
+    refreshTime: String
     fields: [String!]!
     customFields: [CustomFieldInput!]
     caculatedFields: [CaculatedFieldInput!]
@@ -120,6 +124,42 @@ export const typeDefs = gql`
     description: String
     columns: [DetailedColumn!]!
     properties: JSON!
+  }
+
+  input SimpleMeasureInput {
+    name: String!
+    type: String!
+    isCalculated: Boolean!
+    notNull: Boolean!
+    properties: JSON!
+  }
+
+  input DimensionInput {
+    name: String!
+    type: String!
+    isCalculated: Boolean!
+    notNull: Boolean!
+    properties: JSON!
+  }
+
+  input TimeGrainInput {
+    name: String!
+    refColumn: String!
+    dateParts: [String!]!
+  }
+
+  input CreateSimpleMetricInput {
+    name: String!
+    displayName: String!
+    description: String
+    cached: Boolean!
+    refreshTime: String
+    model: String!
+    modelType: ModelType!
+    properties: JSON!
+    measure: [SimpleMeasureInput!]!
+    dimension: [DimensionInput!]!
+    timeGrain: [TimeGrainInput!]!
   }
 
   type Query {
