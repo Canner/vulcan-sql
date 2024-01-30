@@ -50,8 +50,8 @@ export const makeTableFormControl = <MData,>(
 
                 <Popconfirm
                   title="Sure to delete?"
+                  placement="topLeft"
                   okText="Delete"
-                  motion={null}
                   okButtonProps={{ danger: true }}
                   onConfirm={() => removeData(record._id)}
                 >

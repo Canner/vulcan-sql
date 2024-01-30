@@ -3,13 +3,13 @@ import { Select, Space, Typography } from 'antd';
 import styled from 'styled-components';
 import { omit } from 'lodash';
 
-export interface Option {
+export interface Option<TContent = Record<string, any>> {
   [key: string]: any;
   label: string;
   value?: string;
   className?: string;
   disabled?: boolean;
-  content?: Record<string, any>;
+  content?: TContent;
   options?: Option[];
 }
 

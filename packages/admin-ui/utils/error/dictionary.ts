@@ -14,6 +14,35 @@ export const ERROR_TEXTS = {
     FIELD_NAME: {
       REQUIRED: 'Please input field name.',
     },
+  },
+  ADD_MEASURE_FIELD: {
+    FIELD_NAME: {
+      REQUIRED: 'Please input measure name.',
+    },
+  },
+  ADD_DIMENSION_FIELD: {
+    FIELD_NAME: {
+      REQUIRED: 'Please input dimension name.',
+    },
+    MODEL_FIELD: {
+      REQUIRED: 'Please select a field.',
+    },
+    GRANULARITY: {
+      REQUIRED: 'Please select granularity.',
+    },
+  },
+  ADD_WINDOW_FIELD: {
+    FIELD_NAME: {
+      REQUIRED: 'Please input window name.',
+    },
+    MODEL_FIELD: {
+      REQUIRED: 'Please select a field.',
+    },
+    TIME_UNIT: {
+      REQUIRED: 'Please select time unit.',
+    },
+  },
+  EXPRESS_PROPERTIES: {
     EXPRESSION: {
       REQUIRED: 'Please select an expression.',
     },
@@ -50,6 +79,14 @@ export const ERROR_TEXTS = {
     },
     FIELDS: {
       REQUIRED: 'Please select fields.',
+    },
+  },
+  MODELING_CREATE_METRIC: {
+    NAME: {
+      REQUIRED: 'Please input metric name.',
+    },
+    SOURCE: {
+      REQUIRED: 'Please select a model or metric.',
     },
   },
 };
