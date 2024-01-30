@@ -3,13 +3,13 @@ import {
   UsableDataSource,
   DataSourceName,
   DataSource,
-  CompactColumn,
   Relation,
   CreateModelPayload,
   UpdateModelPayload,
   UpdateModelWhere,
   DeleteModelWhere,
   GetModelWhere,
+  CompactTable,
 } from './types';
 import * as demoManifest from './manifest.json';
 import { pick } from 'lodash';
@@ -24,35 +24,53 @@ export const resolvers = {
           requiredProperties: ['displayName', 'projectId', 'credentials'],
         },
       ] as UsableDataSource[],
-    listTables: () => ['orders', 'customers', 'products'],
-    autoGenerateRelation: () => [],
-    listColumns: () =>
+    listDataSourceTables: () =>
       [
         {
-          name: 'id',
-          tableName: 'orders',
+          name: 'orders',
+          columns: [
+            {
+              name: 'id',
+              type: 'string',
+            },
+            {
+              name: 'customerId',
+              type: 'string',
+            },
+            {
+              name: 'productId',
+              type: 'string',
+            },
+          ],
         },
         {
-          name: 'customerId',
-          tableName: 'orders',
+          name: 'customers',
+          columns: [
+            {
+              name: 'id',
+              type: 'string',
+            },
+            {
+              name: 'name',
+              type: 'string',
+            },
+          ],
         },
         {
-          name: 'id',
-          tableName: 'customers',
+          name: 'products',
+          columns: [
+            {
+              name: 'id',
+              type: 'string',
+            },
+            {
+              name: 'name',
+              type: 'string',
+            },
+          ],
         },
-        {
-          name: 'name',
-          tableName: 'customers',
-        },
-        {
-          name: 'id',
-          tableName: 'products',
-        },
-        {
-          name: 'name',
-          tableName: 'products',
-        },
-      ] as CompactColumn[],
+      ] as CompactTable[],
+    autoGenerateRelation: () => [],
     manifest: () => demoManifest,
     listModels: () => {
       const { models } = demoManifest;
@@ -97,11 +115,16 @@ export const resolvers = {
     saveDataSource: (_, args: { data: DataSource }) => {
       return args.data;
     },
-    saveTables: (_, args: { data: string[] }) => {
-      return args.data;
-    },
-    saveRelations: (_, args: { data: Relation[] }) => {
-      return args.data;
+    saveMDL: (
+      _,
+      args: {
+        data: {
+          models: { name: string; columns: string[] };
+          relations: Relation[];
+        };
+      }
+    ) => {
+      return demoManifest;
     },
     createModel: (_, args: { data: CreateModelPayload }) => {
       const { data } = args;

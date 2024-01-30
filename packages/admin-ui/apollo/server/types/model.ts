@@ -35,5 +35,10 @@ export type GetModelWhere = ModelWhere;
 
 export interface CompactColumn {
   name: string;
-  tableName: string;
+  type: string;
+}
+
+export interface CompactTable {
+  name: string;
+  columns: CompactColumn[];
 }

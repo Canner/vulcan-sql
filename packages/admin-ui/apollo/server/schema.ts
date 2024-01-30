@@ -22,6 +22,16 @@ export const typeDefs = gql`
     properties: JSON!
   }
 
+  type CompactTable {
+    name: String!
+    columns: [CompactColumn!]!
+  }
+
+  input MDLModelSubmitInput {
+    name: String!
+    columns: [String!]!
+  }
+
   type RelationColumnInformation {
     tableName: String!
     columnName: String!
@@ -32,6 +42,10 @@ export const typeDefs = gql`
     ONE_TO_MANY
     MANY_TO_ONE
     MANY_TO_MANY
+  }
+
+  input AutoGenerateInput {
+    tables: [String!]!
   }
 
   type Relation {
@@ -51,9 +65,14 @@ export const typeDefs = gql`
     type: RelationType!
   }
 
+  input MDLInput {
+    models: [MDLModelSubmitInput!]!
+    relations: [RelationInput!]!
+  }
+
   type CompactColumn {
     name: String!
-    tableName: String!
+    type: String!
   }
 
   enum ModelType {
@@ -165,9 +184,8 @@ export const typeDefs = gql`
   type Query {
     # On Boarding Steps
     usableDataSource: [UsableDataSource!]!
-    listTables: [String!]!
-    autoGenerateRelation: [Relation!]!
-    listColumns: [CompactColumn!]!
+    listDataSourceTables: [CompactTable!]!
+    autoGenerateRelation(where: AutoGenerateInput): [Relation!]!
     manifest: JSON!
 
     # Modeling Page
@@ -178,8 +196,7 @@ export const typeDefs = gql`
   type Mutation {
     # On Boarding Steps
     saveDataSource(data: DataSourceInput!): DataSource!
-    saveTables(data: [String!]!): [String!]!
-    saveRelations(data: [RelationInput!]!): [Relation!]!
+    saveMDL(data: MDLInput!): JSON!
 
     # Modeling Page
     createModel(data: CreateModelInput!): JSON!
