@@ -3,14 +3,9 @@ import styled from 'styled-components';
 import { Button, ButtonProps, Layout, Space } from 'antd';
 import LogoBar from '@vulcan-sql/admin-ui/components/LogoBar';
 import SharePopover from '@vulcan-sql/admin-ui/components/SharePopover';
+import { Path } from '@vulcan-sql/admin-ui/utils/enum';
 
 const { Header } = Layout;
-
-enum Path {
-  Onboarding = '/setup',
-  Modeling = '/modeling',
-  Explore = '/explore',
-}
 
 const StyledButton = styled(Button).attrs<{
   $isHighlight: boolean;
