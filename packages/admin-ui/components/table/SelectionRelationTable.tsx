@@ -8,6 +8,13 @@ import { ModelIcon } from '@vulcan-sql/admin-ui/utils/icons';
 
 const { Text } = Typography;
 
+const StyledTable = styled(Table)`
+  .ant-table-thead > tr > th {
+    color: var(--gray-7);
+    background-color: white;
+  }
+`;
+
 const StyledRow = styled(Row).attrs<{
   $isRowSelection: boolean;
 }>((props) => ({
@@ -100,8 +107,9 @@ function SelectionRelationTable(
       : undefined;
 
   return (
-    <Table
+    <StyledTable
       ref={ref}
+      className="ant-table-has-header"
       columns={columns}
       dataSource={dataSource}
       rowKey={(record) => JSON.stringify(record)}
