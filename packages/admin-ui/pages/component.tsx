@@ -1,13 +1,17 @@
 import dynamic from 'next/dynamic';
 import { useEffect } from 'react';
 import { Form, Button } from 'antd';
-import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
+import { JOIN_TYPE, NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { useForm } from 'antd/lib/form/Form';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import useModelFieldOptions from '@vulcan-sql/admin-ui/hooks/useModelFieldOptions';
 import AddCaculatedFieldModal from '@vulcan-sql/admin-ui/components/modals/AddCaculatedFieldModal';
+import AddMeasureFieldModal from '@vulcan-sql/admin-ui/components/modals/AddMeasureFieldModal';
+import AddDimensionFieldModal from '@vulcan-sql/admin-ui/components/modals/AddDimensionFieldModal';
+import AddWindowFieldModal from '@vulcan-sql/admin-ui/components/modals/AddWindowFieldModal';
 import AddRelationModal from '@vulcan-sql/admin-ui/components/modals/AddRelationModal';
 import ModelDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/ModelDrawer';
+import MetricDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetricDrawer';
 import useDrawerAction from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
 
 const ModelFieldSelector = dynamic(
@@ -25,9 +29,13 @@ export default function Component() {
   const [form] = useForm();
 
   const addCaculatedFieldModal = useModalAction();
+  const addMeasureFieldModal = useModalAction();
+  const addDimensionFieldModal = useModalAction();
+  const addWindowFieldModal = useModalAction();
   const addRelationModal = useModalAction();
 
   const modelDrawer = useDrawerAction();
+  const metricDrawer = useDrawerAction();
 
   const fieldOptions = useModelFieldOptions();
   const modelFields = Form.useWatch('modelFields', form);
@@ -66,9 +74,23 @@ export default function Component() {
         Add caculated field
       </Button>
 
+      <Button onClick={() => addMeasureFieldModal.openModal()}>
+        Add measure field
+      </Button>
+
+      <Button onClick={() => addDimensionFieldModal.openModal()}>
+        Add dimesion field
+      </Button>
+
+      <Button onClick={() => addWindowFieldModal.openModal()}>
+        Add window field
+      </Button>
+
       <Button onClick={addRelationModal.openModal}>Add relation field</Button>
 
       <Button onClick={() => modelDrawer.openDrawer()}>Model drawer</Button>
+
+      <Button onClick={() => metricDrawer.openDrawer()}>Metric drawer</Button>
 
       <AddCaculatedFieldModal
         model="Customer"
@@ -89,6 +111,33 @@ export default function Component() {
         // }}
       />
 
+      <AddMeasureFieldModal
+        model="Customer"
+        {...addMeasureFieldModal.state}
+        onSubmit={async (values) => {
+          console.log(values);
+        }}
+        onClose={addMeasureFieldModal.closeModal}
+      />
+
+      <AddDimensionFieldModal
+        model="Customer"
+        {...addDimensionFieldModal.state}
+        onSubmit={async (values) => {
+          console.log(values);
+        }}
+        onClose={addDimensionFieldModal.closeModal}
+      />
+
+      <AddWindowFieldModal
+        model="Customer"
+        {...addWindowFieldModal.state}
+        onSubmit={async (values) => {
+          console.log(values);
+        }}
+        onClose={addWindowFieldModal.closeModal}
+      />
+
       <AddRelationModal
         model="Customer"
         {...addRelationModal.state}
@@ -97,7 +146,7 @@ export default function Component() {
         }}
         onClose={addRelationModal.closeModal}
         defaultValue={{
-          relationType: 'ONE_TO_ONE',
+          relationType: JOIN_TYPE.ONE_TO_ONE,
           fromField: {
             model: 'Customer',
             field: 'orders',
@@ -139,6 +188,14 @@ export default function Component() {
           ],
           cached: true,
           cachedPeriod: '1m',
+        }}
+      />
+
+      <MetricDrawer
+        {...metricDrawer.state}
+        onClose={metricDrawer.closeDrawer}
+        onSubmit={async (values) => {
+          console.log(values);
         }}
       />
     </Form>

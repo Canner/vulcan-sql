@@ -1,15 +1,15 @@
 import { makeTableFormControl } from './base';
-import AddCaculatedFieldModal, {
-  CaculatedFieldValue,
-} from '@vulcan-sql/admin-ui/components/modals/AddCaculatedFieldModal';
+import AddMeasureFieldModal, {
+  MeasureFieldValue,
+} from '@vulcan-sql/admin-ui/components/modals/AddMeasureFieldModal';
 
-export type CaculatedFieldTableValue = CaculatedFieldValue[];
+export type MeasureTableValue = MeasureFieldValue[];
 
 type Props = Omit<React.ComponentProps<typeof TableFormControl>, 'columns'>;
 
-const TableFormControl = makeTableFormControl(AddCaculatedFieldModal);
+const TableFormControl = makeTableFormControl(AddMeasureFieldModal);
 
-export default function CaculatedFieldTableFormControl(props: Props) {
+export default function MeasureTableFormControl(props: Props) {
   return (
     <TableFormControl
       {...props}

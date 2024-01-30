@@ -26,7 +26,29 @@ export enum CACHED_PERIOD {
   SECOND = 's',
 }
 
+export enum GRANULARITY {
+  DAY = 'day',
+  MONTH = 'month',
+  YEAR = 'year',
+}
+
+export enum TIME_UNIT {
+  YEAR = 'year',
+  QUARTER = 'quarter',
+  MONTH = 'month',
+  WEEK = 'week',
+  DAY = 'day',
+  HOUR = 'hour',
+  MINUTE = 'minute',
+  SECOND = 'second',
+}
+
 export enum MODEL_STEP {
+  ONE = '1',
+  TWO = '2',
+}
+
+export enum METRIC_STEP {
   ONE = '1',
   TWO = '2',
 }

@@ -18,6 +18,12 @@ export interface ModelFieldResposeData {
   }[];
 }
 
+export type ModelFieldOption = {
+  label: string | JSX.Element;
+  value?: SelectValue;
+  options?: ModelFieldOption[];
+};
+
 export default function useModelFieldOptions(
   transientData?: ModelFieldResposeData[]
 ) {
@@ -30,6 +36,10 @@ export default function useModelFieldOptions(
             {
               name: 'orders',
               properties: { type: 'Orders' },
+            },
+            {
+              name: 'orderDate',
+              properties: { type: 'TIMESTAMP' },
             },
           ],
         },
@@ -86,8 +96,8 @@ export default function useModelFieldOptions(
     };
   };
 
-  const columns = currentModel.columns.map(convertor) || [];
-  const relations = lineage.length
+  const columns: ModelFieldOption[] = currentModel.columns.map(convertor) || [];
+  const relations: ModelFieldOption[] = lineage.length
     ? [{ label: 'Relations', options: lineage.map(convertor) }]
     : [];
 

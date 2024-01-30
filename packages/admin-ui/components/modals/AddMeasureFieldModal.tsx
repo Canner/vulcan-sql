@@ -6,7 +6,7 @@ import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import ExpressionProperties from '@vulcan-sql/admin-ui/components/form/ExpressionProperties';
 import Link from 'next/link';
 
-export type CaculatedFieldValue = {
+export type MeasureFieldValue = {
   [key: string]: any;
   fieldName: string;
   expression: string;
@@ -20,13 +20,13 @@ interface Props {
   onSubmit: (values: any) => Promise<void>;
   onClose: () => void;
   loading?: boolean;
-  defaultValue?: CaculatedFieldValue;
+  defaultValue?: MeasureFieldValue;
 
   // The transientData is used to get the model fields which are not created in DB yet.
   transientData?: ModelFieldResposeData[];
 }
 
-export default function AddCaculatedFieldModal(props: Props) {
+export default function AddMeasureFieldModal(props: Props) {
   const {
     model,
     transientData,
@@ -54,7 +54,7 @@ export default function AddCaculatedFieldModal(props: Props) {
 
   return (
     <Modal
-      title="Add caculated field"
+      title="Add measure"
       width={750}
       visible={visible}
       okText="Submit"
@@ -75,13 +75,13 @@ export default function AddCaculatedFieldModal(props: Props) {
 
       <Form form={form} preserve={false} layout="vertical">
         <Form.Item
-          label="Field name"
+          label="Measure name"
           name="fieldName"
           required
           rules={[
             {
               required: true,
-              message: ERROR_TEXTS.ADD_CACULATED_FIELD.FIELD_NAME.REQUIRED,
+              message: ERROR_TEXTS.ADD_MEASURE_FIELD.FIELD_NAME.REQUIRED,
             },
           ]}
         >
