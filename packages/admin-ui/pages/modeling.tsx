@@ -1,11 +1,8 @@
 import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
 import { forwardRef, useRef } from 'react';
-import { Button } from 'antd';
 import SiderLayout from '@vulcan-sql/admin-ui/components/layouts/SiderLayout';
 import { adapter, MDLJson } from '@vulcan-sql/admin-ui/utils/data';
-import ContentHeader from '@vulcan-sql/admin-ui/components/ContentHeader';
-import SharePopover from '@vulcan-sql/admin-ui/components/SharePopover';
 import styled from 'styled-components';
 import { readFile } from 'fs/promises';
 import { GetServerSideProps } from 'next';
@@ -31,12 +28,6 @@ export function Modeling({ mdlJson, connections }) {
   const diagramRef = useRef(null);
   const adaptedData = adapter(mdlJson as MDLJson);
 
-  const infoSources = [
-    { title: 'Database', type: 'text', value: connections.database },
-    { title: 'Port', type: 'text', value: connections.port },
-    { title: 'Username', type: 'text', value: connections.username },
-    { title: 'Password', type: 'password', value: connections.password },
-  ];
   const { openInfoModal, closeInfoModal, infoModalProps } = useInfoModal();
 
   const onSelect = (selectKeys) => {
@@ -58,16 +49,12 @@ export function Modeling({ mdlJson, connections }) {
 
   return (
     <SiderLayout
+      connections={connections}
       sidebar={{
         data: adaptedData,
         onSelect,
       }}
     >
-      <ContentHeader>
-        <SharePopover sources={infoSources}>
-          <Button type="link">Share</Button>
-        </SharePopover>
-      </ContentHeader>
       <DiagramWrapper>
         <ForwardDiagram
           ref={diagramRef}

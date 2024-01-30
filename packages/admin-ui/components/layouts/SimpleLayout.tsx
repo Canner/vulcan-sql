@@ -1,21 +1,21 @@
 import { Layout } from 'antd';
-import styled from 'styled-components';
-import LogoBar from '../LogoBar';
+import HeaderBar, {
+  Connections,
+} from '@vulcan-sql/admin-ui/components/HeaderBar';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
-const StyledHeader = styled(Header)`
-  height: 54px;
-  border-bottom: 1.5px solid var(--Netural-Color-4, #f0f0f0);
-`;
+interface Props {
+  children: React.ReactNode;
+  connections?: Connections;
+}
 
-export default function SimpleLayout(props) {
+export default function SimpleLayout(props: Props) {
+  const { children, connections = {} } = props;
   return (
     <Layout className="adm-main bg-gray-3">
-      <StyledHeader>
-        <LogoBar />
-      </StyledHeader>
-      <Content>{props.children}</Content>
+      <HeaderBar connections={connections} />
+      <Content className="adm-content">{children}</Content>
     </Layout>
   );
 }
