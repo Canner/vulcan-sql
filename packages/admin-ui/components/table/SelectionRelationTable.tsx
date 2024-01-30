@@ -1,6 +1,10 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef, useContext, useState } from 'react';
 import styled from 'styled-components';
 import { Collapse, Row, RowProps, Table } from 'antd';
+import {
+  FormItemInputContext,
+  FormItemStatusContextProps,
+} from 'antd/lib/form/context';
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import { JOIN_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { ModelIcon } from '@vulcan-sql/admin-ui/utils/icons';
@@ -8,6 +12,11 @@ import { ModelIcon } from '@vulcan-sql/admin-ui/utils/icons';
 const { Panel } = Collapse;
 
 const StyledCollapse = styled(Collapse)`
+  &.ant-collapse.adm-error {
+    border-color: var(--red-5);
+    border-bottom: 1px solid var(--red-5);
+  }
+
   &.ant-collapse {
     background-color: white;
     border-color: var(--gray-4);
@@ -84,6 +93,10 @@ function SelectionRelationTable(
   const { columns, dataSource, extra, enableRowSelection, onChange, title } =
     props;
 
+  const formItemContext =
+    useContext<FormItemStatusContextProps>(FormItemInputContext);
+  const { status } = formItemContext;
+
   const collapseState = useCollapseState(title);
 
   const isRowSelection = Boolean(enableRowSelection);
@@ -104,6 +117,7 @@ function SelectionRelationTable(
   return (
     <StyledCollapse
       key={title}
+      className={status ? `adm-${status}` : ''}
       defaultActiveKey={collapseState.collapseDefaultActiveKey}
       onChange={collapseState.onChangeCollapsePanelState}
     >
