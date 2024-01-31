@@ -12,6 +12,7 @@ import AddWindowFieldModal from '@vulcan-sql/admin-ui/components/modals/AddWindo
 import AddRelationModal from '@vulcan-sql/admin-ui/components/modals/AddRelationModal';
 import ModelDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/ModelDrawer';
 import MetricDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetricDrawer';
+import MetadataDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetadataDrawer';
 import useDrawerAction from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
 
 const ModelFieldSelector = dynamic(
@@ -36,6 +37,7 @@ export default function Component() {
 
   const modelDrawer = useDrawerAction();
   const metricDrawer = useDrawerAction();
+  const metadataDrawer = useDrawerAction();
 
   const fieldOptions = useModelFieldOptions();
   const modelFields = Form.useWatch('modelFields', form);
@@ -91,6 +93,10 @@ export default function Component() {
       <Button onClick={() => modelDrawer.openDrawer()}>Model drawer</Button>
 
       <Button onClick={() => metricDrawer.openDrawer()}>Metric drawer</Button>
+
+      <Button onClick={() => metadataDrawer.openDrawer()}>
+        Metadata drawer
+      </Button>
 
       <AddCaculatedFieldModal
         model="Customer"
@@ -196,6 +202,61 @@ export default function Component() {
         onClose={metricDrawer.closeDrawer}
         onSubmit={async (values) => {
           console.log(values);
+        }}
+      />
+
+      <MetadataDrawer
+        {...metadataDrawer.state}
+        onClose={metadataDrawer.closeDrawer}
+        onSubmit={async (values) => {
+          console.log(values);
+        }}
+        // defaultValue={{
+        //   name: 'Customer',
+        //   nodeType: NODE_TYPE.MODEL,
+        //   description: 'customer_description',
+        //   fields: [
+        //     {
+        //       name: 'custKey',
+        //       type: 'UUID',
+        //     },
+        //   ],
+        //   caculatedFields: [
+        //     {
+        //       fieldName: 'test',
+        //       expression: 'Sum',
+        //       modelFields: [
+        //         { nodeType: NODE_TYPE.MODEL, name: 'customer' },
+        //         { nodeType: NODE_TYPE.FIELD, name: 'custKey', type: 'UUID' },
+        //       ],
+        //     },
+        //   ],
+        //   relations: [],
+        // }}
+        defaultValue={{
+          name: 'Metric',
+          nodeType: NODE_TYPE.METRIC,
+          description: 'metric description',
+          measures: [
+            {
+              fieldName: 'test',
+              expression: 'Sum',
+              modelFields: [
+                { nodeType: NODE_TYPE.MODEL, name: 'customer' },
+                { nodeType: NODE_TYPE.FIELD, name: 'custKey', type: 'UUID' },
+              ],
+            },
+          ],
+          dimensions: [
+            {
+              fieldName: 'test',
+              expression: 'Sum',
+              modelFields: [
+                { nodeType: NODE_TYPE.MODEL, name: 'customer' },
+                { nodeType: NODE_TYPE.FIELD, name: 'custKey', type: 'UUID' },
+              ],
+            },
+          ],
         }}
       />
     </Form>

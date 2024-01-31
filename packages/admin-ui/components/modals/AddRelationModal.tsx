@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import { Modal, Form, Input, Select, Row, Col } from 'antd';
 import { isEmpty } from 'lodash';
+import { Modal, Form, Input, Select, Row, Col } from 'antd';
+import { ModalAction } from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import CombineFieldSelector from '@vulcan-sql/admin-ui/components/selectors/CombineFieldSelector';
 import { JOIN_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
@@ -15,15 +16,11 @@ export type RelationFieldValue = { [key: string]: any } & Pick<
     description?: string;
   };
 
-interface Props {
+type Props = ModalAction<RelationFieldValue, RelationsDataType> & {
   model: string;
-  visible: boolean;
-  onSubmit: (values: RelationsDataType) => Promise<void>;
-  onClose: () => void;
   loading?: boolean;
-  defaultValue?: RelationFieldValue;
   allowSetDescription?: boolean;
-}
+};
 
 export default function RelationModal(props: Props) {
   const {
@@ -38,8 +35,9 @@ export default function RelationModal(props: Props) {
   const [form] = Form.useForm();
 
   useEffect(() => {
+    if (!visible) return;
     form.setFieldsValue(defaultValue || {});
-  }, [form, defaultValue]);
+  }, [form, defaultValue, visible]);
 
   const relationTypeOptions = Object.keys(JOIN_TYPE).map((key) => ({
     label: getJoinTypeText(key),
