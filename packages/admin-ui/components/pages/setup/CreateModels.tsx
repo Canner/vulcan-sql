@@ -1,24 +1,31 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
-import { Button, Col, Form, Row, Typography } from 'antd';
+import { Button, Col, Form, Row, TableColumnsType, Typography } from 'antd';
 import { getColumnTypeIcon } from '@vulcan-sql/admin-ui/utils/columnType';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import {
   makeIterable,
   IterableComponent,
 } from '@vulcan-sql/admin-ui/utils/iteration';
-import SelectionRelationTable from '@vulcan-sql/admin-ui/components/table/SelectionRelationTable';
+import ModelRelationSelectionTable, {
+  SourceTable,
+  SourceTableColumn,
+} from '@vulcan-sql/admin-ui/components/table/ModelRelationSelectionTable';
 
 const { Title, Text } = Typography;
 
-interface Props {
-  onNext: (data: { models: any }) => void;
-  onBack: () => void;
-  selectedModels: string[];
-  tables: any;
+export interface SelectedSourceTables {
+  [tableName: string]: SourceTableColumn[];
 }
 
-const columns = [
+interface Props {
+  onNext: (data: { models: SelectedSourceTables }) => void;
+  onBack: () => void;
+  selectedModels: string[];
+  tables: SourceTable[];
+}
+
+const columns: TableColumnsType<SourceTableColumn> = [
   {
     title: 'Field name',
     dataIndex: 'name',
@@ -37,7 +44,7 @@ const columns = [
   },
 ];
 
-const SelectModelTemplate: IterableComponent = ({ name, fields }) => (
+const SelectModelTemplate: IterableComponent = ({ index, name, fields }) => (
   <Form.Item
     className="mt-6"
     key={name}
@@ -49,11 +56,12 @@ const SelectModelTemplate: IterableComponent = ({ name, fields }) => (
       },
     ]}
   >
-    <SelectionRelationTable
+    <ModelRelationSelectionTable
       columns={columns}
       enableRowSelection
       dataSource={fields}
-      title={name}
+      tableTitle={name}
+      rowKey={(record: SourceTableColumn) => `${name}-${record.name}-${index}`}
     />
   </Form.Item>
 );

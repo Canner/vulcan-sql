@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { Button, Col, Form, Row, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import SelectionRelationTable, {
+import ModelRelationSelectionTable, {
   RelationsDataType,
-} from '@vulcan-sql/admin-ui/components/table/SelectionRelationTable';
+} from '@vulcan-sql/admin-ui/components/table/ModelRelationSelectionTable';
 import { SelectedRecommendRelations } from '@vulcan-sql/admin-ui/components/pages/setup/DefineRelations';
 import {
   makeIterable,
@@ -56,13 +56,20 @@ export const columns: ColumnsType<RelationsDataType> = [
   },
 ];
 
-const SelectRelationTemplate: IterableComponent = ({ name, relations }) => (
+const SelectRelationTemplate: IterableComponent = ({
+  name,
+  index,
+  relations,
+}) => (
   <Form.Item key={name} className="mt-6" name={name}>
-    <SelectionRelationTable
+    <ModelRelationSelectionTable
       columns={columns}
       enableRowSelection
       dataSource={relations}
-      title={name}
+      tableTitle={name}
+      rowKey={(record: RelationsDataType) =>
+        `${name}-${record.relationName}-${index}`
+      }
     />
   </Form.Item>
 );

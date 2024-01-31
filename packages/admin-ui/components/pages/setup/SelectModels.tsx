@@ -1,17 +1,19 @@
 import Link from 'next/link';
 import { Button, Col, Form, Row, Typography } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import MultiSelectBox from '@vulcan-sql/admin-ui/components/table/MultiSelectBox';
+import { SourceTable } from '@vulcan-sql/admin-ui/components/table/ModelRelationSelectionTable';
 
 const { Title, Text } = Typography;
 
 interface Props {
-  tables: any;
+  tables: SourceTable[];
   onNext: (data: { selectedModels: string[] }) => void;
   onBack: () => void;
 }
 
-const columns = [
+const columns: ColumnsType<SourceTable> = [
   {
     title: 'Table name',
     dataIndex: 'displayName',
