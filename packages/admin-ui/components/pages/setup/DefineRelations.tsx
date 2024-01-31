@@ -6,9 +6,9 @@ import type { ColumnsType } from 'antd/es/table';
 import DeleteOutlined from '@ant-design/icons/DeleteOutlined';
 import EditOutlined from '@ant-design/icons/EditOutlined';
 import PlusOutlined from '@ant-design/icons/PlusOutlined';
-import SelectionRelationTable, {
+import ModelRelationSelectionTable, {
   RelationsDataType,
-} from '@vulcan-sql/admin-ui/components/table/SelectionRelationTable';
+} from '@vulcan-sql/admin-ui/components/table/ModelRelationSelectionTable';
 import { columns as defaultColumns } from '@vulcan-sql/admin-ui/components/pages/setup/RecommendRelations';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import AddRelationModal from '@vulcan-sql/admin-ui/components/modals/AddRelationModal';
@@ -26,6 +26,7 @@ interface Props {
 }
 
 interface EditableRelationTableProps {
+  index: number;
   modelName: string;
   onSetRelation: (payload: {
     modelName: string;
@@ -36,7 +37,7 @@ interface EditableRelationTableProps {
 }
 
 function EditableRelationTable(props: EditableRelationTableProps) {
-  const { modelName, onSetRelation, onDeleteRow, relations } = props;
+  const { index, modelName, onSetRelation, onDeleteRow, relations } = props;
 
   const columns: ColumnsType<RelationsDataType> = [
     ...defaultColumns,
@@ -70,10 +71,10 @@ function EditableRelationTable(props: EditableRelationTableProps) {
 
   return (
     <div className="mt-6">
-      <SelectionRelationTable
+      <ModelRelationSelectionTable
         columns={columns}
         dataSource={relations}
-        title={modelName}
+        tableTitle={modelName}
         extra={(onCollapseOpen) => (
           <Button
             onClick={(event) => {
@@ -87,6 +88,9 @@ function EditableRelationTable(props: EditableRelationTableProps) {
             Add relation
           </Button>
         )}
+        rowKey={(record: RelationsDataType) =>
+          `${modelName}-${record.relationName}-${index}`
+        }
       />
     </div>
   );
@@ -200,9 +204,10 @@ export default function DefineRelations(props: Props) {
         </Link>
       </Text>
       <div className="my-6">
-        {Object.entries(relations).map(([modelName, relations = []]) => (
+        {Object.entries(relations).map(([modelName, relations = []], index) => (
           <EditableRelationTable
             key={`${modelName}-${relations.length}`}
+            index={index}
             modelName={modelName}
             relations={relations}
             onSetRelation={onSetRelation}

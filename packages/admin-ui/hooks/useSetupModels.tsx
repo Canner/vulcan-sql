@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { SETUP } from '@vulcan-sql/admin-ui/utils/enum';
 import { useRouter } from 'next/router';
+import { SelectedSourceTables } from '@vulcan-sql/admin-ui/components/pages/setup/CreateModels';
 
 export default function useSetupModels() {
   const [stepKey, setStepKey] = useState(SETUP.SELECT_MODELS);
@@ -10,7 +11,7 @@ export default function useSetupModels() {
 
   const router = useRouter();
 
-  const submitModels = async (models) => {
+  const submitModels = async (models: SelectedSourceTables) => {
     // TODO: implement submitModels API
     router.push('/setup/relations');
   };
@@ -23,7 +24,10 @@ export default function useSetupModels() {
     }
   };
 
-  const onNext = (data?: { selectedModels: string[]; models: any }) => {
+  const onNext = (data?: {
+    selectedModels: string[];
+    models: SelectedSourceTables;
+  }) => {
     if (stepKey === SETUP.SELECT_MODELS) {
       setSelectedModels(data.selectedModels);
       setStepKey(SETUP.CREATE_MODELS);
