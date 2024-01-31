@@ -1,19 +1,17 @@
 import { useState } from 'react';
 import { JOIN_TYPE, SETUP } from '@vulcan-sql/admin-ui/utils/enum';
 import { useRouter } from 'next/router';
-import { SelectedRecommendRelationsProps } from '@vulcan-sql/admin-ui/components/pages/setup/DefineRelations';
+import { SelectedRecommendRelations } from '@vulcan-sql/admin-ui/components/pages/setup/DefineRelations';
 
 export default function useSetupRelations() {
   const [stepKey, setStepKey] = useState(SETUP.RECOMMEND_RELATIONS);
   const [selectedRecommendRelations, setSelectedRecommendRelations] = useState<
-    SelectedRecommendRelationsProps | undefined
+    SelectedRecommendRelations | undefined
   >(undefined);
 
   const router = useRouter();
 
-  const submitReleations = async (
-    relations: SelectedRecommendRelationsProps
-  ) => {
+  const submitReleations = async (relations: SelectedRecommendRelations) => {
     // TODO: implement submitReleations API
     router.push('/modeling');
   };
@@ -27,8 +25,8 @@ export default function useSetupRelations() {
   };
 
   const onNext = (data: {
-    selectedRecommendRelations: SelectedRecommendRelationsProps;
-    relations: SelectedRecommendRelationsProps;
+    selectedRecommendRelations: SelectedRecommendRelations;
+    relations: SelectedRecommendRelations;
   }) => {
     if (stepKey === SETUP.RECOMMEND_RELATIONS) {
       setSelectedRecommendRelations(data.selectedRecommendRelations);

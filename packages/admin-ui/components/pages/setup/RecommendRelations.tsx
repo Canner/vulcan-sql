@@ -4,7 +4,7 @@ import type { ColumnsType } from 'antd/es/table';
 import SelectionRelationTable, {
   RelationsDataType,
 } from '@vulcan-sql/admin-ui/components/table/SelectionRelationTable';
-import { SelectedRecommendRelationsProps } from '@vulcan-sql/admin-ui/components/pages/setup/DefineRelations';
+import { SelectedRecommendRelations } from '@vulcan-sql/admin-ui/components/pages/setup/DefineRelations';
 import {
   makeIterable,
   IterableComponent,
@@ -19,7 +19,7 @@ interface Props {
     name: string;
     relations: RelationsDataType[];
   }>;
-  onNext: (data: SelectedRecommendRelationsProps) => void;
+  onNext: (data: SelectedRecommendRelations) => void;
   onBack: () => void;
 }
 

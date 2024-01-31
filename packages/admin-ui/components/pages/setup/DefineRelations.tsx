@@ -15,13 +15,13 @@ import AddRelationModal from '@vulcan-sql/admin-ui/components/modals/AddRelation
 
 const { Title, Text } = Typography;
 
-export interface SelectedRecommendRelationsProps {
+export interface SelectedRecommendRelations {
   [modelName: string]: RelationsDataType[];
 }
 
 interface Props {
-  selectedRecommendRelations: SelectedRecommendRelationsProps;
-  onNext: (data: { relations: SelectedRecommendRelationsProps }) => void;
+  selectedRecommendRelations: SelectedRecommendRelations;
+  onNext: (data: { relations: SelectedRecommendRelations }) => void;
   onBack: () => void;
 }
 
@@ -95,7 +95,7 @@ function EditableRelationTable(props: EditableRelationTableProps) {
 export default function DefineRelations(props: Props) {
   const { selectedRecommendRelations, onBack, onNext } = props;
 
-  const [relations, setRelations] = useState<SelectedRecommendRelationsProps>(
+  const [relations, setRelations] = useState<SelectedRecommendRelations>(
     selectedRecommendRelations
   );
 
