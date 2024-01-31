@@ -33,7 +33,7 @@ const timeUnitOptions = Object.values(TIME_UNIT).map((value) => ({
   value,
 }));
 
-export default function AddDimensionFieldModal(props: Props) {
+export default function AddWindowFieldModal(props: Props) {
   const {
     model,
     transientData,
