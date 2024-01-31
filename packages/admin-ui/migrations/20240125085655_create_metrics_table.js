@@ -27,6 +27,7 @@ exports.up = function (knex) {
         'metrics properties, a json string, the description should be stored here'
       )
       .nullable();
+    table.timestamps(true, true);
   });
 };
 

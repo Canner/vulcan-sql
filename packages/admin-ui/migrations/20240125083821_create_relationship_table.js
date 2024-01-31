@@ -19,13 +19,13 @@ exports.up = function (knex) {
       .integer('left_column_id')
       .comment(
         'left column id, "{leftSideColumn} {joinType} {rightSideColumn}"'
-      )
-      .nullable();
+      );
     table
       .integer('right_column_id')
       .comment(
         'right column id, "{leftSideColumn} {joinType} {rightSideColumn}"'
       );
+    table.timestamps(true, true);
   });
 };
 
