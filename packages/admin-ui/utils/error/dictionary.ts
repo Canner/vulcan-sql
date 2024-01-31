@@ -67,6 +67,11 @@ export const ERROR_TEXTS = {
       REQUIRED: 'Please select a relation type.',
     },
   },
+  UPDATE_METADATA: {
+    NAME: {
+      REQUIRED: 'Please input name.',
+    },
+  },
   MODELING_CREATE_MODEL: {
     NAME: {
       REQUIRED: 'Please input model name.',

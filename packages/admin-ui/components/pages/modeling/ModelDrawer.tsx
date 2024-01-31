@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Drawer, Form, FormInstance } from 'antd';
 import { FORM_MODE, MODEL_STEP } from '@vulcan-sql/admin-ui/utils/enum';
+import { DrawerAction } from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
 import ModelBasicForm, {
   ButtonGroup as ModelBasicButtonGroup,
   ButtonProps as ModelBasicButtonProps,
@@ -10,13 +11,7 @@ import ModelDetailForm, {
   ButtonProps as ModelDetailButtonProps,
 } from './form/ModelDetailForm';
 
-interface Props {
-  visible: boolean;
-  formMode: FORM_MODE;
-  onClose: () => void;
-  onSubmit: (values: any) => Promise<void>;
-  defaultValue?: any;
-}
+type Props = DrawerAction;
 
 const DynamicForm = (props: {
   formMode: FORM_MODE;
@@ -56,8 +51,9 @@ export default function ModelDrawer(props: Props) {
   const [form] = Form.useForm();
 
   useEffect(() => {
+    if (!visible) return;
     form.setFieldsValue(defaultValue || {});
-  }, [form, defaultValue]);
+  }, [form, defaultValue, visible]);
 
   const afterVisibleChange = (visible: boolean) => {
     if (!visible) {

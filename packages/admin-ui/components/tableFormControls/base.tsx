@@ -10,6 +10,8 @@ interface Props<MData> {
   value?: Record<string, any>[];
   disabled?: boolean;
   onChange?: (value: Record<string, any>[]) => void;
+  onRemoteSubmit?: (value: Record<string, any>[]) => void;
+  onRemoteDelete?: (value: Record<string, any>[]) => void;
   modalProps?: Partial<MData>;
 }
 
@@ -21,7 +23,15 @@ export const makeTableFormControl = <MData,>(
   ModalComponent: React.FC<Partial<MData>>
 ) => {
   const TableFormControl = (props: Props<MData>) => {
-    const { columns, onChange, value, modalProps, disabled } = props;
+    const {
+      columns,
+      onChange,
+      onRemoteSubmit,
+      onRemoteDelete,
+      value,
+      modalProps,
+      disabled,
+    } = props;
     const [internalValue, setInternalValue] = useState(
       setupInternalId(value || [])
     );
@@ -67,11 +77,17 @@ export const makeTableFormControl = <MData,>(
       [internalValue]
     );
 
-    const removeData = (id) => {
+    const removeData = async (id) => {
+      // It means directly update to the db
+      if (onRemoteDelete) return await onRemoteDelete(id);
+
       setInternalValue(internalValue.filter((record) => record._id !== id));
     };
 
-    const submitModal = (item) => {
+    const submitModal = async (item) => {
+      // It means directly update to the db
+      if (onRemoteSubmit) return await onRemoteSubmit(item);
+
       const isNewItem = !item._id;
       if (isNewItem) item._id = uuidv4();
 
