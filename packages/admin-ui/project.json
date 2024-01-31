@@ -79,6 +79,22 @@
           "yarn graphql-codegen --config packages/admin-ui/codegen.yml"
         ]
       }
+    },
+    "knex-migrate:latest": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "yarn knex migrate:latest --cwd packages/admin-ui"
+        ]
+      }
+    },
+    "knex-migrate:rollback": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "yarn knex migrate:rollback --cwd packages/admin-ui"
+        ]
+      }
     }
   },
   "tags": []
