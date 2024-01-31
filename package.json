@@ -122,7 +122,7 @@
     "@types/koa-sslify": "^4.0.3",
     "@types/koa2-ratelimit": "^0.9.3",
     "@types/koa__cors": "^3.3.0",
-    "@types/lodash": "^4.14.182",
+    "@types/lodash": "^4.14.202",
     "@types/md5": "^2.3.2",
     "@types/node": "18.16.9",
     "@types/pg": "^8.6.5",

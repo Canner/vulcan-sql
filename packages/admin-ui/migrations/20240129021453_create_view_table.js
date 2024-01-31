@@ -27,6 +27,7 @@ exports.up = function (knex) {
         'view properties, a json string, the description should be stored here'
       )
       .nullable();
+    table.timestamps(true, true);
   });
 };
 

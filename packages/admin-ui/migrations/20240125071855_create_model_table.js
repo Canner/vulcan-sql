@@ -8,6 +8,7 @@ exports.up = function (knex) {
     table.integer('project_id').comment('Reference to project.id');
 
     // basic info
+    table.string('name').comment('the model display name');
     table
       .string('table_name')
       .comment('referenced table name in the datasource');
@@ -29,6 +30,8 @@ exports.up = function (knex) {
         'model properties, a json string, the description should be stored here'
       )
       .nullable();
+
+    table.timestamps(true, true);
   });
 };
 

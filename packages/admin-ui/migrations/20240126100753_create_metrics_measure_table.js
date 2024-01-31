@@ -23,6 +23,7 @@ exports.up = function (knex) {
         'Granularity for the measure, eg: "day", "hour", "minute", "year"'
       )
       .nullable();
+    table.timestamps(true, true);
   });
 };
 
