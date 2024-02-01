@@ -106,7 +106,7 @@ export default function ModelDetailForm(props: {
       <Form.Item
         label="Create model from"
         name="sourceType"
-        initialValue="table"
+        initialValue={RADIO_VALUE.TABLE}
       >
         <Radio.Group onChange={onSourceChange}>
           <Radio value={RADIO_VALUE.TABLE}>Table</Radio>

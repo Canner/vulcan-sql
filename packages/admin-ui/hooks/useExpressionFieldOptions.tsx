@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Option } from '@vulcan-sql/admin-ui/components/selectors/DescriptiveSelector';
+import { ExpressionOption } from '@vulcan-sql/admin-ui/components/selectors/ExpressionSelector';
 
 export const CUSTOM_EXPRESSION_VALUE = 'customExpression';
 
@@ -38,7 +38,7 @@ export default function useExpressionFieldOptions() {
           },
         ],
       },
-    ] as Option[];
+    ] as ExpressionOption[];
   }, []);
 
   return expressionOptions;

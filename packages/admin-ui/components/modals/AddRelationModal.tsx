@@ -25,7 +25,7 @@ interface Props {
   allowSetDescription?: boolean;
 }
 
-function RelationModal(props: Props) {
+export default function RelationModal(props: Props) {
   const {
     allowSetDescription = true,
     defaultValue,
@@ -155,10 +155,4 @@ function RelationModal(props: Props) {
       </Form>
     </Modal>
   );
-}
-
-export default function AddRelationModal(props: Props) {
-  if (!props.visible) return null;
-
-  return <RelationModal {...props} />;
 }

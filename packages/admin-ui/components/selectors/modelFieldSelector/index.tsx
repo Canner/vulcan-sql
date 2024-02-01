@@ -29,7 +29,7 @@ const Wrapper = styled.div`
 
 const SelectResult = makeIterable(FieldSelect);
 
-export default function RelationsSelector(props: Props) {
+export default function ModelFieldSelector(props: Props) {
   const wrapper = useRef<HTMLDivElement | null>(null);
   const { model, value = [], onChange, options } = props;
 
