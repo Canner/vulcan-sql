@@ -6,7 +6,7 @@ import CombineFieldSelector from '@vulcan-sql/admin-ui/components/selectors/Comb
 import { JOIN_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { getJoinTypeText } from '@vulcan-sql/admin-ui/utils/data';
 import useCombineFieldOptions from '@vulcan-sql/admin-ui/hooks/useCombineFieldOptions';
-import { RelationsDataType } from '@vulcan-sql/admin-ui/components/table/SelectionRelationTable';
+import { RelationsDataType } from '@vulcan-sql/admin-ui/components/table/ModelRelationSelectionTable';
 
 export type RelationFieldValue = { [key: string]: any } & Pick<
   RelationsDataType,

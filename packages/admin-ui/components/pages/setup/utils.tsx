@@ -1,5 +1,6 @@
 import Starter from './Starter';
 import ConnectDataSource from './ConnectDataSource';
+import SelectModels from './SelectModels';
 import CreateModels from './CreateModels';
 import RecommendRelations from './RecommendRelations';
 import DefineRelations from './DefineRelations';
@@ -16,7 +17,9 @@ type SetupStep = {
   component: (
     props?: React.ComponentProps<typeof Starter> &
       React.ComponentProps<typeof ConnectDataSource> &
+      React.ComponentProps<typeof SelectModels> &
       React.ComponentProps<typeof CreateModels> &
+      React.ComponentProps<typeof RecommendRelations> &
       React.ComponentProps<typeof DefineRelations>
   ) => JSX.Element;
   maxWidth?: number;
@@ -38,6 +41,10 @@ export const SETUP_STEPS = {
     step: 0,
     component: ConnectDataSource,
     maxWidth: 800,
+  },
+  [SETUP.SELECT_MODELS]: {
+    step: 1,
+    component: SelectModels,
   },
   [SETUP.CREATE_MODELS]: {
     step: 1,
