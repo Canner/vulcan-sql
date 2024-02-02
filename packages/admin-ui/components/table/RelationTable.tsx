@@ -29,11 +29,19 @@ export default function RelationTable(props: Props) {
     [dataSource]
   );
 
+  const tableData = useMemo(
+    () =>
+      (dataSource || []).map((record, index) => ({
+        ...record,
+        key: `${record.relationName}-${index}`,
+      })),
+    [dataSource]
+  );
+
   return (
     <Table
-      rowKey={(record, index) => `${record.relationName}-${index}`}
-      dataSource={dataSource}
-      showHeader={dataSource.length > 0}
+      dataSource={tableData}
+      showHeader={tableData.length > 0}
       columns={tableColumns}
       pagination={{
         hideOnSinglePage: true,

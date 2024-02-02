@@ -22,11 +22,19 @@ export default function DimensionFieldTable(props: Props) {
     [dataSource]
   );
 
+  const tableData = useMemo(
+    () =>
+      (dataSource || []).map((record, index) => ({
+        ...record,
+        key: `${record.fieldName}-${index}`,
+      })),
+    [dataSource]
+  );
+
   return (
     <Table
-      rowKey={(record, index) => `${record.fieldName}-${index}`}
-      dataSource={dataSource}
-      showHeader={dataSource.length > 0}
+      dataSource={tableData}
+      showHeader={tableData.length > 0}
       columns={tableColumns}
       pagination={{
         hideOnSinglePage: true,
