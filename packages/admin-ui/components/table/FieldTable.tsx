@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { Table, TableProps } from 'antd';
 
-type Props = Pick<TableProps<any>, 'dataSource'> &
-  Partial<Pick<TableProps<any>, 'columns'>>;
+type Props = Pick<TableProps<{ name: string; type: string }>, 'dataSource'> &
+  Partial<Pick<TableProps<{ name: string; type: string }>, 'columns'>>;
 
 export const getFieldTableColumns = () => {
   return [
@@ -26,11 +26,19 @@ export default function FieldTable(props: Props) {
     [dataSource]
   );
 
+  const tableData = useMemo(
+    () =>
+      (dataSource || []).map((record, index) => ({
+        ...record,
+        key: `${record.name}-${index}`,
+      })),
+    [dataSource]
+  );
+
   return (
     <Table
-      rowKey={(record, index) => `${record.name}-${index}`}
-      dataSource={dataSource}
-      showHeader={dataSource.length > 0}
+      dataSource={tableData}
+      showHeader={tableData.length > 0}
       columns={tableColumns}
       pagination={{
         hideOnSinglePage: true,
