@@ -1,7 +1,6 @@
 import { getTestCompiler } from '@vulcan-sql/test-utility';
 import * as path from 'path';
 
-
 describe('Test "rest_api" filter', () => {
   it(
     'Should throw error when not pass the "url" argument',
@@ -16,9 +15,7 @@ describe('Test "rest_api" filter', () => {
       await compileAndLoad(sql);
 
       // Assert
-      await expect(execute({})).rejects.toThrow(
-        'url is required'
-      );
+      await expect(execute({})).rejects.toThrow('url is required');
     },
     50 * 1000
   );
@@ -46,9 +43,10 @@ describe('Test "rest_api" filter', () => {
         ]
       });
 
-      const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } = await getTestCompiler({
-        extensions: { rest_api: path.join(__dirname, '..', 'src') },
-      });
+      const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } =
+        await getTestCompiler({
+          extensions: { rest_api: path.join(__dirname, '..', 'src') },
+        });
 
       const sql = `{% set value = { "path": { "id": 1 } } %}SELECT {{ value | rest_api(url='https://dummyjson.com/products/:id') }}`;
 
@@ -64,13 +62,13 @@ describe('Test "rest_api" filter', () => {
       expect(bindings[0].get('$1')).toEqual(expected);
     },
     50 * 1000
-  )
+  );
 
   it(
     'Should work with template engine and issue a GET request using the query parameter in value',
     async () => {
       const expected = JSON.stringify({
-        "products": [
+        products: [
           {
             "id": 1,
             "title": "iPhone 9",
@@ -146,14 +144,15 @@ describe('Test "rest_api" filter', () => {
             ]
           }
         ],
-        "total": 4,
-        "skip": 0,
-        "limit": 4
+        total: 4,
+        skip: 0,
+        limit: 4,
       });
 
-      const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } = await getTestCompiler({
-        extensions: { rest_api: path.join(__dirname, '..', 'src') },
-      });
+      const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } =
+        await getTestCompiler({
+          extensions: { rest_api: path.join(__dirname, '..', 'src') },
+        });
 
       const sql = `{% set value = { "query": { "q": "phone" }  } %}SELECT {{ value | rest_api(url='https://dummyjson.com/products/search') }}`;
 
@@ -169,19 +168,20 @@ describe('Test "rest_api" filter', () => {
       expect(bindings[0].get('$1')).toEqual(expected);
     },
     50 * 1000
-  )
+  );
 
   it(
     'Should work with template engine and issue a POST request with body and header in value',
     async () => {
       const expected = JSON.stringify({
         id: 101,
-        title: 'BMW Pencil'
+        title: 'BMW Pencil',
       });
 
-      const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } = await getTestCompiler({
-        extensions: { rest_api: path.join(__dirname, '..', 'src') },
-      });
+      const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } =
+        await getTestCompiler({
+          extensions: { rest_api: path.join(__dirname, '..', 'src') },
+        });
 
       const sql = `{% set value = { "body": { "title": "BMW Pencil" }, "headers": { "Content-Type": "application/json" } } %}SELECT {{ value | rest_api(url='https://dummyjson.com/products/add', method='POST') }}`;
 
@@ -197,5 +197,5 @@ describe('Test "rest_api" filter', () => {
       expect(bindings[0].get('$1')).toEqual(expected);
     },
     50 * 1000
-  )
+  );
 });
