@@ -1,6 +1,6 @@
 import { memo, useCallback, useContext } from 'react';
 import { CustomNodeProps, NodeBody, NodeHeader, StyledNode } from './utils';
-import { InfoIcon, LightningIcon, MetricIcon } from '../../../utils/icons';
+import { LightningIcon, MetricIcon, MoreIcon } from '../../../utils/icons';
 import MarkerHandle from './MarkerHandle';
 import Column from './Column';
 import { METRIC_TYPE, MetricColumn, Metric } from '../types';
@@ -11,7 +11,7 @@ import { Tooltip } from 'antd';
 export const MetricNode = ({ data }: CustomNodeProps<Metric>) => {
   const context = useContext(DiagramContext);
   const onClick = () => {
-    context?.onInfoIconClick({
+    context?.onMoreClick({
       title: data.originalData.name,
       data: data.originalData,
     });
@@ -41,7 +41,7 @@ export const MetricNode = ({ data }: CustomNodeProps<Metric>) => {
               <LightningIcon />
             </Tooltip>
           ) : null}
-          <InfoIcon style={{ cursor: 'pointer' }} onClick={onClick} />
+          <MoreIcon style={{ cursor: 'pointer' }} onClick={onClick} />
         </span>
 
         <MarkerHandle id={data.originalData.id} />

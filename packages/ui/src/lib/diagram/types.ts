@@ -95,3 +95,8 @@ export interface TimeGrain {
   refColumn: string;
   dateParts: string[];
 }
+
+export interface MoreClickPayload {
+  title: string;
+  data: Model | Metric;
+}

@@ -9,6 +9,7 @@ import {
 } from 'react';
 import ReactFlow, {
   MiniMap,
+  Background,
   Controls,
   ControlButton,
   useNodesState,
@@ -23,7 +24,7 @@ import Marker from './Marker';
 import { DiagramCreator } from '../../utils/diagram/creator';
 import { wait } from '../../utils/time';
 import { Refresh } from '@styled-icons/material-outlined';
-import { EDGE_TYPE, NODE_TYPE, PayloadData } from './types';
+import { EDGE_TYPE, NODE_TYPE, PayloadData, MoreClickPayload } from './types';
 import { trimId, highlightNodes, highlightEdges } from './utils';
 import { DiagramContext } from './Context';
 
@@ -44,14 +45,14 @@ const minimapStyle = {
 interface Props {
   forwardRef?: ForwardedRef<unknown>;
   data: PayloadData;
-  onInfoIconClick: (data: any) => void;
+  onMoreClick: (data: MoreClickPayload) => void;
 }
 
 const ReactFlowDiagram = forwardRef(function ReactFlowDiagram(
   props: Props,
   ref
 ) {
-  const { data, onInfoIconClick } = props;
+  const { data, onMoreClick } = props;
   const [forceRender, setForceRender] = useState(false);
   const reactFlowInstance = useReactFlow();
   useImperativeHandle(ref, () => reactFlowInstance, [reactFlowInstance]);
@@ -110,7 +111,7 @@ const ReactFlowDiagram = forwardRef(function ReactFlowDiagram(
 
   return (
     <>
-      <DiagramContext.Provider value={{ onInfoIconClick }}>
+      <DiagramContext.Provider value={{ onMoreClick }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -130,6 +131,7 @@ const ReactFlowDiagram = forwardRef(function ReactFlowDiagram(
               <Refresh style={{ maxWidth: 24, maxHeight: 24 }} />
             </ControlButton>
           </Controls>
+          <Background gap={16} />
         </ReactFlow>
       </DiagramContext.Provider>
 

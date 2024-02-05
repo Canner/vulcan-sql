@@ -2,7 +2,7 @@ import { memo, useCallback, useContext, useMemo } from 'react';
 import styled from 'styled-components';
 import Column from './Column';
 import { CustomNodeProps, NodeBody, NodeHeader, StyledNode } from './utils';
-import { InfoIcon, ModelIcon, PrimaryKeyIcon } from '../../../utils/icons';
+import { MoreIcon, ModelIcon, PrimaryKeyIcon } from '../../../utils/icons';
 import MarkerHandle from './MarkerHandle';
 import { ModelColumn, Model } from '../types';
 import { highlightEdges, highlightNodes, trimId } from '../utils';
@@ -17,7 +17,7 @@ const ColumnTitle = styled.div`
 export const ModelNode = ({ data }: CustomNodeProps<Model>) => {
   const context = useContext(DiagramContext);
   const onClick = () => {
-    context?.onInfoIconClick({
+    context?.onMoreClick({
       title: data.originalData.name,
       data: data.originalData,
     });
@@ -47,7 +47,7 @@ export const ModelNode = ({ data }: CustomNodeProps<Model>) => {
           <ModelIcon />
           {data.originalData.name}
         </span>
-        <InfoIcon onClick={onClick} />
+        <MoreIcon onClick={onClick} />
 
         <MarkerHandle id={data.originalData.id} />
       </NodeHeader>
