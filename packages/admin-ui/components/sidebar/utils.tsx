@@ -111,7 +111,7 @@ export const getMetrics = (metrics) => {
 };
 
 export const getModelTreeData = (data): TreeNode[] => {
-  const { models } = data;
+  const { models = [] } = data || {};
 
   return [
     {
@@ -130,7 +130,7 @@ export const getModelTreeData = (data): TreeNode[] => {
 };
 
 export const getMetricTreeData = (data): TreeNode[] => {
-  const { metrics } = data;
+  const { metrics = [] } = data || {};
 
   return [
     {

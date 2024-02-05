@@ -168,7 +168,7 @@ const MetricMetadata = ({
 
 export default function MetadataDrawer(props: Props) {
   const { visible, defaultValue, onClose } = props;
-  const { name, description, nodeType = NODE_TYPE.MODEL } = defaultValue;
+  const { name, description, nodeType = NODE_TYPE.MODEL } = defaultValue || {};
   const router = useRouter();
 
   const goToExplore = () => {

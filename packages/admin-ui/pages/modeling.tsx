@@ -1,14 +1,14 @@
 import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
-import { forwardRef, useRef } from 'react';
+import { forwardRef, useMemo, useRef } from 'react';
 import SiderLayout from '@vulcan-sql/admin-ui/components/layouts/SiderLayout';
 import { adapter, MDLJson } from '@vulcan-sql/admin-ui/utils/data';
 import styled from 'styled-components';
 import { readFile } from 'fs/promises';
 import { GetServerSideProps } from 'next';
-import InfoModal, {
-  useInfoModal,
-} from '@vulcan-sql/admin-ui/components/modals/infoModal';
+import MetadataDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetadataDrawer';
+import useDrawerAction from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
+import { useManifestQuery } from '../apollo/client/graphql/manifest.generated';
 
 const Diagram = dynamic(() => import('@vulcan-sql/ui/src/lib/diagram'), {
   ssr: false,
@@ -20,15 +20,20 @@ const ForwardDiagram = forwardRef(function ForwardDiagram(props: any, ref) {
 
 const DiagramWrapper = styled.div`
   position: relative;
-  padding-right: 16px;
-  height: calc(100% - 48px);
+  height: 100%;
 `;
 
-export function Modeling({ mdlJson, connections }) {
+export function Modeling({ connections }) {
   const diagramRef = useRef(null);
-  const adaptedData = adapter(mdlJson as MDLJson);
 
-  const { openInfoModal, closeInfoModal, infoModalProps } = useInfoModal();
+  const { data } = useManifestQuery();
+
+  const adaptedManifest = useMemo(() => {
+    if (!data) return null;
+    return adapter(data?.manifest as MDLJson);
+  }, [data]);
+
+  const metadataDrawer = useDrawerAction();
 
   const onSelect = (selectKeys) => {
     if (diagramRef.current) {
@@ -43,31 +48,29 @@ export function Modeling({ mdlJson, connections }) {
     }
   };
 
-  const onInfoIconClick = (data) => {
-    openInfoModal(data);
+  const onMoreClick = (payload) => {
+    metadataDrawer.openDrawer(payload.data);
   };
 
   return (
     <SiderLayout
       connections={connections}
+      loading={adaptedManifest === null}
       sidebar={{
-        data: adaptedData,
+        data: adaptedManifest,
         onSelect,
       }}
     >
       <DiagramWrapper>
         <ForwardDiagram
           ref={diagramRef}
-          data={adaptedData}
-          onInfoIconClick={onInfoIconClick}
+          data={adaptedManifest}
+          onMoreClick={onMoreClick}
         />
       </DiagramWrapper>
-      <InfoModal
-        visible={infoModalProps.visible}
-        title={infoModalProps.title}
-        data={infoModalProps.data}
-        onOk={closeInfoModal}
-        onCancel={closeInfoModal}
+      <MetadataDrawer
+        {...metadataDrawer.state}
+        onClose={metadataDrawer.closeDrawer}
       />
     </SiderLayout>
   );
