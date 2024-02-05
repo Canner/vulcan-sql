@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Modal, Form, Input } from 'antd';
+import { ModalAction } from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import { FieldValue } from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector/FieldSelect';
 import { ModelFieldResposeData } from '@vulcan-sql/admin-ui/hooks/useModelFieldOptions';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
@@ -14,17 +15,13 @@ export type CaculatedFieldValue = {
   customExpression?: string;
 };
 
-interface Props {
+type Props = ModalAction<CaculatedFieldValue> & {
   model: string;
-  visible: boolean;
-  onSubmit: (values: any) => Promise<void>;
-  onClose: () => void;
   loading?: boolean;
-  defaultValue?: CaculatedFieldValue;
 
   // The transientData is used to get the model fields which are not created in DB yet.
   transientData?: ModelFieldResposeData[];
-}
+};
 
 export default function AddCaculatedFieldModal(props: Props) {
   const {
@@ -39,8 +36,9 @@ export default function AddCaculatedFieldModal(props: Props) {
   const [form] = Form.useForm();
 
   useEffect(() => {
+    if (!visible) return;
     form.setFieldsValue(defaultValue || {});
-  }, [form, defaultValue]);
+  }, [form, defaultValue, visible]);
 
   const submit = () => {
     form

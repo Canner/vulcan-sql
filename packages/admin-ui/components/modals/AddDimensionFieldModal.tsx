@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { Modal, Form, Input, Select } from 'antd';
+import { ModalAction } from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import { GRANULARITY, COLUMN_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { FieldValue } from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector/FieldSelect';
 import ModelFieldSelector from '@vulcan-sql/admin-ui/components/selectors/modelFieldSelector';
@@ -16,17 +17,13 @@ export type DimensionFieldValue = {
   modelFields?: FieldValue[];
 };
 
-interface Props {
+type Props = ModalAction<DimensionFieldValue> & {
   model: string;
-  visible: boolean;
-  onSubmit: (values: any) => Promise<void>;
-  onClose: () => void;
   loading?: boolean;
-  defaultValue?: DimensionFieldValue;
 
   // The transientData is used to get the model fields which are not created in DB yet.
   transientData?: ModelFieldResposeData[];
-}
+};
 
 const granularityOptions = Object.values(GRANULARITY).map((value) => ({
   label: value,
@@ -59,8 +56,9 @@ export default function AddDimensionFieldModal(props: Props) {
   }, [modelFields]);
 
   useEffect(() => {
+    if (!visible) return;
     form.setFieldsValue(defaultValue || {});
-  }, [form, defaultValue]);
+  }, [form, defaultValue, visible]);
 
   const submit = () => {
     form

@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { FORM_MODE } from '@vulcan-sql/admin-ui/utils/enum';
 
+export interface DrawerAction<TData = any> {
+  visible: boolean;
+  onClose: () => void;
+  onSubmit?: (values: any) => Promise<void>;
+  formMode?: FORM_MODE;
+  // use as form default value or view data
+  defaultValue?: TData;
+}
+
 export default function useDrawerAction() {
   const [visible, setVisible] = useState(false);
   const [formMode, setFormMode] = useState(FORM_MODE.CREATE);

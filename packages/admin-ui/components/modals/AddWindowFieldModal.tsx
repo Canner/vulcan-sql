@@ -46,8 +46,9 @@ export default function AddWindowFieldModal(props: Props) {
   const [form] = Form.useForm();
 
   useEffect(() => {
+    if (!visible) return;
     form.setFieldsValue(defaultValue || {});
-  }, [form, defaultValue]);
+  }, [form, defaultValue, visible]);
 
   const modelFieldOptions = useModelFieldOptions(transientData);
 
