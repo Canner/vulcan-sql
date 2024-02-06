@@ -97,7 +97,7 @@ export default function AddWindowFieldModal(props: Props) {
       <Form form={form} preserve={false} layout="vertical">
         <Form.Item
           label="Window name"
-          name="fieldName"
+          name="name"
           required
           rules={[
             {

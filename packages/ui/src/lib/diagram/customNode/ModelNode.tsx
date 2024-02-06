@@ -1,6 +1,5 @@
 import { memo, useCallback, useContext, useMemo } from 'react';
-import styled from 'styled-components';
-import Column from './Column';
+import Column, { ColumnTitle } from './Column';
 import { CustomNodeProps, NodeBody, NodeHeader, StyledNode } from './utils';
 import { MoreIcon, ModelIcon, PrimaryKeyIcon } from '../../../utils/icons';
 import MarkerHandle from './MarkerHandle';
@@ -8,11 +7,6 @@ import { ModelColumn, Model } from '../types';
 import { highlightEdges, highlightNodes, trimId } from '../utils';
 import { getColumnTypeIcon } from '../../../utils/columnType';
 import { DiagramContext } from '../Context';
-
-const ColumnTitle = styled.div`
-  color: var(--gray-8);
-  padding: 4px 12px;
-`;
 
 export const ModelNode = ({ data }: CustomNodeProps<Model>) => {
   const context = useContext(DiagramContext);
@@ -28,7 +22,7 @@ export const ModelNode = ({ data }: CustomNodeProps<Model>) => {
       relationColumns: [] as ModelColumn[],
     };
     data.originalData.columns.forEach((column) => {
-      if (column?.relationship) columnType.relationColumns.push(column);
+      if (column?.relation) columnType.relationColumns.push(column);
       else columnType.columns.push(column);
     });
     return columnType;
@@ -67,7 +61,7 @@ function getColumns(
   data: CustomNodeProps<Model>['data']
 ) {
   return columns.map((column) => {
-    const hasRelationship = !!column.relationship;
+    const hasRelationship = !!column.relation;
 
     const onMouseEnter = useCallback((reactflowInstance: any) => {
       if (!hasRelationship) return;
@@ -92,6 +86,7 @@ function getColumns(
       setEdges(highlightEdges([], false));
       setNodes(highlightNodes([], []));
     }, []);
+
     return (
       <Column
         key={column.id}

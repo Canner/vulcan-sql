@@ -94,7 +94,7 @@ export default function AddDimensionFieldModal(props: Props) {
       <Form form={form} preserve={false} layout="vertical">
         <Form.Item
           label="Dimension name"
-          name="fieldName"
+          name="name"
           required
           rules={[
             {

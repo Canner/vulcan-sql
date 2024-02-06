@@ -14,7 +14,6 @@ import UpdateMetadataModal from '@vulcan-sql/admin-ui/components/modals/UpdateMe
 
 interface MetadataData {
   name: string;
-  description: string;
   fields?: any[];
   caculatedFields?: any[];
   relations?: any[];
@@ -22,6 +21,7 @@ interface MetadataData {
   dimensions?: any[];
   windows?: any[];
   nodeType: NODE_TYPE;
+  properties: Record<string, any>;
 }
 
 type Props = DrawerAction<MetadataData>;
@@ -50,7 +50,7 @@ const ModelMetadata = ({
   // To convert edit value for update metadata modal
   const editMetadataValue = (value) => {
     return {
-      displayName: value.displayName || value.fieldName || value.name,
+      displayName: value.displayName || value.name,
       description: value.description,
     };
   };
@@ -114,7 +114,7 @@ const MetricMetadata = ({
   // To convert edit value for update metadata modal
   const editMetadataValue = (value) => {
     return {
-      displayName: value.displayName || value.fieldName || value.name,
+      displayName: value.displayName || value.name,
       description: value.description,
     };
   };
@@ -168,7 +168,7 @@ const MetricMetadata = ({
 
 export default function MetadataDrawer(props: Props) {
   const { visible, defaultValue, onClose } = props;
-  const { name, description, nodeType = NODE_TYPE.MODEL } = defaultValue || {};
+  const { name, properties, nodeType = NODE_TYPE.MODEL } = defaultValue || {};
   const router = useRouter();
 
   const goToExplore = () => {
@@ -199,7 +199,7 @@ export default function MetadataDrawer(props: Props) {
         <Typography.Text className="d-block gray-7 mb-2">
           Description
         </Typography.Text>
-        <div>{description || '-'}</div>
+        <div>{properties?.description || '-'}</div>
       </div>
 
       {nodeType === NODE_TYPE.MODEL && <ModelMetadata {...defaultValue} />}

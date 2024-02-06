@@ -1,6 +1,5 @@
 import { JOIN_TYPE } from '../types';
-import { Tooltip } from 'antd';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import {
   BaseEdge,
   EdgeLabelRenderer,
@@ -8,6 +7,7 @@ import {
   getSmoothStepPath,
 } from 'reactflow';
 import styled from 'styled-components';
+import CustomPopover from '../CustomPopover';
 
 const Joint = styled.div`
   position: absolute;
@@ -16,18 +16,12 @@ const Joint = styled.div`
   opacity: 0;
 `;
 
-const StyledTooltip = styled(Tooltip)`
-  .ant-tooltip-inner {
-    background-color: var(--gray-8);
-  }
-`;
-
-const getJoinTypeText = (joinType: string) =>
+const getJoinTypeText = (type: JOIN_TYPE) =>
   ({
-    [JOIN_TYPE.ONE_TO_MANY]: '1-N',
-    [JOIN_TYPE.MANY_TO_ONE]: 'N-1',
-    [JOIN_TYPE.ONE_TO_ONE]: '1-1',
-  }[joinType] || 'Unknown');
+    [JOIN_TYPE.MANY_TO_ONE]: 'Many-to-one',
+    [JOIN_TYPE.ONE_TO_MANY]: 'One-to-many',
+    [JOIN_TYPE.ONE_TO_ONE]: 'One-to-one',
+  }[type] || 'Unknown');
 
 const ModelEdge = ({
   sourceX,
@@ -49,13 +43,25 @@ const ModelEdge = ({
     targetPosition,
   });
 
-  const isTooltipShow = data.highlight;
-  const style = isTooltipShow
+  const isPopoverShow = data.highlight;
+  const style = isPopoverShow
     ? {
-        stroke: 'var(--gray-8)',
-        strokeWidth: 1.2,
+        stroke: 'var(--geekblue-6)',
+        strokeWidth: 1.5,
       }
     : { stroke: 'var(--gray-5)' };
+
+  const relation = useMemo(() => {
+    const fromField = `${data.relation.fromField.model}.${data.relation.fromField.field}`;
+    const toField = `${data.relation.toField.model}.${data.relation.toField.field}`;
+    return {
+      name: data.relation.name,
+      joinType: getJoinTypeText(data.relation.joinType),
+      description: data.relation.properties?.description || '-',
+      fromField,
+      toField,
+    };
+  }, [data.relation]);
 
   return (
     <>
@@ -66,23 +72,35 @@ const ModelEdge = ({
         style={style}
       />
       <EdgeLabelRenderer>
-        <StyledTooltip
-          placement="bottom"
-          title={
-            <div>
-              <div>Relation: {getJoinTypeText(data.relationship.joinType)}</div>
-              <div>Condition: {data.relationship.condition}</div>
-            </div>
+        <CustomPopover
+          visible={isPopoverShow}
+          title="Relations"
+          content={
+            <CustomPopover.Row gutter={16}>
+              <CustomPopover.Col title="Name" span={12}>
+                {relation.name}
+              </CustomPopover.Col>
+              <CustomPopover.Col title="Join type" span={12}>
+                {relation.joinType}
+              </CustomPopover.Col>
+              <CustomPopover.Col title="From field" span={12}>
+                {relation.fromField}
+              </CustomPopover.Col>
+              <CustomPopover.Col title="To field" span={12}>
+                {relation.toField}
+              </CustomPopover.Col>
+              <CustomPopover.Col title="Description">
+                {relation.description}
+              </CustomPopover.Col>
+            </CustomPopover.Row>
           }
-          visible={isTooltipShow}
-          overlayStyle={{ maxWidth: '100%', pointerEvents: 'none' }}
         >
           <Joint
             style={{
               transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
             }}
           />
-        </StyledTooltip>
+        </CustomPopover>
       </EdgeLabelRenderer>
     </>
   );

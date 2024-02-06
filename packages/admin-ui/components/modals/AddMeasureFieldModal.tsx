@@ -74,7 +74,7 @@ export default function AddMeasureFieldModal(props: Props) {
       <Form form={form} preserve={false} layout="vertical">
         <Form.Item
           label="Measure name"
-          name="fieldName"
+          name="name"
           required
           rules={[
             {

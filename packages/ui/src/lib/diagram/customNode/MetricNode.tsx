@@ -2,8 +2,8 @@ import { memo, useCallback, useContext } from 'react';
 import { CustomNodeProps, NodeBody, NodeHeader, StyledNode } from './utils';
 import { LightningIcon, MetricIcon, MoreIcon } from '../../../utils/icons';
 import MarkerHandle from './MarkerHandle';
-import Column from './Column';
-import { METRIC_TYPE, MetricColumn, Metric } from '../types';
+import Column, { ColumnTitle } from './Column';
+import { MetricColumn, Metric } from '../types';
 import { getColumnTypeIcon } from '../../../utils/columnType';
 import { DiagramContext } from '../Context';
 import { Tooltip } from 'antd';
@@ -17,6 +17,11 @@ export const MetricNode = ({ data }: CustomNodeProps<Metric>) => {
     });
   };
 
+  const hasDimensions = !!data.originalData.dimensions;
+  const hasMeasures = !!data.originalData.measures;
+  const hasTimeGrains = !!data.originalData.timeGrains;
+  const hasWindows = !!data.originalData.windows;
+
   const renderColumns = useCallback(getColumns, []);
   return (
     <StyledNode>
@@ -26,11 +31,11 @@ export const MetricNode = ({ data }: CustomNodeProps<Metric>) => {
           {data.originalData.name}
         </span>
         <span>
-          {data.originalData.preAggregated ? (
+          {data.originalData.cached ? (
             <Tooltip
               title={
                 <>
-                  Pre-aggregation
+                  Cached
                   {data.originalData.refreshTime
                     ? `: refresh every ${data.originalData.refreshTime}`
                     : null}
@@ -47,7 +52,17 @@ export const MetricNode = ({ data }: CustomNodeProps<Metric>) => {
         <MarkerHandle id={data.originalData.id} />
       </NodeHeader>
       <NodeBody draggable={false}>
-        {renderColumns(data.originalData.columns)}
+        {hasDimensions ? <ColumnTitle>Dimensions</ColumnTitle> : null}
+        {renderColumns(data.originalData.dimensions || [])}
+
+        {hasMeasures ? <ColumnTitle>Measures</ColumnTitle> : null}
+        {renderColumns(data.originalData.measures || [])}
+
+        {hasTimeGrains ? <ColumnTitle>Time Grains</ColumnTitle> : null}
+        {renderColumns(data.originalData.timeGrains || [])}
+
+        {hasWindows ? <ColumnTitle>Windows</ColumnTitle> : null}
+        {renderColumns(data.originalData.windows || [])}
       </NodeBody>
     </StyledNode>
   );
@@ -57,24 +72,6 @@ export default memo(MetricNode);
 
 function getColumns(columns: MetricColumn[]) {
   return columns.map((column) => (
-    <Column
-      key={column.id}
-      {...column}
-      icon={getColumnTypeIcon(column.type)}
-      append={
-        <span style={{ color: 'var(--gray-7)' }}>
-          {getMetricType(column.metricType)}
-        </span>
-      }
-    />
+    <Column key={column.id} {...column} icon={getColumnTypeIcon(column.type)} />
   ));
-}
-
-function getMetricType(type: string) {
-  return (
-    {
-      [METRIC_TYPE.TIME_GRAIN]: 'time_grain',
-      [METRIC_TYPE.DIMENSION]: 'dim',
-    }[type] || type
-  );
 }

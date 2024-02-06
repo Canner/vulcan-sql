@@ -33,7 +33,7 @@ export interface PayloadData {
   schema: string;
   models: Model[];
   metrics: Metric[];
-  relationships: Relationship[];
+  relations: Relation[];
 }
 
 export interface Model {
@@ -42,7 +42,10 @@ export interface Model {
   name: string;
   description?: string;
   refSql: string;
+  cached: boolean;
+  refreshTime: string;
   columns: ModelColumn[];
+  properties: Record<string, any>;
 }
 
 export interface ModelColumn {
@@ -50,15 +53,19 @@ export interface ModelColumn {
   name: string;
   type: string;
   expression?: string;
-  relationship?: Relationship;
+  relation?: Relation;
   isPrimaryKey: boolean;
+  isCalculated: boolean;
+  properties: Record<string, any>;
 }
 
-export interface Relationship {
+export interface Relation {
   name: string;
   models: string[];
   joinType: JOIN_TYPE | string;
   condition: string;
+  fromField: { model: string; field: string };
+  toField: { model: string; field: string };
 }
 
 export type MetricColumn = {
@@ -66,6 +73,7 @@ export type MetricColumn = {
   name: string;
   type: string;
   metricType: METRIC_TYPE | string;
+  properties: Record<string, any>;
 } & Partial<Dimension & Measure & TimeGrain>;
 
 export interface Metric {
@@ -73,10 +81,14 @@ export interface Metric {
   nodeType: NODE_TYPE | string;
   name: string;
   description?: string;
-  baseModel: string;
-  preAggregated: boolean;
+  baseObject: string;
+  cached: boolean;
   refreshTime: string;
-  columns: MetricColumn[];
+  dimensions?: MetricColumn[];
+  measures?: MetricColumn[];
+  timeGrains?: MetricColumn[];
+  windows?: MetricColumn[];
+  properties: Record<string, any>;
 }
 
 export interface Dimension {

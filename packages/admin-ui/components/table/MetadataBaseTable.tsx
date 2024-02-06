@@ -12,16 +12,15 @@ interface Props<MData> {
 }
 
 const defaultIndex = {
-  description: 'description',
+  description: ['properties', 'description'],
 };
 
 export const getMetadataColumns = (
-  dataIndex: Record<string, string> = defaultIndex
+  dataIndex: Record<string, string | string[]> = defaultIndex
 ) => [
   {
     title: 'Description',
     dataIndex: dataIndex?.description,
-    width: 220,
     render: (text) => text || '-',
   },
 ];

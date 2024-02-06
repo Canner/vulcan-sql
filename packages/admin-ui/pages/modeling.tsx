@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
 import { forwardRef, useMemo, useRef } from 'react';
 import SiderLayout from '@vulcan-sql/admin-ui/components/layouts/SiderLayout';
-import { adapter, MDLJson } from '@vulcan-sql/admin-ui/utils/data';
+import { adapter, Manifest } from '@vulcan-sql/admin-ui/utils/data';
 import styled from 'styled-components';
 import { readFile } from 'fs/promises';
 import { GetServerSideProps } from 'next';
@@ -30,7 +30,7 @@ export function Modeling({ connections }) {
 
   const adaptedManifest = useMemo(() => {
     if (!data) return null;
-    return adapter(data?.manifest as MDLJson);
+    return adapter(data?.manifest as Manifest);
   }, [data]);
 
   const metadataDrawer = useDrawerAction();

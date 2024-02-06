@@ -9,16 +9,20 @@ export const getMeasureFieldTableColumns = () => {
   return [
     {
       title: 'Name',
-      dataIndex: 'fieldName',
+      dataIndex: 'name',
+      width: 150,
     },
     {
       title: 'Expression',
-      dataIndex: 'expression',
-      render: (expression, record) => {
+      dataIndex: 'operator',
+      width: 200,
+      render: (operator, record) => {
         // TODO: clarify the interface with backend
+        if (!operator) return '-';
+
         const argumentFields = record.modelFields.map((field) => field.name);
         const argumentTexts = argumentFields.join('.');
-        return `${expression}${argumentTexts ? `(${argumentTexts})` : ''}`;
+        return `${operator}${argumentTexts ? `(${argumentTexts})` : ''}`;
       },
     },
   ];

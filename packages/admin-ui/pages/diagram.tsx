@@ -26,14 +26,14 @@ export default function DiagramTest() {
     setSelectedData(adapter(testData[selectedValue] as MDLJson));
   }, [selectedValue]);
 
-  const onInfoIconClick = (data) => {
+  const onMoreClick = (data) => {
     openInfoModal(data);
   };
 
   return (
     <Layout className="adm-main">
       <TestDataSelect value={selectedValue} onSelect={onSelect} />
-      <Diagram data={selectedData} onInfoIconClick={onInfoIconClick} />
+      <Diagram data={selectedData} onMoreClick={onMoreClick} />
       <InfoModal
         visible={infoModalProps.visible}
         title={infoModalProps.title}

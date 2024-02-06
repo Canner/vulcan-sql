@@ -8,6 +8,7 @@ export enum METRIC_TYPE {
   DIMENSION = 'dimension',
   MEASURE = 'measure',
   TIME_GRAIN = 'timeGrain',
+  WINDOW = 'window',
 }
 
 export enum NODE_TYPE {

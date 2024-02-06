@@ -9,7 +9,7 @@ export const getCaculatedFieldTableColumns = () => {
   return [
     {
       title: 'Name',
-      dataIndex: 'fieldName',
+      dataIndex: 'name',
       width: 150,
     },
     {

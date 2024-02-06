@@ -74,7 +74,7 @@ export default function AddCaculatedFieldModal(props: Props) {
       <Form form={form} preserve={false} layout="vertical">
         <Form.Item
           label="Field name"
-          name="fieldName"
+          name="name"
           required
           rules={[
             {

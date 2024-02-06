@@ -4,7 +4,7 @@ import {
   MARKER_TYPE,
   NODE_TYPE,
   JOIN_TYPE,
-  Relationship,
+  Relation,
   PayloadData,
   Model,
   Metric,
@@ -39,7 +39,7 @@ type NodeWithData = Node<{
 }>;
 
 type EdgeWithData = Edge<{
-  relationship?: Relationship;
+  relation?: Relation;
   highlight: boolean;
 }>;
 
@@ -142,7 +142,7 @@ export class Transformer {
   private addModelEdge(data: Model) {
     const { columns } = data;
     for (const column of columns) {
-      if (column?.relationship) {
+      if (column?.relation) {
         // check if edge already exist
         const hasEdgeExist = this.edges.some((edge) => {
           const [id] = (edge.targetHandle || '').split('_');
@@ -153,47 +153,48 @@ export class Transformer {
         // prepare to add new edge
         const targetModel = this.models.find(
           (model) =>
-            model.id !== data.id &&
-            column.relationship?.models.includes(model.name)
+            model.id !== data.id && column.relation?.models.includes(model.name)
         )!;
         const targetColumn = targetModel?.columns.find(
           (targetColumn) =>
-            targetColumn.relationship?.name === column.relationship?.name
+            targetColumn.relation?.name === column.relation?.name
         );
 
         // check what source and target relation order
-        const { joinType, models } = column.relationship;
+        const { joinType, models } = column.relation;
         const sourceJoinIndex = models.findIndex((name) => name === data.name);
         const targetJoinIndex = models.findIndex(
           (name) => name === targetModel?.name
         );
 
-        targetModel && this.edges.push(
-          this.createEdge({
-            type: EDGE_TYPE.MODEL,
-            joinType,
-            sourceModel: data,
-            sourceColumn: column,
-            sourceJoinIndex,
-            targetModel,
-            targetColumn,
-            targetJoinIndex,
-          })
-        );
+        targetModel &&
+          this.edges.push(
+            this.createEdge({
+              type: EDGE_TYPE.MODEL,
+              joinType,
+              sourceModel: data,
+              sourceColumn: column,
+              sourceJoinIndex,
+              targetModel,
+              targetColumn,
+              targetJoinIndex,
+            })
+          );
       }
     }
   }
 
   private addMetricEdge(data: Metric) {
-    const { baseModel } = data;
-    const targetModel = this.models.find((model) => model.name === baseModel)!;
-    targetModel && this.edges.push(
-      this.createEdge({
-        type: EDGE_TYPE.METRIC,
-        sourceModel: data,
-        targetModel,
-      })
-    );
+    const { baseObject } = data;
+    const targetModel = this.models.find((model) => model.name === baseObject)!;
+    targetModel &&
+      this.edges.push(
+        this.createEdge({
+          type: EDGE_TYPE.METRIC,
+          sourceModel: data,
+          targetModel,
+        })
+      );
   }
 
   private createEdge(props: {
@@ -237,7 +238,7 @@ export class Transformer {
       markerStart,
       markerEnd,
       data: {
-        relationship: (sourceColumn as ModelColumn)?.relationship,
+        relation: (sourceColumn as ModelColumn)?.relation,
         highlight: false,
       },
       animated,

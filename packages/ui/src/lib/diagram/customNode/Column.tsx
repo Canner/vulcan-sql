@@ -1,6 +1,7 @@
 import { ReactFlowInstance, useReactFlow } from 'reactflow';
 import styled from 'styled-components';
 import MarkerHandle from './MarkerHandle';
+import CustomPopover from '../CustomPopover';
 
 const NodeColumn = styled.div`
   position: relative;
@@ -9,6 +10,10 @@ const NodeColumn = styled.div`
   justify-content: space-between;
   padding: 4px 8px;
   color: var(--gray-9);
+
+  &:hover {
+    background-color: var(--gray-3);
+  }
 
   svg {
     cursor: auto;
@@ -30,10 +35,23 @@ const NodeColumn = styled.div`
   }
 `;
 
+export const ColumnTitle = styled.div`
+  color: var(--gray-8);
+  padding: 4px 12px;
+  cursor: default;
+`;
+
 type ColumnProps = {
   id: string;
   type: string;
   name: string;
+  properties: {
+    [key: string]: any;
+    description?: string;
+  };
+  relationship?: any;
+  isCalculated?: boolean;
+  expression?: string;
   style?: React.CSSProperties;
   icon: React.ReactNode;
   append?: React.ReactNode;
@@ -50,6 +68,10 @@ export default function Column(props: ColumnProps) {
     style = {},
     icon,
     append,
+    properties,
+    relationship,
+    isCalculated,
+    expression,
   } = props;
   const reactflowInstance = useReactFlow();
   const mouseEnter = onMouseEnter
@@ -59,7 +81,9 @@ export default function Column(props: ColumnProps) {
     ? () => onMouseLeave(reactflowInstance)
     : undefined;
 
-  return (
+  const isPopoverShow = !relationship;
+
+  const nodeColumn = (
     <NodeColumn
       style={style}
       onMouseEnter={mouseEnter}
@@ -72,5 +96,28 @@ export default function Column(props: ColumnProps) {
       {append}
       <MarkerHandle id={id} />
     </NodeColumn>
+  );
+
+  return isPopoverShow ? (
+    <CustomPopover
+      title={name}
+      placement="right"
+      content={
+        <CustomPopover.Row gutter={16}>
+          <CustomPopover.Col title="Description">
+            {properties?.description || '-'}
+          </CustomPopover.Col>
+          {isCalculated && (
+            <CustomPopover.Col title="Expression" code>
+              {expression}
+            </CustomPopover.Col>
+          )}
+        </CustomPopover.Row>
+      }
+    >
+      {nodeColumn}
+    </CustomPopover>
+  ) : (
+    nodeColumn
   );
 }
