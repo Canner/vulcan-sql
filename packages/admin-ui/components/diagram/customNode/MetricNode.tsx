@@ -1,17 +1,22 @@
 import { memo, useCallback, useContext } from 'react';
-import { CustomNodeProps, NodeBody, NodeHeader, StyledNode } from './utils';
-import { LightningIcon, MetricIcon, MoreIcon } from '../../../utils/icons';
-import MarkerHandle from './MarkerHandle';
-import Column, { ColumnTitle } from './Column';
-import { MetricColumn, Metric } from '../types';
-import { getColumnTypeIcon } from '../../../utils/columnType';
-import { DiagramContext } from '../Context';
 import { Tooltip } from 'antd';
+import { CustomNodeProps, NodeBody, NodeHeader, StyledNode } from './utils';
+import MarkerHandle from './MarkerHandle';
+import { DiagramContext } from '../Context';
+import Column, { ColumnTitle } from './Column';
 import CustomDropdown from '../CustomDropdown';
+import {
+  LightningIcon,
+  MetricIcon,
+  MoreIcon,
+} from '@vulcan-sql/admin-ui/utils/icons';
+import { MORE_ACTION } from '@vulcan-sql/admin-ui/utils/enum';
+import { MetricColumnData, MetricData } from '@vulcan-sql/admin-ui/utils/data';
+import { getColumnTypeIcon } from '@vulcan-sql/admin-ui/utils/columnType';
 
-export const MetricNode = ({ data }: CustomNodeProps<Metric>) => {
+export const MetricNode = ({ data }: CustomNodeProps<MetricData>) => {
   const context = useContext(DiagramContext);
-  const onMoreClick = (type: 'edit' | 'delete') => {
+  const onMoreClick = (type: MORE_ACTION) => {
     context?.onMoreClick({
       type,
       title: data.originalData.name,
@@ -50,7 +55,7 @@ export const MetricNode = ({ data }: CustomNodeProps<Metric>) => {
               }
               placement="top"
             >
-              <LightningIcon style={{ cursor: 'pointer' }} />
+              <LightningIcon className="cursor-pointer" />
             </Tooltip>
           ) : null}
           <CustomDropdown onMoreClick={onMoreClick}>
@@ -82,8 +87,12 @@ export const MetricNode = ({ data }: CustomNodeProps<Metric>) => {
 
 export default memo(MetricNode);
 
-function getColumns(columns: MetricColumn[]) {
+function getColumns(columns: MetricColumnData[]) {
   return columns.map((column) => (
-    <Column key={column.id} {...column} icon={getColumnTypeIcon(column.type)} />
+    <Column
+      key={column.id}
+      {...column}
+      icon={getColumnTypeIcon({ type: column.type })}
+    />
   ));
 }

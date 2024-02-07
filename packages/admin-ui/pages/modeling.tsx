@@ -12,9 +12,10 @@ import MetricDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetricD
 import useDrawerAction from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
 import { useManifestQuery } from '@vulcan-sql/admin-ui/apollo/client/graphql/manifest.generated';
 
-const Diagram = dynamic(() => import('@vulcan-sql/ui/src/lib/diagram'), {
-  ssr: false,
-});
+const Diagram = dynamic(
+  () => import('@vulcan-sql/admin-ui/components/diagram'),
+  { ssr: false }
+);
 // https://github.com/vercel/next.js/issues/4957#issuecomment-413841689
 const ForwardDiagram = forwardRef(function ForwardDiagram(props: any, ref) {
   return <Diagram {...props} forwardRef={ref} />;

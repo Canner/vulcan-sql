@@ -1,17 +1,22 @@
 import { memo, useCallback, useContext } from 'react';
-import Column, { ColumnTitle } from './Column';
-import { CustomNodeProps, NodeBody, NodeHeader, StyledNode } from './utils';
-import { MoreIcon, ModelIcon, PrimaryKeyIcon } from '../../../utils/icons';
-import MarkerHandle from './MarkerHandle';
-import { ModelColumn, Model } from '../types';
 import { highlightEdges, highlightNodes, trimId } from '../utils';
-import { getColumnTypeIcon } from '../../../utils/columnType';
+import { CustomNodeProps, NodeBody, NodeHeader, StyledNode } from './utils';
+import MarkerHandle from './MarkerHandle';
 import { DiagramContext } from '../Context';
+import Column, { ColumnTitle } from './Column';
 import CustomDropdown from '../CustomDropdown';
+import {
+  PrimaryKeyIcon,
+  ModelIcon,
+  MoreIcon,
+} from '@vulcan-sql/admin-ui/utils/icons';
+import { MORE_ACTION } from '@vulcan-sql/admin-ui/utils/enum';
+import { ModelColumnData, ModelData } from '@vulcan-sql/admin-ui/utils/data';
+import { getColumnTypeIcon } from '@vulcan-sql/admin-ui/utils/columnType';
 
-export const ModelNode = ({ data }: CustomNodeProps<Model>) => {
+export const ModelNode = ({ data }: CustomNodeProps<ModelData>) => {
   const context = useContext(DiagramContext);
-  const onMoreClick = (type: 'edit' | 'delete') => {
+  const onMoreClick = (type: MORE_ACTION) => {
     context?.onMoreClick({
       type,
       title: data.originalData.name,
@@ -27,7 +32,7 @@ export const ModelNode = ({ data }: CustomNodeProps<Model>) => {
 
   const hasRelationTitle = !!data.originalData.relationFields.length;
   const renderColumns = useCallback(
-    (columns: ModelColumn[]) => getColumns(columns, data),
+    (columns: ModelColumnData[]) => getColumns(columns, data),
     [data.highlight]
   );
 
@@ -59,8 +64,8 @@ export const ModelNode = ({ data }: CustomNodeProps<Model>) => {
 export default memo(ModelNode);
 
 function getColumns(
-  columns: ModelColumn[],
-  data: CustomNodeProps<Model>['data']
+  columns: ModelColumnData[],
+  data: CustomNodeProps<ModelData>['data']
 ) {
   return columns.map((column) => {
     const hasRelation = !!column.relation;
@@ -99,7 +104,7 @@ function getColumns(
             : undefined
         }
         icon={
-          hasRelation ? <ModelIcon /> : getColumnTypeIcon(column.type || '')
+          hasRelation ? <ModelIcon /> : getColumnTypeIcon({ type: column.type })
         }
         append={column.isPrimaryKey && <PrimaryKeyIcon />}
         onMouseLeave={onMouseLeave}

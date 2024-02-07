@@ -22,7 +22,7 @@ export default function CustomDropdown(props: Props) {
             },
             {
               label: 'Delete',
-              style: { color: 'var(--red-5)' },
+              className: 'red-5',
               key: 'delete',
               onClick: () => onMoreClick('delete'),
             },

@@ -22,6 +22,7 @@ import MonitorOutlined from '@ant-design/icons/MonitorOutlined';
 import SwapOutlined from '@ant-design/icons/SwapOutlined';
 import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
 import { LightningCharge } from '@styled-icons/bootstrap';
+import MoreOutlined from '@ant-design/icons/MoreOutlined';
 
 export const NumericIcon = styled(SortNumerically)`
   height: 1em;
@@ -76,3 +77,4 @@ export const ShareIcon = styled(ShareAltOutlined)``;
 export const LightningIcon = styled(LightningCharge)`
   height: 1em;
 `;
+export const MoreIcon = styled(MoreOutlined)``;

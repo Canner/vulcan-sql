@@ -152,7 +152,7 @@ export default function Component() {
         }}
         onClose={addRelationModal.closeModal}
         defaultValue={{
-          relationType: JOIN_TYPE.ONE_TO_ONE,
+          joinType: JOIN_TYPE.ONE_TO_ONE,
           fromField: {
             model: 'Customer',
             field: 'orders',
@@ -161,8 +161,10 @@ export default function Component() {
             model: 'Lineitem',
             field: 'discount',
           },
-          relationName: 'customer_orders',
-          description: 'customer_orders_description',
+          name: 'customer_orders',
+          properties: {
+            description: 'customer_orders_description',
+          },
         }}
       />
 
@@ -236,7 +238,6 @@ export default function Component() {
         defaultValue={{
           name: 'Metric',
           nodeType: NODE_TYPE.METRIC,
-          description: 'metric description',
           measures: [
             {
               fieldName: 'test',
@@ -257,6 +258,9 @@ export default function Component() {
               ],
             },
           ],
+          properties: {
+            description: 'metric description',
+          },
         }}
       />
     </Form>

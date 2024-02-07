@@ -1,4 +1,3 @@
-import { JOIN_TYPE } from '../types';
 import { memo, useMemo } from 'react';
 import {
   BaseEdge,
@@ -8,6 +7,7 @@ import {
 } from 'reactflow';
 import styled from 'styled-components';
 import CustomPopover from '../CustomPopover';
+import { getJoinTypeText } from '@vulcan-sql/admin-ui/utils/data';
 
 const Joint = styled.div`
   position: absolute;
@@ -15,13 +15,6 @@ const Joint = styled.div`
   height: 30px;
   opacity: 0;
 `;
-
-const getJoinTypeText = (type: JOIN_TYPE) =>
-  ({
-    [JOIN_TYPE.MANY_TO_ONE]: 'Many-to-one',
-    [JOIN_TYPE.ONE_TO_MANY]: 'One-to-many',
-    [JOIN_TYPE.ONE_TO_ONE]: 'One-to-one',
-  }[type] || 'Unknown');
 
 const ModelEdge = ({
   sourceX,

@@ -18,15 +18,16 @@ import ReactFlow, {
   useReactFlow,
   ReactFlowProvider,
 } from 'reactflow';
-import { ModelNode, MetricNode } from './customNode/index';
-import { ModelEdge, MetricEdge } from './customEdge/index';
+import { ModelNode, MetricNode } from './customNode';
+import { ModelEdge, MetricEdge } from './customEdge';
 import Marker from './Marker';
-import { DiagramCreator } from '../../utils/diagram/creator';
-import { wait } from '../../utils/time';
-import { Refresh } from '@styled-icons/material-outlined';
-import { EDGE_TYPE, NODE_TYPE, PayloadData, ClickPayload } from './types';
+import { DiagramContext, ClickPayload } from './Context';
 import { trimId, highlightNodes, highlightEdges } from './utils';
-import { DiagramContext } from './Context';
+import { AdaptedData } from '@vulcan-sql/admin-ui/utils/data';
+import { RefreshIcon } from '@vulcan-sql/admin-ui/utils/icons';
+import { EDGE_TYPE, NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
+import { DiagramCreator } from '@vulcan-sql/admin-ui/utils/diagram/creator';
+import { nextTick } from '@vulcan-sql/admin-ui/utils/time';
 
 import 'reactflow/dist/style.css';
 
@@ -44,7 +45,7 @@ const minimapStyle = {
 
 interface Props {
   forwardRef?: ForwardedRef<unknown>;
-  data: PayloadData;
+  data: AdaptedData;
   onMoreClick: (data: ClickPayload) => void;
   onNodeClick: (data: ClickPayload) => void;
 }
@@ -66,7 +67,7 @@ const ReactFlowDiagram = forwardRef(function ReactFlowDiagram(
     setNodes(diagram.nodes);
     setEdges(diagram.edges);
 
-    wait(50).then(() => reactFlowInstance.fitView());
+    nextTick(50).then(() => reactFlowInstance.fitView());
   }, [diagram]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(diagram.nodes);
@@ -104,9 +105,9 @@ const ReactFlowDiagram = forwardRef(function ReactFlowDiagram(
   };
 
   const onInit = async () => {
-    await wait();
+    await nextTick();
     reactFlowInstance.fitView();
-    await wait(100);
+    await nextTick(100);
     setForceRender(!forceRender);
   };
 
@@ -129,7 +130,7 @@ const ReactFlowDiagram = forwardRef(function ReactFlowDiagram(
           <MiniMap style={minimapStyle} zoomable pannable />
           <Controls showInteractive={false}>
             <ControlButton onClick={onRestore}>
-              <Refresh style={{ maxWidth: 24, maxHeight: 24 }} />
+              <RefreshIcon style={{ maxWidth: 24, maxHeight: 24 }} />
             </ControlButton>
           </Controls>
           <Background gap={16} />

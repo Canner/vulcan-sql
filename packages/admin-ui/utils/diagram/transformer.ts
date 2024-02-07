@@ -4,13 +4,15 @@ import {
   MARKER_TYPE,
   NODE_TYPE,
   JOIN_TYPE,
-  Relation,
-  PayloadData,
-  Model,
-  Metric,
-  ModelColumn,
-  MetricColumn,
-} from '../../lib/diagram/types';
+} from '@vulcan-sql/admin-ui/utils/enum';
+import {
+  ModelData,
+  MetricData,
+  ModelColumnData,
+  MetricColumnData,
+  RelationData,
+  AdaptedData,
+} from '@vulcan-sql/admin-ui/utils/data';
 
 const config = {
   // the number of model in one row
@@ -32,14 +34,14 @@ const config = {
 };
 
 type NodeWithData = Node<{
-  originalData: Model | Metric;
+  originalData: ModelData | MetricData;
   index: number;
   // highlight column ids inside
   highlight: string[];
 }>;
 
 type EdgeWithData = Edge<{
-  relation?: Relation;
+  relation?: RelationData;
   highlight: boolean;
 }>;
 
@@ -47,8 +49,8 @@ type StartPoint = { x: number; y: number; floor: number };
 
 export class Transformer {
   private readonly config: typeof config = config;
-  private models: Model[];
-  private metrics: Metric[];
+  private models: ModelData[];
+  private metrics: MetricData[];
   public nodes: NodeWithData[] = [];
   public edges: Edge[] = [];
   private start: StartPoint = {
@@ -57,7 +59,7 @@ export class Transformer {
     floor: 0,
   };
 
-  constructor(data: PayloadData) {
+  constructor(data: AdaptedData) {
     this.models = data?.models || [];
     this.metrics = data?.metrics || [];
     this.init();
@@ -70,7 +72,7 @@ export class Transformer {
     }
   }
 
-  public addOne(data: Model | Metric) {
+  public addOne(data: ModelData | MetricData) {
     const { nodeType } = data;
     // set position
     const nodeX = this.start.x;
@@ -109,7 +111,7 @@ export class Transformer {
 
   private createNode(props: {
     nodeType: NODE_TYPE | string;
-    data: Model | Metric;
+    data: ModelData | MetricData;
     x: number;
     y: number;
   }): NodeWithData {
@@ -117,10 +119,10 @@ export class Transformer {
     // check nodeType and add edge
     switch (nodeType) {
       case NODE_TYPE.MODEL:
-        this.addModelEdge(data as Model);
+        this.addModelEdge(data as ModelData);
         break;
       case NODE_TYPE.METRIC:
-        this.addMetricEdge(data as Metric);
+        this.addMetricEdge(data as MetricData);
         break;
       default:
         break;
@@ -139,7 +141,7 @@ export class Transformer {
     };
   }
 
-  private addModelEdge(data: Model) {
+  private addModelEdge(data: ModelData) {
     const { columns } = data;
     for (const column of columns) {
       if (column?.relation) {
@@ -184,7 +186,7 @@ export class Transformer {
     }
   }
 
-  private addMetricEdge(data: Metric) {
+  private addMetricEdge(data: MetricData) {
     const { baseObject } = data;
     const targetModel = this.models.find((model) => model.name === baseObject)!;
     targetModel &&
@@ -199,11 +201,11 @@ export class Transformer {
 
   private createEdge(props: {
     type?: EDGE_TYPE;
-    sourceModel: Model | Metric;
-    sourceColumn?: ModelColumn | MetricColumn;
+    sourceModel: ModelData | MetricData;
+    sourceColumn?: ModelColumnData | MetricColumnData;
     sourceJoinIndex?: number;
-    targetModel: Model | Metric;
-    targetColumn?: ModelColumn | MetricColumn;
+    targetModel: ModelData | MetricData;
+    targetColumn?: ModelColumnData | MetricColumnData;
     targetJoinIndex?: number;
     joinType?: JOIN_TYPE | string;
     animated?: boolean;
@@ -238,7 +240,7 @@ export class Transformer {
       markerStart,
       markerEnd,
       data: {
-        relation: (sourceColumn as ModelColumn)?.relation,
+        relation: (sourceColumn as ModelColumnData)?.relation,
         highlight: false,
       },
       animated,
@@ -294,7 +296,7 @@ export class Transformer {
     return this.config.width;
   }
 
-  private getModelHeight(columns: ModelColumn[]) {
+  private getModelHeight(columns: ModelColumnData[]) {
     const { height: diagramHeight, headerHeight, columnHeight } = this.config;
     return headerHeight + (diagramHeight || columnHeight * columns.length);
   }
