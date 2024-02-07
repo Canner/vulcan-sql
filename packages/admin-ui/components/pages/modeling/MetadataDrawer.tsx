@@ -51,7 +51,7 @@ const ModelMetadata = ({
   const editMetadataValue = (value) => {
     return {
       displayName: value.displayName || value.name,
-      description: value.description,
+      description: value.properties?.description,
     };
   };
 
