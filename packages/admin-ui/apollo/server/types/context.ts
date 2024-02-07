@@ -1,3 +1,5 @@
+import { IProjectRepository } from '../repositories';
+
 export interface IContext {
-  // Define your context here
+  projectRepository: IProjectRepository;
 }

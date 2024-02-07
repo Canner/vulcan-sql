@@ -1,8 +1,11 @@
 import microCors from 'micro-cors';
 import { NextApiRequest, NextApiResponse, PageConfig } from 'next';
 import { ApolloServer } from 'apollo-server-micro';
-import { typeDefs, resolvers } from '@vulcan-sql/admin-ui/apollo/server';
+import { typeDefs } from '@vulcan-sql/admin-ui/apollo/server';
+import resolvers from '@vulcan-sql/admin-ui/apollo/server/resolvers';
 import { IContext } from '@vulcan-sql/admin-ui/apollo/server/types';
+import { ProjectRepository } from '@vulcan-sql/admin-ui/apollo/server/repositories';
+import { createKnex } from './knex';
 
 const cors = microCors();
 
@@ -11,14 +14,15 @@ export const config: PageConfig = {
     bodyParser: false,
   },
 };
+const knex = createKnex();
+const projectRepository = new ProjectRepository(knex);
 
 const apolloServer: ApolloServer = new ApolloServer({
   typeDefs,
   resolvers,
   introspection: process.env.NODE_ENV !== 'production',
   context: (): IContext => ({
-    // Place your context like repository, service layer here
-    // modelRepository: new ModelRepository(),
+    projectRepository,
   }),
 });
 

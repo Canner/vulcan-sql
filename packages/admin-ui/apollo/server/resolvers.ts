@@ -13,8 +13,9 @@ import {
 } from './types';
 import * as demoManifest from './manifest.json';
 import { pick } from 'lodash';
+import { DataSourceResolver } from './resolvers/dataSourceResolver';
 
-export const resolvers = {
+const mockResolvers = {
   JSON: GraphQLJSON,
   Query: {
     usableDataSource: () =>
@@ -199,3 +200,19 @@ export const resolvers = {
     },
   },
 };
+
+const dataSourceResolver = new DataSourceResolver();
+
+const Resolvers = {
+  JSON: GraphQLJSON,
+  Query: {},
+  Mutation: {
+    saveDataSource: dataSourceResolver.saveDataSource,
+  },
+};
+
+// if process.env.NODE_ENV === 'development', export mockResolvers
+// else export Resolvers
+export default process.env.NODE_ENV === 'development'
+  ? mockResolvers
+  : Resolvers;

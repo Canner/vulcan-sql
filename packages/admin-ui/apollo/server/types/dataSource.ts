@@ -10,6 +10,14 @@ export interface UsableDataSource extends BaseDataSource {
   requiredProperties: string[];
 }
 
-export interface DataSource extends BaseDataSource {
+export interface DataSource {
+  type: DataSourceName;
   properties: any;
+}
+
+export interface BigQueryDataSourceOptions {
+  displayName: string;
+  location: string;
+  projectId: string;
+  credentials: string;
 }
