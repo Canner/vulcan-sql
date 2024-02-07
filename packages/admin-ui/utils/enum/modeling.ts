@@ -53,3 +53,8 @@ export enum METRIC_STEP {
   ONE = '1',
   TWO = '2',
 }
+
+export enum MORE_ACTION {
+  EDIT = 'edit',
+  DELETE = 'delete',
+}

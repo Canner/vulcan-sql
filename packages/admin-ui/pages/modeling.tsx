@@ -1,14 +1,16 @@
+import { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
 import { forwardRef, useMemo, useRef } from 'react';
+import styled from 'styled-components';
+import { MORE_ACTION, NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import SiderLayout from '@vulcan-sql/admin-ui/components/layouts/SiderLayout';
 import { adapter, Manifest } from '@vulcan-sql/admin-ui/utils/data';
-import styled from 'styled-components';
-import { readFile } from 'fs/promises';
-import { GetServerSideProps } from 'next';
 import MetadataDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetadataDrawer';
+import ModelDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/ModelDrawer';
+import MetricDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetricDrawer';
 import useDrawerAction from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
-import { useManifestQuery } from '../apollo/client/graphql/manifest.generated';
+import { useManifestQuery } from '@vulcan-sql/admin-ui/apollo/client/graphql/manifest.generated';
 
 const Diagram = dynamic(() => import('@vulcan-sql/ui/src/lib/diagram'), {
   ssr: false,
@@ -34,6 +36,8 @@ export function Modeling({ connections }) {
   }, [data]);
 
   const metadataDrawer = useDrawerAction();
+  const modelDrawer = useDrawerAction();
+  const metricDrawer = useDrawerAction();
 
   const onSelect = (selectKeys) => {
     if (diagramRef.current) {
@@ -48,8 +52,24 @@ export function Modeling({ connections }) {
     }
   };
 
-  const onMoreClick = (payload) => {
+  const onNodeClick = (payload) => {
     metadataDrawer.openDrawer(payload.data);
+  };
+
+  const onMoreClick = (payload) => {
+    const { type, data } = payload;
+    const action = {
+      [MORE_ACTION.EDIT]: () => {
+        const { nodeType } = data;
+        if (nodeType === NODE_TYPE.MODEL) modelDrawer.openDrawer(data);
+        if (nodeType === NODE_TYPE.METRIC) metricDrawer.openDrawer(data);
+      },
+      [MORE_ACTION.DELETE]: () => {
+        // TODO: call delete API
+        console.log(data);
+      },
+    };
+    action[type] && action[type]();
   };
 
   return (
@@ -66,11 +86,26 @@ export function Modeling({ connections }) {
           ref={diagramRef}
           data={adaptedManifest}
           onMoreClick={onMoreClick}
+          onNodeClick={onNodeClick}
         />
       </DiagramWrapper>
       <MetadataDrawer
         {...metadataDrawer.state}
         onClose={metadataDrawer.closeDrawer}
+      />
+      <ModelDrawer
+        {...modelDrawer.state}
+        onClose={modelDrawer.closeDrawer}
+        onSubmit={async (values) => {
+          console.log(values);
+        }}
+      />
+      <MetricDrawer
+        {...metricDrawer.state}
+        onClose={metricDrawer.closeDrawer}
+        onSubmit={async (values) => {
+          console.log(values);
+        }}
       />
     </SiderLayout>
   );
@@ -80,19 +115,11 @@ export default Modeling;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const { serverRuntimeConfig } = getConfig();
-  const { JSON_PATH, PG_DATABASE, PG_PORT, PG_USERNAME, PG_PASSWORD } =
+  const { PG_DATABASE, PG_PORT, PG_USERNAME, PG_PASSWORD } =
     serverRuntimeConfig;
-
-  let mdlJson = {};
-  try {
-    mdlJson = JSON.parse(await readFile(JSON_PATH, 'utf-8'));
-  } catch (e) {
-    throw new Error('Could not read JSON file');
-  }
 
   return {
     props: {
-      mdlJson,
       connections: {
         database: PG_DATABASE,
         port: PG_PORT,

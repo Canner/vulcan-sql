@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Title = styled.h5`
   font-weight: 400;
   font-size: 14px;
-  color: var(--gray-5);
+  color: var(--gray-7);
   margin-bottom: 0;
 `;
 

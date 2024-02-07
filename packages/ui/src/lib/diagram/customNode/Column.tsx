@@ -49,7 +49,7 @@ type ColumnProps = {
     [key: string]: any;
     description?: string;
   };
-  relationship?: any;
+  relation?: any;
   isCalculated?: boolean;
   expression?: string;
   style?: React.CSSProperties;
@@ -69,7 +69,7 @@ export default function Column(props: ColumnProps) {
     icon,
     append,
     properties,
-    relationship,
+    relation,
     isCalculated,
     expression,
   } = props;
@@ -81,7 +81,7 @@ export default function Column(props: ColumnProps) {
     ? () => onMouseLeave(reactflowInstance)
     : undefined;
 
-  const isPopoverShow = !relationship;
+  const isPopoverShow = !relation;
 
   const nodeColumn = (
     <NodeColumn

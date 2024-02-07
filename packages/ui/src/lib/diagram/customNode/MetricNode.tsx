@@ -7,16 +7,23 @@ import { MetricColumn, Metric } from '../types';
 import { getColumnTypeIcon } from '../../../utils/columnType';
 import { DiagramContext } from '../Context';
 import { Tooltip } from 'antd';
+import CustomDropdown from '../CustomDropdown';
 
 export const MetricNode = ({ data }: CustomNodeProps<Metric>) => {
   const context = useContext(DiagramContext);
-  const onClick = () => {
+  const onMoreClick = (type: 'edit' | 'delete') => {
     context?.onMoreClick({
+      type,
       title: data.originalData.name,
       data: data.originalData,
     });
   };
-
+  const onNodeClick = () => {
+    context?.onNodeClick({
+      title: data.originalData.name,
+      data: data.originalData,
+    });
+  };
   const hasDimensions = !!data.originalData.dimensions;
   const hasMeasures = !!data.originalData.measures;
   const hasTimeGrains = !!data.originalData.timeGrains;
@@ -24,7 +31,7 @@ export const MetricNode = ({ data }: CustomNodeProps<Metric>) => {
 
   const renderColumns = useCallback(getColumns, []);
   return (
-    <StyledNode>
+    <StyledNode onClick={onNodeClick}>
       <NodeHeader className="dragHandle" color="var(--citrus-6)">
         <span className="adm-model-header">
           <MetricIcon />
@@ -43,10 +50,15 @@ export const MetricNode = ({ data }: CustomNodeProps<Metric>) => {
               }
               placement="top"
             >
-              <LightningIcon />
+              <LightningIcon style={{ cursor: 'pointer' }} />
             </Tooltip>
           ) : null}
-          <MoreIcon style={{ cursor: 'pointer' }} onClick={onClick} />
+          <CustomDropdown onMoreClick={onMoreClick}>
+            <MoreIcon
+              style={{ marginLeft: 4 }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </CustomDropdown>
         </span>
 
         <MarkerHandle id={data.originalData.id} />

@@ -45,6 +45,9 @@ export interface Model {
   cached: boolean;
   refreshTime: string;
   columns: ModelColumn[];
+  fields: ModelColumn[];
+  relationFields: ModelColumn[];
+  calculatedFields: ModelColumn[];
   properties: Record<string, any>;
 }
 
@@ -108,7 +111,7 @@ export interface TimeGrain {
   dateParts: string[];
 }
 
-export interface MoreClickPayload {
+export interface ClickPayload {
   title: string;
   data: Model | Metric;
 }

@@ -1,4 +1,4 @@
-import { memo, useCallback, useContext, useMemo } from 'react';
+import { memo, useCallback, useContext } from 'react';
 import Column, { ColumnTitle } from './Column';
 import { CustomNodeProps, NodeBody, NodeHeader, StyledNode } from './utils';
 import { MoreIcon, ModelIcon, PrimaryKeyIcon } from '../../../utils/icons';
@@ -7,48 +7,50 @@ import { ModelColumn, Model } from '../types';
 import { highlightEdges, highlightNodes, trimId } from '../utils';
 import { getColumnTypeIcon } from '../../../utils/columnType';
 import { DiagramContext } from '../Context';
+import CustomDropdown from '../CustomDropdown';
 
 export const ModelNode = ({ data }: CustomNodeProps<Model>) => {
   const context = useContext(DiagramContext);
-  const onClick = () => {
+  const onMoreClick = (type: 'edit' | 'delete') => {
     context?.onMoreClick({
+      type,
       title: data.originalData.name,
       data: data.originalData,
     });
   };
-  const columnType = useMemo(() => {
-    const columnType = {
-      columns: [] as ModelColumn[],
-      relationColumns: [] as ModelColumn[],
-    };
-    data.originalData.columns.forEach((column) => {
-      if (column?.relation) columnType.relationColumns.push(column);
-      else columnType.columns.push(column);
+  const onNodeClick = () => {
+    context?.onNodeClick({
+      title: data.originalData.name,
+      data: data.originalData,
     });
-    return columnType;
-  }, [data.originalData.columns]);
+  };
 
-  const hasRelationshipTitle = !!columnType.relationColumns.length;
+  const hasRelationTitle = !!data.originalData.relationFields.length;
   const renderColumns = useCallback(
     (columns: ModelColumn[]) => getColumns(columns, data),
     [data.highlight]
   );
 
   return (
-    <StyledNode>
+    <StyledNode onClick={onNodeClick}>
       <NodeHeader className="dragHandle">
         <span className="adm-model-header">
           <ModelIcon />
           {data.originalData.name}
         </span>
-        <MoreIcon onClick={onClick} />
+        <CustomDropdown onMoreClick={onMoreClick}>
+          <MoreIcon onClick={(e) => e.stopPropagation()} />
+        </CustomDropdown>
 
         <MarkerHandle id={data.originalData.id} />
       </NodeHeader>
       <NodeBody draggable={false}>
-        {renderColumns(columnType.columns)}
-        {hasRelationshipTitle ? <ColumnTitle>Relations</ColumnTitle> : null}
-        {renderColumns(columnType.relationColumns)}
+        {renderColumns([
+          ...data.originalData.fields,
+          ...data.originalData.calculatedFields,
+        ])}
+        {hasRelationTitle ? <ColumnTitle>Relations</ColumnTitle> : null}
+        {renderColumns(data.originalData.relationFields)}
       </NodeBody>
     </StyledNode>
   );
@@ -61,10 +63,10 @@ function getColumns(
   data: CustomNodeProps<Model>['data']
 ) {
   return columns.map((column) => {
-    const hasRelationship = !!column.relation;
+    const hasRelation = !!column.relation;
 
     const onMouseEnter = useCallback((reactflowInstance: any) => {
-      if (!hasRelationship) return;
+      if (!hasRelation) return;
       const { getEdges, setEdges, setNodes } = reactflowInstance;
       const edges = getEdges();
       const relatedEdge = edges.find(
@@ -81,7 +83,7 @@ function getColumns(
       );
     }, []);
     const onMouseLeave = useCallback((reactflowInstance: any) => {
-      if (!hasRelationship) return;
+      if (!hasRelation) return;
       const { setEdges, setNodes } = reactflowInstance;
       setEdges(highlightEdges([], false));
       setNodes(highlightNodes([], []));
@@ -96,7 +98,9 @@ function getColumns(
             ? { background: 'var(--gray-3)' }
             : undefined
         }
-        icon={hasRelationship ? <ModelIcon /> : getColumnTypeIcon(column.type)}
+        icon={
+          hasRelation ? <ModelIcon /> : getColumnTypeIcon(column.type || '')
+        }
         append={column.isPrimaryKey && <PrimaryKeyIcon />}
         onMouseLeave={onMouseLeave}
         onMouseEnter={onMouseEnter}

@@ -80,7 +80,7 @@ const ModelEdge = ({
               <CustomPopover.Col title="Name" span={12}>
                 {relation.name}
               </CustomPopover.Col>
-              <CustomPopover.Col title="Join type" span={12}>
+              <CustomPopover.Col title="Relation type" span={12}>
                 {relation.joinType}
               </CustomPopover.Col>
               <CustomPopover.Col title="From field" span={12}>

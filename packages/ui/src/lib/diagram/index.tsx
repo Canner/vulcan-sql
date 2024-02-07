@@ -24,7 +24,7 @@ import Marker from './Marker';
 import { DiagramCreator } from '../../utils/diagram/creator';
 import { wait } from '../../utils/time';
 import { Refresh } from '@styled-icons/material-outlined';
-import { EDGE_TYPE, NODE_TYPE, PayloadData, MoreClickPayload } from './types';
+import { EDGE_TYPE, NODE_TYPE, PayloadData, ClickPayload } from './types';
 import { trimId, highlightNodes, highlightEdges } from './utils';
 import { DiagramContext } from './Context';
 
@@ -45,14 +45,15 @@ const minimapStyle = {
 interface Props {
   forwardRef?: ForwardedRef<unknown>;
   data: PayloadData;
-  onMoreClick: (data: MoreClickPayload) => void;
+  onMoreClick: (data: ClickPayload) => void;
+  onNodeClick: (data: ClickPayload) => void;
 }
 
 const ReactFlowDiagram = forwardRef(function ReactFlowDiagram(
   props: Props,
   ref
 ) {
-  const { data, onMoreClick } = props;
+  const { data, onMoreClick, onNodeClick } = props;
   const [forceRender, setForceRender] = useState(false);
   const reactFlowInstance = useReactFlow();
   useImperativeHandle(ref, () => reactFlowInstance, [reactFlowInstance]);
@@ -111,7 +112,7 @@ const ReactFlowDiagram = forwardRef(function ReactFlowDiagram(
 
   return (
     <>
-      <DiagramContext.Provider value={{ onMoreClick }}>
+      <DiagramContext.Provider value={{ onMoreClick, onNodeClick }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}

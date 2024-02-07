@@ -21,6 +21,7 @@ export class ModelData {
 
   public readonly columns: ModelColumnData[];
   public readonly fields: ModelColumnData[];
+  public readonly relationFields: ModelColumnData[];
   public readonly calculatedFields: ModelColumnData[];
 
   constructor(model: Model, data: Manifest) {
@@ -35,12 +36,15 @@ export class ModelData {
       .map((relationship) => new RelationData(relationship));
     this.properties = model.properties;
 
-    this.columns = model.columns
-      .map((column) => new ModelColumnData(column, model, this.relations))
-      .sort((_, next) => (next.relation ? -1 : 1));
-    this.fields = this.columns.filter((column) => !column.isCalculated);
+    this.columns = model.columns.map(
+      (column) => new ModelColumnData(column, model, this.relations)
+    );
+    this.fields = this.columns.filter(
+      (column) => !column.isCalculated && !column.relation
+    );
+    this.relationFields = this.columns.filter((column) => column.relation);
     this.calculatedFields = this.columns.filter(
-      (column) => column.isCalculated
+      (column) => column.isCalculated && !column.relation
     );
   }
 }

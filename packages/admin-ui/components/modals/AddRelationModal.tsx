@@ -9,7 +9,10 @@ import { RelationData, getJoinTypeText } from '@vulcan-sql/admin-ui/utils/data';
 import useCombineFieldOptions from '@vulcan-sql/admin-ui/hooks/useCombineFieldOptions';
 import { RelationsDataType } from '@vulcan-sql/admin-ui/components/table/ModelRelationSelectionTable';
 
-export type RelationFieldValue = { [key: string]: any } & RelationData;
+export type RelationFieldValue = { [key: string]: any } & Pick<
+  RelationData,
+  'name' | 'joinType' | 'fromField' | 'toField' | 'properties'
+>;
 
 type Props = ModalAction<RelationFieldValue, RelationsDataType> & {
   model: string;

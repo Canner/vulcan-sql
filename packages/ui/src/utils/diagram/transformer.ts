@@ -58,8 +58,8 @@ export class Transformer {
   };
 
   constructor(data: PayloadData) {
-    this.models = data.models;
-    this.metrics = data.metrics;
+    this.models = data?.models || [];
+    this.metrics = data?.metrics || [];
     this.init();
   }
 

@@ -19,7 +19,7 @@ export default function ModelBasicForm(props: {
       <BasicInfoProperties
         form={form}
         label="Metric name"
-        name="metricName"
+        name="name"
         errorTexts={ERROR_TEXTS.MODELING_CREATE_METRIC}
       />
       <CacheProperties form={form} />
