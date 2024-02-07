@@ -29,6 +29,7 @@
     "dayjs": "^1.11.2",
     "detect-port": "^1.5.1",
     "duckdb": "0.7.1",
+    "fs": "^0.0.1-security",
     "glob": "^8.0.1",
     "graphql": "^16.6.0",
     "graphql-type-json": "^0.3.2",
