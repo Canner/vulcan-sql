@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
-import { BaseRepository } from './baseRepository';
+import { BaseRepository, IBasicRepository } from './baseRepository';
 
-export interface Relationship {
+export interface Relation {
   id: number; // ID
   projectId: number; // Reference to project.id
   name: string; // Relation name
@@ -10,7 +10,10 @@ export interface Relationship {
   leftColumnId: number; // Left column id, "{leftSideColumn} {joinType} {rightSideColumn}"
   rightColumnId: number; // Right column id, "{leftSideColumn} {joinType} {rightSideColumn}"
 }
-export class RelationshipRepository extends BaseRepository<Relationship> {
+
+export interface IRelationRepository extends IBasicRepository<Relation> {}
+
+export class RelationRepository extends BaseRepository<Relation> {
   constructor(knexPg: Knex) {
     super({ knexPg, tableName: 'relationship' });
   }

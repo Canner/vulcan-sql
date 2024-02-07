@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { BaseRepository } from './baseRepository';
+import { BaseRepository, IBasicRepository } from './baseRepository';
 
 export interface Metrics {
   id: number; // ID
@@ -14,6 +14,9 @@ export interface Metrics {
   metricId?: number; // Reference to metric.id
   properties?: string; // Metrics properties, a json string, the description and displayName should be stored here
 }
+
+export interface IMetricsRepository extends IBasicRepository<Metrics> {}
+
 export class MetricsRepository extends BaseRepository<Metrics> {
   constructor(knexPg: Knex) {
     super({ knexPg, tableName: 'metrics' });

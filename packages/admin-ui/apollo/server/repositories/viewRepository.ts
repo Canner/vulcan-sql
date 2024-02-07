@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { BaseRepository } from './baseRepository';
+import { BaseRepository, IBasicRepository } from './baseRepository';
 
 export interface View {
   id: number; // ID
@@ -10,6 +10,8 @@ export interface View {
   refreshTime?: string; // Contain a number followed by a time unit (ns, us, ms, s, m, h, d). For example, "2h"
   properties?: string; // View properties, a json string, the description and displayName should be stored here
 }
+
+export interface IViewRepository extends IBasicRepository<View> {}
 
 export class ViewRepository extends BaseRepository<View> {
   constructor(knexPg: Knex) {

@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { BaseRepository } from './baseRepository';
+import { BaseRepository, IBasicRepository } from './baseRepository';
 
 export interface MetricsMeasure {
   id: number; // ID
@@ -8,6 +8,10 @@ export interface MetricsMeasure {
   expression: string; // Expression for the measure
   granularity?: string; // Granularity for the measure, eg: "day", "hour", "minute", "year"
 }
+
+export interface IMetricsMeasureRepository
+  extends IBasicRepository<MetricsMeasure> {}
+
 export class MetricsMeasureRepository extends BaseRepository<MetricsMeasure> {
   constructor(knexPg: Knex) {
     super({ knexPg, tableName: 'metrics_measure' });

@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { BaseRepository } from './baseRepository';
+import { BaseRepository, IBasicRepository } from './baseRepository';
 
 export interface ModelColumn {
   id: number; // ID
@@ -15,6 +15,8 @@ export interface ModelColumn {
   isPk: boolean; // Is primary key of the table
   properties?: string; // Column properties, a json string, the description and displayName should be stored here
 }
+
+export interface IModelColumnRepository extends IBasicRepository<ModelColumn> {}
 
 export class ModelColumnRepository extends BaseRepository<ModelColumn> {
   constructor(knexPg: Knex) {
