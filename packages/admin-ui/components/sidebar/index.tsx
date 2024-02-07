@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import SidebarTree from './SidebarTree';
-import { getMetricTreeData, getModelTreeData } from './utils';
 import { AdaptedData } from '@vulcan-sql/admin-ui/utils/data';
+import Modeling from './Modeling';
 
 const Layout = styled.div`
   position: relative;
@@ -10,50 +9,6 @@ const Layout = styled.div`
   color: var(--gray-8);
   padding-bottom: 24px;
   overflow-x: hidden;
-  padding-top: 16px;
-
-  .ant-dropdown-menu-item {
-    min-height: 39px;
-    color: var(--gray-8);
-
-    &:hover {
-      background-color: var(--gray-4);
-    }
-
-    &-disabled {
-      color: var(--gray-5);
-      &:hover {
-        color: var(--gray-5);
-        background-color: transparent;
-      }
-    }
-
-    &-selected {
-      position: relative;
-      color: var(--gray-8);
-      background-color: var(--gray-4);
-      font-weight: 700;
-
-      &:before,
-      &:after {
-        content: '';
-        position: absolute;
-        right: 16px;
-        height: 2px;
-        background-color: var(--gray-7);
-        border-radius: 2px;
-      }
-      &:after {
-        transform: rotate(45deg) translate(-2px, 6px);
-        width: 8px;
-      }
-
-      &:before {
-        transform: rotate(-50deg) translate(4px, 4px);
-        width: 16px;
-      }
-    }
-  }
 `;
 
 interface Props {
@@ -61,22 +16,11 @@ interface Props {
   onSelect?: (selectKeys) => void;
 }
 
+// TODO: should consider explore's sidebar
 export default function Sidebar(props: Props) {
-  const { data, onSelect } = props;
-
   return (
     <Layout>
-      <SidebarTree
-        treeData={getModelTreeData(data)}
-        onSelect={onSelect}
-        selectedKeys={[]}
-      />
-
-      <SidebarTree
-        treeData={getMetricTreeData(data)}
-        onSelect={onSelect}
-        selectedKeys={[]}
-      />
+      <Modeling {...props} />
     </Layout>
   );
 }

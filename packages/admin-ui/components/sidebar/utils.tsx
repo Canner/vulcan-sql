@@ -1,150 +1,133 @@
 import { DataNode } from 'antd/lib/tree';
 import { getColumnTypeIcon } from '@vulcan-sql/admin-ui/utils/columnType';
 import {
-  MetricIcon,
-  ModelIcon,
   PrimaryKeyIcon,
   RelationshipIcon,
 } from '@vulcan-sql/admin-ui/utils/icons';
-import { TitleNode } from './TitleNode';
-import { ModelColumnData, ModelData } from '@vulcan-sql/admin-ui/utils/data';
+import {
+  MetricColumnData,
+  ModelColumnData,
+} from '@vulcan-sql/admin-ui/utils/data';
+import { assign, isEmpty, snakeCase } from 'lodash';
+import GroupTreeTitle, { IconsType } from './modeling/GroupTreeTitle';
+import { getJoinTypeText } from '@vulcan-sql/admin-ui/utils/data';
+import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
+import { getNodeTypeIcon } from '@vulcan-sql/admin-ui/utils/nodeType';
 
 type TreeNode = DataNode;
 
-const ParentNode = ({ title }) => {
-  return <span>{title}</span>;
-};
-
-const ColumnNode = ({ title, relationship, primary }) => {
+const ColumnNode = ({ title, relation, primary }) => {
   const append = (
     <>
-      {relationship && (
+      {relation && (
         <span
-          className="adm-node-relationship"
-          title={`${relationship.name}: ${relationship.joinType}`}
+          className="adm-treeNode--relation"
+          title={`${relation.name}: ${getJoinTypeText(relation.joinType)}`}
         >
           <RelationshipIcon />
         </span>
       )}
       {primary && (
-        <span className="adm-node-primary" title="Primary Key">
+        <span className="adm-treeNode--primary" title="Primary Key">
           <PrimaryKeyIcon />
         </span>
       )}
     </>
   );
 
-  return <TitleNode title={title} append={append} />;
+  return (
+    <>
+      <span title={title}>{title}</span>
+      {append}
+    </>
+  );
 };
 
-const MetricColumnNode = ({ title }) => {
-  const append = <></>;
+const getChildrenSubtitle = (nodeKey: string, title: string) => [
+  {
+    title,
+    key: `${nodeKey}_${snakeCase(title)}`,
+    className: 'adm-treeNode--subtitle adm-treeNode--selectNone',
+    selectable: false,
+    isLeaf: true,
+  },
+];
 
-  return <TitleNode title={title} append={append} />;
-};
+export const getColumnNode = (
+  nodeKey: string,
+  columns: ModelColumnData[] | MetricColumnData[],
+  title?: string
+): TreeNode[] => {
+  if (columns.length === 0) return [];
 
-export const getEmpty = (title) => {
   return [
-    {
-      className: 'adm-node adm-node-empty adm-node-select-none',
-      title,
-      key: 'empty' + title,
-      selectable: false,
-    },
+    ...(title ? getChildrenSubtitle(nodeKey, title) : []),
+    ...columns.map((column): TreeNode => {
+      // show the model icon for relation item
+      const icon = column.relation
+        ? getNodeTypeIcon({ nodeType: NODE_TYPE.MODEL })
+        : getColumnTypeIcon(column, { title: column.type });
+
+      return {
+        icon,
+        className: 'adm-treeNode adm-treeNode-column adm-treeNode--selectNode',
+        title: (
+          <ColumnNode
+            title={column.name}
+            relation={column?.relation}
+            primary={column?.isPrimaryKey}
+          />
+        ),
+        key: column.id,
+        selectable: false,
+        isLeaf: true,
+      };
+    }),
   ];
 };
 
-export const getColumn = (columns: ModelColumnData[]): TreeNode[] => {
-  return columns.map((column): TreeNode => {
-    return {
-      icon: <span title={column.type}>{getColumnTypeIcon(column)}</span>,
-      className: 'adm-node adm-node-column adm-node-select-none',
-      title: (
-        <ColumnNode
-          title={column.name}
-          relationship={column?.relationship}
-          primary={column.isPrimaryKey}
-        />
-      ),
-      key: column.id,
-      selectable: false,
-      isLeaf: true,
-    };
-  });
-};
+interface GroupSet {
+  groupName: string;
+  groupKey: string;
+  quotaUsage?: number;
+  children?: DataNode[];
+  icons: IconsType[];
+}
 
-export const getModel = (models: ModelData[]) => {
-  return models.map((model): TreeNode => {
-    return {
-      className: 'adm-node adm-node-model',
-      icon: <ModelIcon style={{ marginTop: -2 }} />,
-      title: <ParentNode title={model.name} />,
-      key: model.id,
-      children: getColumn(model.columns),
-    };
-  });
-};
+export const createTreeGroupNode =
+  (sourceData: GroupSet) => (updatedData?: Partial<GroupSet>) => {
+    const {
+      groupName = '',
+      groupKey = '',
+      quotaUsage,
+      icons,
+      children = [],
+    } = assign(sourceData, updatedData);
 
-export const getMetricColumn = (columns: ModelColumnData[]): TreeNode[] => {
-  return columns.map((column): TreeNode => {
-    return {
-      icon: <span title={column.type}>{getColumnTypeIcon(column)}</span>,
-      className: 'adm-node adm-node-column adm-node-select-none',
-      title: <MetricColumnNode title={column.name} />,
-      key: column.id,
-      selectable: false,
-      isLeaf: true,
-    };
-  });
-};
+    const emptyChildren = [
+      {
+        title: `No ${groupName}`,
+        key: `${groupKey}-empty`,
+        selectable: false,
+        className: 'adm-treeNode adm-treeNode--empty adm-treeNode--selectNode',
+      },
+    ];
+    const childrenData = isEmpty(children) ? emptyChildren : children;
 
-export const getMetrics = (metrics) => {
-  return metrics.map((metric) => {
-    return {
-      className: 'adm-node adm-node-model',
-      icon: <MetricIcon style={{ marginTop: -2 }} />,
-      title: <ParentNode title={metric.name} />,
-      key: metric.id,
-      children: getColumn(metric.columns),
-    };
-  });
-};
-
-export const getModelTreeData = (data): TreeNode[] => {
-  const { models = [] } = data || {};
-
-  return [
-    {
-      className: 'adm-node-group',
-      title: (
-        <>
-          Models <span className="adm-node-group-count">({models.length})</span>
-        </>
-      ),
-      key: 'models',
-      selectable: false,
-      isLeaf: true,
-    },
-    ...(models.length ? getModel(models) : getEmpty('No Models')),
-  ];
-};
-
-export const getMetricTreeData = (data): TreeNode[] => {
-  const { metrics = [] } = data || {};
-
-  return [
-    {
-      className: 'adm-node-group',
-      title: (
-        <>
-          Metrics{' '}
-          <span className="adm-node-group-count">({metrics.length})</span>
-        </>
-      ),
-      key: 'metrics',
-      selectable: false,
-      isLeaf: true,
-    },
-    ...(metrics.length ? getMetrics(metrics) : getEmpty('No Metrics')),
-  ];
-};
+    return [
+      {
+        className: 'adm-treeNode--group',
+        title: (
+          <GroupTreeTitle
+            title={groupName}
+            quotaUsage={quotaUsage}
+            icons={icons}
+          />
+        ),
+        key: groupKey,
+        selectable: false,
+        isLeaf: true,
+      },
+      ...childrenData,
+    ];
+  };
