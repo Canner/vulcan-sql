@@ -6,11 +6,14 @@ export interface ModelColumn {
   modelId: number; // Reference to model ID
   isCalculated: boolean; // Is calculated field
   name: string; // Column name
-  expression?: string; // Expression for the column, could be custom field or calculated field expression
+  aggregation?: string; // Expression for the column, could be custom field or calculated field expression
+  lineage?: string; // The selected field in calculated field, array of ids
+  diagram?: string; // For FE to store the calculated field diagram
+  customExpression?: string; // For custom field or custom expression of calculated field
   type: string; // Data type, refer to the column type in the datasource
   notNull: boolean; // Is not null
   isPk: boolean; // Is primary key of the table
-  properties?: string; // Column properties, a json string, the description should be stored here
+  properties?: string; // Column properties, a json string, the description and displayName should be stored here
 }
 
 export class ModelColumnRepository extends BaseRepository<ModelColumn> {

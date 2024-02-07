@@ -9,12 +9,30 @@ exports.up = function (knex) {
     // column name
     table.boolean('is_calculated').comment('Is calculated field');
     table.string('name').comment('Column name');
+
+    // aggregation
     table
-      .text('expression')
+      .text('aggregation')
       .comment(
-        'Expression for the column, could be custom field or calculated field expression'
+        'Expression for the column, could be custom field or calculated field expression, eg: sum, aggregate'
       )
       .nullable();
+    table
+      .text('lineage')
+      .comment(
+        'the selected field in calculated field, array of ids, [relationId 1, relationId 2, columnId], last one should be columnId, while others are relationId'
+      )
+      .nullable();
+    table
+      .text('diagram')
+      .comment('for FE to store the calculated field diagram')
+      .nullable();
+
+    table
+      .text('custom_expression')
+      .comment('for custom field or custom expression of calculated field.')
+      .nullable();
+
     table
       .string('type')
       .comment('Data type, refer to the column type in the datasource');
@@ -24,7 +42,7 @@ exports.up = function (knex) {
     table
       .text('properties')
       .comment(
-        'column properties, a json string, the description should be stored here'
+        'column properties, a json string, the description and displayName should be stored here'
       )
       .nullable();
 
