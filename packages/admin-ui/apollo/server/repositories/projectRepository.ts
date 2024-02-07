@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { BaseRepository } from './baseRepository';
+import { BaseRepository, IBasicRepository } from './baseRepository';
 
 export interface Project {
   id: number; // ID
@@ -10,6 +10,8 @@ export interface Project {
   catalog: string; // Catalog name
   schema: string; // Schema name
 }
+
+export interface IProjectRepository extends IBasicRepository<Project> {}
 
 export class ProjectRepository extends BaseRepository<Project> {
   constructor(knexPg: Knex) {
