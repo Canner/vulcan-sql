@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { BaseRepository, IQueryOptions } from './baseRepository';
+import { BaseRepository } from './baseRepository';
 
 export interface ModelColumn {
   id: number; // ID
