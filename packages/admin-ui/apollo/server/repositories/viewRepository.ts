@@ -8,7 +8,7 @@ export interface View {
   statement: string; // The SQL statement of this view
   cached: boolean; // View is cached or not
   refreshTime?: string; // Contain a number followed by a time unit (ns, us, ms, s, m, h, d). For example, "2h"
-  properties?: string; // View properties, a json string, the description should be stored here
+  properties?: string; // View properties, a json string, the description and displayName should be stored here
 }
 
 export class ViewRepository extends BaseRepository<View> {

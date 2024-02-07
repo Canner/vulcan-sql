@@ -12,7 +12,7 @@ export interface Metrics {
   // metric can based on model or another metrics
   modelId?: number; // Reference to model.id
   metricId?: number; // Reference to metric.id
-  properties?: string; // Metrics properties, a json string, the description should be stored here
+  properties?: string; // Metrics properties, a json string, the description and displayName should be stored here
 }
 export class MetricsRepository extends BaseRepository<Metrics> {
   constructor(knexPg: Knex) {

@@ -27,7 +27,7 @@ exports.up = function (knex) {
     table
       .text('properties')
       .comment(
-        'model properties, a json string, the description should be stored here'
+        'model properties, a json string, the description and displayName should be stored here'
       )
       .nullable();
 

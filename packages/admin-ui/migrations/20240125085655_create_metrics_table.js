@@ -24,7 +24,7 @@ exports.up = function (knex) {
     table
       .text('properties')
       .comment(
-        'metrics properties, a json string, the description should be stored here'
+        'metrics properties, a json string, the description and displayName should be stored here'
       )
       .nullable();
     table.timestamps(true, true);

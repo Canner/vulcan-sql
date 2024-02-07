@@ -8,7 +8,7 @@ export interface Model {
   refSql: string; // Reference SQL
   cached: boolean; // Model is cached or not
   refreshTime: string | null; // Contain a number followed by a time unit (ns, us, ms, s, m, h, d). For example, "2h"
-  properties: string | null; // Model properties, a json string, the description should be stored here
+  properties: string | null; // Model properties, a json string, the description and displayName should be stored here
 }
 export class ModelRepository extends BaseRepository<Model> {
   constructor(knexPg: Knex) {
