@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Menu, Modal, Input, Row, Col } from 'antd';
+import { Menu, Modal, Input, Row, Col, Typography } from 'antd';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import SearchOutlined from '@ant-design/icons/SearchOutlined';
 import { ModalAction } from '@vulcan-sql/admin-ui/hooks/useModalAction';
@@ -10,6 +10,15 @@ import {
   ModelIcon,
   ViewIcon,
 } from '@vulcan-sql/admin-ui/utils/icons';
+import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
+import { makeMetadataBaseTable } from '@vulcan-sql/admin-ui/components/table/MetadataBaseTable';
+import FieldTable from '@vulcan-sql/admin-ui/components/table/FieldTable';
+import CaculatedFieldTable from '@vulcan-sql/admin-ui/components/table/CaculatedFieldTable';
+import RelationTable from '@vulcan-sql/admin-ui/components/table/RelationTable';
+import MeasureFieldTable from '@vulcan-sql/admin-ui/components/table/MeasureFieldTable';
+import DimensionFieldTable from '@vulcan-sql/admin-ui/components/table/DimensionFieldTable';
+import WindowFieldTable from '@vulcan-sql/admin-ui/components/table/WindowFieldTable';
+import useSelectDataToExploreCollections from '@vulcan-sql/admin-ui/hooks/useSelectDataToExploreCollections';
 
 const StyledMenu = styled(Menu)`
   border-right: none;
@@ -71,37 +80,131 @@ type Props = ModalAction & {
   loading?: boolean;
 };
 
+const ModelMetadata = ({
+  table,
+  description,
+  fields = [],
+  caculatedFields = [],
+  relations = [],
+}) => {
+  const FieldMetadataTable = makeMetadataBaseTable(FieldTable)();
+  const CaculatedFieldMetadataTable =
+    makeMetadataBaseTable(CaculatedFieldTable)();
+  const RelationMetadataTable = makeMetadataBaseTable(RelationTable)();
+
+  return (
+    <>
+      <Row className="mb-6">
+        <Col span={12}>
+          <div className="gray-7 mb-2">Description</div>
+          <div>{description || '-'}</div>
+        </Col>
+        <Col span={12}>
+          <div className="gray-7 mb-2">Source table name</div>
+          <div>{table}</div>
+        </Col>
+      </Row>
+      <div className="mb-6">
+        <Typography.Text className="d-block gray-7 mb-2">
+          Fields ({fields.length})
+        </Typography.Text>
+        <FieldMetadataTable dataSource={fields} />
+      </div>
+
+      <div className="mb-6">
+        <Typography.Text className="d-block gray-7 mb-2">
+          Caculated fields ({caculatedFields.length})
+        </Typography.Text>
+        <CaculatedFieldMetadataTable dataSource={caculatedFields} />
+      </div>
+
+      <div className="mb-6">
+        <Typography.Text className="d-block gray-7 mb-2">
+          Relations ({relations.length})
+        </Typography.Text>
+        <RelationMetadataTable dataSource={relations} />
+      </div>
+    </>
+  );
+};
+
+const MetricMetadata = ({
+  description,
+  measures = [],
+  dimensions = undefined,
+  windows = undefined,
+}) => {
+  const MeasureFieldMetadataTable = makeMetadataBaseTable(MeasureFieldTable)();
+  const DimensionFieldMetadataTable =
+    makeMetadataBaseTable(DimensionFieldTable)();
+  const WindowFieldMetadataTable = makeMetadataBaseTable(WindowFieldTable)();
+
+  return (
+    <>
+      <Row className="mb-6">
+        <Col span={12}>
+          <div className="gray-7 mb-2">Description</div>
+          <div>{description || '-'}</div>
+        </Col>
+      </Row>
+      <div className="mb-6">
+        <Typography.Text className="d-block gray-7 mb-2">
+          Measures ({measures.length})
+        </Typography.Text>
+        <MeasureFieldMetadataTable dataSource={measures} />
+      </div>
+
+      {!!dimensions && (
+        <div className="mb-6">
+          <Typography.Text className="d-block gray-7 mb-2">
+            Dimensions ({dimensions.length})
+          </Typography.Text>
+          <DimensionFieldMetadataTable dataSource={dimensions} />
+        </div>
+      )}
+
+      {!!windows && (
+        <div className="mb-6">
+          <Typography.Text className="d-block gray-7 mb-2">
+            Windows ({windows.length})
+          </Typography.Text>
+          <WindowFieldMetadataTable dataSource={windows} />
+        </div>
+      )}
+    </>
+  );
+};
+
+const ViewMetadata = ({ description, fields = [] }) => {
+  const FieldMetadataTable = makeMetadataBaseTable(FieldTable)();
+
+  return (
+    <>
+      <Row className="mb-6">
+        <Col span={12}>
+          <div className="gray-7 mb-2">Description</div>
+          <div>{description || '-'}</div>
+        </Col>
+      </Row>
+      <div className="mb-6">
+        <Typography.Text className="d-block gray-7 mb-2">
+          Fields ({fields.length})
+        </Typography.Text>
+        <FieldMetadataTable dataSource={fields} />
+      </div>
+    </>
+  );
+};
+
 export default function SelectDataToExploreModal(props: Props) {
-  const { visible, loading, onClose, defaultValue } = props;
+  const { visible, loading, onClose, onSubmit } = props;
   const [searchValue, setSearchValue] = useState('');
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
-  // TODO: Replace with real data
-  const models = [
-    { id: '1', name: 'Orders' },
-    { id: '2', name: 'Orders2' },
-    { id: '3', name: 'Orders3' },
-  ];
+  const { models, metrics, views } = useSelectDataToExploreCollections();
 
-  const metrics = [
-    { id: 'o1', name: 'Test1' },
-    { id: 'o2', name: 'Test2' },
-    { id: 'o3', name: 'Test3' },
-    { id: 'o4', name: 'Test4' },
-    { id: 'o5', name: 'Test5' },
-    { id: 'o6', name: 'Test6' },
-  ];
-
-  const views = [
-    { id: 'c1', name: 'Test1' },
-    { id: 'c2', name: 'Test2' },
-    { id: 'c3', name: 'Test3' },
-    { id: 'c4', name: 'Test4' },
-    { id: 'c5', name: 'Test5' },
-    { id: 'c6', name: 'Test6' },
-  ];
-
-  const goToExplore = () => {
+  const goToExplore = async () => {
+    await onSubmit(selectedItem);
     onClose();
   };
 
@@ -112,7 +215,6 @@ export default function SelectDataToExploreModal(props: Props) {
 
   const clickMenu = useCallback(
     (item: ItemType) => {
-      console.log(item);
       const [type, id] = (item.key as string).split('_');
       if (type === MENU.MODEL) {
         setSelectedItem(models.find((model) => model.id === id));
@@ -227,13 +329,21 @@ export default function SelectDataToExploreModal(props: Props) {
           {selectedItem ? (
             <>
               <h4
-                className="px-3 py-2"
+                className="px-4 py-3 mb-0"
                 style={{ borderBottom: '1px var(--gray-4) solid' }}
               >
                 {selectedItem.name}
               </h4>
-              <div className="p-3" style={{ overflowY: 'auto' }}>
-                <p>Selected data will be used to explore</p>
+              <div className="py-3 px-4" style={{ overflowY: 'auto' }}>
+                {selectedItem.nodeType === NODE_TYPE.MODEL && (
+                  <ModelMetadata {...selectedItem} />
+                )}
+                {selectedItem.nodeType === NODE_TYPE.METRIC && (
+                  <MetricMetadata {...selectedItem} />
+                )}
+                {selectedItem.nodeType === NODE_TYPE.VIEW && (
+                  <ViewMetadata {...selectedItem} />
+                )}
               </div>
             </>
           ) : (
