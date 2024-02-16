@@ -5,16 +5,14 @@ import { ModalAction } from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import CombineFieldSelector from '@vulcan-sql/admin-ui/components/selectors/CombineFieldSelector';
 import { JOIN_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
-import { getJoinTypeText } from '@vulcan-sql/admin-ui/utils/data';
+import { RelationData, getJoinTypeText } from '@vulcan-sql/admin-ui/utils/data';
 import useCombineFieldOptions from '@vulcan-sql/admin-ui/hooks/useCombineFieldOptions';
 import { RelationsDataType } from '@vulcan-sql/admin-ui/components/table/ModelRelationSelectionTable';
 
 export type RelationFieldValue = { [key: string]: any } & Pick<
-  RelationsDataType,
-  'relationType' | 'fromField' | 'toField' | 'relationName'
-> & {
-    description?: string;
-  };
+  RelationData,
+  'name' | 'joinType' | 'fromField' | 'toField' | 'properties'
+>;
 
 type Props = ModalAction<RelationFieldValue, RelationsDataType> & {
   model: string;
@@ -76,7 +74,7 @@ export default function RelationModal(props: Props) {
       <Form form={form} preserve={false} layout="vertical">
         <Form.Item
           label="Name"
-          name="relationName"
+          name="name"
           required
           rules={[
             {
@@ -131,7 +129,7 @@ export default function RelationModal(props: Props) {
         </Row>
         <Form.Item
           label="Relation type"
-          name="relationType"
+          name="joinType"
           required
           rules={[
             {
@@ -146,7 +144,7 @@ export default function RelationModal(props: Props) {
           />
         </Form.Item>
         {allowSetDescription && (
-          <Form.Item label="Description" name="description">
+          <Form.Item label="Description" name={['properties', 'description']}>
             <Input.TextArea showCount maxLength={300} />
           </Form.Item>
         )}

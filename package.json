@@ -62,7 +62,7 @@
     "react-ace": "^10.1.0",
     "react-dom": "18.2.0",
     "react-is": "18.2.0",
-    "reactflow": "11.7.0",
+    "reactflow": "11.10.3",
     "redoc": "2.0.0-rc.76",
     "reflect-metadata": "^0.1.13",
     "regenerator-runtime": "0.13.7",
@@ -91,17 +91,8 @@
     "@nx/js": "17.2.8",
     "@nx/next": "17.2.8",
     "@nx/react": "17.2.8",
-    "@nx/storybook": "^16.3.1",
-    "@nx/vite": "^16.3.1",
     "@nx/web": "17.2.8",
     "@nx/workspace": "17.2.8",
-    "@storybook/addon-essentials": "^7.5.1",
-    "@storybook/addon-interactions": "^7.5.1",
-    "@storybook/core-server": "^7.5.1",
-    "@storybook/jest": "~0.1.0",
-    "@storybook/react-vite": "^7.5.1",
-    "@storybook/test-runner": "^0.13.0",
-    "@storybook/testing-library": "~0.2.0",
     "@testing-library/react": "14.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/bytes": "^3.1.1",
@@ -166,8 +157,7 @@
     "ts-jest": "29.1.1",
     "ts-node": "9.1.1",
     "ts-sinon": "^2.0.2",
-    "typescript": "~4.6.2",
-    "vite": "~4.3.9"
+    "typescript": "~4.6.2"
   },
   "config": {
     "commitizen": {

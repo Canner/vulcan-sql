@@ -9,7 +9,8 @@ export const getDimensionFieldTableColumns = () => {
   return [
     {
       title: 'Name',
-      dataIndex: 'fieldName',
+      dataIndex: 'name',
+      width: 150,
     },
   ];
 };

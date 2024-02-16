@@ -5,11 +5,6 @@ const path = require('path');
 const { withNx } = require('@nx/next/plugins/with-nx');
 const withAntdLess = require('next-plugin-antd-less');
 
-// Note: Copy ".env.local.sample" as ".env.local" file for development
-if (!process.env.JSON_PATH) {
-  throw new Error('JSON_PATH environment variable is required');
-}
-
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
  **/
@@ -22,7 +17,6 @@ const nextConfig = {
     },
   },
   serverRuntimeConfig: {
-    JSON_PATH: path.resolve(__dirname, process.env.JSON_PATH),
     PG_DATABASE: process.env.PG_DATABASE,
     PG_PORT: process.env.PG_PORT,
     PG_USERNAME: process.env.PG_USERNAME,

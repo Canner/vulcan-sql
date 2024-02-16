@@ -10,13 +10,14 @@ export const getRelationTableColumns = () => {
   return [
     {
       title: 'Name',
-      dataIndex: 'relationName',
+      dataIndex: 'name',
       width: 150,
     },
     {
       title: 'Relation',
-      dataIndex: 'relationType',
-      render: (relationType) => getJoinTypeText(relationType),
+      dataIndex: 'joinType',
+      width: 150,
+      render: (joinType) => getJoinTypeText(joinType),
     },
   ];
 };

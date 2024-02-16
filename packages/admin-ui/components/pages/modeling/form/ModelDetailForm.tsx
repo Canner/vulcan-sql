@@ -46,7 +46,7 @@ export default function ModelDetailForm(props: {
 }) {
   const { form, formMode } = props;
 
-  const modelName = form.getFieldValue('modelName');
+  const modelName = form.getFieldValue('name');
   const sourceType = Form.useWatch('sourceType', form);
   const table = Form.useWatch('table', form);
   const customSQL = Form.useWatch('customSQL', form);

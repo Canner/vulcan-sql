@@ -1,9 +1,0 @@
-{
-  "name": "@vulcan-sql/ui",
-  "description": "UI for Accio",
-  "version": "0.0.1",
-  "type": "commonjs",
-  "license": "MIT",
-  "source": "src/index.tsx",
-  "typings": "src/index.d.ts"
-}

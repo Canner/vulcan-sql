@@ -8,6 +8,7 @@ export enum METRIC_TYPE {
   DIMENSION = 'dimension',
   MEASURE = 'measure',
   TIME_GRAIN = 'timeGrain',
+  WINDOW = 'window',
 }
 
 export enum NODE_TYPE {
@@ -51,4 +52,9 @@ export enum MODEL_STEP {
 export enum METRIC_STEP {
   ONE = '1',
   TWO = '2',
+}
+
+export enum MORE_ACTION {
+  EDIT = 'edit',
+  DELETE = 'delete',
 }

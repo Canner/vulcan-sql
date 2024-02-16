@@ -13,6 +13,7 @@ export const getFieldTableColumns = () => {
     },
     {
       title: 'Type',
+      width: 150,
       dataIndex: 'type',
     },
   ];

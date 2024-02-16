@@ -173,13 +173,7 @@
       "@vulcan-sql/serve/types": ["packages/serve/src/containers/types"],
       "@vulcan-sql/serve/utils": ["packages/serve/src/lib/utils/index"],
       "@vulcan-sql/serve/utils/*": ["packages/serve/src/lib/utils/*"],
-      "@vulcan-sql/test-utility": ["packages/test-utility/src/index"],
-      "@vulcan-sql/ui": ["packages/ui/src/index.ts"],
-      "@vulcan-sql/ui/*": ["packages/ui/*"]
-
-
-
-      
+      "@vulcan-sql/test-utility": ["packages/test-utility/src/index"]
     }
   },
   "exclude": ["node_modules", "tmp"]

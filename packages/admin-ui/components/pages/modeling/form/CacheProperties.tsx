@@ -82,7 +82,7 @@ export default function CacheProperties(props: { form: FormInstance }) {
         <Form.Item label="Cache refresh schedule">
           Every
           <Form.Item
-            name="cachedPeriod"
+            name="refreshTime"
             noStyle
             initialValue={`1${CACHED_PERIOD.HOUR}`}
           >

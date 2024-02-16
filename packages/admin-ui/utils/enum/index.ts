@@ -4,3 +4,4 @@ export * from './dataSources';
 export * from './columnType';
 export * from './modeling';
 export * from './path';
+export * from './diagram';

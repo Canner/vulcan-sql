@@ -1,17 +1,19 @@
-import { MDLJson, MetricData, ModelData } from '../data/model';
+import { Manifest } from '@vulcan-sql/admin-ui/utils/data/type';
+import { MetricData, ModelData } from '@vulcan-sql/admin-ui/utils/data/model';
 
-export interface AdaptedData extends Omit<MDLJson, 'models' | 'metrics'> {
+export interface AdaptedData extends Omit<Manifest, 'models' | 'metrics'> {
   models: ModelData[];
   metrics: MetricData[];
 }
 
-export const adapter = (data: MDLJson): AdaptedData => {
-  const { models = [], metrics = [] } = data;
+export const adapter = (data: Manifest): AdaptedData => {
+  const { models = [], metrics = [], cumulativeMetrics = [] } = data;
   const adaptModels = models.map((model) => {
     return new ModelData(model, data);
   });
-  const adaptMetrics = metrics.map((metric) => {
-    return new MetricData(metric);
+  const adaptMetrics = [...metrics, ...cumulativeMetrics].map((metric) => {
+    // cumulative metric has window property
+    return new MetricData(metric, !!metric.window);
   });
 
   return {

@@ -9,7 +9,8 @@ export const getWindowFieldTableColumns = () => {
   return [
     {
       title: 'Name',
-      dataIndex: 'fieldName',
+      dataIndex: 'name',
+      width: 150,
     },
   ];
 };
