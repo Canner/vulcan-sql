@@ -13,6 +13,7 @@ import AddRelationModal from '@vulcan-sql/admin-ui/components/modals/AddRelation
 import ModelDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/ModelDrawer';
 import MetricDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetricDrawer';
 import MetadataDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetadataDrawer';
+import SelectDataToExploreModal from '@vulcan-sql/admin-ui/components/pages/explore/SelectDataToExploreModal';
 import useDrawerAction from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
 
 const ModelFieldSelector = dynamic(
@@ -34,6 +35,7 @@ export default function Component() {
   const addDimensionFieldModal = useModalAction();
   const addWindowFieldModal = useModalAction();
   const addRelationModal = useModalAction();
+  const selectDataToExploreModal = useModalAction();
 
   const modelDrawer = useDrawerAction();
   const metricDrawer = useDrawerAction();
@@ -96,6 +98,10 @@ export default function Component() {
 
       <Button onClick={() => metadataDrawer.openDrawer()}>
         Metadata drawer
+      </Button>
+
+      <Button onClick={() => selectDataToExploreModal.openModal()}>
+        Select data to explore
       </Button>
 
       <AddCaculatedFieldModal
@@ -262,6 +268,11 @@ export default function Component() {
             description: 'metric description',
           },
         }}
+      />
+
+      <SelectDataToExploreModal
+        {...selectDataToExploreModal.state}
+        onClose={selectDataToExploreModal.closeModal}
       />
     </Form>
   );

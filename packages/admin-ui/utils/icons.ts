@@ -17,6 +17,8 @@ import {
   VpnKey,
   CenterFocusWeak,
   Refresh,
+  Pageview,
+  Explore,
 } from '@styled-icons/material-outlined';
 import MonitorOutlined from '@ant-design/icons/MonitorOutlined';
 import SwapOutlined from '@ant-design/icons/SwapOutlined';
@@ -78,3 +80,9 @@ export const LightningIcon = styled(LightningCharge)`
   height: 1em;
 `;
 export const MoreIcon = styled(MoreOutlined)``;
+export const ViewIcon = styled(Pageview)`
+  height: 1em;
+`;
+export const ExploreIcon = styled(Explore)`
+  height: 1em;
+`;
