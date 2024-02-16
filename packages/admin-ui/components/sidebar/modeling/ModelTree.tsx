@@ -12,7 +12,7 @@ import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { StyledSidebarTree } from '@vulcan-sql/admin-ui/components/sidebar/Modeling';
 
 export default function ModelTree(props) {
-  const { models } = props;
+  const { onOpenModelDrawer, models } = props;
 
   const getModelGroupNode = createTreeGroupNode({
     groupName: 'Models',
@@ -20,13 +20,7 @@ export default function ModelTree(props) {
     icons: [
       {
         key: 'add-model',
-        icon: () => (
-          <PlusSquareOutlined
-            onClick={() => {
-              console.log('Add Model');
-            }}
-          />
-        ),
+        icon: () => <PlusSquareOutlined onClick={() => onOpenModelDrawer()} />,
       },
     ],
   });

@@ -12,7 +12,7 @@ import { METRIC_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { StyledSidebarTree } from '@vulcan-sql/admin-ui/components/sidebar/Modeling';
 
 export default function MetricTree(props) {
-  const { metrics } = props;
+  const { onOpenMetricDrawer, metrics } = props;
 
   const getMetricGroupNode = createTreeGroupNode({
     groupName: 'Metrics',
@@ -20,13 +20,7 @@ export default function MetricTree(props) {
     icons: [
       {
         key: 'add-metric',
-        icon: () => (
-          <PlusSquareOutlined
-            onClick={() => {
-              console.log('Add Metric');
-            }}
-          />
-        ),
+        icon: () => <PlusSquareOutlined onClick={() => onOpenMetricDrawer()} />,
       },
     ],
   });
