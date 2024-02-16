@@ -111,19 +111,19 @@ const ModelMetadata = ({
         <FieldMetadataTable dataSource={fields} />
       </div>
 
-      <div className="mb-6">
+      {!!caculatedFields.length && <div className="mb-6">
         <Typography.Text className="d-block gray-7 mb-2">
           Caculated fields ({caculatedFields.length})
         </Typography.Text>
         <CaculatedFieldMetadataTable dataSource={caculatedFields} />
-      </div>
+      </div>}
 
-      <div className="mb-6">
+      {!!relations.length && <div className="mb-6">
         <Typography.Text className="d-block gray-7 mb-2">
           Relations ({relations.length})
         </Typography.Text>
         <RelationMetadataTable dataSource={relations} />
-      </div>
+      </div>}
     </>
   );
 };
