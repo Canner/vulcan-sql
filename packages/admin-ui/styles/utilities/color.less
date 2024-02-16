@@ -9,7 +9,10 @@
     .@{color}-@{index} {
       color: @colorVar !important;
     }
-  })
+    .border-@{color}-@{index} {
+      border-color: @colorVar !important;
+    }
+  });
 }
 
 .make-color-classes();

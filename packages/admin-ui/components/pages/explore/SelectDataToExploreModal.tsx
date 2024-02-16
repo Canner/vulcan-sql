@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Menu, Modal, Input, Row, Col, Typography } from 'antd';
+import { Menu, Modal, Input, Row, Col, Typography, Empty } from 'antd';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import SearchOutlined from '@ant-design/icons/SearchOutlined';
 import { ModalAction } from '@vulcan-sql/admin-ui/hooks/useModalAction';
@@ -204,7 +204,7 @@ export default function SelectDataToExploreModal(props: Props) {
   const { models, metrics, views } = useSelectDataToExploreCollections();
 
   const goToExplore = async () => {
-    await onSubmit(selectedItem);
+    onSubmit && (await onSubmit(selectedItem));
     onClose();
   };
 
@@ -232,15 +232,9 @@ export default function SelectDataToExploreModal(props: Props) {
     setSelectedItem(null);
   };
 
-  const menu = useMemo(() => {
-    const getGroupItems = (group: Record<string, any>, items: any[]) => {
-      return items.length ? { ...group, children: items } : undefined;
-    };
-    const filterSearch = (item) =>
-      item.name.toLowerCase().includes(searchValue.toLowerCase());
-
-    const getLabel = (label: string, Icon) => {
-      let nextLabel: any = label;
+  const getLabel = useCallback(
+    (label: string, Icon) => {
+      let nextLabel: React.ReactNode = label;
       if (searchValue) {
         const regex = new RegExp(searchValue, 'gi');
         const splitedLabel = label.split(regex);
@@ -267,7 +261,13 @@ export default function SelectDataToExploreModal(props: Props) {
           {nextLabel}
         </div>
       );
-    };
+    },
+    [searchValue]
+  );
+
+  const menu = useMemo(() => {
+    const filterSearch = (item) =>
+      item.name.toLowerCase().includes(searchValue.toLowerCase());
 
     const modelItems = models.filter(filterSearch).map((model) => ({
       label: getLabel(model.name, ModelIcon),
@@ -283,6 +283,10 @@ export default function SelectDataToExploreModal(props: Props) {
       label: getLabel(view.name, ViewIcon),
       key: `${MENU.VIEW}_${view.id}`,
     }));
+
+    const getGroupItems = (group: Record<string, any>, items: any[]) => {
+      return items.length ? { ...group, children: items } : undefined;
+    };
 
     const result = compact([
       getGroupItems(MENU_GROUPS[MENU.MODEL], modelItems),
@@ -310,31 +314,25 @@ export default function SelectDataToExploreModal(props: Props) {
       <Row wrap={false} style={{ height: '70vh' }}>
         <Col
           span={7}
-          className="p-3 d-flex flex-column"
-          style={{
-            borderRight: '1px var(--gray-4) solid',
-            height: '100%',
-          }}
+          className="p-3 d-flex flex-column border-r border-gray-4"
+          style={{ height: '100%' }}
         >
           <Input
             prefix={<SearchOutlined className="gray-6" />}
             placeholder="Search"
             onInput={search}
           />
-          <div className="mt-3" style={{ overflowY: 'auto' }}>
+          <div className="mt-3 scrollable-y">
             <StyledMenu mode="inline" items={menu} onClick={clickMenu} />
           </div>
         </Col>
         <Col span={17} className="d-flex flex-column">
           {selectedItem ? (
             <>
-              <h4
-                className="px-4 py-3 mb-0"
-                style={{ borderBottom: '1px var(--gray-4) solid' }}
-              >
+              <h4 className="px-4 py-3 mb-0 border-b border-gray-4">
                 {selectedItem.name}
               </h4>
-              <div className="py-3 px-4" style={{ overflowY: 'auto' }}>
+              <div className="py-3 px-4 scrollable-y">
                 {selectedItem.nodeType === NODE_TYPE.MODEL && (
                   <ModelMetadata {...selectedItem} />
                 )}
@@ -351,7 +349,10 @@ export default function SelectDataToExploreModal(props: Props) {
               className="d-flex align-center justify-center"
               style={{ height: '100%' }}
             >
-              No data selected
+              <Empty
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                description="No Selected Data"
+              />
             </div>
           )}
         </Col>
