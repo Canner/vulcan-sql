@@ -23,6 +23,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "commander": "^9.4.0",
+    "copy-to-clipboard": "^3.3.3",
     "core-js": "^3.6.5",
     "cors": "^2.8.5",
     "dayjs": "^1.11.2",
