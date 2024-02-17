@@ -1,5 +1,6 @@
 import { memo, useCallback, useContext } from 'react';
 import { Tooltip } from 'antd';
+import { isEmpty } from 'lodash';
 import { CustomNodeProps, NodeBody, NodeHeader, StyledNode } from './utils';
 import MarkerHandle from './MarkerHandle';
 import { DiagramContext } from '../Context';
@@ -29,10 +30,10 @@ export const MetricNode = ({ data }: CustomNodeProps<MetricData>) => {
       data: data.originalData,
     });
   };
-  const hasDimensions = !!data.originalData.dimensions;
-  const hasMeasures = !!data.originalData.measures;
-  const hasTimeGrains = !!data.originalData.timeGrains;
-  const hasWindows = !!data.originalData.windows;
+  const hasDimensions = !isEmpty(data.originalData.dimensions);
+  const hasMeasures = !isEmpty(data.originalData.measures);
+  const hasTimeGrains = !isEmpty(data.originalData.timeGrains);
+  const hasWindows = !isEmpty(data.originalData.windows);
 
   const renderColumns = useCallback(getColumns, []);
   return (

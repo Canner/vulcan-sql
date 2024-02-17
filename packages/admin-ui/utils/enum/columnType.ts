@@ -6,6 +6,7 @@ export enum COLUMN_TYPE {
   DATE = 'DATE',
   TIME = 'TIME',
   TIMESTAMP = 'TIMESTAMP',
+  DATETIME = 'DATETIME',
 
   // Integer
   INTEGER = 'INTEGER',
@@ -13,6 +14,7 @@ export enum COLUMN_TYPE {
   SMALLINT = 'SMALLINT',
   BIGINT = 'BIGINT',
   INT = 'INT',
+  NUMBER = 'NUMBER',
 
   // Floating-Point
   DOUBLE = 'DOUBLE',
@@ -27,6 +29,7 @@ export enum COLUMN_TYPE {
   TEXT = 'TEXT',
   VARBINARY = 'VARBINARY',
   VARCHAR = 'VARCHAR',
+  STRING = 'STRING',
 
   // Mongo DB
   MONGO_ARRAY = 'ARRAY',

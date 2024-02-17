@@ -9,11 +9,11 @@ export const getNodeTypeIcon = (
   const { nodeType, type } = payload;
   switch (nodeType) {
     case NODE_TYPE.MODEL:
-      return <ModelIcon {...attrs} />;
+      return <ModelIcon title="Model" {...attrs} />;
     case NODE_TYPE.METRIC:
-      return <MetricIcon {...attrs} />;
+      return <MetricIcon title="Metric" {...attrs} />;
     case NODE_TYPE.RELATION:
-      return <RelationshipIcon {...attrs} />;
+      return <RelationshipIcon title="Relation" {...attrs} />;
 
     case NODE_TYPE.FIELD:
       return type ? getColumnTypeIcon({ type }, attrs) : null;

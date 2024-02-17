@@ -21,6 +21,7 @@ export const getColumnTypeIcon = (payload: { type: string }, attrs?: any) => {
     case COLUMN_TYPE.DECIMAL:
     case COLUMN_TYPE.DOUBLE:
     case COLUMN_TYPE.REAL:
+    case COLUMN_TYPE.NUMBER:
       return <NumericIcon {...attrs} />;
 
     case COLUMN_TYPE.BOOLEAN:
@@ -30,12 +31,14 @@ export const getColumnTypeIcon = (payload: { type: string }, attrs?: any) => {
     case COLUMN_TYPE.JSON:
     case COLUMN_TYPE.VARBINARY:
     case COLUMN_TYPE.VARCHAR:
+    case COLUMN_TYPE.STRING:
       return <StringIcon {...attrs} />;
 
     case COLUMN_TYPE.TEXT:
       return <TextIcon {...attrs} />;
 
     case COLUMN_TYPE.DATE:
+    case COLUMN_TYPE.DATETIME:
     case COLUMN_TYPE.TIME:
     case COLUMN_TYPE.TIMESTAMP:
       return <CalendarIcon {...attrs} />;

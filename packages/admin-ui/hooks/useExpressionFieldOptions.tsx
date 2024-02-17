@@ -15,7 +15,7 @@ export default function useExpressionFieldOptions() {
             content: {
               title: 'Sum(column)',
               description: 'Adds up all the value of the column.',
-              expression: 'Sum ( [order.price] )',
+              expression: 'Sum([order.price])',
             },
           },
           {
@@ -24,7 +24,7 @@ export default function useExpressionFieldOptions() {
             content: {
               title: 'Average(column)',
               description: 'Adds up all the value of the column.',
-              expression: 'Average ( [order.price] )',
+              expression: 'Average([order.price])',
             },
           },
         ],

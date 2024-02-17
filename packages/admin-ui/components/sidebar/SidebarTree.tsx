@@ -80,39 +80,53 @@ const StyledTree = styled(Tree)`
       }
     }
 
-    .gml {
-      &-node {
+    .adm {
+      &-treeTitle__title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      &-treeTitle__appendIcon {
+        color: var(--red-8);
+      }
+      &-treeNode {
         &:hover {
           background-color: var(--gray-4);
         }
         &:active {
           background-color: var(--gray-6);
         }
+
         .ant-tree-title {
           display: inline-flex;
           flex-wrap: nowrap;
-          flex-grow: 1;
+          flex-grow: 0;
           min-width: 1px;
         }
 
-        &-group {
-          color: var(--gray-7);
+        &--relation,
+        &--primary {
+          margin-left: 4px;
+        }
+
+        &--group {
+          color: var(--gray-8);
           margin-top: 16px;
+
+          font-size: 14px;
+          font-weight: 500;
+
           .ant-tree-switcher-noop {
             display: none;
           }
+
           > * {
             cursor: inherit;
           }
-
-          &-count {
-            position: relative;
-            top: -1px;
-            font-size: 10px;
-          }
         }
 
-        &-empty {
+        &--empty {
           color: var(--gray-7);
           font-size: 12px;
           .ant-tree-switcher {
@@ -123,7 +137,7 @@ const StyledTree = styled(Tree)`
           }
         }
 
-        &-select-none {
+        &--selectNode {
           * {
             cursor: auto;
           }
@@ -131,6 +145,44 @@ const StyledTree = styled(Tree)`
           &:active {
             background-color: transparent;
           }
+        }
+
+        &--subtitle {
+          color: var(--gray-7);
+          font-size: 12px;
+          font-weight: 500;
+          .ant-tree-switcher {
+            display: none;
+          }
+          .ant-tree-node-content-wrapper {
+            min-height: auto;
+          }
+        }
+
+        &--selectNone {
+          * {
+            cursor: auto;
+          }
+          &:hover,
+          &:active {
+            background-color: transparent;
+          }
+        }
+      }
+
+      &-actionIcon {
+        font-size: 14px;
+        border-radius: 2px;
+        margin-right: -3px;
+        &:not(.adm-actionIcon--disabled) {
+          cursor: pointer;
+          &:hover {
+            background-color: var(--gray-5);
+          }
+        }
+        .anticon {
+          padding: 2px;
+          cursor: inherit;
         }
       }
     }
