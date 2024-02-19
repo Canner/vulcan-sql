@@ -6,6 +6,7 @@ export interface Project {
   type: string; // Project datasource type. ex: bigquery, mysql, postgresql, mongodb, etc
   displayName: string; // Project display name
   projectId: string; // GCP project id, big query specific
+  location: string; // GCP location, big query specific
   credentials: string; // Project credentials, big query specific
   catalog: string; // Catalog name
   schema: string; // Schema name
