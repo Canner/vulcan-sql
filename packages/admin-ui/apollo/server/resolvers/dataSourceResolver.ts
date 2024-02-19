@@ -50,6 +50,7 @@ export class DataSourceResolver {
       const encryptor = new Encryptor(config);
       const encryptedCredentials = await encryptor.encrypt(credentials);
 
+      // TODO: add displayName, schema, catalog to the DataSource, depends on the MDL structure
       const project = await ctx.projectRepository.createOne({
         displayName: 'tbd',
         schema: 'tbd',
