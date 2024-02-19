@@ -1,6 +1,8 @@
 import getConfig from 'next/config';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import { Button } from 'antd';
+import { Path } from '@vulcan-sql/admin-ui/utils/enum';
 import { ExploreIcon } from '@vulcan-sql/admin-ui/utils/icons';
 import SiderLayout from '@vulcan-sql/admin-ui/components/layouts/SiderLayout';
 import SelectDataToExploreModal from '@vulcan-sql/admin-ui/components/pages/explore/SelectDataToExploreModal';
@@ -9,9 +11,30 @@ import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 
 export default function Explore({ connections }) {
   const selectDataToExploreModal = useModalAction();
+  const router = useRouter();
+
+  // TODO: call API to get real exploration list data
+  const data = [
+    {
+      id: 'id-1',
+      name: 'global customer',
+    },
+    {
+      id: 'id-2',
+      name: 'customer order amount exceeding 5000 ',
+    },
+  ];
+
+  const onSelect = (selectKeys: string[]) => {
+    router.push(`${Path.Explore}/${selectKeys[0]}`);
+  };
 
   return (
-    <SiderLayout sidebar={{} as any} connections={connections}>
+    <SiderLayout
+      connections={connections}
+      loading={false}
+      sidebar={{ data, onSelect }}
+    >
       <Background />
 
       <div
