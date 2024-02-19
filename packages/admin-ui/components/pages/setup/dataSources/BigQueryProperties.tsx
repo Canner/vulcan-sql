@@ -4,17 +4,55 @@ import UploadOutlined from '@ant-design/icons/UploadOutlined';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 
-export default function BigQueryProperties() {
+const UploadCredentials = (props) => {
+  const { onChange } = props;
+
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
+  const convertFileToJSON = (file: any, callback: (value: JSON) => void) => {
+    const reader = new FileReader();
+    reader.onloadend = (_e) => {
+      const result = reader.result;
+
+      if (result) {
+        const fileContent: JSON = JSON.parse(String(result));
+        callback(fileContent);
+      }
+    };
+
+    reader.readAsText(file);
+  };
+
   const onUploadChange = (info) => {
-    const { fileList } = info;
+    const { file, fileList } = info;
     if (fileList.length) {
       const uploadFile = fileList[0];
+      convertFileToJSON(file.originFileObj, (fileContent: JSON) => {
+        onChange && onChange(fileContent);
+      });
       setFileList([uploadFile]);
     }
   };
 
+  const onRemove = () => {
+    setFileList([]);
+    onChange && onChange(undefined);
+  };
+
+  return (
+    <Upload
+      accept=".json"
+      fileList={fileList}
+      onChange={onUploadChange}
+      onRemove={onRemove}
+      maxCount={1}
+    >
+      <Button icon={<UploadOutlined />}>Click to upload JSON key file</Button>
+    </Upload>
+  );
+};
+
+export default function BigQueryProperties() {
   return (
     <>
       <Form.Item
@@ -47,7 +85,7 @@ export default function BigQueryProperties() {
       <Form.Item
         label="Credentials"
         required
-        name="credential"
+        name="credentials"
         rules={[
           {
             required: true,
@@ -55,17 +93,7 @@ export default function BigQueryProperties() {
           },
         ]}
       >
-        <Upload
-          accept=".json"
-          fileList={fileList}
-          onChange={onUploadChange}
-          onRemove={() => setFileList([])}
-          maxCount={1}
-        >
-          <Button icon={<UploadOutlined />}>
-            Click to upload JSON key file
-          </Button>
-        </Upload>
+        <UploadCredentials />
       </Form.Item>
     </>
   );
