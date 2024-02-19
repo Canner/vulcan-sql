@@ -10,6 +10,7 @@ const logger = getLogger('DataSourceResolver');
 export class DataSourceResolver {
   constructor() {
     this.saveDataSource = this.saveDataSource.bind(this);
+    this.listDataSourceTables = this.listDataSourceTables.bind(this);
   }
 
   public async saveDataSource(
@@ -26,46 +27,83 @@ export class DataSourceResolver {
     }
   }
 
+  public async listDataSourceTables(_root: any, arg, ctx: IContext) {
+    // fetch connection info and write credential file
+    const projects = await ctx.projectRepository.findAll();
+    if (!projects.length) {
+      return [];
+    }
+    const {
+      location,
+      projectId,
+      dataset,
+      credentials: encryptedCredentials,
+    } = projects[0];
+
+    const encryptor = new Encryptor(ctx.config);
+    const credentials = await encryptor.decrypt(encryptedCredentials);
+    let filePath = '';
+    filePath = await this.writeCredentialsFile(
+      JSON.parse(credentials),
+      ctx.config.persistCredentialDir
+    );
+
+    // fetch tables
+    const connectionOption: BigQueryOptions = {
+      location,
+      projectId,
+      keyFilename: filePath,
+    };
+    const connector = new BQConnector(connectionOption);
+    const listTableOptions = {
+      dataset,
+    };
+    const tables = await connector.listTables(listTableOptions);
+    return tables as any;
+  }
+
   private async saveBigQueryDataSource(properties: any, ctx: IContext) {
-    const { location, projectId, credentials } = properties;
+    const { displayName, location, projectId, dataset, credentials } =
+      properties;
     const { config } = ctx;
     let filePath = '';
-    try {
-      // check DataSource is valid and can connect to it
-      filePath = await this.writeCredentialsFile(
-        credentials,
-        config.persistCredentialDir
-      );
-      const connectionOption: BigQueryOptions = {
-        location,
-        projectId,
-        keyFilename: filePath,
-      };
-      const connector = new BQConnector(connectionOption);
-      const connected = await connector.connect();
-      if (!connected) {
-        throw new Error('Cannot connect to DataSource');
-      }
-      // save DataSource to database
-      const encryptor = new Encryptor(config);
-      const encryptedCredentials = await encryptor.encrypt(credentials);
-
-      // TODO: add displayName, schema, catalog to the DataSource, depends on the MDL structure
-      const project = await ctx.projectRepository.createOne({
-        displayName: 'tbd',
-        schema: 'tbd',
-        catalog: 'tbd',
-        type: 'BIG_QUERY',
-        projectId,
-        credentials: encryptedCredentials,
-      });
-      return project;
-    } finally {
-      // remove the file
-      if (filePath) {
-        fs.unlinkSync(filePath);
-      }
+    // check DataSource is valid and can connect to it
+    filePath = await this.writeCredentialsFile(
+      credentials,
+      config.persistCredentialDir
+    );
+    const connectionOption: BigQueryOptions = {
+      location,
+      projectId,
+      keyFilename: filePath,
+    };
+    const connector = new BQConnector(connectionOption);
+    const connected = await connector.connect();
+    if (!connected) {
+      throw new Error('Cannot connect to DataSource');
     }
+    // check can list dataset table
+    try {
+      await connector.listTables({ dataset });
+    } catch (e) {
+      throw new Error('Cannot list tables in dataset');
+    }
+    // save DataSource to database
+    const encryptor = new Encryptor(config);
+    const encryptedCredentials = encryptor.encrypt(credentials);
+
+    // TODO: add displayName, schema, catalog to the DataSource, depends on the MDL structure
+    const project = await ctx.projectRepository.createOne({
+      displayName,
+      schema: 'tbd',
+      catalog: 'tbd',
+      type: DataSourceName.BIG_QUERY,
+      projectId,
+      location,
+      dataset,
+      credentials: encryptedCredentials,
+    });
+    return project;
   }
 
   private async writeCredentialsFile(

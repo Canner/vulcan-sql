@@ -23,7 +23,7 @@ export class Encryptor {
     this.ENCRYPTION_SALT = config.encryptionSalt;
   }
 
-  public async encrypt(credentials: JSON) {
+  public encrypt(credentials: JSON) {
     const credentialsString = JSON.stringify(credentials);
     const key = this.createSecretKey();
     const iv = crypto.randomBytes(16); // AES block size
@@ -39,7 +39,7 @@ export class Encryptor {
     );
   }
 
-  public async decrypt(encryptedText: string) {
+  public decrypt(encryptedText: string) {
     const [ivBase64, encryptedBase64] = encryptedText.split(
       this.ENCRYPTION_SEPARATOR
     );

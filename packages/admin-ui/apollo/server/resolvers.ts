@@ -205,7 +205,9 @@ const dataSourceResolver = new DataSourceResolver();
 
 const resolvers = {
   JSON: GraphQLJSON,
-  Query: {},
+  Query: {
+    listDataSourceTables: dataSourceResolver.listDataSourceTables,
+  },
   Mutation: {
     saveDataSource: dataSourceResolver.saveDataSource,
   },

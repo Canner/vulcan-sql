@@ -20,6 +20,7 @@ exports.up = function (knex) {
     table
       .string('location')
       .comment('where the dataset been stored, big query specific');
+    table.string('dataset').comment('big query dataset name');
 
     // not sure to store or not, the catalog & schema in the manifest
     table.string('catalog').comment('catalog name');
