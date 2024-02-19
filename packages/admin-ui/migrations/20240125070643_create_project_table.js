@@ -17,6 +17,9 @@ exports.up = function (knex) {
     table
       .string('credentials')
       .comment('project credentials, big query specific');
+    table
+      .string('location')
+      .comment('where the dataset been stored, big query specific');
 
     // not sure to store or not, the catalog & schema in the manifest
     table.string('catalog').comment('catalog name');
