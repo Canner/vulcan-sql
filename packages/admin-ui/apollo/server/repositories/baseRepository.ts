@@ -10,6 +10,7 @@ export interface IQueryOptions {
 export interface IBasicRepository<T> {
   findOneBy: (filter: Partial<T>, queryOptions?: IQueryOptions) => Promise<T>;
   findAllBy: (filter: Partial<T>, queryOptions?: IQueryOptions) => Promise<T[]>;
+  findAll: (queryOptions?: IQueryOptions) => Promise<T[]>;
   createOne: (data: Partial<T>, queryOptions?: IQueryOptions) => Promise<T>;
   updateOne: (
     id: string,
@@ -41,6 +42,16 @@ export class BaseRepository<T> implements IBasicRepository<T> {
   public async findAllBy(filter: Partial<T>, queryOptions?: IQueryOptions) {
     const executer = queryOptions?.tx ? queryOptions.tx : this.knex;
     const query = executer(this.tableName).where(filter);
+    if (queryOptions?.order) {
+      query.orderBy(queryOptions.order);
+    }
+    const result = await query;
+    return result.map(this.transformFromDBData);
+  }
+
+  public async findAll(queryOptions?: IQueryOptions) {
+    const executer = queryOptions?.tx ? queryOptions.tx : this.knex;
+    const query = executer(this.tableName);
     if (queryOptions?.order) {
       query.orderBy(queryOptions.order);
     }
