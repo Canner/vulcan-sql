@@ -7,7 +7,7 @@ import {
   createTreeGroupNode,
   getColumnNode,
 } from '@vulcan-sql/admin-ui/components/sidebar/utils';
-import LabelTitle from '@vulcan-sql/admin-ui/components/sidebar/modeling/LabelTitle';
+import LabelTitle from '@vulcan-sql/admin-ui/components/sidebar/LabelTitle';
 import { METRIC_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { StyledSidebarTree } from '@vulcan-sql/admin-ui/components/sidebar/Modeling';
 
