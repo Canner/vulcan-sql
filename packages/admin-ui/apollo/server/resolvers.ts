@@ -203,7 +203,7 @@ const mockResolvers = {
 
 const dataSourceResolver = new DataSourceResolver();
 
-const Resolvers = {
+const resolvers = {
   JSON: GraphQLJSON,
   Query: {},
   Mutation: {
@@ -211,8 +211,10 @@ const Resolvers = {
   },
 };
 
-// if process.env.NODE_ENV === 'development', export mockResolvers
-// else export Resolvers
-export default process.env.NODE_ENV === 'development'
+const useMockResolvers = process.env.APOLLO_RESOLVER === 'mock';
+useMockResolvers
+  ? console.log('Using mock resolvers')
+  : console.log('Using real resolvers');
+export default process.env.APOLLO_RESOLVER === 'mock'
   ? mockResolvers
-  : Resolvers;
+  : resolvers;
