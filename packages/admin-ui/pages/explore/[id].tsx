@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { Path } from '@vulcan-sql/admin-ui/utils/enum';
 import SiderLayout from '@vulcan-sql/admin-ui/components/layouts/SiderLayout';
+import Background from '@vulcan-sql/admin-ui/components/Background';
 
 export default function Explore({ connections }) {
   const router = useRouter();
@@ -29,6 +30,7 @@ export default function Explore({ connections }) {
       loading={false}
       sidebar={{ data, onSelect }}
     >
+      <Background />
       Explore: {router.query.id}
     </SiderLayout>
   );
