@@ -12,7 +12,7 @@ exports.up = function (knex) {
     table
       .string('table_name')
       .comment('referenced table name in the datasource');
-    table.text('refSql').comment('Reference SQL');
+    table.text('ref_sql').comment('Reference SQL');
 
     // cache setting
     table.boolean('cached').comment('model is cached or not');

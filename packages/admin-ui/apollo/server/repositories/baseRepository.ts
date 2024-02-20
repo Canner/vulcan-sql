@@ -8,6 +8,9 @@ export interface IQueryOptions {
 }
 
 export interface IBasicRepository<T> {
+  transaction: () => Promise<Knex.Transaction>;
+  commit: (tx: Knex.Transaction) => Promise<void>;
+  rollback: (tx: Knex.Transaction) => Promise<void>;
   findOneBy: (filter: Partial<T>, queryOptions?: IQueryOptions) => Promise<T>;
   findAllBy: (filter: Partial<T>, queryOptions?: IQueryOptions) => Promise<T[]>;
   findAll: (queryOptions?: IQueryOptions) => Promise<T[]>;
@@ -27,6 +30,18 @@ export class BaseRepository<T> implements IBasicRepository<T> {
   constructor({ knexPg, tableName }: { knexPg: Knex; tableName: string }) {
     this.knex = knexPg;
     this.tableName = tableName;
+  }
+
+  public async transaction() {
+    return await this.knex.transaction();
+  }
+
+  public async commit(tx: Knex.Transaction) {
+    await tx.commit();
+  }
+
+  public async rollback(tx: Knex.Transaction) {
+    await tx.rollback();
   }
 
   public async findOneBy(filter: Partial<T>, queryOptions?: IQueryOptions) {
@@ -54,6 +69,9 @@ export class BaseRepository<T> implements IBasicRepository<T> {
     const query = executer(this.tableName);
     if (queryOptions?.order) {
       query.orderBy(queryOptions.order);
+    }
+    if (queryOptions.limit) {
+      query.limit(queryOptions.limit);
     }
     const result = await query;
     return result.map(this.transformFromDBData);

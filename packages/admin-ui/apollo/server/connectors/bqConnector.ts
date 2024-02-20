@@ -2,7 +2,34 @@ import { CompactTable } from '../types';
 import { IConnector } from './connector';
 import { BigQuery, BigQueryOptions } from '@google-cloud/bigquery';
 
-export class BQConnector implements IConnector {
+// column type ref: https://cloud.google.com/bigquery/docs/information-schema-columns#schema
+export interface BQColumnResponse {
+  table_catalog: string;
+  table_schema: string;
+  table_name: string;
+  column_name: string;
+  ordinal_position: number;
+  is_nullable: string;
+  data_type: string;
+  is_generated: string;
+  generation_expression: any;
+  is_stored: string;
+  is_hidden: string;
+  is_updatable: string;
+  is_system_defined: string;
+  is_partitioning_column: string;
+  clustering_ordinal_position: number;
+  collation_name: string;
+  column_default: string;
+  rounding_mode: string;
+  description: string;
+}
+
+export interface BQListTableOptions {
+  dataset: string;
+  format?: boolean;
+}
+export class BQConnector implements IConnector<BQColumnResponse> {
   private bq: BigQuery;
 
   // Not storing the bq client instance because we rarely need to use it
@@ -19,23 +46,32 @@ export class BQConnector implements IConnector {
     }
   }
 
-  public async listTables(listTableOptions: { dataset: string }): Promise<any> {
-    const { dataset } = listTableOptions;
-    console.log({ dataset });
+  public async listTables(listTableOptions: BQListTableOptions) {
+    const { dataset, format } = listTableOptions;
     // list columns from INFORMATION_SCHEMA ref: https://cloud.google.com/bigquery/docs/information-schema-columns
     const columns = await new Promise((resolve, reject) => {
       this.bq.query(
-        `SELECT * FROM \`${dataset}\`.INFORMATION_SCHEMA.COLUMNS ORDER BY table_name, ordinal_position;`,
+        `SELECT 
+          c.*, cf.description 
+        FROM ${dataset}.INFORMATION_SCHEMA.COLUMNS c 
+        JOIN ${dataset}.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS cf 
+          ON cf.table_name = c.table_name 
+          AND cf.column_name = c.column_name
+        ORDER BY 
+          c.table_name, c.ordinal_position;`,
         (err, rows) => {
           if (err) {
             reject(err);
           } else {
-            // transform rows to CompactTable
             resolve(rows);
           }
         }
       );
     });
+
+    if (!format) {
+      return columns as BQColumnResponse[];
+    }
     return this.formatToCompactTable(columns);
   }
 

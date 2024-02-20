@@ -4,7 +4,11 @@ import { ApolloServer } from 'apollo-server-micro';
 import { typeDefs } from '@vulcan-sql/admin-ui/apollo/server';
 import resolvers from '@vulcan-sql/admin-ui/apollo/server/resolvers';
 import { IContext } from '@vulcan-sql/admin-ui/apollo/server/types';
-import { ProjectRepository } from '@vulcan-sql/admin-ui/apollo/server/repositories';
+import {
+  ModelColumnRepository,
+  ModelRepository,
+  ProjectRepository,
+} from '@vulcan-sql/admin-ui/apollo/server/repositories';
 import { createKnex } from './knex';
 import { GraphQLError } from 'graphql';
 import { getLogger } from '@vulcan-sql/admin-ui/apollo/server/utils';
@@ -22,6 +26,8 @@ export const config: PageConfig = {
 };
 const knex = createKnex();
 const projectRepository = new ProjectRepository(knex);
+const modelRepository = new ModelRepository(knex);
+const modelColumnRepository = new ModelColumnRepository(knex);
 
 const apolloServer: ApolloServer = new ApolloServer({
   typeDefs,
@@ -33,7 +39,11 @@ const apolloServer: ApolloServer = new ApolloServer({
   introspection: process.env.NODE_ENV !== 'production',
   context: (): IContext => ({
     config: serverConfig,
+
+    // repository
     projectRepository,
+    modelRepository,
+    modelColumnRepository,
   }),
 });
 
