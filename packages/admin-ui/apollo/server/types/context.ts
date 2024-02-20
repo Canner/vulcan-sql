@@ -1,7 +1,15 @@
 import { IConfig } from '../config';
-import { IProjectRepository } from '../repositories';
+import {
+  IModelColumnRepository,
+  IModelRepository,
+  IProjectRepository,
+} from '../repositories';
 
 export interface IContext {
-  projectRepository: IProjectRepository;
   config: IConfig;
+
+  // repository
+  projectRepository: IProjectRepository;
+  modelRepository: IModelRepository;
+  modelColumnRepository: IModelColumnRepository;
 }

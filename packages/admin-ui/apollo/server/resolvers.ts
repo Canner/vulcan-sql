@@ -3,7 +3,6 @@ import {
   UsableDataSource,
   DataSourceName,
   DataSource,
-  Relation,
   CreateModelPayload,
   UpdateModelPayload,
   UpdateModelWhere,
@@ -116,13 +115,10 @@ const mockResolvers = {
     saveDataSource: (_, args: { data: DataSource }) => {
       return args.data;
     },
-    saveMDL: (
+    saveTables: (
       _,
       args: {
-        data: {
-          models: { name: string; columns: string[] };
-          relations: Relation[];
-        };
+        data: [tables: { name: string; columns: string[] }];
       }
     ) => {
       return demoManifest;
@@ -210,6 +206,7 @@ const resolvers = {
   },
   Mutation: {
     saveDataSource: dataSourceResolver.saveDataSource,
+    saveTables: dataSourceResolver.saveTables,
   },
 };
 

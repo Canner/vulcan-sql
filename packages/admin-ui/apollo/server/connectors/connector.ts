@@ -1,6 +1,6 @@
 import { CompactTable } from '../types';
 
-export interface IConnector {
+export interface IConnector<T> {
   connect(): Promise<boolean>;
-  listTables(listTableOptions: any): Promise<CompactTable[]>;
+  listTables(listTableOptions: any): Promise<CompactTable[] | T[]>;
 }

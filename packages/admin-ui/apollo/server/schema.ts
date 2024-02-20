@@ -65,9 +65,13 @@ export const typeDefs = gql`
     type: RelationType!
   }
 
-  input MDLInput {
-    models: [MDLModelSubmitInput!]!
-    relations: [RelationInput!]!
+  input SaveTablesInput {
+    tables: [ModelsInput!]!
+  }
+
+  input ModelsInput {
+    name: String!
+    columns: [String!]!
   }
 
   type CompactColumn {
@@ -196,7 +200,7 @@ export const typeDefs = gql`
   type Mutation {
     # On Boarding Steps
     saveDataSource(data: DataSourceInput!): DataSource!
-    saveMDL(data: MDLInput!): JSON!
+    saveTables(data: SaveTablesInput!): JSON!
 
     # Modeling Page
     createModel(data: CreateModelInput!): JSON!

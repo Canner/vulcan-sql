@@ -1,16 +1,26 @@
 import { BigQueryOptions } from '@google-cloud/bigquery';
-import { BQConnector } from '../connectors/bqConnector';
+import {
+  BQColumnResponse,
+  BQConnector,
+  BQListTableOptions,
+} from '../connectors/bqConnector';
 import { DataSource, DataSourceName, IContext } from '../types';
 import crypto from 'crypto';
 import * as fs from 'fs';
 import path from 'path';
 import { getLogger, Encryptor } from '@vulcan-sql/admin-ui/apollo/server/utils';
+import { Model, ModelColumn, Project } from '../repositories';
+import { CreateModelsInput } from '../models';
+import { IConfig } from '../config';
 
 const logger = getLogger('DataSourceResolver');
+logger.level = 'debug';
+
 export class DataSourceResolver {
   constructor() {
     this.saveDataSource = this.saveDataSource.bind(this);
     this.listDataSourceTables = this.listDataSourceTables.bind(this);
+    this.saveTables = this.saveTables.bind(this);
   }
 
   public async saveDataSource(
@@ -28,38 +38,159 @@ export class DataSourceResolver {
   }
 
   public async listDataSourceTables(_root: any, arg, ctx: IContext) {
-    // fetch connection info and write credential file
-    const projects = await ctx.projectRepository.findAll();
-    if (!projects.length) {
-      return [];
-    }
-    const {
-      location,
-      projectId,
-      dataset,
-      credentials: encryptedCredentials,
-    } = projects[0];
+    const project = await this.getCurrentProject(ctx);
+    const filePath = await this.getCredentialFilePath(project, ctx.config);
+    const transformToCompactTable = true;
+    return await this.fetchDatasetColumnInformationSchema(
+      project,
+      filePath,
+      transformToCompactTable
+    );
+  }
 
-    const encryptor = new Encryptor(ctx.config);
-    const credentials = await encryptor.decrypt(encryptedCredentials);
-    let filePath = '';
-    filePath = await this.writeCredentialsFile(
-      JSON.parse(credentials),
-      ctx.config.persistCredentialDir
+  public async saveTables(
+    _root: any,
+    arg: {
+      data: { tables: CreateModelsInput[] };
+    },
+    ctx: IContext
+  ) {
+    const tables = arg.data.tables;
+
+    // get current project
+    const project = await this.getCurrentProject(ctx);
+    const filePath = await this.getCredentialFilePath(project, ctx.config);
+
+    // get columns with descriptions
+    const transformToCompactTable = false;
+    const dataSourceColumns = await this.fetchDatasetColumnInformationSchema(
+      project,
+      filePath,
+      transformToCompactTable
+    );
+    // create models
+    const id = project.id;
+    const models = await this.createModels(tables, id, ctx);
+
+    // create columns
+    const columns = await this.createModelColumns(
+      tables,
+      models,
+      dataSourceColumns as BQColumnResponse[],
+      ctx
     );
 
+    return { models, columns };
+  }
+
+  private async fetchDatasetColumnInformationSchema(
+    project: Project,
+    filePath: string,
+    format: boolean
+  ) {
     // fetch tables
+    const { location, projectId, dataset } = project;
     const connectionOption: BigQueryOptions = {
       location,
       projectId,
       keyFilename: filePath,
     };
     const connector = new BQConnector(connectionOption);
-    const listTableOptions = {
+    const listTableOptions: BQListTableOptions = {
       dataset,
+      format,
     };
-    const tables = await connector.listTables(listTableOptions);
-    return tables as any;
+    return await connector.listTables(listTableOptions);
+  }
+
+  private async getCredentialFilePath(project: Project, config: IConfig) {
+    const { credentials: encryptedCredentials } = project;
+    const encryptor = new Encryptor(config);
+    const credentials = encryptor.decrypt(encryptedCredentials);
+    const filePath = this.writeCredentialsFile(
+      JSON.parse(credentials),
+      config.persistCredentialDir
+    );
+    return filePath;
+  }
+
+  private async createModelColumns(
+    tables: CreateModelsInput[],
+    models: Model[],
+    dataSourceColumns: BQColumnResponse[],
+    ctx: IContext
+  ) {
+    const columnValues = tables.reduce((acc, table) => {
+      const modelId = models.find((m) => m.tableName === table.name)?.id;
+      for (const columnName of table.columns) {
+        const dataSourceColumn = dataSourceColumns.find(
+          (c) => c.table_name === table.name && c.column_name === columnName
+        );
+        if (!dataSourceColumn) {
+          throw new Error(
+            `Column ${columnName} not found in the DataSource ${table.name}`
+          );
+        }
+        const columnValue = {
+          modelId,
+          isCalculated: false,
+          name: columnName,
+          type: dataSourceColumn?.data_type || 'string',
+          notNull:
+            dataSourceColumn.is_nullable.toLocaleLowerCase() === 'yes'
+              ? false
+              : true,
+          isPk: false,
+          properties: JSON.stringify({
+            description: dataSourceColumn.description,
+          }),
+        } as Partial<ModelColumn>;
+        acc.push(columnValue);
+      }
+      return acc;
+    }, []);
+    const columns = await Promise.all(
+      columnValues.map(
+        async (column) => await ctx.modelColumnRepository.createOne(column)
+      )
+    );
+    return columns;
+  }
+
+  private async createModels(
+    tables: CreateModelsInput[],
+    id: number,
+    ctx: IContext
+  ) {
+    const modelValues = tables.map(({ name }) => {
+      const model = {
+        projectId: id,
+        tableName: name,
+        refSql: `select * from ${name}`,
+        cached: false,
+        refreshTime: null,
+        properties: JSON.stringify({ description: '' }),
+      } as Partial<Model>;
+      return model;
+    });
+
+    const models = await Promise.all(
+      modelValues.map(
+        async (model) => await ctx.modelRepository.createOne(model)
+      )
+    );
+    return models;
+  }
+
+  private async getCurrentProject(ctx: IContext) {
+    const projects = await ctx.projectRepository.findAll({
+      order: 'id',
+      limit: 1,
+    });
+    if (!projects.length) {
+      throw new Error('No project found');
+    }
+    return projects[0];
   }
 
   private async saveBigQueryDataSource(properties: any, ctx: IContext) {
@@ -106,7 +237,7 @@ export class DataSourceResolver {
     return project;
   }
 
-  private async writeCredentialsFile(
+  private writeCredentialsFile(
     credentials: JSON,
     persist_credential_dir: string
   ) {
