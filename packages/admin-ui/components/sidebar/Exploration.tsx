@@ -58,34 +58,31 @@ export default function Exploration(props: Props) {
 
   // initial workspace
   useEffect(() => {
-    setTree((tree) =>
-      getExplorationGroupNode({
-        quotaUsage: data.length,
-        children: data.map((exploration) => {
-          const nodeKey = exploration.id;
+    setTree(
+      data.map((exploration) => {
+        const nodeKey = exploration.id;
 
-          return {
-            className: 'adm-treeNode adm-treeNode__exploration',
-            id: nodeKey,
-            isLeaf: true,
-            key: nodeKey,
-            title: (
-              <ExplorationTreeTitle
-                explorationId={nodeKey}
-                title={exploration.name}
-                onCopyLink={onCopyLink}
-                onRename={(newExplorationName) => {
-                  // TODO: Call API to rename the exploration result title
-                  console.log(
-                    'Call API to rename the exploration result title:',
-                    newExplorationName
-                  );
-                }}
-                onDelete={onDeleteExploration}
-              />
-            ),
-          };
-        }),
+        return {
+          className: 'adm-treeNode adm-treeNode__exploration',
+          id: nodeKey,
+          isLeaf: true,
+          key: nodeKey,
+          title: (
+            <ExplorationTreeTitle
+              explorationId={nodeKey}
+              title={exploration.name}
+              onCopyLink={onCopyLink}
+              onRename={(newExplorationName) => {
+                // TODO: Call API to rename the exploration result title
+                console.log(
+                  'Call API to rename the exploration result title:',
+                  newExplorationName
+                );
+              }}
+              onDelete={onDeleteExploration}
+            />
+          ),
+        };
       })
     );
   }, [data]);
@@ -113,7 +110,7 @@ export default function Exploration(props: Props) {
 
   return (
     <>
-      <div className="px-4 pt-4">
+      <div className="px-4 py-4">
         <Button
           style={{ backgroundColor: 'transparent' }}
           key="add-exploration-result"
