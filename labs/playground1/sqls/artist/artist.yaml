@@ -1,12 +1,5 @@
-urlPath: /artist/:id
-request:
-  - fieldName: id
-    fieldIn: path
-    description: constituent id
-    validators:
-      - required
-sample:
-  parameters:
-    id: '1'
-  profile: duckdb
-profile: duckdb
+urlPath: /artist
+cache:
+  - cacheTableName: 'artist_cache'
+    sql: "SELECT * FROM artist"
+profile: duckdb_source

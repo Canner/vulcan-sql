@@ -1,7 +1,14 @@
-- name: duckdb
+- name: duckdb_source
   type: duckdb
   allow: "*"
   connection:
     persistent-path: ./test-data/moma.db
     log-queries: true
     log-parameters: true
+
+- name: duckdb_cache
+  type: duckdb
+  allow: "*"
+  connection:
+    persistent-path: ./vulcan-caching_layer.db
+    

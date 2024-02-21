@@ -1,0 +1,1 @@
+select * from vulcan.artist_cache
