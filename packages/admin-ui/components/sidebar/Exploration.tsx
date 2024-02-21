@@ -128,6 +128,9 @@ export default function Exploration(props: Props) {
   };
 
   const onTreeSelect = (selectedKeys: React.Key[], info: any) => {
+    // prevent deselected
+    if (selectedKeys.length === 0) return;
+
     setTreeSelectedKeys(selectedKeys);
     onSelect(selectedKeys);
   };
