@@ -1,5 +1,5 @@
 export enum Path {
-  Onboarding = '/setup',
+  Exploration = '/exploration',
   Modeling = '/modeling',
-  Explore = '/explore',
+  Onboarding = '/setup',
 }

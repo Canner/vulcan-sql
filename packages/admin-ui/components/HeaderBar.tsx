@@ -60,10 +60,10 @@ export default function HeaderBar(props: { connections?: Connections }) {
           {showNav && (
             <Space size={[16, 0]}>
               <StyledButton
-                $isHighlight={pathname.startsWith(Path.Explore)}
-                onClick={() => router.push(Path.Explore)}
+                $isHighlight={pathname.startsWith(Path.Exploration)}
+                onClick={() => router.push(Path.Exploration)}
               >
-                Explore
+                Exploration
               </StyledButton>
               <StyledButton
                 $isHighlight={pathname.startsWith(Path.Modeling)}

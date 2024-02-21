@@ -14,7 +14,7 @@ export default function useSetupRelations() {
 
   const submitReleations = async (relations: SelectedRecommendRelations) => {
     // TODO: implement submitReleations API
-    router.push(Path.Explore);
+    router.push(Path.Exploration);
   };
 
   const onBack = () => {

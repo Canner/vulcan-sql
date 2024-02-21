@@ -19,12 +19,12 @@ interface ModelingSidebarProps {
   onSelect: (selectKeys) => void;
 }
 
-interface ExploreSidebarProps {
+interface ExplorationSidebarProps {
   data: ExplorationData[];
   onSelect: (selectKeys) => void;
 }
 
-type Props = ModelingSidebarProps | ExploreSidebarProps;
+type Props = ModelingSidebarProps | ExplorationSidebarProps;
 
 const DynamicSidebar = (
   props: Props & {
@@ -33,8 +33,8 @@ const DynamicSidebar = (
 ) => {
   const { pathname, ...restProps } = props;
 
-  if (pathname.startsWith(Path.Explore)) {
-    return <Exploration {...(restProps as ExploreSidebarProps)} />;
+  if (pathname.startsWith(Path.Exploration)) {
+    return <Exploration {...(restProps as ExplorationSidebarProps)} />;
   }
 
   if (pathname.startsWith(Path.Modeling)) {

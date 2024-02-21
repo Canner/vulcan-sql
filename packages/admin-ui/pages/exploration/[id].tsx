@@ -1,16 +1,11 @@
 import getConfig from 'next/config';
-import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { Button } from 'antd';
+import { GetServerSideProps } from 'next';
 import { Path } from '@vulcan-sql/admin-ui/utils/enum';
-import { ExploreIcon } from '@vulcan-sql/admin-ui/utils/icons';
 import SiderLayout from '@vulcan-sql/admin-ui/components/layouts/SiderLayout';
-import SelectDataToExploreModal from '@vulcan-sql/admin-ui/components/pages/explore/SelectDataToExploreModal';
 import Background from '@vulcan-sql/admin-ui/components/Background';
-import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 
-export default function Explore({ connections }) {
-  const selectDataToExploreModal = useModalAction();
+export default function Exploration({ connections }) {
   const router = useRouter();
 
   // TODO: call API to get real exploration list data
@@ -26,7 +21,7 @@ export default function Explore({ connections }) {
   ];
 
   const onSelect = (selectKeys: string[]) => {
-    router.push(`${Path.Explore}/${selectKeys[0]}`);
+    router.push(`${Path.Exploration}/${selectKeys[0]}`);
   };
 
   return (
@@ -36,23 +31,7 @@ export default function Explore({ connections }) {
       sidebar={{ data, onSelect }}
     >
       <Background />
-
-      <div
-        className="d-flex align-center justify-center"
-        style={{ height: '100%' }}
-      >
-        <Button
-          icon={<ExploreIcon className="mr-2" />}
-          onClick={() => selectDataToExploreModal.openModal()}
-        >
-          Select data to explore
-        </Button>
-      </div>
-
-      <SelectDataToExploreModal
-        {...selectDataToExploreModal.state}
-        onClose={selectDataToExploreModal.closeModal}
-      />
+      Exploration ID: {router.query.id}
     </SiderLayout>
   );
 }

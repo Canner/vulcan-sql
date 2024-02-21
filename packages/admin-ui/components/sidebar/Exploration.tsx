@@ -94,7 +94,7 @@ export default function Exploration(props: Props) {
     // TODO: Call API to delete the exploration result
     console.log('Call delete API:', explorationId);
     if (router.query.id === explorationId) {
-      router.push(Path.Explore);
+      router.push(Path.Exploration);
     }
   };
 
@@ -117,7 +117,7 @@ export default function Exploration(props: Props) {
         <Button
           style={{ backgroundColor: 'transparent' }}
           key="add-exploration-result"
-          onClick={() => router.push(Path.Explore)}
+          onClick={() => router.push(Path.Exploration)}
           block
         >
           <PlusOutlined />
