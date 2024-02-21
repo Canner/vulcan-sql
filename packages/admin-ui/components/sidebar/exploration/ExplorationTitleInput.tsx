@@ -24,6 +24,7 @@ export default function ExplorationTitleInput(props: {
         onSetTitle(e.target.value)
       }
       onPressEnter={(e) => onRename(title)}
+      onBlur={(e) => onRename(title)}
     />
   );
 }
