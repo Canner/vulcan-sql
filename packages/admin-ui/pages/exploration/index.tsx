@@ -1,5 +1,3 @@
-import getConfig from 'next/config';
-import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Button } from 'antd';
 import { Path } from '@vulcan-sql/admin-ui/utils/enum';
@@ -9,7 +7,7 @@ import SelectDataToExploreModal from '@vulcan-sql/admin-ui/components/pages/expl
 import Background from '@vulcan-sql/admin-ui/components/Background';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 
-export default function Exploration({ connections }) {
+export default function Exploration() {
   const selectDataToExploreModal = useModalAction();
   const router = useRouter();
 
@@ -30,11 +28,7 @@ export default function Exploration({ connections }) {
   };
 
   return (
-    <SiderLayout
-      connections={connections}
-      loading={false}
-      sidebar={{ data, onSelect }}
-    >
+    <SiderLayout loading={false} sidebar={{ data, onSelect }}>
       <Background />
 
       <div
@@ -56,20 +50,3 @@ export default function Exploration({ connections }) {
     </SiderLayout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const { serverRuntimeConfig } = getConfig();
-  const { PG_DATABASE, PG_PORT, PG_USERNAME, PG_PASSWORD } =
-    serverRuntimeConfig;
-
-  return {
-    props: {
-      connections: {
-        database: PG_DATABASE,
-        port: PG_PORT,
-        username: PG_USERNAME,
-        password: PG_PASSWORD,
-      },
-    },
-  };
-};

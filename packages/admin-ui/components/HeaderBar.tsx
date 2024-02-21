@@ -41,6 +41,7 @@ export default function HeaderBar(props: { connections?: Connections }) {
   const router = useRouter();
   const { pathname } = router;
   const showNav = !pathname.startsWith(Path.Onboarding);
+  const showConnectInfo = pathname.startsWith(Path.Modeling);
 
   const infoSources = [
     { title: 'Database', type: 'text', value: connections?.database },
@@ -74,9 +75,9 @@ export default function HeaderBar(props: { connections?: Connections }) {
             </Space>
           )}
         </Space>
-        {showNav && (
+        {showConnectInfo && (
           <SharePopover sources={infoSources}>
-            <Button type="primary">Share</Button>
+            <Button type="primary">Connect</Button>
           </SharePopover>
         )}
       </div>

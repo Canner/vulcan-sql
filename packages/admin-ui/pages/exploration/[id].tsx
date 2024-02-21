@@ -1,11 +1,9 @@
-import getConfig from 'next/config';
 import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next';
 import { Path } from '@vulcan-sql/admin-ui/utils/enum';
 import SiderLayout from '@vulcan-sql/admin-ui/components/layouts/SiderLayout';
 import Background from '@vulcan-sql/admin-ui/components/Background';
 
-export default function Exploration({ connections }) {
+export default function Exploration() {
   const router = useRouter();
 
   // TODO: call API to get real exploration list data
@@ -25,30 +23,9 @@ export default function Exploration({ connections }) {
   };
 
   return (
-    <SiderLayout
-      connections={connections}
-      loading={false}
-      sidebar={{ data, onSelect }}
-    >
+    <SiderLayout loading={false} sidebar={{ data, onSelect }}>
       <Background />
       Exploration ID: {router.query.id}
     </SiderLayout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const { serverRuntimeConfig } = getConfig();
-  const { PG_DATABASE, PG_PORT, PG_USERNAME, PG_PASSWORD } =
-    serverRuntimeConfig;
-
-  return {
-    props: {
-      connections: {
-        database: PG_DATABASE,
-        port: PG_PORT,
-        username: PG_USERNAME,
-        password: PG_PASSWORD,
-      },
-    },
-  };
-};
