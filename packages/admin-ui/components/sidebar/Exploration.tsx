@@ -93,6 +93,9 @@ export default function Exploration(props: Props) {
   const onDeleteExploration = (explorationId: string) => {
     // TODO: Call API to delete the exploration result
     console.log('Call delete API:', explorationId);
+    if (router.query.id === explorationId) {
+      router.push(Path.Explore);
+    }
   };
 
   const onCopyLink = (explorationId: string) => {
