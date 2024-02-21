@@ -23,18 +23,6 @@ interface Props {
 
 const ExplorationSidebarTree = styled(SidebarTree)`
   .adm-treeNode {
-    &__button {
-      padding: 0px 16px 0px 4px !important;
-
-      button {
-        background-color: transparent;
-      }
-
-      .ant-tree-title {
-        width: 100%;
-      }
-    }
-
     &.adm-treeNode__exploration {
       padding: 0px 16px 0px 4px !important;
 
@@ -73,46 +61,31 @@ export default function Exploration(props: Props) {
     setTree((tree) =>
       getExplorationGroupNode({
         quotaUsage: data.length,
-        children: [
-          {
-            className: 'adm-treeNode__button',
-            id: 'add-exploration-result',
-            isLeaf: true,
-            selectable: false,
-            key: 'add-exploration-result',
-            title: (
-              <Button onClick={() => router.push(Path.Explore)} block>
-                <PlusOutlined />
-                New exploration
-              </Button>
-            ),
-          } as DataNode,
-          ...data.map((exploration) => {
-            const nodeKey = exploration.id;
+        children: data.map((exploration) => {
+          const nodeKey = exploration.id;
 
-            return {
-              className: 'adm-treeNode adm-treeNode__exploration',
-              id: nodeKey,
-              isLeaf: true,
-              key: nodeKey,
-              title: (
-                <ExplorationTreeTitle
-                  explorationId={nodeKey}
-                  title={exploration.name}
-                  onCopyLink={onCopyLink}
-                  onRename={(newExplorationName) => {
-                    // TODO: Call API to rename the exploration result title
-                    console.log(
-                      'Call API to rename the exploration result title:',
-                      newExplorationName
-                    );
-                  }}
-                  onDelete={onDeleteExploration}
-                />
-              ),
-            };
-          }),
-        ],
+          return {
+            className: 'adm-treeNode adm-treeNode__exploration',
+            id: nodeKey,
+            isLeaf: true,
+            key: nodeKey,
+            title: (
+              <ExplorationTreeTitle
+                explorationId={nodeKey}
+                title={exploration.name}
+                onCopyLink={onCopyLink}
+                onRename={(newExplorationName) => {
+                  // TODO: Call API to rename the exploration result title
+                  console.log(
+                    'Call API to rename the exploration result title:',
+                    newExplorationName
+                  );
+                }}
+                onDelete={onDeleteExploration}
+              />
+            ),
+          };
+        }),
       })
     );
   }, [data]);
@@ -136,10 +109,23 @@ export default function Exploration(props: Props) {
   };
 
   return (
-    <ExplorationSidebarTree
-      treeData={tree}
-      onSelect={onTreeSelect}
-      selectedKeys={treeSelectedKeys}
-    />
+    <>
+      <div className="px-4 pt-4">
+        <Button
+          style={{ backgroundColor: 'transparent' }}
+          key="add-exploration-result"
+          onClick={() => router.push(Path.Explore)}
+          block
+        >
+          <PlusOutlined />
+          New exploration
+        </Button>
+      </div>
+      <ExplorationSidebarTree
+        treeData={tree}
+        onSelect={onTreeSelect}
+        selectedKeys={treeSelectedKeys}
+      />
+    </>
   );
 }
