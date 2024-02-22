@@ -15,7 +15,7 @@ export default function useSelectDataToExploreCollections() {
           type: 'UUID',
         },
       ],
-      caculatedFields: [
+      calculatedFields: [
         {
           name: 'test',
           expression: 'Sum',
@@ -38,7 +38,7 @@ export default function useSelectDataToExploreCollections() {
           type: 'UUID',
         },
       ],
-      caculatedFields: [
+      calculatedFields: [
         {
           name: 'test',
           expression: 'Sum',
@@ -61,7 +61,7 @@ export default function useSelectDataToExploreCollections() {
           type: 'UUID',
         },
       ],
-      caculatedFields: [
+      calculatedFields: [
         {
           name: 'test',
           expression: 'Sum',

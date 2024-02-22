@@ -4,7 +4,7 @@ import CompassOutlined from '@ant-design/icons/CompassOutlined';
 import { NODE_TYPE, Path } from '@vulcan-sql/admin-ui/utils/enum';
 import { DrawerAction } from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
 import FieldTable from '@vulcan-sql/admin-ui/components/table/FieldTable';
-import CaculatedFieldTable from '@vulcan-sql/admin-ui/components/table/CaculatedFieldTable';
+import CalculatedFieldTable from '@vulcan-sql/admin-ui/components/table/CalculatedFieldTable';
 import MeasureFieldTable from '@vulcan-sql/admin-ui/components/table/MeasureFieldTable';
 import DimensionFieldTable from '@vulcan-sql/admin-ui/components/table/DimensionFieldTable';
 import WindowFieldTable from '@vulcan-sql/admin-ui/components/table/WindowFieldTable';
@@ -15,7 +15,7 @@ import UpdateMetadataModal from '@vulcan-sql/admin-ui/components/modals/UpdateMe
 interface MetadataData {
   name: string;
   fields?: any[];
-  caculatedFields?: any[];
+  calculatedFields?: any[];
   relations?: any[];
   measures?: any[];
   dimensions?: any[];
@@ -29,13 +29,13 @@ type Props = DrawerAction<MetadataData>;
 const ModelMetadata = ({
   name,
   fields = [],
-  caculatedFields = [],
+  calculatedFields = [],
   relations = [],
 }) => {
   const FieldMetadataTable =
     makeMetadataBaseTable(FieldTable)(UpdateMetadataModal);
-  const CaculatedFieldMetadataTable =
-    makeMetadataBaseTable(CaculatedFieldTable)(UpdateMetadataModal);
+  const CalculatedFieldMetadataTable =
+    makeMetadataBaseTable(CalculatedFieldTable)(UpdateMetadataModal);
 
   const submitRelation = async (value) => {
     // TODO: waiting for API
@@ -75,10 +75,10 @@ const ModelMetadata = ({
 
       <div className="mb-6">
         <Typography.Text className="d-block gray-7 mb-2">
-          Caculated fields ({caculatedFields.length})
+          Calculated fields ({calculatedFields.length})
         </Typography.Text>
-        <CaculatedFieldMetadataTable
-          dataSource={caculatedFields}
+        <CalculatedFieldMetadataTable
+          dataSource={calculatedFields}
           onEditValue={editMetadataValue}
           onSubmitRemote={submitMetadata}
         />

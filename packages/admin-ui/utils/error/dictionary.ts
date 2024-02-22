@@ -10,7 +10,7 @@ export const ERROR_TEXTS = {
       REQUIRED: 'Please upload credential.',
     },
   },
-  ADD_CACULATED_FIELD: {
+  ADD_CALCULATED_FIELD: {
     FIELD_NAME: {
       REQUIRED: 'Please input field name.',
     },

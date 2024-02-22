@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { Table, TableProps } from 'antd';
-import { CaculatedFieldValue } from '@vulcan-sql/admin-ui/components/modals/AddCaculatedFieldModal';
+import { CalculatedFieldValue } from '@vulcan-sql/admin-ui/components/modals/AddCalculatedFieldModal';
 
-type Props = Pick<TableProps<CaculatedFieldValue>, 'dataSource'> &
-  Partial<Pick<TableProps<CaculatedFieldValue>, 'columns'>>;
+type Props = Pick<TableProps<CalculatedFieldValue>, 'dataSource'> &
+  Partial<Pick<TableProps<CalculatedFieldValue>, 'columns'>>;
 
-export const getCaculatedFieldTableColumns = () => {
+export const getCalculatedFieldTableColumns = () => {
   return [
     {
       title: 'Name',
@@ -25,11 +25,11 @@ export const getCaculatedFieldTableColumns = () => {
   ];
 };
 
-export default function CaculatedFieldTable(props: Props) {
+export default function CalculatedFieldTable(props: Props) {
   const { dataSource = [], columns = [] } = props;
 
   const tableColumns = useMemo(
-    () => [...getCaculatedFieldTableColumns(), ...columns],
+    () => [...getCalculatedFieldTableColumns(), ...columns],
     [dataSource]
   );
 
