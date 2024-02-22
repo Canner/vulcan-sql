@@ -55,36 +55,32 @@ export class CacheLayerRefresher implements ICacheLayerRefresher {
     // check if the index name is duplicated more than one API schemas
     this.checkDuplicateIndex(schemas);
     // traverse each cache table of each schema
-    await Promise.all(
-      schemas.map(async (schema) => {
-        // skip the schema by return if not set the cache
-        if (!schema.cache) return;
-        return await Promise.all(
-          schema.cache.map(async (cache) => {
-            const { cacheTableName, profile, refreshTime } = cache;
-            // replace the '/' tp '_' to avoid the file path issue for templateSource
-            const templateName = schema.templateSource.replace('/', '_');
-            // If refresh time is set, use the scheduler to schedule the load task for refresh
-            if (refreshTime?.every) {
-              // use the work id for task to know which failed when execute and get the job to by id.
-              const workerId = `${templateName}/${profile}/${cacheTableName}`;
-              const milliseconds = ms(refreshTime.every as StringValue);
-              const refreshJob = new SimpleIntervalJob(
-                { milliseconds, runImmediately },
-                new AsyncTask(workerId, async () => {
-                  await this.loadCacheAndSendActivityLog(schema, cache);
-                }),
-                { preventOverrun: true, id: workerId }
-              );
-              // add the job to schedule cache refresh task
-              this.scheduler.addIntervalJob(refreshJob);
-            } else {
+    for (const schema of schemas) {
+      // skip the schema if cache is not set
+      if (!schema.cache) continue;
+      for (const cache of schema.cache) {
+        const { cacheTableName, profile, refreshTime } = cache;
+        // replace the '/' tp '_' to avoid the file path issue for templateSource
+        const templateName = schema.templateSource.replace('/', '_');
+        // If refresh time is set, use the scheduler to schedule the load task for refresh
+        if (refreshTime?.every) {
+          // use the work id for task to know which failed when execute and get the job to by id.
+          const workerId = `${templateName}/${profile}/${cacheTableName}`;
+          const milliseconds = ms(refreshTime.every as StringValue);
+          const refreshJob = new SimpleIntervalJob(
+            { milliseconds, runImmediately },
+            new AsyncTask(workerId, async () => {
               await this.loadCacheAndSendActivityLog(schema, cache);
-            }
-          })
-        );
-      })
-    );
+            }),
+            { preventOverrun: true, id: workerId }
+          );
+          // add the job to schedule cache refresh task
+          this.scheduler.addIntervalJob(refreshJob);
+        } else {
+          await this.loadCacheAndSendActivityLog(schema, cache);
+        }
+      }
+    }
   }
 
   /**
