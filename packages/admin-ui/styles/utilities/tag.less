@@ -1,0 +1,15 @@
+.ant-tag.adm-tag {
+  .make-color-class(@color, @textColor, @bgColor, @borderColor: transparent) {
+    &-@{color} {
+      color: @textColor;
+      background: @bgColor;
+      border-color: transparent;
+
+      .anticon {
+        color: @textColor;
+      }
+    }
+  }
+
+  .make-color-class(purple, @purple-9, @purple-1, @purple-6);
+}

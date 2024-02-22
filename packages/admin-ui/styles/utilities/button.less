@@ -1,0 +1,60 @@
+.make-button-classes() {
+  @selectors: {
+    citrus: @citrus-6;
+    green: @green-6;
+    purple: @purple-6;
+  }
+  
+  each(@selectors, {
+    .adm-btn {
+      &-@{key}-count {
+        color: ~'var(--@{key}-7)';
+        background: ~'var(--@{key}-1)';
+        border-color: ~'var(--@{key}-7)';
+      }
+
+      &-@{key} {
+        .make-badge-count(@white; ~'var(--@{key}-7)');
+
+        &:hover,
+        &:focus {
+          color: ~'var(--@{key}-5)';
+          background: ~'var(--@{key}-1)';
+          border-color: ~'var(--@{key}-5)';
+
+          .make-badge-count(@white; ~'var(--@{key}-5)');
+        }
+
+        &:active {
+          color: ~'var(--@{key}-7)';
+          background: ~'var(--@{key}-1)';
+          border-color: ~'var(--@{key}-7)';
+
+          .make-badge-count(@white; ~'var(--@{key}-7)');
+        }
+
+
+        &[disabled] {
+          .make-badge-count(@disabled-color; transparent);
+          .ant-badge-count-sm {
+            &:hover {
+              color: @disabled-color !important;
+              background-color: transparent !important;
+              border-color: @disabled-color !important;
+            }
+          }
+        }
+
+      }
+    }
+  })
+}
+
+.make-badge-count(@color; @backgroundColor) {
+  .ant-badge-count-sm {
+    color: @color;
+    background-color: @backgroundColor;
+  }
+}
+
+.make-button-classes();
