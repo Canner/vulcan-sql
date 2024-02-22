@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import { useEffect } from 'react';
-import { Form, Button } from 'antd';
+import { Form, Badge, Button, Space, Tag } from 'antd';
 import { JOIN_TYPE, NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { useForm } from 'antd/lib/form/Form';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
@@ -49,11 +49,12 @@ export default function Component() {
   }, [modelFields]);
 
   return (
-    <Form form={form} className="p-10">
-      <Form.Item name="modelFields" initialValue={initialValue}>
-        <ModelFieldSelector model="customer" options={fieldOptions} />
-      </Form.Item>
-
+    <>
+      <Form form={form} className="p-10">
+        <Form.Item name="modelFields" initialValue={initialValue}>
+          <ModelFieldSelector model="customer" options={fieldOptions} />
+        </Form.Item>
+      </Form>
       <div>
         value:
         <pre>
@@ -274,6 +275,48 @@ export default function Component() {
         {...selectDataToExploreModal.state}
         onClose={selectDataToExploreModal.closeModal}
       />
-    </Form>
+
+      <Space size={[4, 16]} className="mx-1 my-4">
+        <Button>Basic default button</Button>
+        <Button className={'adm-btn-green adm-btn-green-count'} disabled>
+          <Space size={[4, 0]}>
+            Test (disabled)
+            <Badge count={2} size="small" />
+          </Space>
+        </Button>
+        <Button className="adm-btn-green adm-btn-green-count">
+          <Space size={[4, 0]}>
+            Fields
+            <Badge count={3} size="small" />
+          </Space>
+        </Button>
+        <Button className="adm-btn-citrus">
+          <Space size={[4, 0]}>
+            Calculated Fields
+            <Badge count={0} size="small" />
+          </Space>
+        </Button>
+        <Button className="adm-btn-purple adm-btn-purple-count">
+          <Space size={[4, 0]}>
+            Filters
+            <Badge count={5} size="small" />
+          </Space>
+        </Button>
+      </Space>
+      <div className="mt-2">
+        <Tag className="adm-tag-purple">Purple</Tag>
+        <Tag
+          className="adm-tag-purple text-truncate"
+          style={{ width: 350 }}
+          title="(TBD measure 建立說明) Morem ipsum dolor sit amet, consectetur
+      adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet
+      odio mattis. Learn more"
+        >
+          (TBD measure 建立說明) Morem ipsum dolor sit amet, consectetur
+          adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet
+          odio mattis. Learn more
+        </Tag>
+      </div>
+    </>
   );
 }
