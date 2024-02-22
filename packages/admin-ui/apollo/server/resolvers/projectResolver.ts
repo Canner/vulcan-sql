@@ -16,7 +16,7 @@ import { IConfig } from '../config';
 const logger = getLogger('DataSourceResolver');
 logger.level = 'debug';
 
-export class DataSourceResolver {
+export class ProjectResolver {
   constructor() {
     this.saveDataSource = this.saveDataSource.bind(this);
     this.listDataSourceTables = this.listDataSourceTables.bind(this);
