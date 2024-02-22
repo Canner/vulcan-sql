@@ -18,6 +18,15 @@ export const StyledSidebarTree = styled(SidebarTree)`
       flex-grow: 1;
     }
   }
+
+  .adm-treeNode {
+    .ant-tree-title {
+      display: inline-flex;
+      flex-wrap: nowrap;
+      min-width: 1px;
+      flex-grow: 0;
+    }
+  }
 `;
 
 interface Props {

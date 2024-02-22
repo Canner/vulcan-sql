@@ -6,7 +6,7 @@ import {
   createTreeGroupNode,
   getColumnNode,
 } from '@vulcan-sql/admin-ui/components/sidebar/utils';
-import LabelTitle from '@vulcan-sql/admin-ui/components/sidebar/modeling/LabelTitle';
+import LabelTitle from '@vulcan-sql/admin-ui/components/sidebar/LabelTitle';
 import { StyledSidebarTree } from '@vulcan-sql/admin-ui/components/sidebar/Modeling';
 
 export default function ViewTree(props) {

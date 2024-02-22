@@ -172,7 +172,7 @@ export default function MetadataDrawer(props: Props) {
   const router = useRouter();
 
   const goToExplore = () => {
-    router.push(Path.Explore);
+    router.push(Path.Exploration);
   };
 
   return (

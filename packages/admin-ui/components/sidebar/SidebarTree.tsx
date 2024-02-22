@@ -87,9 +87,6 @@ const StyledTree = styled(Tree)`
         white-space: nowrap;
       }
 
-      &-treeTitle__appendIcon {
-        color: var(--red-8);
-      }
       &-treeNode {
         &:hover {
           background-color: var(--gray-4);
@@ -101,7 +98,6 @@ const StyledTree = styled(Tree)`
         .ant-tree-title {
           display: inline-flex;
           flex-wrap: nowrap;
-          flex-grow: 0;
           min-width: 1px;
         }
 
