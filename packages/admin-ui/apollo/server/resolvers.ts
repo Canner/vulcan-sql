@@ -203,6 +203,7 @@ const resolvers = {
   JSON: GraphQLJSON,
   Query: {
     listDataSourceTables: dataSourceResolver.listDataSourceTables,
+    autoGenerateRelation: dataSourceResolver.autoGenerateRelation,
   },
   Mutation: {
     saveDataSource: dataSourceResolver.saveDataSource,

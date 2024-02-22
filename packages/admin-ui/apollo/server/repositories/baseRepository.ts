@@ -46,7 +46,9 @@ export class BaseRepository<T> implements IBasicRepository<T> {
 
   public async findOneBy(filter: Partial<T>, queryOptions?: IQueryOptions) {
     const executer = queryOptions?.tx ? queryOptions.tx : this.knex;
-    const query = executer(this.tableName).where(filter);
+    const query = executer(this.tableName).where(
+      this.transformToDBData(filter)
+    );
     if (queryOptions?.limit) {
       query.limit(queryOptions.limit);
     }
@@ -56,7 +58,11 @@ export class BaseRepository<T> implements IBasicRepository<T> {
 
   public async findAllBy(filter: Partial<T>, queryOptions?: IQueryOptions) {
     const executer = queryOptions?.tx ? queryOptions.tx : this.knex;
-    const query = executer(this.tableName).where(filter);
+    // format filter keys to snake_case
+
+    const query = executer(this.tableName).where(
+      this.transformToDBData(filter)
+    );
     if (queryOptions?.order) {
       query.orderBy(queryOptions.order);
     }

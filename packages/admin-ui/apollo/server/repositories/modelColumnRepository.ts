@@ -1,5 +1,9 @@
 import { Knex } from 'knex';
-import { BaseRepository, IBasicRepository } from './baseRepository';
+import {
+  BaseRepository,
+  IBasicRepository,
+  IQueryOptions,
+} from './baseRepository';
 
 export interface ModelColumn {
   id: number; // ID
@@ -16,10 +20,25 @@ export interface ModelColumn {
   properties?: string; // Column properties, a json string, the description and displayName should be stored here
 }
 
-export interface IModelColumnRepository extends IBasicRepository<ModelColumn> {}
+export interface IModelColumnRepository extends IBasicRepository<ModelColumn> {
+  findColumnsOfModels(
+    modelIds: number[],
+    queryOptions?: IQueryOptions
+  ): Promise<ModelColumn[]>;
+}
 
 export class ModelColumnRepository extends BaseRepository<ModelColumn> {
   constructor(knexPg: Knex) {
     super({ knexPg, tableName: 'model_column' });
+  }
+
+  public async findColumnsOfModels(modelIds, queryOptions) {
+    const { tx } = queryOptions;
+    if (tx) {
+      return await tx(this.tableName).whereIn('model_id', modelIds).select('*');
+    }
+    return await this.knex<ModelColumn>('model_column')
+      .whereIn('modelId', modelIds)
+      .select('*');
   }
 }
