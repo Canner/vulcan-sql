@@ -15,6 +15,6 @@ export interface IRelationRepository extends IBasicRepository<Relation> {}
 
 export class RelationRepository extends BaseRepository<Relation> {
   constructor(knexPg: Knex) {
-    super({ knexPg, tableName: 'relationship' });
+    super({ knexPg, tableName: 'relation' });
   }
 }

@@ -208,6 +208,7 @@ const resolvers = {
   Mutation: {
     saveDataSource: dataSourceResolver.saveDataSource,
     saveTables: dataSourceResolver.saveTables,
+    saveRelations: dataSourceResolver.saveRelations,
   },
 };
 
