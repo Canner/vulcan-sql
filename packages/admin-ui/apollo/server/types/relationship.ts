@@ -1,12 +1,10 @@
-export interface Relation {
-  from: RelationColumnInformation;
-  to: RelationColumnInformation;
+export interface RelationData {
+  name: string;
+  fromModel: number;
+  fromColumn: number;
+  toModel: number;
+  toColumn: number;
   type: RelationType;
-}
-
-export interface RelationColumnInformation {
-  tableName: string;
-  columnName: string;
 }
 
 export enum RelationType {

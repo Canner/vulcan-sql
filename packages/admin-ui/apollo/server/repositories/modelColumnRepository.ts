@@ -25,6 +25,10 @@ export interface IModelColumnRepository extends IBasicRepository<ModelColumn> {
     modelIds: number[],
     queryOptions?: IQueryOptions
   ): Promise<ModelColumn[]>;
+  findColumnsByIds(
+    ids: number[],
+    queryOptions?: IQueryOptions
+  ): Promise<ModelColumn[]>;
 }
 
 export class ModelColumnRepository extends BaseRepository<ModelColumn> {
@@ -32,13 +36,23 @@ export class ModelColumnRepository extends BaseRepository<ModelColumn> {
     super({ knexPg, tableName: 'model_column' });
   }
 
-  public async findColumnsOfModels(modelIds, queryOptions) {
-    const { tx } = queryOptions;
-    if (tx) {
+  public async findColumnsOfModels(modelIds, queryOptions?: IQueryOptions) {
+    if (queryOptions && queryOptions.tx) {
+      const { tx } = queryOptions;
       return await tx(this.tableName).whereIn('model_id', modelIds).select('*');
     }
     return await this.knex<ModelColumn>('model_column')
       .whereIn('modelId', modelIds)
+      .select('*');
+  }
+
+  public async findColumnsByIds(ids: number[], queryOptions?: IQueryOptions) {
+    if (queryOptions && queryOptions.tx) {
+      const { tx } = queryOptions;
+      return await tx(this.tableName).whereIn('id', ids).select('*');
+    }
+    return await this.knex<ModelColumn>('model_column')
+      .whereIn('id', ids)
       .select('*');
   }
 }

@@ -3,6 +3,7 @@ import {
   IModelColumnRepository,
   IModelRepository,
   IProjectRepository,
+  IRelationRepository,
 } from '../repositories';
 
 export interface IContext {
@@ -12,4 +13,5 @@ export interface IContext {
   projectRepository: IProjectRepository;
   modelRepository: IModelRepository;
   modelColumnRepository: IModelColumnRepository;
+  relationRepository: IRelationRepository;
 }

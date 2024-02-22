@@ -8,6 +8,7 @@ import {
   ModelColumnRepository,
   ModelRepository,
   ProjectRepository,
+  RelationRepository,
 } from '@vulcan-sql/admin-ui/apollo/server/repositories';
 import { createKnex } from './knex';
 import { GraphQLError } from 'graphql';
@@ -28,6 +29,7 @@ const knex = createKnex();
 const projectRepository = new ProjectRepository(knex);
 const modelRepository = new ModelRepository(knex);
 const modelColumnRepository = new ModelColumnRepository(knex);
+const relationRepository = new RelationRepository(knex);
 
 const apolloServer: ApolloServer = new ApolloServer({
   typeDefs,
@@ -44,6 +46,7 @@ const apolloServer: ApolloServer = new ApolloServer({
     projectRepository,
     modelRepository,
     modelColumnRepository,
+    relationRepository,
   }),
 });
 

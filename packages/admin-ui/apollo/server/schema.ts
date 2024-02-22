@@ -53,6 +53,19 @@ export const typeDefs = gql`
     relations: [Relation]!
   }
 
+  input RelationInput {
+    name: String!
+    fromModel: Int!
+    fromColumn: Int!
+    toModel: Int!
+    toColumn: Int!
+    type: RelationType!
+  }
+
+  input SaveRelationInput {
+    relations: [RelationInput]!
+  }
+
   input SaveTablesInput {
     tables: [ModelsInput!]!
   }
@@ -189,6 +202,7 @@ export const typeDefs = gql`
     # On Boarding Steps
     saveDataSource(data: DataSourceInput!): DataSource!
     saveTables(data: SaveTablesInput!): JSON!
+    saveRelations(data: SaveRelationInput!): JSON!
 
     # Modeling Page
     createModel(data: CreateModelInput!): JSON!

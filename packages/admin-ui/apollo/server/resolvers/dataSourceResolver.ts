@@ -4,7 +4,7 @@ import {
   BQConnector,
   BQListTableOptions,
 } from '../connectors/bqConnector';
-import { DataSource, DataSourceName, IContext } from '../types';
+import { DataSource, DataSourceName, IContext, RelationData } from '../types';
 import crypto from 'crypto';
 import * as fs from 'fs';
 import path from 'path';
@@ -22,6 +22,7 @@ export class DataSourceResolver {
     this.listDataSourceTables = this.listDataSourceTables.bind(this);
     this.saveTables = this.saveTables.bind(this);
     this.autoGenerateRelation = this.autoGenerateRelation.bind(this);
+    this.saveRelations = this.saveRelations.bind(this);
   }
 
   public async saveDataSource(
@@ -97,6 +98,54 @@ export class DataSourceResolver {
       name: tableName,
       relations: [],
     }));
+  }
+
+  public async saveRelations(
+    _root: any,
+    arg: { data: { relations: RelationData[] } },
+    ctx: IContext
+  ) {
+    const { relations } = arg.data;
+    const project = await this.getCurrentProject(ctx);
+
+    // throw error if the relation name is duplicated
+    const relationNames = relations.map((relation) => relation.name);
+    if (new Set(relationNames).size !== relationNames.length) {
+      throw new Error('Duplicated relation name');
+    }
+
+    const columnIds = relations
+      .map(({ fromColumn, toColumn }) => [fromColumn, toColumn])
+      .flat();
+    const columns = await ctx.modelColumnRepository.findColumnsByIds(columnIds);
+    const relationValues = relations.map((relation) => {
+      const fromColumn = columns.find(
+        (column) => column.id === relation.fromColumn
+      );
+      if (!fromColumn) {
+        throw new Error(`Column not found, column Id ${relation.fromColumn}`);
+      }
+      const toColumn = columns.find(
+        (column) => column.id === relation.toColumn
+      );
+      if (!toColumn) {
+        throw new Error(`Column not found, column Id  ${relation.toColumn}`);
+      }
+      return {
+        projectId: project.id,
+        name: relation.name,
+        leftColumnId: relation.fromColumn,
+        rightColumnId: relation.toColumn,
+        joinType: relation.type,
+      };
+    });
+
+    const savedRelations = await Promise.all(
+      relationValues.map((relation) =>
+        ctx.relationRepository.createOne(relation)
+      )
+    );
+    return savedRelations;
   }
 
   private async fetchDatasetColumnInformationSchema(
