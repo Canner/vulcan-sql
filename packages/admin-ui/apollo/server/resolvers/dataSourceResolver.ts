@@ -21,6 +21,7 @@ export class DataSourceResolver {
     this.saveDataSource = this.saveDataSource.bind(this);
     this.listDataSourceTables = this.listDataSourceTables.bind(this);
     this.saveTables = this.saveTables.bind(this);
+    this.autoGenerateRelation = this.autoGenerateRelation.bind(this);
   }
 
   public async saveDataSource(
@@ -81,6 +82,21 @@ export class DataSourceResolver {
     );
 
     return { models, columns };
+  }
+
+  public async autoGenerateRelation(_root: any, arg: any, ctx: IContext) {
+    const project = await this.getCurrentProject(ctx);
+    const models = await ctx.modelRepository.findAllBy({
+      projectId: project.id,
+    });
+
+    // TODO: fetch BQ constraint to recommand relations
+
+    return models.map(({ id, tableName }) => ({
+      id,
+      name: tableName,
+      relations: [],
+    }));
   }
 
   private async fetchDatasetColumnInformationSchema(
@@ -165,6 +181,7 @@ export class DataSourceResolver {
     const modelValues = tables.map(({ name }) => {
       const model = {
         projectId: id,
+        name, //use table name as model name
         tableName: name,
         refSql: `select * from ${name}`,
         cached: false,

@@ -32,11 +32,6 @@ export const typeDefs = gql`
     columns: [String!]!
   }
 
-  type RelationColumnInformation {
-    tableName: String!
-    columnName: String!
-  }
-
   enum RelationType {
     ONE_TO_ONE
     ONE_TO_MANY
@@ -44,25 +39,18 @@ export const typeDefs = gql`
     MANY_TO_MANY
   }
 
-  input AutoGenerateInput {
-    tables: [String!]!
-  }
-
   type Relation {
-    from: RelationColumnInformation!
-    to: RelationColumnInformation!
+    fromModel: Int!
+    fromColumn: Int!
+    toModel: Int!
+    toColumn: Int!
     type: RelationType!
   }
 
-  input RelationColumnInformationInput {
-    tableName: String!
-    columnName: String!
-  }
-
-  input RelationInput {
-    from: RelationColumnInformationInput!
-    to: RelationColumnInformationInput!
-    type: RelationType!
+  type RecommandRelations {
+    name: String!
+    id: Int!
+    relations: [Relation]!
   }
 
   input SaveTablesInput {
@@ -189,7 +177,7 @@ export const typeDefs = gql`
     # On Boarding Steps
     usableDataSource: [UsableDataSource!]!
     listDataSourceTables: [CompactTable!]!
-    autoGenerateRelation(where: AutoGenerateInput): [Relation!]!
+    autoGenerateRelation: [RecommandRelations!]
     manifest: JSON!
 
     # Modeling Page
