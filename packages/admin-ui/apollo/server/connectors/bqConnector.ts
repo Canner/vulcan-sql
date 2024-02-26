@@ -25,11 +25,22 @@ export interface BQColumnResponse {
   description: string;
 }
 
+export interface BQConstraintResponse {
+  constraint_name: string;
+  constraint_type: string;
+  constraint_table: string;
+  constraint_column: string;
+  constrainted_table: string;
+  constrainted_column: string;
+}
+
 export interface BQListTableOptions {
   dataset: string;
   format?: boolean;
 }
-export class BQConnector implements IConnector<BQColumnResponse> {
+export class BQConnector
+  implements IConnector<BQColumnResponse, BQConstraintResponse>
+{
   private bq: BigQuery;
 
   // Not storing the bq client instance because we rarely need to use it
@@ -73,6 +84,35 @@ export class BQConnector implements IConnector<BQColumnResponse> {
       return columns as BQColumnResponse[];
     }
     return this.formatToCompactTable(columns);
+  }
+
+  public async listConstraints(options) {
+    const { dataset } = options;
+    // ref: information schema link: https://cloud.google.com/bigquery/docs/information-schema-intro
+    const constraints = await new Promise((resolve, reject) => {
+      this.bq.query(
+        `
+      SELECT 
+        ccu.table_name as constraint_table, ccu.column_name constraint_column, 
+        kcu.table_name as constrainted_table, kcu.column_name as constrainted_column, 
+        tc.constraint_type 
+      FROM ${dataset}.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu 
+      JOIN ${dataset}.INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu 
+        ON ccu.constraint_name = kcu.constraint_name
+      JOIN ${dataset}.INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+        ON ccu.constraint_name = tc.constraint_name
+      WHERE tc.constraint_type = 'FOREIGN KEY'
+      `,
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        }
+      );
+    });
+    return constraints as BQConstraintResponse[];
   }
 
   private formatToCompactTable(columns: any): CompactTable[] {

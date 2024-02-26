@@ -21,7 +21,7 @@ export interface ModelColumn {
 }
 
 export interface IModelColumnRepository extends IBasicRepository<ModelColumn> {
-  findColumnsOfModels(
+  findColumnsByModelIds(
     modelIds: number[],
     queryOptions?: IQueryOptions
   ): Promise<ModelColumn[]>;
@@ -36,23 +36,29 @@ export class ModelColumnRepository extends BaseRepository<ModelColumn> {
     super({ knexPg, tableName: 'model_column' });
   }
 
-  public async findColumnsOfModels(modelIds, queryOptions?: IQueryOptions) {
+  public async findColumnsByModelIds(modelIds, queryOptions?: IQueryOptions) {
     if (queryOptions && queryOptions.tx) {
       const { tx } = queryOptions;
-      return await tx(this.tableName).whereIn('model_id', modelIds).select('*');
+      const result = await tx(this.tableName)
+        .whereIn('model_id', modelIds)
+        .select('*');
+      return result.map((r) => this.transformFromDBData(r));
     }
-    return await this.knex<ModelColumn>('model_column')
-      .whereIn('modelId', modelIds)
+    const result = await this.knex<ModelColumn>('model_column')
+      .whereIn('model_id', modelIds)
       .select('*');
+    return result.map((r) => this.transformFromDBData(r));
   }
 
   public async findColumnsByIds(ids: number[], queryOptions?: IQueryOptions) {
     if (queryOptions && queryOptions.tx) {
       const { tx } = queryOptions;
-      return await tx(this.tableName).whereIn('id', ids).select('*');
+      const result = await tx(this.tableName).whereIn('id', ids).select('*');
+      return result.map((r) => this.transformFromDBData(r));
     }
-    return await this.knex<ModelColumn>('model_column')
+    const result = await this.knex<ModelColumn>('model_column')
       .whereIn('id', ids)
       .select('*');
+    return result.map((r) => this.transformFromDBData(r));
   }
 }

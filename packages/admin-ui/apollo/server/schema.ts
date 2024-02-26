@@ -45,6 +45,7 @@ export const typeDefs = gql`
     toModel: Int!
     toColumn: Int!
     type: RelationType!
+    name: String!
   }
 
   type RecommandRelations {

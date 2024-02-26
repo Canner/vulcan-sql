@@ -2,9 +2,16 @@ import { BigQueryOptions } from '@google-cloud/bigquery';
 import {
   BQColumnResponse,
   BQConnector,
+  BQConstraintResponse,
   BQListTableOptions,
 } from '../connectors/bqConnector';
-import { DataSource, DataSourceName, IContext, RelationData } from '../types';
+import {
+  DataSource,
+  DataSourceName,
+  IContext,
+  RelationData,
+  RelationType,
+} from '../types';
 import crypto from 'crypto';
 import * as fs from 'fs';
 import path from 'path';
@@ -16,7 +23,7 @@ import { IConfig } from '../config';
 const logger = getLogger('DataSourceResolver');
 logger.level = 'debug';
 
-export class DataSourceResolver {
+export class ProjectResolver {
   constructor() {
     this.saveDataSource = this.saveDataSource.bind(this);
     this.listDataSourceTables = this.listDataSourceTables.bind(this);
@@ -42,12 +49,12 @@ export class DataSourceResolver {
   public async listDataSourceTables(_root: any, arg, ctx: IContext) {
     const project = await this.getCurrentProject(ctx);
     const filePath = await this.getCredentialFilePath(project, ctx.config);
-    const transformToCompactTable = true;
-    return await this.fetchDatasetColumnInformationSchema(
-      project,
-      filePath,
-      transformToCompactTable
-    );
+    const connector = await this.getBQConnector(project, filePath);
+    const listTableOptions: BQListTableOptions = {
+      dataset: project.dataset,
+      format: true,
+    };
+    return await connector.listTables(listTableOptions);
   }
 
   public async saveTables(
@@ -65,11 +72,12 @@ export class DataSourceResolver {
 
     // get columns with descriptions
     const transformToCompactTable = false;
-    const dataSourceColumns = await this.fetchDatasetColumnInformationSchema(
-      project,
-      filePath,
-      transformToCompactTable
-    );
+    const connector = await this.getBQConnector(project, filePath);
+    const listTableOptions: BQListTableOptions = {
+      dataset: project.dataset,
+      format: transformToCompactTable,
+    };
+    const dataSourceColumns = await connector.listTables(listTableOptions);
     // create models
     const id = project.id;
     const models = await this.createModels(tables, id, ctx);
@@ -87,16 +95,25 @@ export class DataSourceResolver {
 
   public async autoGenerateRelation(_root: any, arg: any, ctx: IContext) {
     const project = await this.getCurrentProject(ctx);
+    const filePath = await this.getCredentialFilePath(project, ctx.config);
     const models = await ctx.modelRepository.findAllBy({
       projectId: project.id,
     });
 
-    // TODO: fetch BQ constraint to recommand relations
-
+    const connector = await this.getBQConnector(project, filePath);
+    const listConstraintOptions = {
+      dataset: project.dataset,
+    };
+    const constraints = await connector.listConstraints(listConstraintOptions);
+    const modelIds = models.map((m) => m.id);
+    const columns = await ctx.modelColumnRepository.findColumnsByModelIds(
+      modelIds
+    );
+    const relations = this.analysisRelation(constraints, models, columns);
     return models.map(({ id, tableName }) => ({
       id,
       name: tableName,
-      relations: [],
+      relations: relations.filter((relation) => relation.fromModel === id),
     }));
   }
 
@@ -148,24 +165,63 @@ export class DataSourceResolver {
     return savedRelations;
   }
 
-  private async fetchDatasetColumnInformationSchema(
-    project: Project,
-    filePath: string,
-    format: boolean
-  ) {
+  private analysisRelation(
+    constraints: BQConstraintResponse[],
+    models: Model[],
+    columns: ModelColumn[]
+  ): RelationData[] {
+    const relations = [];
+    for (const constraint of constraints) {
+      const {
+        constraint_table,
+        constraint_column,
+        constrainted_table,
+        constrainted_column,
+      } = constraint;
+      // validate tables and columns exists in our models and model columns
+      const fromModel = models.find((m) => m.tableName === constraint_table);
+      const toModel = models.find((m) => m.tableName === constrainted_table);
+      if (!fromModel || !toModel) {
+        continue;
+      }
+      const fromColumn = columns.find(
+        (c) => c.modelId === fromModel.id && c.name === constraint_column
+      );
+      const toColumn = columns.find(
+        (c) => c.modelId === toModel.id && c.name === constrainted_column
+      );
+      if (!fromColumn || !toColumn) {
+        continue;
+      }
+      // create relation
+      const relation = {
+        // upper case the first letter of the tableName
+        name:
+          fromModel.tableName.charAt(0).toUpperCase() +
+          fromModel.tableName.slice(1) +
+          toModel.tableName.charAt(0).toUpperCase() +
+          toModel.tableName.slice(1),
+        fromModel: fromModel.id,
+        fromColumn: fromColumn.id,
+        toModel: toModel.id,
+        toColumn: toColumn.id,
+        // TODO: add join type
+        type: RelationType.ONE_TO_MANY,
+      };
+      relations.push(relation);
+    }
+    return relations;
+  }
+
+  private async getBQConnector(project: Project, filePath: string) {
     // fetch tables
-    const { location, projectId, dataset } = project;
+    const { location, projectId } = project;
     const connectionOption: BigQueryOptions = {
       location,
       projectId,
       keyFilename: filePath,
     };
-    const connector = new BQConnector(connectionOption);
-    const listTableOptions: BQListTableOptions = {
-      dataset,
-      format,
-    };
-    return await connector.listTables(listTableOptions);
+    return new BQConnector(connectionOption);
   }
 
   private async getCredentialFilePath(project: Project, config: IConfig) {
