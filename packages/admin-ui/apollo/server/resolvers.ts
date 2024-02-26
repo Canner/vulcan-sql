@@ -13,6 +13,7 @@ import {
 import * as demoManifest from './manifest.json';
 import { pick } from 'lodash';
 import { ProjectResolver } from './resolvers/projectResolver';
+import { ModelResolver } from './resolvers/modelResolver';
 
 const mockResolvers = {
   JSON: GraphQLJSON,
@@ -198,12 +199,14 @@ const mockResolvers = {
 };
 
 const projectResolver = new ProjectResolver();
+const modelResolver = new ModelResolver();
 
 const resolvers = {
   JSON: GraphQLJSON,
   Query: {
     listDataSourceTables: projectResolver.listDataSourceTables,
     autoGenerateRelation: projectResolver.autoGenerateRelation,
+    listModels: modelResolver.listModels,
   },
   Mutation: {
     saveDataSource: projectResolver.saveDataSource,

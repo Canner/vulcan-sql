@@ -123,13 +123,26 @@ export const typeDefs = gql`
     caculatedFields: [CaculatedFieldInput!]
   }
 
-  type CompactModel {
+  type ColumnInfo {
+    id: Int!
     name: String!
-    refSql: String!
+    type: String!
+    isCalculated: Boolean!
+    notNull: Boolean!
+    expression: String
+    properties: JSON
+  }
+
+  type ModelInfo {
+    id: Int!
+    name: String!
+    refSql: String
     primaryKey: String
     cached: Boolean!
-    refreshTime: String!
+    refreshTime: String
     description: String
+    columns: [ColumnInfo]!
+    properties: JSON
   }
 
   type DetailedColumn {
@@ -195,7 +208,7 @@ export const typeDefs = gql`
     manifest: JSON!
 
     # Modeling Page
-    listModels: [CompactModel!]!
+    listModels: [ModelInfo!]!
     getModel(where: ModelWhereInput!): DetailedModel!
   }
 
