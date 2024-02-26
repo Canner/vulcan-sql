@@ -3,6 +3,7 @@ import { BaseRepository, IBasicRepository } from './baseRepository';
 
 export interface Model {
   id: number; // ID
+  name: string; // Model name
   projectId: number; // Reference to project.id
   tableName: string; // Referenced table name in the datasource
   refSql: string; // Reference SQL
