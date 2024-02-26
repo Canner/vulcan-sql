@@ -15,7 +15,7 @@ exports.up = function (knex) {
     // bq
     table.string('project_id').comment('gcp project id, big query specific');
     table
-      .string('credentials')
+      .text('credentials')
       .comment('project credentials, big query specific');
     table
       .string('location')

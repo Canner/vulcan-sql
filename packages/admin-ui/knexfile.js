@@ -4,8 +4,8 @@
  * @type { Object.<string, import("knex").Knex.Config> }
  */
 module.exports = {
-  client: 'better-sqlite3',
-  connection: {
-    filename: './.vulcan/vulcan.sqlite3',
-  },
+  client: 'pg',
+  connection:
+    process.env.PG_URL ||
+    'postgres://postgres:postgres@localhost:5432/admin_ui',
 };

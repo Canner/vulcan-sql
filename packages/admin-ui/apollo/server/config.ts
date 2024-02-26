@@ -1,6 +1,10 @@
 import { pickBy } from 'lodash';
 
 export interface IConfig {
+  // pg
+  pgUrl?: string;
+  debug?: boolean;
+
   persistCredentialDir?: string;
 
   // encryption
@@ -9,6 +13,10 @@ export interface IConfig {
 }
 
 const defaultConfig: IConfig = {
+  // pg
+  pgUrl: 'postgres://postgres:postgres@localhost:5432/admin_ui',
+  debug: false,
+
   persistCredentialDir: process.cwd(),
 
   // encryption
@@ -17,6 +25,10 @@ const defaultConfig: IConfig = {
 };
 
 const config: IConfig = {
+  // pg
+  pgUrl: process.env.PG_URL,
+  debug: process.env.DEBUG === 'true',
+
   persistCredentialDir: (() => {
     if (
       process.env.PERSIST_CREDENTIAL_DIR &&

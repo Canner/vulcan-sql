@@ -10,7 +10,7 @@ import {
   ProjectRepository,
   RelationRepository,
 } from '@vulcan-sql/admin-ui/apollo/server/repositories';
-import { createKnex } from './knex';
+import { bootstrapKnex } from './knex';
 import { GraphQLError } from 'graphql';
 import { getLogger } from '@vulcan-sql/admin-ui/apollo/server/utils';
 import { getConfig } from '@vulcan-sql/admin-ui/apollo/server/config';
@@ -25,7 +25,7 @@ export const config: PageConfig = {
     bodyParser: false,
   },
 };
-const knex = createKnex();
+const knex = bootstrapKnex(serverConfig.pgUrl, serverConfig.debug);
 const projectRepository = new ProjectRepository(knex);
 const modelRepository = new ModelRepository(knex);
 const modelColumnRepository = new ModelColumnRepository(knex);
