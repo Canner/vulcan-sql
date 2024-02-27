@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
-import { useEffect } from 'react';
-import { Form, Badge, Button, Space, Tag } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
+import { Form, Badge, Button, Select, Space, Tag } from 'antd';
 import { JOIN_TYPE, NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { useForm } from 'antd/lib/form/Form';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
@@ -15,6 +15,11 @@ import MetricDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetricD
 import MetadataDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetadataDrawer';
 import SelectDataToExploreModal from '@vulcan-sql/admin-ui/components/pages/explore/SelectDataToExploreModal';
 import useDrawerAction from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
+import ExplorationFiltersBlock, {
+  ECPLORATION_RESOURCE_TYPE,
+} from '@vulcan-sql/admin-ui/components/dropdown/ExplorationFiltersBlock';
+import { adapter, Manifest } from '@vulcan-sql/admin-ui/utils/data';
+import { useManifestQuery } from '@vulcan-sql/admin-ui/apollo/client/graphql/manifest.generated';
 
 const ModelFieldSelector = dynamic(
   () => import('@vulcan-sql/admin-ui/components/selectors/modelFieldSelector'),
@@ -29,6 +34,12 @@ const initialValue = [
 
 export default function Component() {
   const [form] = useForm();
+  const { data } = useManifestQuery();
+
+  const adaptedManifest = useMemo(() => {
+    if (!data) return null;
+    return adapter(data?.manifest as Manifest);
+  }, [data]);
 
   const addCalculatedFieldModal = useModalAction();
   const addMeasureFieldModal = useModalAction();
@@ -43,10 +54,38 @@ export default function Component() {
 
   const fieldOptions = useModelFieldOptions();
   const modelFields = Form.useWatch('modelFields', form);
+  const [selectedFilters, setSelectedFilters] = useState({});
+  const [selectedResourceOptions, setSelectedResourceOptions] = useState();
+  const [selectedResourceFilters, setSelectedResourceFilters] = useState();
 
   useEffect(() => {
     console.log('modelFields', modelFields);
   }, [modelFields]);
+
+  const { models = [], metrics = [] } = adaptedManifest || {};
+  console.log('adaptedManifest', adaptedManifest);
+
+  const onFiltersChange = (filterType, filterValue) => {
+    setSelectedFilters((prev) => ({ ...prev, [filterType]: filterValue }));
+  };
+
+  console.log('\n Selected Filters:', selectedFilters);
+
+  const onResourceChange = (value) => {
+    setSelectedResourceOptions(value);
+    const data = [...models, ...metrics].find((x) => x.name === value);
+    setSelectedResourceFilters({
+      data,
+      selectedType:
+        data.nodeType === 'model'
+          ? ECPLORATION_RESOURCE_TYPE.MODEL
+          : ECPLORATION_RESOURCE_TYPE.METRIC,
+    });
+  };
+  const selectOptions = [...models, ...metrics].map((x) => ({
+    value: x.name,
+    label: x.name,
+  }));
 
   return (
     <>
@@ -316,6 +355,21 @@ export default function Component() {
           adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet
           odio mattis. Learn more
         </Tag>
+      </div>
+      <div className="mt-2">
+        <Select
+          defaultValue={selectedResourceOptions}
+          style={{ width: 300, marginRight: 8 }}
+          onChange={onResourceChange}
+          options={selectOptions}
+        />
+        {selectedResourceFilters && (
+          <ExplorationFiltersBlock
+            data={selectedResourceFilters.data}
+            selectedType={selectedResourceFilters.selectedType}
+            onFiltersChange={onFiltersChange}
+          />
+        )}
       </div>
     </>
   );
