@@ -25,7 +25,12 @@ export const config: PageConfig = {
     bodyParser: false,
   },
 };
-const knex = bootstrapKnex(serverConfig.pgUrl, serverConfig.debug);
+const knex = bootstrapKnex({
+  dbType: serverConfig.dbType,
+  pgUrl: serverConfig.pgUrl,
+  debug: serverConfig.debug,
+  sqlite_file: serverConfig.sqlite_file,
+});
 const projectRepository = new ProjectRepository(knex);
 const modelRepository = new ModelRepository(knex);
 const modelColumnRepository = new ModelColumnRepository(knex);

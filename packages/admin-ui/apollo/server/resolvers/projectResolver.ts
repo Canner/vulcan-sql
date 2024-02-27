@@ -363,6 +363,10 @@ export class ProjectResolver {
     credentials: JSON,
     persist_credential_dir: string
   ) {
+    // create persist_credential_dir if not exists
+    if (!fs.existsSync(persist_credential_dir)) {
+      fs.mkdirSync(persist_credential_dir, { recursive: true });
+    }
     // file name will be the hash of the credentials, file path is current working directory
     // convert credentials from base64 to string and replace all the matched "\n" with "\\n",  there are many \n in the "private_key" property
     const credentialString = JSON.stringify(credentials);

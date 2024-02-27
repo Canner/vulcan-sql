@@ -1,9 +1,13 @@
 import { pickBy } from 'lodash';
 
 export interface IConfig {
+  // database
+  dbType: string;
   // pg
   pgUrl?: string;
   debug?: boolean;
+  // sqlite
+  sqlite_file?: string;
 
   persistCredentialDir?: string;
 
@@ -12,10 +16,16 @@ export interface IConfig {
   encryptionSalt: string;
 }
 
-const defaultConfig: IConfig = {
+const defaultConfig = {
+  // database
+  dbType: 'pg',
+
   // pg
   pgUrl: 'postgres://postgres:postgres@localhost:5432/admin_ui',
   debug: false,
+
+  // sqlite
+  sqlite_file: './db.sqlite',
 
   persistCredentialDir: process.cwd(),
 
@@ -24,10 +34,14 @@ const defaultConfig: IConfig = {
   encryptionSalt: 'layer',
 };
 
-const config: IConfig = {
+const config = {
+  // database
+  dbType: process.env.DB_TYPE,
   // pg
   pgUrl: process.env.PG_URL,
   debug: process.env.DEBUG === 'true',
+  // sqlite
+  sqlite_file: process.env.SQLITE_FILE,
 
   persistCredentialDir: (() => {
     if (
