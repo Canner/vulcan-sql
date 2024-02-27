@@ -12,6 +12,7 @@ import {
   MetricColumnData,
   RelationData,
   AdaptedData,
+  ViewData,
 } from '@vulcan-sql/admin-ui/utils/data';
 
 const config = {
@@ -33,8 +34,10 @@ const config = {
   marginY: 50,
 };
 
+type ComposeData = ModelData | MetricData | ViewData;
+
 type NodeWithData = Node<{
-  originalData: ModelData | MetricData;
+  originalData: ComposeData;
   index: number;
   // highlight column ids inside
   highlight: string[];
@@ -51,6 +54,7 @@ export class Transformer {
   private readonly config: typeof config = config;
   private models: ModelData[];
   private metrics: MetricData[];
+  private views: ViewData[];
   public nodes: NodeWithData[] = [];
   public edges: Edge[] = [];
   private start: StartPoint = {
@@ -62,17 +66,18 @@ export class Transformer {
   constructor(data: AdaptedData) {
     this.models = data?.models || [];
     this.metrics = data?.metrics || [];
+    this.views = data?.views || [];
     this.init();
   }
 
   public init() {
-    const allNodeData = [...this.models, ...this.metrics];
+    const allNodeData = [...this.models, ...this.metrics, ...this.views];
     for (const data of allNodeData) {
       this.addOne(data);
     }
   }
 
-  public addOne(data: ModelData | MetricData) {
+  public addOne(data: ComposeData) {
     const { nodeType } = data;
     // set position
     const nodeX = this.start.x;
@@ -111,7 +116,7 @@ export class Transformer {
 
   private createNode(props: {
     nodeType: NODE_TYPE | string;
-    data: ModelData | MetricData;
+    data: ComposeData;
     x: number;
     y: number;
   }): NodeWithData {
@@ -201,10 +206,10 @@ export class Transformer {
 
   private createEdge(props: {
     type?: EDGE_TYPE;
-    sourceModel: ModelData | MetricData;
+    sourceModel: ComposeData;
     sourceColumn?: ModelColumnData | MetricColumnData;
     sourceJoinIndex?: number;
-    targetModel: ModelData | MetricData;
+    targetModel: ComposeData;
     targetColumn?: ModelColumnData | MetricColumnData;
     targetJoinIndex?: number;
     joinType?: JOIN_TYPE | string;

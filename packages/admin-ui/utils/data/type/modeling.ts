@@ -8,6 +8,25 @@ export interface Manifest {
   metrics: Metric[];
   cumulativeMetrics: Metric[];
   macros: Macro[];
+  views: View[];
+}
+
+export interface View {
+  name: string;
+  statement: string;
+  description: string;
+  columns: ViewColumn[];
+  // TODO: waiting to confirm cached available in view
+  cached: boolean;
+  refreshTime: string;
+  properties: Record<string, any>;
+}
+
+// TODO: waiting to confirm view columns available
+export interface ViewColumn {
+  name: string;
+  type: string;
+  properties: Record<string, any>;
 }
 
 export interface Macro {

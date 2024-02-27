@@ -94,6 +94,14 @@ export const ERROR_TEXTS = {
       REQUIRED: 'Please select a model or metric.',
     },
   },
+  MODELING_CREATE_VIEW: {
+    NAME: {
+      REQUIRED: 'Please input view name.',
+    },
+    SQL: {
+      REQUIRED: 'Please input SQL.',
+    },
+  },
   SETUP_MODEL: {
     TABLE: {
       REQUIRED: 'Please select at least one table.',

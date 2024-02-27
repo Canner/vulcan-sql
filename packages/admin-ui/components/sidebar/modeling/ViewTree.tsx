@@ -10,7 +10,7 @@ import LabelTitle from '@vulcan-sql/admin-ui/components/sidebar/LabelTitle';
 import { StyledSidebarTree } from '@vulcan-sql/admin-ui/components/sidebar/Modeling';
 
 export default function ViewTree(props) {
-  const { views } = props;
+  const { onOpenViewDrawer, views } = props;
 
   const getViewGroupNode = createTreeGroupNode({
     groupName: 'Views',
@@ -18,13 +18,7 @@ export default function ViewTree(props) {
     icons: [
       {
         key: 'add-view',
-        icon: () => (
-          <PlusSquareOutlined
-            onClick={() => {
-              console.log('Add View');
-            }}
-          />
-        ),
+        icon: () => <PlusSquareOutlined onClick={() => onOpenViewDrawer()} />,
       },
     ],
   });

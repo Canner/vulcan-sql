@@ -18,7 +18,7 @@ import ReactFlow, {
   useReactFlow,
   ReactFlowProvider,
 } from 'reactflow';
-import { ModelNode, MetricNode } from './customNode';
+import { ModelNode, MetricNode, ViewNode } from './customNode';
 import { ModelEdge, MetricEdge } from './customEdge';
 import Marker from './Marker';
 import { DiagramContext, ClickPayload } from './Context';
@@ -34,6 +34,7 @@ import 'reactflow/dist/style.css';
 const nodeTypes = {
   [NODE_TYPE.MODEL]: ModelNode,
   [NODE_TYPE.METRIC]: MetricNode,
+  [NODE_TYPE.VIEW]: ViewNode,
 };
 const edgeTypes = {
   [EDGE_TYPE.MODEL]: ModelEdge,

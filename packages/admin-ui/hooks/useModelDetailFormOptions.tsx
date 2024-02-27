@@ -1,13 +1,9 @@
 import { useMemo } from 'react';
-import { SQLEditorAutoCompleteSourceWordInfo } from '@vulcan-sql/admin-ui/components/editor';
+import useAutoCompleteSource from '@vulcan-sql/admin-ui/hooks/useAutoCompleteSource';
 
 interface Props {
   selectedTable?: string;
 }
-
-const checkSqlName = (name: string) => {
-  return name.match(/^\d+/g) === null ? name : `"${name}"`;
-};
 
 export default function useModelDetailFormOptions(props: Props) {
   const { selectedTable } = props;
@@ -37,25 +33,7 @@ export default function useModelDetailFormOptions(props: Props) {
     }));
   }, [selectedTable]);
 
-  const autoCompleteSource: SQLEditorAutoCompleteSourceWordInfo[] =
-    useMemo(() => {
-      return response.reduce((result, item) => {
-        result.push({
-          caption: item.name,
-          value: checkSqlName(item.name),
-          meta: 'Table',
-        });
-        item.columns &&
-          item.columns.forEach((column) => {
-            result.push({
-              caption: `${item.name}.${column.name}`,
-              value: checkSqlName(column.name),
-              meta: `Column(${column.type})`,
-            });
-          });
-        return result;
-      }, []);
-    }, [response]);
+  const autoCompleteSource = useAutoCompleteSource(response);
 
   return {
     dataSourceTableOptions,

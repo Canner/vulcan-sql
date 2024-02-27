@@ -1,10 +1,14 @@
 import { createContext } from 'react';
-import { ModelData, MetricData } from '@vulcan-sql/admin-ui/utils/data';
+import {
+  ModelData,
+  MetricData,
+  ViewData,
+} from '@vulcan-sql/admin-ui/utils/data';
 
 export interface ClickPayload {
   [key: string]: any;
   title: string;
-  data: ModelData | MetricData;
+  data: ModelData | MetricData | ViewData;
 }
 
 type ContextProps = {
