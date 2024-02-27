@@ -4,9 +4,9 @@ import { FORM_MODE } from '@vulcan-sql/admin-ui/utils/enum';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import Editor from '@vulcan-sql/admin-ui/components/editor';
 import Selector from '@vulcan-sql/admin-ui/components/selectors/Selector';
-import CaculatedFieldTableFormControl, {
-  CaculatedFieldTableValue,
-} from '@vulcan-sql/admin-ui/components/tableFormControls/CaculatedFieldTableFormControl';
+import CalulatedFieldTableFormControl, {
+  CalculatedFieldTableValue,
+} from '@vulcan-sql/admin-ui/components/tableFormControls/CalculatedFieldTableFormControl';
 import useModelDetailFormOptions from '@vulcan-sql/admin-ui/hooks/useModelDetailFormOptions';
 import PreviewDataContent from './PreviewDataContent';
 
@@ -27,11 +27,11 @@ const RADIO_VALUE = {
 
 const getPreviewColumns = (
   fields: FieldValue[],
-  caculatedFields: CaculatedFieldTableValue
+  calculatedFields: CalculatedFieldTableValue
 ) => {
   return [
     fields.map((field) => field.name),
-    caculatedFields.map((field) => field.fieldName),
+    calculatedFields.map((field) => field.name),
   ]
     .flat()
     .map((name) => ({
@@ -51,8 +51,8 @@ export default function ModelDetailForm(props: {
   const table = Form.useWatch('table', form);
   const customSQL = Form.useWatch('customSQL', form);
   const fields: FieldValue[] = Form.useWatch('fields', form) || [];
-  const caculatedFields: CaculatedFieldTableValue =
-    Form.useWatch('caculatedFields', form) || [];
+  const calculatedFields: CalculatedFieldTableValue =
+    Form.useWatch('calculatedFields', form) || [];
 
   const {
     dataSourceTableOptions,
@@ -77,7 +77,7 @@ export default function ModelDetailForm(props: {
         table: undefined,
         customSQL: undefined,
         fields: undefined,
-        caculatedFields: undefined,
+        calculatedFields: undefined,
       });
     }
   };
@@ -98,8 +98,8 @@ export default function ModelDetailForm(props: {
   }, [fields]);
 
   const previewColumns = useMemo(() => {
-    return getPreviewColumns(fields, caculatedFields);
-  }, [fields, caculatedFields]);
+    return getPreviewColumns(fields, calculatedFields);
+  }, [fields, calculatedFields]);
 
   return (
     <Form form={form} layout="vertical">
@@ -167,8 +167,8 @@ export default function ModelDetailForm(props: {
         </Form.Item>
       )}
 
-      <Form.Item label="Caculated fields" name="caculatedFields">
-        <CaculatedFieldTableFormControl
+      <Form.Item label="Calculated fields" name="calculatedFields">
+        <CalulatedFieldTableFormControl
           modalProps={{ model: modelName, transientData }}
         />
       </Form.Item>

@@ -5,7 +5,7 @@ import { JOIN_TYPE, NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { useForm } from 'antd/lib/form/Form';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import useModelFieldOptions from '@vulcan-sql/admin-ui/hooks/useModelFieldOptions';
-import AddCaculatedFieldModal from '@vulcan-sql/admin-ui/components/modals/AddCaculatedFieldModal';
+import AddCalculatedFieldModal from '@vulcan-sql/admin-ui/components/modals/AddCalculatedFieldModal';
 import AddMeasureFieldModal from '@vulcan-sql/admin-ui/components/modals/AddMeasureFieldModal';
 import AddDimensionFieldModal from '@vulcan-sql/admin-ui/components/modals/AddDimensionFieldModal';
 import AddWindowFieldModal from '@vulcan-sql/admin-ui/components/modals/AddWindowFieldModal';
@@ -30,7 +30,7 @@ const initialValue = [
 export default function Component() {
   const [form] = useForm();
 
-  const addCaculatedFieldModal = useModalAction();
+  const addCalculatedFieldModal = useModalAction();
   const addMeasureFieldModal = useModalAction();
   const addDimensionFieldModal = useModalAction();
   const addWindowFieldModal = useModalAction();
@@ -63,7 +63,7 @@ export default function Component() {
 
       <Button
         onClick={() =>
-          addCaculatedFieldModal.openModal({
+          addCalculatedFieldModal.openModal({
             fieldName: 'test',
             expression: 'Sum',
             modelFields: [
@@ -75,7 +75,7 @@ export default function Component() {
           })
         }
       >
-        Add caculated field
+        Add calculated field
       </Button>
 
       <Button onClick={() => addMeasureFieldModal.openModal()}>
@@ -104,13 +104,13 @@ export default function Component() {
         Select data to explore
       </Button>
 
-      <AddCaculatedFieldModal
+      <AddCalculatedFieldModal
         model="Customer"
-        {...addCaculatedFieldModal.state}
+        {...addCalculatedFieldModal.state}
         onSubmit={async (values) => {
           console.log(values);
         }}
-        onClose={addCaculatedFieldModal.closeModal}
+        onClose={addCalculatedFieldModal.closeModal}
         // defaultValue={{
         //   fieldName: 'test',
         //   expression: 'Sum',
@@ -190,7 +190,7 @@ export default function Component() {
               type: 'UUID',
             },
           ],
-          caculatedFields: [
+          calculatedFields: [
             {
               fieldName: 'test',
               expression: 'Sum',
@@ -229,7 +229,7 @@ export default function Component() {
         //       type: 'UUID',
         //     },
         //   ],
-        //   caculatedFields: [
+        //   calculatedFields: [
         //     {
         //       fieldName: 'test',
         //       expression: 'Sum',

@@ -85,7 +85,7 @@ export const typeDefs = gql`
     expression: String!
   }
 
-  input CaculatedFieldInput {
+  input CalculatedFieldInput {
     name: String!
     expression: String!
   }
@@ -99,7 +99,7 @@ export const typeDefs = gql`
     refreshTime: String
     fields: [String!]!
     customFields: [CustomFieldInput!]
-    caculatedFields: [CaculatedFieldInput!]
+    calculatedFields: [CalculatedFieldInput!]
   }
 
   input ModelWhereInput {
@@ -114,7 +114,7 @@ export const typeDefs = gql`
     refreshTime: String
     fields: [String!]!
     customFields: [CustomFieldInput!]
-    caculatedFields: [CaculatedFieldInput!]
+    calculatedFields: [CalculatedFieldInput!]
   }
 
   type CompactModel {

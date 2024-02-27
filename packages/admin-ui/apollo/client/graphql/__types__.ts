@@ -18,7 +18,7 @@ export type AutoGenerateInput = {
   tables: Array<Scalars['String']>;
 };
 
-export type CaculatedFieldInput = {
+export type CalculatedFieldInput = {
   expression: Scalars['String'];
   name: Scalars['String'];
 };
@@ -47,7 +47,7 @@ export type CompactTable = {
 
 export type CreateModelInput = {
   cached: Scalars['Boolean'];
-  caculatedFields?: InputMaybe<Array<CaculatedFieldInput>>;
+  calculatedFields?: InputMaybe<Array<CalculatedFieldInput>>;
   customFields?: InputMaybe<Array<CustomFieldInput>>;
   description?: InputMaybe<Scalars['String']>;
   displayName: Scalars['String'];
@@ -241,7 +241,7 @@ export type TimeGrainInput = {
 
 export type UpdateModelInput = {
   cached: Scalars['Boolean'];
-  caculatedFields?: InputMaybe<Array<CaculatedFieldInput>>;
+  calculatedFields?: InputMaybe<Array<CalculatedFieldInput>>;
   customFields?: InputMaybe<Array<CustomFieldInput>>;
   description?: InputMaybe<Scalars['String']>;
   displayName: Scalars['String'];

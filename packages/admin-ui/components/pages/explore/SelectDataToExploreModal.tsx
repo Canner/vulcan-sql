@@ -13,7 +13,7 @@ import {
 import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { makeMetadataBaseTable } from '@vulcan-sql/admin-ui/components/table/MetadataBaseTable';
 import FieldTable from '@vulcan-sql/admin-ui/components/table/FieldTable';
-import CaculatedFieldTable from '@vulcan-sql/admin-ui/components/table/CaculatedFieldTable';
+import CalculatedFieldTable from '@vulcan-sql/admin-ui/components/table/CalculatedFieldTable';
 import RelationTable from '@vulcan-sql/admin-ui/components/table/RelationTable';
 import MeasureFieldTable from '@vulcan-sql/admin-ui/components/table/MeasureFieldTable';
 import DimensionFieldTable from '@vulcan-sql/admin-ui/components/table/DimensionFieldTable';
@@ -84,12 +84,12 @@ const ModelMetadata = ({
   table,
   description,
   fields = [],
-  caculatedFields = [],
+  calculatedFields = [],
   relations = [],
 }) => {
   const FieldMetadataTable = makeMetadataBaseTable(FieldTable)();
-  const CaculatedFieldMetadataTable =
-    makeMetadataBaseTable(CaculatedFieldTable)();
+  const CalculatedFieldMetadataTable =
+    makeMetadataBaseTable(CalculatedFieldTable)();
   const RelationMetadataTable = makeMetadataBaseTable(RelationTable)();
 
   return (
@@ -111,19 +111,23 @@ const ModelMetadata = ({
         <FieldMetadataTable dataSource={fields} />
       </div>
 
-      {!!caculatedFields.length && <div className="mb-6">
-        <Typography.Text className="d-block gray-7 mb-2">
-          Caculated fields ({caculatedFields.length})
-        </Typography.Text>
-        <CaculatedFieldMetadataTable dataSource={caculatedFields} />
-      </div>}
+      {!!calculatedFields.length && (
+        <div className="mb-6">
+          <Typography.Text className="d-block gray-7 mb-2">
+            Calculated fields ({calculatedFields.length})
+          </Typography.Text>
+          <CalculatedFieldMetadataTable dataSource={calculatedFields} />
+        </div>
+      )}
 
-      {!!relations.length && <div className="mb-6">
-        <Typography.Text className="d-block gray-7 mb-2">
-          Relations ({relations.length})
-        </Typography.Text>
-        <RelationMetadataTable dataSource={relations} />
-      </div>}
+      {!!relations.length && (
+        <div className="mb-6">
+          <Typography.Text className="d-block gray-7 mb-2">
+            Relations ({relations.length})
+          </Typography.Text>
+          <RelationMetadataTable dataSource={relations} />
+        </div>
+      )}
     </>
   );
 };
