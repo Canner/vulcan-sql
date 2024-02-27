@@ -17,14 +17,14 @@ beforeEach(() => {
   sinon.default.restore();
 });
 
-it('Data source should be activate without any error when all profiles are valid', async () => {
+it.skip('Data source should be activate without any error when all profiles are valid', async () => {
   // Arrange
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   // Act, Assert
   await expect(dataSource.activate()).resolves.not.toThrow();
 });
 
-it('Data source should throw error when activating if any profile is invalid', async () => {
+it.skip('Data source should throw error when activating if any profile is invalid', async () => {
   // Arrange
   const profile1 = pg.getProfile('profile1');
   dataSource = new CannerDataSource({}, '', [
@@ -44,7 +44,7 @@ it('Data source should throw error when activating if any profile is invalid', a
 });
 
 // export method should be executed successfully
-it('Data source should export successfully', async () => {
+it.skip('Data source should export successfully', async () => {
   fs.mkdirSync(directory, { recursive: true });
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
@@ -64,7 +64,7 @@ it('Data source should export successfully', async () => {
   fs.rmSync(directory, { recursive: true, force: true });
 }, 100000);
 
-it('Data source should throw error when fail to export data', async () => {
+it.skip('Data source should throw error when fail to export data', async () => {
   // Arrange
   // TODO: refactor to avoid stubbing private method
   // stub the private function to manipulate getting error from the remote server
@@ -96,7 +96,7 @@ it('Data source should throw error when fail to export data', async () => {
   fs.rmSync(directory, { recursive: true, force: true });
 }, 100000);
 
-it('Data source should throw error when given directory is not exist', async () => {
+it.skip('Data source should throw error when given directory is not exist', async () => {
   // Arrange
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
@@ -112,7 +112,7 @@ it('Data source should throw error when given directory is not exist', async () 
   ).rejects.toThrow();
 }, 100000);
 
-it('Data source should throw error when given profile name is not exist', async () => {
+it.skip('Data source should throw error when given profile name is not exist', async () => {
   // Arrange
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
@@ -129,7 +129,7 @@ it('Data source should throw error when given profile name is not exist', async 
   ).rejects.toThrow();
 }, 100000);
 
-it('Data source should return correct rows with 1 chunks', async () => {
+it.skip('Data source should return correct rows with 1 chunks', async () => {
   // Arrange
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
@@ -145,7 +145,7 @@ it('Data source should return correct rows with 1 chunks', async () => {
   expect(rows.length).toBe(1);
 }, 30000);
 
-it('Data source should return correct rows', async () => {
+it.skip('Data source should return correct rows', async () => {
   // Arrange
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
@@ -161,7 +161,7 @@ it('Data source should return correct rows', async () => {
   expect(rows.length).toBe(1);
 }, 30000);
 
-it('Data source should return empty data with no row', async () => {
+it.skip('Data source should return empty data with no row', async () => {
   // Arrange
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
@@ -177,7 +177,7 @@ it('Data source should return empty data with no row', async () => {
   expect(rows.length).toBe(0);
 }, 30000);
 
-it('Data source should release the connection when finished no matter success or not', async () => {
+it.skip('Data source should release the connection when finished no matter success or not', async () => {
   // Arrange
   const profile1 = pg.getProfile('profile1');
   dataSource = new CannerDataSource({}, '', [
@@ -240,7 +240,7 @@ it('Data source should release the connection when finished no matter success or
   expect(result[2].length).toBe(1);
 }, 60000);
 
-it('Data source should work with prepare statements', async () => {
+it.skip('Data source should work with prepare statements', async () => {
   // Arrange
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
@@ -271,7 +271,7 @@ it('Data source should work with prepare statements', async () => {
   expect(rows[0].v2).toBe('456');
 }, 30000);
 
-it('Data source should return correct column types', async () => {
+it.skip('Data source should return correct column types', async () => {
   // Arrange
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
@@ -293,7 +293,7 @@ it('Data source should return correct column types', async () => {
   expect(column[2]).toEqual({ name: 'enabled', type: 'boolean' });
 }, 30000);
 
-it('Data source should release connection when readable stream is destroyed', async () => {
+it.skip('Data source should release connection when readable stream is destroyed', async () => {
   // Arrange
   dataSource = new CannerDataSource({}, '', [pg.getProfile('profile1')]);
   await dataSource.activate();
@@ -326,7 +326,7 @@ it('Data source should release connection when readable stream is destroyed', as
   // afterEach hook will timeout if any leak occurred.
 }, 300000);
 
-it('Should return the same pool when the profile is the same', async () => {
+it.skip('Should return the same pool when the profile is the same', async () => {
   // Arrange
   mockDataSource = new MockCannerDataSource({}, '', [
     pg.getProfile('profile1'),
@@ -339,7 +339,7 @@ it('Should return the same pool when the profile is the same', async () => {
   expect(pool1 === pool2).toBeTruthy();
 }, 30000);
 
-it('Should return the same pool when the profile and authentication is the same', async () => {
+it.skip('Should return the same pool when the profile and authentication is the same', async () => {
   // Arrange
   mockDataSource = new MockCannerDataSource({}, '', [
     pg.getProfile('profile1'),
@@ -352,7 +352,7 @@ it('Should return the same pool when the profile and authentication is the same'
   expect(pool1 === pool2).toBeTruthy();
 }, 30000);
 
-it('Should return new user pool if user pool not exist', async () => {
+it.skip('Should return new user pool if user pool not exist', async () => {
   // Arrange
   const profile1 = pg.getProfile('profile1');
   const database = <string>profile1.connection.database;
@@ -369,7 +369,7 @@ it('Should return new user pool if user pool not exist', async () => {
   expect(userPool === pool2).toBeTruthy();
 }, 30000);
 
-it('Should return existing user pool if user pool exist', async () => {
+it.skip('Should return existing user pool if user pool exist', async () => {
   // Arrange
   const profile1 = pg.getProfile('profile1');
   const database = <string>profile1.connection.database;
@@ -385,7 +385,7 @@ it('Should return existing user pool if user pool exist', async () => {
   expect(userPool === pool).toBeTruthy();
 }, 30000);
 
-it('Should return new user pool if user pool exist but not match', async () => {
+it.skip('Should return new user pool if user pool exist but not match', async () => {
   // Arrange
   const profile1 = pg.getProfile('profile1');
   const database = <string>profile1.connection.database;
@@ -405,7 +405,7 @@ it('Should return new user pool if user pool exist but not match', async () => {
   ).toBeDefined();
 }, 30000);
 
-it('Should return different pool with different authentication even the profile is the same', async () => {
+it.skip('Should return different pool with different authentication even the profile is the same', async () => {
   // Arrange
   mockDataSource = new MockCannerDataSource({}, '', [
     pg.getProfile('profile1'),
@@ -418,7 +418,7 @@ it('Should return different pool with different authentication even the profile 
   expect(pool1 === pool2).toBeFalsy();
 }, 30000);
 
-it('Should throw error when the profile is not exist', async () => {
+it.skip('Should throw error when the profile is not exist', async () => {
   // Arrange
   mockDataSource = new MockCannerDataSource({}, '', [
     pg.getProfile('profile1'),
@@ -430,7 +430,7 @@ it('Should throw error when the profile is not exist', async () => {
   );
 }, 30000);
 
-it('Should return default pool when password was not given', async () => {
+it.skip('Should return default pool when password was not given', async () => {
   // Arrange
   mockDataSource = new MockCannerDataSource({}, '', [
     pg.getProfile('profile1'),

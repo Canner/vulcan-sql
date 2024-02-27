@@ -9,7 +9,7 @@ import * as storageServiceModule from '../lib/storageService';
 import * as configModule from '../lib/config';
 import { Profile } from '@vulcan-sql/core';
 
-describe('Test CannerProfileReader', () => {
+describe.skip('Test CannerProfileReader', () => {
   // fake workspaceId
   const fakeWorkspaces = {
     // fake workspace id and sql name

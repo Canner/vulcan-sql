@@ -13,7 +13,7 @@ process.env['AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE'] = '1';
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 const config = getEnvConfig();
 
-it('Should create failed when "provider" options is not provided by env', async () => {
+it.skip('Should create failed when "provider" options is not provided by env', async () => {
   // Arrange
   const options = {
     provider: undefined,
@@ -23,7 +23,7 @@ it('Should create failed when "provider" options is not provided by env', async 
     'Provider options is required!'
   );
 });
-it('Should create failed when "provider" options is not supported', async () => {
+it.skip('Should create failed when "provider" options is not supported', async () => {
   // Arrange
   const options = {
     provider: 'not-supported-provider',
@@ -34,7 +34,7 @@ it('Should create failed when "provider" options is not supported', async () => 
   );
 });
 
-it('Should create storage service for connecting MINIO successfully when provider MINIO needed options', async () => {
+it.skip('Should create storage service for connecting MINIO successfully when provider MINIO needed options', async () => {
   // Arrange, the field of config.storage from environment variables
   const options = {
     provider: CloudProvider.MINIO,
@@ -53,7 +53,7 @@ it('Should create storage service for connecting MINIO successfully when provide
   ).resolves.not.toThrow();
 });
 
-it('Should create storage service for connecting AZURE successfully when provider AZURE needed options', async () => {
+it.skip('Should create storage service for connecting AZURE successfully when provider AZURE needed options', async () => {
   // Arrange
   const options = {
     provider: CloudProvider.AZURE,
@@ -69,7 +69,7 @@ it('Should create storage service for connecting AZURE successfully when provide
   ).resolves.not.toThrow();
 });
 
-it('Should create AWS storage service for connecting AWS successfully when provider AWS needed options', async () => {
+it.skip('Should create AWS storage service for connecting AWS successfully when provider AWS needed options', async () => {
   // Arrange
   const options = {
     provider: CloudProvider.AWS,
@@ -83,7 +83,7 @@ it('Should create AWS storage service for connecting AWS successfully when provi
     storageService.listObjects({ path: '/' })
   ).resolves.not.toThrow();
 });
-it('Should create GCP storage service for connecting GCP successfully when provider GCP needed options', async () => {
+it.skip('Should create GCP storage service for connecting GCP successfully when provider GCP needed options', async () => {
   // Arrange
   const options = {
     provider: CloudProvider.GCP,

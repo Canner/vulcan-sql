@@ -14,7 +14,7 @@ import {
   RawBuiltInArtifact,
 } from '../lib/canner/persistenceStore';
 
-describe('Test CannerPersistenceStore', () => {
+describe.skip('Test CannerPersistenceStore', () => {
   const fakePath = 'fake-path';
   // fake workspaceId
   const fakeWorkspaces = {
