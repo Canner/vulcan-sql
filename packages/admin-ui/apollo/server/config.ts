@@ -34,10 +34,6 @@ const config: IConfig = {
       process.env.PERSIST_CREDENTIAL_DIR &&
       process.env.PERSIST_CREDENTIAL_DIR.length > 0
     ) {
-      console.log(
-        'process.env.PERSIST_CREDENTIAL_DIR:',
-        process.env.PERSIST_CREDENTIAL_DIR
-      );
       return process.env.PERSIST_CREDENTIAL_DIR;
     }
     return undefined;
