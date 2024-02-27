@@ -7,8 +7,8 @@ import Selector from '@vulcan-sql/admin-ui/components/selectors/Selector';
 import CaculatedFieldTableFormControl, {
   CaculatedFieldTableValue,
 } from '@vulcan-sql/admin-ui/components/tableFormControls/CaculatedFieldTableFormControl';
-import PreviewDataContent from './PreviewDataContent';
 import useModelDetailFormOptions from '@vulcan-sql/admin-ui/hooks/useModelDetailFormOptions';
+import PreviewDataContent from './PreviewDataContent';
 
 export interface ButtonProps {
   form: FormInstance;
@@ -115,22 +115,42 @@ export default function ModelDetailForm(props: {
       </Form.Item>
 
       {sourceType === RADIO_VALUE.TABLE && (
-        <Form.Item
-          label="Select a table"
-          name="table"
-          required
-          rules={[
-            {
-              required: true,
-              message: ERROR_TEXTS.MODELING_CREATE_MODEL.TABLE.REQUIRED,
-            },
-          ]}
-        >
-          <Select
-            placeholder="Select a table"
-            options={dataSourceTableOptions}
-          />
-        </Form.Item>
+        <>
+          <Form.Item
+            label="Select a table"
+            name="table"
+            required
+            rules={[
+              {
+                required: true,
+                message: ERROR_TEXTS.MODELING_CREATE_MODEL.TABLE.REQUIRED,
+              },
+            ]}
+          >
+            <Select
+              placeholder="Select a table"
+              options={dataSourceTableOptions}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Select fields"
+            name="fields"
+            required
+            rules={[
+              {
+                required: true,
+                message: ERROR_TEXTS.MODELING_CREATE_MODEL.FIELDS.REQUIRED,
+              },
+            ]}
+          >
+            <Selector
+              mode="multiple"
+              placeholder="Select fields"
+              disabled={!(table || customSQL)}
+              options={dataSourceTableColumnOptions}
+            />
+          </Form.Item>
+        </>
       )}
 
       {sourceType === RADIO_VALUE.CUSTOM && (
@@ -146,25 +166,6 @@ export default function ModelDetailForm(props: {
           <Editor autoCompleteSource={autoCompleteSource} />
         </Form.Item>
       )}
-
-      <Form.Item
-        label="Select fields"
-        name="fields"
-        required
-        rules={[
-          {
-            required: true,
-            message: ERROR_TEXTS.MODELING_CREATE_MODEL.FIELDS.REQUIRED,
-          },
-        ]}
-      >
-        <Selector
-          mode="multiple"
-          placeholder="Select fields"
-          disabled={!(table || customSQL)}
-          options={dataSourceTableColumnOptions}
-        />
-      </Form.Item>
 
       <Form.Item label="Caculated fields" name="caculatedFields">
         <CaculatedFieldTableFormControl

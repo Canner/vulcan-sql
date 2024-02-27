@@ -66,6 +66,7 @@ export function Modeling({ connections }) {
         const { nodeType } = data;
         if (nodeType === NODE_TYPE.MODEL) modelDrawer.openDrawer(data);
         if (nodeType === NODE_TYPE.METRIC) metricDrawer.openDrawer(data);
+        if (nodeType === NODE_TYPE.VIEW) viewDrawer.openDrawer(data);
       },
       [MORE_ACTION.DELETE]: () => {
         // TODO: call delete API

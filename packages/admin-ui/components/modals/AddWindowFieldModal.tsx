@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 export type WindowFieldValue = {
   [key: string]: any;
-  fieldName: string;
+  name: string;
   modelFields?: FieldValue[];
 };
 

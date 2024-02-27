@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 export type CaculatedFieldValue = {
   [key: string]: any;
-  fieldName: string;
+  name: string;
   expression: string;
   modelFields?: FieldValue[];
   customExpression?: string;

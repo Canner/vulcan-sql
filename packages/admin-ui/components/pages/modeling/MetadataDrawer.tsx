@@ -73,16 +73,18 @@ const ModelMetadata = ({
         />
       </div>
 
-      <div className="mb-6">
-        <Typography.Text className="d-block gray-7 mb-2">
-          Caculated fields ({caculatedFields.length})
-        </Typography.Text>
-        <CaculatedFieldMetadataTable
-          dataSource={caculatedFields}
-          onEditValue={editMetadataValue}
-          onSubmitRemote={submitMetadata}
-        />
-      </div>
+      {!!caculatedFields.length && (
+        <div className="mb-6">
+          <Typography.Text className="d-block gray-7 mb-2">
+            Caculated fields ({caculatedFields.length})
+          </Typography.Text>
+          <CaculatedFieldMetadataTable
+            dataSource={caculatedFields}
+            onEditValue={editMetadataValue}
+            onSubmitRemote={submitMetadata}
+          />
+        </div>
+      )}
 
       <div className="mb-6">
         <Typography.Text className="d-block gray-7 mb-2">
@@ -166,6 +168,39 @@ const MetricMetadata = ({
   );
 };
 
+const ViewMetadata = ({ fields = [] }) => {
+  const FieldMetadataTable =
+    makeMetadataBaseTable(FieldTable)(UpdateMetadataModal);
+
+  // To convert edit value for update metadata modal
+  const editMetadataValue = (value) => {
+    return {
+      displayName: value.displayName || value.name,
+      description: value.description,
+    };
+  };
+
+  const submitMetadata = (values) => {
+    // TODO: waiting for API
+    console.log(values);
+  };
+
+  return (
+    <>
+      <div className="mb-6">
+        <Typography.Text className="d-block gray-7 mb-2">
+          Fields ({fields.length})
+        </Typography.Text>
+        <FieldMetadataTable
+          dataSource={fields}
+          onEditValue={editMetadataValue}
+          onSubmitRemote={submitMetadata}
+        />
+      </div>
+    </>
+  );
+};
+
 export default function MetadataDrawer(props: Props) {
   const { visible, defaultValue, onClose } = props;
   const { name, properties, nodeType = NODE_TYPE.MODEL } = defaultValue || {};
@@ -204,6 +239,7 @@ export default function MetadataDrawer(props: Props) {
 
       {nodeType === NODE_TYPE.MODEL && <ModelMetadata {...defaultValue} />}
       {nodeType === NODE_TYPE.METRIC && <MetricMetadata {...defaultValue} />}
+      {nodeType === NODE_TYPE.VIEW && <ViewMetadata {...defaultValue} />}
     </Drawer>
   );
 }
