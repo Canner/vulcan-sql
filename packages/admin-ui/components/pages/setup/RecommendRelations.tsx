@@ -25,23 +25,29 @@ interface Props {
 
 export const columns: ColumnsType<RelationsDataType> = [
   {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    width: '25%',
+  },
+  {
     title: 'From field',
     dataIndex: 'fromField',
     key: 'fromField',
     render: (fromField) => `${fromField.model}.${fromField.field}`,
-    width: '35%',
+    width: '25%',
   },
   {
     title: 'To field',
     dataIndex: 'toField',
     key: 'toField',
     render: (toField) => `${toField.model}.${toField.field}`,
-    width: '35%',
+    width: '25%',
   },
   {
-    title: 'Relation',
-    dataIndex: 'relationType',
-    key: 'relationType',
+    title: 'Relation type',
+    dataIndex: 'type',
+    key: 'type',
     render: (type, relation) => (
       <>
         {getJoinTypeText(type)}
@@ -52,7 +58,7 @@ export const columns: ColumnsType<RelationsDataType> = [
         )}
       </>
     ),
-    width: '30%',
+    width: '25%',
   },
 ];
 
@@ -67,9 +73,7 @@ const SelectRelationTemplate: IterableComponent = ({
       enableRowSelection
       dataSource={relations}
       tableTitle={name}
-      rowKey={(record: RelationsDataType) =>
-        `${name}-${record.relationName}-${index}`
-      }
+      rowKey={(record: RelationsDataType) => `${name}-${record.name}-${index}`}
     />
   </Form.Item>
 );
