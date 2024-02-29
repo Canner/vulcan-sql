@@ -79,7 +79,7 @@ export default function AddCalculatedFieldModal(props: Props) {
           rules={[
             {
               required: true,
-              message: ERROR_TEXTS.ADD_CACULATED_FIELD.FIELD_NAME.REQUIRED,
+              message: ERROR_TEXTS.ADD_CALCULATED_FIELD.FIELD_NAME.REQUIRED,
             },
           ]}
         >

@@ -150,6 +150,11 @@ export default function ModelDetailForm(props: {
               options={dataSourceTableColumnOptions}
             />
           </Form.Item>
+          <Form.Item label="Calculated fields" name="calculatedFields">
+            <CalulatedFieldTableFormControl
+              modalProps={{ model: modelName, transientData }}
+            />
+          </Form.Item>
         </>
       )}
 
@@ -166,12 +171,6 @@ export default function ModelDetailForm(props: {
           <Editor autoCompleteSource={autoCompleteSource} />
         </Form.Item>
       )}
-
-      <Form.Item label="Calculated fields" name="calculatedFields">
-        <CalulatedFieldTableFormControl
-          modalProps={{ model: modelName, transientData }}
-        />
-      </Form.Item>
 
       <Form.Item label="Data preview (50 rows)">
         <PreviewDataContent columns={previewColumns} data={[]} />

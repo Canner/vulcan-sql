@@ -36,7 +36,6 @@ export default function CodeBlock(props: Props) {
 
   const lines = code.split('\n').map((line) => {
     const tokens = tokenizer.getLineTokens(line).tokens;
-    console.log(tokens);
     const children = tokens.map((token, index) => {
       const classNames = token.type.split('.').map((name) => `ace_${name}`);
       return (
