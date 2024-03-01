@@ -3,7 +3,7 @@
  * @returns { Promise<void> }
  */
 exports.up = function (knex) {
-  return knex.schema.createTable('metrics', (table) => {
+  return knex.schema.createTable('metric', (table) => {
     table.increments('id').comment('ID');
     table.integer('project_id').comment('Reference to project.id');
     table.string('name').comment('metric name');
@@ -18,13 +18,13 @@ exports.up = function (knex) {
       )
       .nullable();
 
-    // metric can based on model or another metrics
+    // metric can based on model or another metric
     table.integer('model_id').comment('Reference to model.id').nullable();
     table.integer('metric_id').comment('Reference to metric.id').nullable();
     table
       .text('properties')
       .comment(
-        'metrics properties, a json string, the description and displayName should be stored here'
+        'metric properties, a json string, the description and displayName should be stored here'
       )
       .nullable();
     table.timestamps(true, true);
@@ -36,5 +36,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-  return knex.schema.dropTable('metrics');
+  return knex.schema.dropTable('metric');
 };

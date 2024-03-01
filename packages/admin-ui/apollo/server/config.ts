@@ -7,7 +7,7 @@ export interface IConfig {
   pgUrl?: string;
   debug?: boolean;
   // sqlite
-  sqlite_file?: string;
+  sqliteFile?: string;
 
   persistCredentialDir?: string;
 
@@ -25,7 +25,7 @@ const defaultConfig = {
   debug: false,
 
   // sqlite
-  sqlite_file: './db.sqlite',
+  sqliteFile: './db.sqlite',
 
   persistCredentialDir: process.cwd(),
 
@@ -41,7 +41,7 @@ const config = {
   pgUrl: process.env.PG_URL,
   debug: process.env.DEBUG === 'true',
   // sqlite
-  sqlite_file: process.env.SQLITE_FILE,
+  sqliteFile: process.env.SQLITE_FILE,
 
   persistCredentialDir: (() => {
     if (

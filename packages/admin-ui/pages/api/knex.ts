@@ -2,7 +2,7 @@ interface KnexOptions {
   dbType: string;
   pgUrl?: string;
   debug?: boolean;
-  sqlite_file?: string;
+  sqliteFile?: string;
 }
 
 export const bootstrapKnex = (options: KnexOptions) => {
@@ -22,7 +22,7 @@ export const bootstrapKnex = (options: KnexOptions) => {
     return require('knex')({
       client: 'better-sqlite3',
       connection: {
-        filename: options.sqlite_file,
+        filename: options.sqliteFile,
       },
       useNullAsDefault: true,
     });

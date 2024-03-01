@@ -29,7 +29,7 @@ const knex = bootstrapKnex({
   dbType: serverConfig.dbType,
   pgUrl: serverConfig.pgUrl,
   debug: serverConfig.debug,
-  sqlite_file: serverConfig.sqlite_file,
+  sqliteFile: serverConfig.sqliteFile,
 });
 const projectRepository = new ProjectRepository(knex);
 const modelRepository = new ModelRepository(knex);
