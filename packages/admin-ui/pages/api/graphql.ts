@@ -10,7 +10,7 @@ import {
   ProjectRepository,
   RelationRepository,
 } from '@vulcan-sql/admin-ui/apollo/server/repositories';
-import { bootstrapKnex } from './knex';
+import { bootstrapKnex } from '../../apollo/server/utils/knex';
 import { GraphQLError } from 'graphql';
 import { getLogger } from '@vulcan-sql/admin-ui/apollo/server/utils';
 import { getConfig } from '@vulcan-sql/admin-ui/apollo/server/config';
