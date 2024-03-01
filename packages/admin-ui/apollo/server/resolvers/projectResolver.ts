@@ -173,22 +173,22 @@ export class ProjectResolver {
     const relations = [];
     for (const constraint of constraints) {
       const {
-        constraint_table,
-        constraint_column,
-        constrainted_table,
-        constrainted_column,
+        constraintTable,
+        constraintColumn,
+        constraintedTable,
+        constraintedColumn,
       } = constraint;
       // validate tables and columns exists in our models and model columns
-      const fromModel = models.find((m) => m.tableName === constraint_table);
-      const toModel = models.find((m) => m.tableName === constrainted_table);
+      const fromModel = models.find((m) => m.tableName === constraintTable);
+      const toModel = models.find((m) => m.tableName === constraintedTable);
       if (!fromModel || !toModel) {
         continue;
       }
       const fromColumn = columns.find(
-        (c) => c.modelId === fromModel.id && c.name === constraint_column
+        (c) => c.modelId === fromModel.id && c.name === constraintColumn
       );
       const toColumn = columns.find(
-        (c) => c.modelId === toModel.id && c.name === constrainted_column
+        (c) => c.modelId === toModel.id && c.name === constraintedColumn
       );
       if (!fromColumn || !toColumn) {
         continue;

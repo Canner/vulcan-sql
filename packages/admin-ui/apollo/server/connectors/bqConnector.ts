@@ -26,12 +26,12 @@ export interface BQColumnResponse {
 }
 
 export interface BQConstraintResponse {
-  constraint_name: string;
-  constraint_type: string;
-  constraint_table: string;
-  constraint_column: string;
-  constrainted_table: string;
-  constrainted_column: string;
+  constraintName: string;
+  constraintType: string;
+  constraintTable: string;
+  constraintColumn: string;
+  constraintedTable: string;
+  constraintedColumn: string;
 }
 
 export interface BQListTableOptions {
@@ -93,9 +93,9 @@ export class BQConnector
       this.bq.query(
         `
       SELECT 
-        ccu.table_name as constraint_table, ccu.column_name constraint_column, 
-        kcu.table_name as constrainted_table, kcu.column_name as constrainted_column, 
-        tc.constraint_type 
+        ccu.table_name as constraintTable, ccu.column_name constraintColumn, 
+        kcu.table_name as constraintedTable, kcu.column_name as constraintedColumn, 
+        tc.constraint_type as constraintType
       FROM ${dataset}.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE ccu 
       JOIN ${dataset}.INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu 
         ON ccu.constraint_name = kcu.constraint_name
