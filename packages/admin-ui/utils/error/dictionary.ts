@@ -6,6 +6,12 @@ export const ERROR_TEXTS = {
     PROJECT_ID: {
       REQUIRED: 'Please input project id.',
     },
+    DATASET: {
+      REQUIRED: 'Please input dataset name.',
+    },
+    LOCATION: {
+      REQUIRED: 'Please input data location.',
+    },
     CREDENTIAL: {
       REQUIRED: 'Please upload credential.',
     },

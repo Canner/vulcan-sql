@@ -80,7 +80,33 @@ export default function BigQueryProperties() {
           },
         ]}
       >
-        <Input placeholder="Project-123" />
+        <Input placeholder="The GCP project ID" />
+      </Form.Item>
+      <Form.Item
+        label="Dataset name"
+        required
+        name="dataset"
+        rules={[
+          {
+            required: true,
+            message: ERROR_TEXTS.CONNECTION.DATASET.REQUIRED,
+          },
+        ]}
+      >
+        <Input placeholder="The dataset name" />
+      </Form.Item>
+      <Form.Item
+        label="Data Location"
+        required
+        name="location"
+        rules={[
+          {
+            required: true,
+            message: ERROR_TEXTS.CONNECTION.LOCATION.REQUIRED,
+          },
+        ]}
+      >
+        <Input placeholder="The location of the dataset. e.g. US." />
       </Form.Item>
       <Form.Item
         label="Credentials"
