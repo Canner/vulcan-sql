@@ -17,7 +17,7 @@ export enum NODE_TYPE {
   VIEW = 'view',
   RELATION = 'relation',
   FIELD = 'field',
-  CACULATED_FIELD = 'calculatedField',
+  CALCULATED_FIELD = 'calculatedField',
 }
 
 export enum CACHED_PERIOD {

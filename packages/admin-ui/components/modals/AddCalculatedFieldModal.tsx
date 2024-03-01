@@ -7,15 +7,15 @@ import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import ExpressionProperties from '@vulcan-sql/admin-ui/components/form/ExpressionProperties';
 import Link from 'next/link';
 
-export type CaculatedFieldValue = {
+export type CalculatedFieldValue = {
   [key: string]: any;
-  fieldName: string;
+  name: string;
   expression: string;
   modelFields?: FieldValue[];
   customExpression?: string;
 };
 
-type Props = ModalAction<CaculatedFieldValue> & {
+type Props = ModalAction<CalculatedFieldValue> & {
   model: string;
   loading?: boolean;
 
@@ -23,7 +23,7 @@ type Props = ModalAction<CaculatedFieldValue> & {
   transientData?: ModelFieldResposeData[];
 };
 
-export default function AddCaculatedFieldModal(props: Props) {
+export default function AddCalculatedFieldModal(props: Props) {
   const {
     model,
     transientData,
@@ -52,7 +52,7 @@ export default function AddCaculatedFieldModal(props: Props) {
 
   return (
     <Modal
-      title="Add caculated field"
+      title="Add calculated field"
       width={750}
       visible={visible}
       okText="Submit"
@@ -79,7 +79,7 @@ export default function AddCaculatedFieldModal(props: Props) {
           rules={[
             {
               required: true,
-              message: ERROR_TEXTS.ADD_CACULATED_FIELD.FIELD_NAME.REQUIRED,
+              message: ERROR_TEXTS.ADD_CALCULATED_FIELD.FIELD_NAME.REQUIRED,
             },
           ]}
         >

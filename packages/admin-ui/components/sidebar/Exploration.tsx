@@ -11,12 +11,12 @@ import { Path } from '@vulcan-sql/admin-ui/utils/enum';
 import ExplorationTreeTitle from '@vulcan-sql/admin-ui/components/sidebar/exploration/ExplorationTreeTitle';
 
 // TODO: update it to real exploration data type
-export interface ExplorationData {
+interface ExplorationData {
   id: string;
   name: string;
 }
 
-interface Props {
+export interface Props {
   data: ExplorationData[];
   onSelect: (selectKeys) => void;
 }

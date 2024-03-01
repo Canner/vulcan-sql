@@ -9,6 +9,7 @@ import { adapter, Manifest } from '@vulcan-sql/admin-ui/utils/data';
 import MetadataDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetadataDrawer';
 import ModelDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/ModelDrawer';
 import MetricDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/MetricDrawer';
+import ViewDrawer from '@vulcan-sql/admin-ui/components/pages/modeling/ViewDrawer';
 import useDrawerAction from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
 import { useManifestQuery } from '@vulcan-sql/admin-ui/apollo/client/graphql/manifest.generated';
 
@@ -39,6 +40,7 @@ export function Modeling({ connections }) {
   const metadataDrawer = useDrawerAction();
   const modelDrawer = useDrawerAction();
   const metricDrawer = useDrawerAction();
+  const viewDrawer = useDrawerAction();
 
   const onSelect = (selectKeys) => {
     if (diagramRef.current) {
@@ -64,6 +66,7 @@ export function Modeling({ connections }) {
         const { nodeType } = data;
         if (nodeType === NODE_TYPE.MODEL) modelDrawer.openDrawer(data);
         if (nodeType === NODE_TYPE.METRIC) metricDrawer.openDrawer(data);
+        if (nodeType === NODE_TYPE.VIEW) viewDrawer.openDrawer(data);
       },
       [MORE_ACTION.DELETE]: () => {
         // TODO: call delete API
@@ -80,6 +83,9 @@ export function Modeling({ connections }) {
       sidebar={{
         data: adaptedManifest,
         onSelect,
+        onOpenModelDrawer: modelDrawer.openDrawer,
+        onOpenMetricDrawer: metricDrawer.openDrawer,
+        onOpenViewDrawer: viewDrawer.openDrawer,
       }}
     >
       <DiagramWrapper>
@@ -104,6 +110,13 @@ export function Modeling({ connections }) {
       <MetricDrawer
         {...metricDrawer.state}
         onClose={metricDrawer.closeDrawer}
+        onSubmit={async (values) => {
+          console.log(values);
+        }}
+      />
+      <ViewDrawer
+        {...viewDrawer.state}
+        onClose={viewDrawer.closeDrawer}
         onSubmit={async (values) => {
           console.log(values);
         }}

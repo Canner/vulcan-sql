@@ -16,11 +16,12 @@ export interface SQLEditorAutoCompleteSourceWordInfo {
 
 interface Props {
   autoCompleteSource: SQLEditorAutoCompleteSourceWordInfo[];
+  value?: string;
   onChange?: (value: any | null) => void;
 }
 
 function SQLEditor(props: Props, ref: any) {
-  const { autoCompleteSource } = props;
+  const { autoCompleteSource, value, onChange } = props;
 
   const editorRef = useRef<any>();
 
@@ -45,9 +46,9 @@ function SQLEditor(props: Props, ref: any) {
     return () => editorRef.current?.editor?.completers?.pop();
   }, [autoCompleteSource]);
 
-  function onTriggerChange(changedValue: any) {
-    props.onChange && props.onChange(changedValue);
-  }
+  const onTriggerChange = (changedValue: any) => {
+    onChange && onChange(changedValue);
+  };
 
   return (
     <div ref={ref}>
@@ -65,6 +66,7 @@ function SQLEditor(props: Props, ref: any) {
         showPrintMargin={false}
         theme="tomorrow"
         width="100%"
+        value={value}
       />
     </div>
   );

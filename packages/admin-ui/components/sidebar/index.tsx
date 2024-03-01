@@ -1,9 +1,8 @@
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { AdaptedData } from '@vulcan-sql/admin-ui/utils/data';
 import { Path } from '@vulcan-sql/admin-ui/utils/enum';
-import Exploration, { ExplorationData } from './Exploration';
-import Modeling from './Modeling';
+import Exploration, { Props as ExplorationSidebarProps } from './Exploration';
+import Modeling, { Props as ModelingSidebarProps } from './Modeling';
 
 const Layout = styled.div`
   position: relative;
@@ -13,16 +12,6 @@ const Layout = styled.div`
   padding-bottom: 24px;
   overflow-x: hidden;
 `;
-
-interface ModelingSidebarProps {
-  data: AdaptedData;
-  onSelect: (selectKeys) => void;
-}
-
-interface ExplorationSidebarProps {
-  data: ExplorationData[];
-  onSelect: (selectKeys) => void;
-}
 
 type Props = ModelingSidebarProps | ExplorationSidebarProps;
 

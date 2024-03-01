@@ -13,7 +13,7 @@ import Link from 'next/link';
 
 export type DimensionFieldValue = {
   [key: string]: any;
-  fieldName: string;
+  name: string;
   modelFields?: FieldValue[];
 };
 

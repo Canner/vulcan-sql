@@ -1,3 +1,10 @@
+import {
+  MetricData,
+  ModelData,
+  ViewData,
+} from '@vulcan-sql/admin-ui/utils/data';
+import { LightningIcon } from '@vulcan-sql/admin-ui/utils/icons';
+import { Tooltip } from 'antd';
 import { NodeProps } from 'reactflow';
 import styled from 'styled-components';
 
@@ -109,3 +116,25 @@ export const NodeColumn = styled.div`
     }
   }
 `;
+
+export const CachedIcon = ({
+  originalData,
+}: {
+  originalData: ModelData | MetricData | ViewData;
+}) => {
+  return originalData.cached ? (
+    <Tooltip
+      title={
+        <>
+          Cached
+          {originalData.refreshTime
+            ? `: refresh every ${originalData.refreshTime}`
+            : null}
+        </>
+      }
+      placement="top"
+    >
+      <LightningIcon className="cursor-pointer" />
+    </Tooltip>
+  ) : null;
+};

@@ -1,5 +1,4 @@
 import { memo, useCallback, useContext } from 'react';
-import { isEmpty } from 'lodash';
 import {
   CachedIcon,
   CustomNodeProps,
@@ -9,14 +8,14 @@ import {
 } from './utils';
 import MarkerHandle from './MarkerHandle';
 import { DiagramContext } from '../Context';
-import Column, { ColumnTitle } from './Column';
+import Column from './Column';
 import CustomDropdown from '../CustomDropdown';
-import { MetricIcon, MoreIcon } from '@vulcan-sql/admin-ui/utils/icons';
+import { MoreIcon, ViewIcon } from '@vulcan-sql/admin-ui/utils/icons';
 import { MORE_ACTION } from '@vulcan-sql/admin-ui/utils/enum';
-import { MetricColumnData, MetricData } from '@vulcan-sql/admin-ui/utils/data';
+import { ViewColumnData, ViewData } from '@vulcan-sql/admin-ui/utils/data';
 import { getColumnTypeIcon } from '@vulcan-sql/admin-ui/utils/columnType';
 
-export const MetricNode = ({ data }: CustomNodeProps<MetricData>) => {
+export const ViewNode = ({ data }: CustomNodeProps<ViewData>) => {
   const context = useContext(DiagramContext);
   const onMoreClick = (type: MORE_ACTION) => {
     context?.onMoreClick({
@@ -31,17 +30,14 @@ export const MetricNode = ({ data }: CustomNodeProps<MetricData>) => {
       data: data.originalData,
     });
   };
-  const hasDimensions = !isEmpty(data.originalData.dimensions);
-  const hasMeasures = !isEmpty(data.originalData.measures);
-  const hasTimeGrains = !isEmpty(data.originalData.timeGrains);
-  const hasWindows = !isEmpty(data.originalData.windows);
 
   const renderColumns = useCallback(getColumns, []);
+
   return (
     <StyledNode onClick={onNodeClick}>
-      <NodeHeader className="dragHandle" color="var(--citrus-6)">
+      <NodeHeader className="dragHandle" color="var(--green-6)">
         <span className="adm-model-header">
-          <MetricIcon />
+          <ViewIcon />
           {data.originalData.name}
         </span>
         <span>
@@ -56,26 +52,18 @@ export const MetricNode = ({ data }: CustomNodeProps<MetricData>) => {
 
         <MarkerHandle id={data.originalData.id} />
       </NodeHeader>
-      <NodeBody draggable={false}>
-        {hasDimensions ? <ColumnTitle>Dimensions</ColumnTitle> : null}
-        {renderColumns(data.originalData.dimensions || [])}
-
-        {hasMeasures ? <ColumnTitle>Measures</ColumnTitle> : null}
-        {renderColumns(data.originalData.measures || [])}
-
-        {hasTimeGrains ? <ColumnTitle>Time Grains</ColumnTitle> : null}
-        {renderColumns(data.originalData.timeGrains || [])}
-
-        {hasWindows ? <ColumnTitle>Windows</ColumnTitle> : null}
-        {renderColumns(data.originalData.windows || [])}
-      </NodeBody>
+      {!!data.originalData.fields.length && (
+        <NodeBody draggable={false}>
+          {renderColumns(data.originalData.fields)}
+        </NodeBody>
+      )}
     </StyledNode>
   );
 };
 
-export default memo(MetricNode);
+export default memo(ViewNode);
 
-function getColumns(columns: MetricColumnData[]) {
+function getColumns(columns: ViewColumnData[]) {
   return columns.map((column) => (
     <Column
       key={column.id}

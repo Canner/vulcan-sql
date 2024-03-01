@@ -10,7 +10,7 @@ export const ERROR_TEXTS = {
       REQUIRED: 'Please upload credential.',
     },
   },
-  ADD_CACULATED_FIELD: {
+  ADD_CALCULATED_FIELD: {
     FIELD_NAME: {
       REQUIRED: 'Please input field name.',
     },
@@ -92,6 +92,14 @@ export const ERROR_TEXTS = {
     },
     SOURCE: {
       REQUIRED: 'Please select a model or metric.',
+    },
+  },
+  MODELING_CREATE_VIEW: {
+    NAME: {
+      REQUIRED: 'Please input view name.',
+    },
+    SQL: {
+      REQUIRED: 'Please input SQL.',
     },
   },
   SETUP_MODEL: {

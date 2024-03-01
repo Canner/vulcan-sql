@@ -33,9 +33,9 @@ const getPreviewColumns = (
   windows: WindowTableValue
 ) => {
   return [
-    measures.map((field) => field.fieldName),
-    dimensions.map((field) => field.fieldName),
-    windows.map((field) => field.fieldName),
+    measures.map((field) => field.name),
+    dimensions.map((field) => field.name),
+    windows.map((field) => field.name),
   ]
     .flat()
     .map((name) => ({

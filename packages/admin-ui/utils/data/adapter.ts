@@ -1,13 +1,24 @@
 import { Manifest } from '@vulcan-sql/admin-ui/utils/data/type';
-import { MetricData, ModelData } from '@vulcan-sql/admin-ui/utils/data/model';
+import {
+  MetricData,
+  ModelData,
+  ViewData,
+} from '@vulcan-sql/admin-ui/utils/data/model';
 
-export interface AdaptedData extends Omit<Manifest, 'models' | 'metrics'> {
+export interface AdaptedData
+  extends Omit<Manifest, 'models' | 'metrics' | 'views'> {
   models: ModelData[];
   metrics: MetricData[];
+  views: ViewData[];
 }
 
 export const adapter = (data: Manifest): AdaptedData => {
-  const { models = [], metrics = [], cumulativeMetrics = [] } = data;
+  const {
+    models = [],
+    metrics = [],
+    cumulativeMetrics = [],
+    views = [],
+  } = data;
   const adaptModels = models.map((model) => {
     return new ModelData(model, data);
   });
@@ -16,9 +27,14 @@ export const adapter = (data: Manifest): AdaptedData => {
     return new MetricData(metric, !!metric.window);
   });
 
+  const adaptViews = views.map((view) => {
+    return new ViewData(view);
+  });
+
   return {
     ...data,
     models: adaptModels,
     metrics: adaptMetrics,
+    views: adaptViews,
   };
 };

@@ -4,7 +4,7 @@ import CompassOutlined from '@ant-design/icons/CompassOutlined';
 import { NODE_TYPE, Path } from '@vulcan-sql/admin-ui/utils/enum';
 import { DrawerAction } from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
 import FieldTable from '@vulcan-sql/admin-ui/components/table/FieldTable';
-import CaculatedFieldTable from '@vulcan-sql/admin-ui/components/table/CaculatedFieldTable';
+import CalculatedFieldTable from '@vulcan-sql/admin-ui/components/table/CalculatedFieldTable';
 import MeasureFieldTable from '@vulcan-sql/admin-ui/components/table/MeasureFieldTable';
 import DimensionFieldTable from '@vulcan-sql/admin-ui/components/table/DimensionFieldTable';
 import WindowFieldTable from '@vulcan-sql/admin-ui/components/table/WindowFieldTable';
@@ -15,7 +15,7 @@ import UpdateMetadataModal from '@vulcan-sql/admin-ui/components/modals/UpdateMe
 interface MetadataData {
   name: string;
   fields?: any[];
-  caculatedFields?: any[];
+  calculatedFields?: any[];
   relations?: any[];
   measures?: any[];
   dimensions?: any[];
@@ -29,13 +29,13 @@ type Props = DrawerAction<MetadataData>;
 const ModelMetadata = ({
   name,
   fields = [],
-  caculatedFields = [],
+  calculatedFields = [],
   relations = [],
 }) => {
   const FieldMetadataTable =
     makeMetadataBaseTable(FieldTable)(UpdateMetadataModal);
-  const CaculatedFieldMetadataTable =
-    makeMetadataBaseTable(CaculatedFieldTable)(UpdateMetadataModal);
+  const CalculatedFieldMetadataTable =
+    makeMetadataBaseTable(CalculatedFieldTable)(UpdateMetadataModal);
 
   const submitRelation = async (value) => {
     // TODO: waiting for API
@@ -73,16 +73,18 @@ const ModelMetadata = ({
         />
       </div>
 
-      <div className="mb-6">
-        <Typography.Text className="d-block gray-7 mb-2">
-          Caculated fields ({caculatedFields.length})
-        </Typography.Text>
-        <CaculatedFieldMetadataTable
-          dataSource={caculatedFields}
-          onEditValue={editMetadataValue}
-          onSubmitRemote={submitMetadata}
-        />
-      </div>
+      {!!calculatedFields.length && (
+        <div className="mb-6">
+          <Typography.Text className="d-block gray-7 mb-2">
+            Calculated fields ({calculatedFields.length})
+          </Typography.Text>
+          <CalculatedFieldMetadataTable
+            dataSource={calculatedFields}
+            onEditValue={editMetadataValue}
+            onSubmitRemote={submitMetadata}
+          />
+        </div>
+      )}
 
       <div className="mb-6">
         <Typography.Text className="d-block gray-7 mb-2">
@@ -166,6 +168,39 @@ const MetricMetadata = ({
   );
 };
 
+const ViewMetadata = ({ fields = [] }) => {
+  const FieldMetadataTable =
+    makeMetadataBaseTable(FieldTable)(UpdateMetadataModal);
+
+  // To convert edit value for update metadata modal
+  const editMetadataValue = (value) => {
+    return {
+      displayName: value.displayName || value.name,
+      description: value.description,
+    };
+  };
+
+  const submitMetadata = (values) => {
+    // TODO: waiting for API
+    console.log(values);
+  };
+
+  return (
+    <>
+      <div className="mb-6">
+        <Typography.Text className="d-block gray-7 mb-2">
+          Fields ({fields.length})
+        </Typography.Text>
+        <FieldMetadataTable
+          dataSource={fields}
+          onEditValue={editMetadataValue}
+          onSubmitRemote={submitMetadata}
+        />
+      </div>
+    </>
+  );
+};
+
 export default function MetadataDrawer(props: Props) {
   const { visible, defaultValue, onClose } = props;
   const { name, properties, nodeType = NODE_TYPE.MODEL } = defaultValue || {};
@@ -204,6 +239,7 @@ export default function MetadataDrawer(props: Props) {
 
       {nodeType === NODE_TYPE.MODEL && <ModelMetadata {...defaultValue} />}
       {nodeType === NODE_TYPE.METRIC && <MetricMetadata {...defaultValue} />}
+      {nodeType === NODE_TYPE.VIEW && <ViewMetadata {...defaultValue} />}
     </Drawer>
   );
 }

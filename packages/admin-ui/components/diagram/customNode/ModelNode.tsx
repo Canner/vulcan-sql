@@ -1,6 +1,12 @@
 import { memo, useCallback, useContext } from 'react';
 import { highlightEdges, highlightNodes, trimId } from '../utils';
-import { CustomNodeProps, NodeBody, NodeHeader, StyledNode } from './utils';
+import {
+  CachedIcon,
+  CustomNodeProps,
+  NodeBody,
+  NodeHeader,
+  StyledNode,
+} from './utils';
 import MarkerHandle from './MarkerHandle';
 import { DiagramContext } from '../Context';
 import Column, { ColumnTitle } from './Column';
@@ -43,9 +49,12 @@ export const ModelNode = ({ data }: CustomNodeProps<ModelData>) => {
           <ModelIcon />
           {data.originalData.name}
         </span>
-        <CustomDropdown onMoreClick={onMoreClick}>
-          <MoreIcon onClick={(e) => e.stopPropagation()} />
-        </CustomDropdown>
+        <span>
+          <CachedIcon originalData={data.originalData} />
+          <CustomDropdown onMoreClick={onMoreClick}>
+            <MoreIcon onClick={(e) => e.stopPropagation()} />
+          </CustomDropdown>
+        </span>
 
         <MarkerHandle id={data.originalData.id} />
       </NodeHeader>
