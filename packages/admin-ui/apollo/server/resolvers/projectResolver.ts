@@ -257,10 +257,7 @@ export class ProjectResolver {
           isCalculated: false,
           name: columnName,
           type: dataSourceColumn?.data_type || 'string',
-          notNull:
-            dataSourceColumn.is_nullable.toLocaleLowerCase() === 'yes'
-              ? false
-              : true,
+          notNull: dataSourceColumn.is_nullable.toLocaleLowerCase() !== 'yes',
           isPk: false,
           properties: JSON.stringify({
             description: dataSourceColumn.description,
@@ -361,11 +358,11 @@ export class ProjectResolver {
 
   private writeCredentialsFile(
     credentials: JSON,
-    persist_credential_dir: string
+    persistCredentialDir: string
   ) {
     // create persist_credential_dir if not exists
-    if (!fs.existsSync(persist_credential_dir)) {
-      fs.mkdirSync(persist_credential_dir, { recursive: true });
+    if (!fs.existsSync(persistCredentialDir)) {
+      fs.mkdirSync(persistCredentialDir, { recursive: true });
     }
     // file name will be the hash of the credentials, file path is current working directory
     // convert credentials from base64 to string and replace all the matched "\n" with "\\n",  there are many \n in the "private_key" property
@@ -375,7 +372,7 @@ export class ProjectResolver {
       .update(credentialString)
       .digest('hex');
 
-    const filePath = path.join(persist_credential_dir, `${fileName}.json`);
+    const filePath = path.join(persistCredentialDir, `${fileName}.json`);
     // check if file exists
     if (fs.existsSync(filePath)) {
       logger.debug(`File ${filePath} already exists`);
