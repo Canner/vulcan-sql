@@ -1,16 +1,12 @@
-import { useRouter } from 'next/router';
 import { Drawer, Button, Typography } from 'antd';
-import CompassOutlined from '@ant-design/icons/CompassOutlined';
-import { NODE_TYPE, Path } from '@vulcan-sql/admin-ui/utils/enum';
+import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { DrawerAction } from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
-import FieldTable from '@vulcan-sql/admin-ui/components/table/FieldTable';
-import CalculatedFieldTable from '@vulcan-sql/admin-ui/components/table/CalculatedFieldTable';
-import MeasureFieldTable from '@vulcan-sql/admin-ui/components/table/MeasureFieldTable';
-import DimensionFieldTable from '@vulcan-sql/admin-ui/components/table/DimensionFieldTable';
-import WindowFieldTable from '@vulcan-sql/admin-ui/components/table/WindowFieldTable';
-import RelationTableFormControl from '@vulcan-sql/admin-ui/components/tableFormControls/RelationTableFormControl';
-import { makeMetadataBaseTable } from '@vulcan-sql/admin-ui/components/table/MetadataBaseTable';
-import UpdateMetadataModal from '@vulcan-sql/admin-ui/components/modals/UpdateMetadataModal';
+import { SparklesIcon } from '@vulcan-sql/admin-ui/utils/icons';
+import ModelMetadata from './metadata/ModelMetadata';
+import MetricMetadata from './metadata/MetricMetadata';
+import ViewMetadata from './metadata/ViewMetadata';
+import GenerateMetadataModal from './GenerateMetadataModal';
+import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 
 interface MetadataData {
   name: string;
@@ -26,188 +22,17 @@ interface MetadataData {
 
 type Props = DrawerAction<MetadataData>;
 
-const ModelMetadata = ({
-  name,
-  fields = [],
-  calculatedFields = [],
-  relations = [],
-}) => {
-  const FieldMetadataTable =
-    makeMetadataBaseTable(FieldTable)(UpdateMetadataModal);
-  const CalculatedFieldMetadataTable =
-    makeMetadataBaseTable(CalculatedFieldTable)(UpdateMetadataModal);
-
-  const submitRelation = async (value) => {
-    // TODO: waiting for API
-    console.log(value);
-  };
-
-  const deleteRelation = async (value) => {
-    // TODO: waiting for API
-    console.log(value);
-  };
-
-  // To convert edit value for update metadata modal
-  const editMetadataValue = (value) => {
-    return {
-      displayName: value.displayName || value.name,
-      description: value.properties?.description,
-    };
-  };
-
-  const submitMetadata = (values) => {
-    // TODO: waiting for API
-    console.log(values);
-  };
-
-  return (
-    <>
-      <div className="mb-6">
-        <Typography.Text className="d-block gray-7 mb-2">
-          Fields ({fields.length})
-        </Typography.Text>
-        <FieldMetadataTable
-          dataSource={fields}
-          onEditValue={editMetadataValue}
-          onSubmitRemote={submitMetadata}
-        />
-      </div>
-
-      {!!calculatedFields.length && (
-        <div className="mb-6">
-          <Typography.Text className="d-block gray-7 mb-2">
-            Calculated fields ({calculatedFields.length})
-          </Typography.Text>
-          <CalculatedFieldMetadataTable
-            dataSource={calculatedFields}
-            onEditValue={editMetadataValue}
-            onSubmitRemote={submitMetadata}
-          />
-        </div>
-      )}
-
-      <div className="mb-6">
-        <Typography.Text className="d-block gray-7 mb-2">
-          Relations ({relations.length})
-        </Typography.Text>
-        <RelationTableFormControl
-          modalProps={{ model: name }}
-          value={relations}
-          onRemoteSubmit={submitRelation}
-          onRemoteDelete={deleteRelation}
-        />
-      </div>
-    </>
-  );
-};
-
-const MetricMetadata = ({
-  measures = [],
-  dimensions = undefined,
-  windows = undefined,
-}) => {
-  const MeasureFieldMetadataTable =
-    makeMetadataBaseTable(MeasureFieldTable)(UpdateMetadataModal);
-  const DimensionFieldMetadataTable =
-    makeMetadataBaseTable(DimensionFieldTable)(UpdateMetadataModal);
-  const WindowFieldMetadataTable =
-    makeMetadataBaseTable(WindowFieldTable)(UpdateMetadataModal);
-
-  // To convert edit value for update metadata modal
-  const editMetadataValue = (value) => {
-    return {
-      displayName: value.displayName || value.name,
-      description: value.description,
-    };
-  };
-
-  const submitMetadata = (values) => {
-    // TODO: waiting for API
-    console.log(values);
-  };
-
-  return (
-    <>
-      <div className="mb-6">
-        <Typography.Text className="d-block gray-7 mb-2">
-          Measures ({measures.length})
-        </Typography.Text>
-        <MeasureFieldMetadataTable
-          dataSource={measures}
-          onEditValue={editMetadataValue}
-          onSubmitRemote={submitMetadata}
-        />
-      </div>
-
-      {!!dimensions && (
-        <div className="mb-6">
-          <Typography.Text className="d-block gray-7 mb-2">
-            Dimensions ({dimensions.length})
-          </Typography.Text>
-          <DimensionFieldMetadataTable
-            dataSource={dimensions}
-            onEditValue={editMetadataValue}
-            onSubmitRemote={submitMetadata}
-          />
-        </div>
-      )}
-
-      {!!windows && (
-        <div className="mb-6">
-          <Typography.Text className="d-block gray-7 mb-2">
-            Windows ({windows.length})
-          </Typography.Text>
-          <WindowFieldMetadataTable
-            dataSource={windows}
-            onEditValue={editMetadataValue}
-            onSubmitRemote={submitMetadata}
-          />
-        </div>
-      )}
-    </>
-  );
-};
-
-const ViewMetadata = ({ fields = [] }) => {
-  const FieldMetadataTable =
-    makeMetadataBaseTable(FieldTable)(UpdateMetadataModal);
-
-  // To convert edit value for update metadata modal
-  const editMetadataValue = (value) => {
-    return {
-      displayName: value.displayName || value.name,
-      description: value.description,
-    };
-  };
-
-  const submitMetadata = (values) => {
-    // TODO: waiting for API
-    console.log(values);
-  };
-
-  return (
-    <>
-      <div className="mb-6">
-        <Typography.Text className="d-block gray-7 mb-2">
-          Fields ({fields.length})
-        </Typography.Text>
-        <FieldMetadataTable
-          dataSource={fields}
-          onEditValue={editMetadataValue}
-          onSubmitRemote={submitMetadata}
-        />
-      </div>
-    </>
-  );
-};
-
 export default function MetadataDrawer(props: Props) {
   const { visible, defaultValue, onClose } = props;
   const { name, properties, nodeType = NODE_TYPE.MODEL } = defaultValue || {};
-  const router = useRouter();
 
-  const goToExplore = () => {
-    router.push(Path.Exploration);
+  const generateMetadataModal = useModalAction();
+  const openGeneratedMetadataModal = () => {
+    generateMetadataModal.openModal(defaultValue);
+  };
+
+  const submitGenerateMetadata = async (values) => {
+    console.log(values);
   };
 
   return (
@@ -221,11 +46,11 @@ export default function MetadataDrawer(props: Props) {
       footer={
         <div className="text-right">
           <Button
-            type="primary"
-            icon={<CompassOutlined />}
-            onClick={goToExplore}
+            className="d-inline-flex align-center"
+            icon={<SparklesIcon className="mr-2" />}
+            onClick={openGeneratedMetadataModal}
           >
-            Explore data
+            Generate metadata
           </Button>
         </div>
       }
@@ -240,6 +65,12 @@ export default function MetadataDrawer(props: Props) {
       {nodeType === NODE_TYPE.MODEL && <ModelMetadata {...defaultValue} />}
       {nodeType === NODE_TYPE.METRIC && <MetricMetadata {...defaultValue} />}
       {nodeType === NODE_TYPE.VIEW && <ViewMetadata {...defaultValue} />}
+
+      <GenerateMetadataModal
+        {...generateMetadataModal.state}
+        onClose={generateMetadataModal.closeModal}
+        onSubmit={submitGenerateMetadata}
+      />
     </Drawer>
   );
 }
