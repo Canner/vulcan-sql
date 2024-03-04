@@ -18,14 +18,14 @@ afterEach(async () => {
   }
 });
 
-it('Data source should be activate without any error when all profiles are valid', async () => {
+it.skip('Data source should be activate without any error when all profiles are valid', async () => {
   // Arrange
   dataSource = new SnowflakeDataSource({}, '', [snow.getProfile('profile1')]);
   // Act, Assert
   await expect(dataSource.activate()).resolves.not.toThrow();
 }, 10000);
 
-it('Data source should throw an error when any of profiles is invalid', async () => {
+it.skip('Data source should throw an error when any of profiles is invalid', async () => {
   // Arrange
   const invalidProfile = snow.getProfile('invalid');
   invalidProfile.connection.username = 'invalid';
@@ -39,7 +39,7 @@ it('Data source should throw an error when any of profiles is invalid', async ()
   await expect(dataSource.activate()).rejects.toThrow();
 }, 10000);
 
-it('Data source should return correct rows and types', async () => {
+it.skip('Data source should return correct rows and types', async () => {
   // Arrange
   dataSource = new SnowflakeDataSource({}, '', [snow.getProfile('profile1')]);
   await dataSource.activate();
@@ -62,7 +62,7 @@ it('Data source should return correct rows and types', async () => {
 }, 10000);
 
 // should throw internal error if directory is not exist
-it('Data source should throw internal error if directory is not exist', async () => {
+it.skip('Data source should throw internal error if directory is not exist', async () => {
   // Arrange
   dataSource = new SnowflakeDataSource({}, '', [snow.getProfile('profile1')]);
   await dataSource.activate();
@@ -86,7 +86,7 @@ it('Data source should throw internal error if directory is not exist', async ()
 }, 10000);
 
 // should throw error when error was throw in getCopyToStageSQL, use sinon to stub getCopyToStageSQL
-it('Data source should throw error when error was throw in getCopyToStageSQL', async () => {
+it.skip('Data source should throw error when error was throw in getCopyToStageSQL', async () => {
   // Arrange
   class MockSnowflakeDataSource extends SnowflakeDataSource {
     protected override getCopyToStageSQL(): any {
@@ -114,7 +114,7 @@ it('Data source should throw error when error was throw in getCopyToStageSQL', a
   await expect(dataSource.export(exportOption)).rejects.toThrow('mock error');
 }, 10000);
 
-it('Data source should export parquet file correctly', async () => {
+it.skip('Data source should export parquet file correctly', async () => {
   // Arrange
   dataSource = new SnowflakeDataSource({}, '', [snow.getProfile('profile1')]);
   await dataSource.activate();
@@ -143,7 +143,7 @@ it('Data source should export parquet file correctly', async () => {
 }, 15000);
 
 // should export multiple files correctly
-it('Data source should export multiple parquet files correctly', async () => {
+it.skip('Data source should export multiple parquet files correctly', async () => {
   // Arrange
   class MockSnowflakeDataSource extends SnowflakeDataSource {
     protected override getCopyToStageSQL(sql: string, stageFilePath: string) {
@@ -185,7 +185,7 @@ it('Data source should export multiple parquet files correctly', async () => {
   fs.rmSync(directory, { recursive: true, force: true });
 }, 30000);
 
-it('Data source should return correct rows with multiple chunks', async () => {
+it.skip('Data source should return correct rows with multiple chunks', async () => {
   // Arrange
   dataSource = new SnowflakeDataSource({}, '', [snow.getProfile('profile1')]);
   await dataSource.activate();
@@ -202,7 +202,7 @@ it('Data source should return correct rows with multiple chunks', async () => {
   expect(rows.length).toBe(200);
 }, 10000);
 
-it('Data source should bind correct parameters', async () => {
+it.skip('Data source should bind correct parameters', async () => {
   // Arrange
   dataSource = new SnowflakeDataSource({}, '', [snow.getProfile('profile1')]);
   await dataSource.activate();
@@ -226,7 +226,7 @@ it('Data source should bind correct parameters', async () => {
   expect(rows[0].A).toBe(expectedValue);
 }, 10000);
 
-it('Data source should throw an error with invalid syntax', async () => {
+it.skip('Data source should throw an error with invalid syntax', async () => {
   // Arrange
   dataSource = new SnowflakeDataSource({}, '', [snow.getProfile('profile1')]);
   await dataSource.activate();

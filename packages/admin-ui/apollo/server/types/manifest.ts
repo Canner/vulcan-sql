@@ -108,6 +108,10 @@ export interface Model {
   properties: CumulativeMetricProperties;
 }
 
+export interface createColumnInput {
+  name: string;
+}
+
 export interface Column {
   name: string;
   type: string;

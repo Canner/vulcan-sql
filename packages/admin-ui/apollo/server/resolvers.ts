@@ -3,7 +3,6 @@ import {
   UsableDataSource,
   DataSourceName,
   DataSource,
-  Relation,
   CreateModelPayload,
   UpdateModelPayload,
   UpdateModelWhere,
@@ -13,8 +12,10 @@ import {
 } from './types';
 import * as demoManifest from './manifest.json';
 import { pick } from 'lodash';
+import { ProjectResolver } from './resolvers/projectResolver';
+import { ModelResolver } from './resolvers/modelResolver';
 
-export const resolvers = {
+const mockResolvers = {
   JSON: GraphQLJSON,
   Query: {
     usableDataSource: () =>
@@ -115,13 +116,10 @@ export const resolvers = {
     saveDataSource: (_, args: { data: DataSource }) => {
       return args.data;
     },
-    saveMDL: (
+    saveTables: (
       _,
       args: {
-        data: {
-          models: { name: string; columns: string[] };
-          relations: Relation[];
-        };
+        data: [tables: { name: string; columns: string[] }];
       }
     ) => {
       return demoManifest;
@@ -199,3 +197,28 @@ export const resolvers = {
     },
   },
 };
+
+const projectResolver = new ProjectResolver();
+const modelResolver = new ModelResolver();
+
+const resolvers = {
+  JSON: GraphQLJSON,
+  Query: {
+    listDataSourceTables: projectResolver.listDataSourceTables,
+    autoGenerateRelation: projectResolver.autoGenerateRelation,
+    listModels: modelResolver.listModels,
+  },
+  Mutation: {
+    saveDataSource: projectResolver.saveDataSource,
+    saveTables: projectResolver.saveTables,
+    saveRelations: projectResolver.saveRelations,
+  },
+};
+
+const useMockResolvers = process.env.APOLLO_RESOLVER === 'mock';
+useMockResolvers
+  ? console.log('Using mock resolvers')
+  : console.log('Using real resolvers');
+export default process.env.APOLLO_RESOLVER === 'mock'
+  ? mockResolvers
+  : resolvers;

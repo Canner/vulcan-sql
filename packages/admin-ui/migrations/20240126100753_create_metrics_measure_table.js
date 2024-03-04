@@ -7,9 +7,9 @@ exports.up = function (knex) {
   // expression string
   // granularity string, nullable
 
-  return knex.schema.createTable('metrics_measure', (table) => {
+  return knex.schema.createTable('metric_measure', (table) => {
     table.increments('id').comment('ID');
-    table.integer('metrics_id').comment('Reference to metrics ID');
+    table.integer('metric_id').comment('Reference to metric ID');
     table.string('name').comment('Measure name');
     table
       .text('expression')
@@ -23,6 +23,7 @@ exports.up = function (knex) {
         'Granularity for the measure, eg: "day", "hour", "minute", "year"'
       )
       .nullable();
+    table.timestamps(true, true);
   });
 };
 
@@ -31,5 +32,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-  return knex.schema.dropTable('metrics_measure');
+  return knex.schema.dropTable('metric_measure');
 };

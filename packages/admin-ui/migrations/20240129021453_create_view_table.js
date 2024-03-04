@@ -24,9 +24,10 @@ exports.up = function (knex) {
     table
       .text('properties')
       .comment(
-        'view properties, a json string, the description should be stored here'
+        'view properties, a json string, the description and displayName should be stored here'
       )
       .nullable();
+    table.timestamps(true, true);
   });
 };
 

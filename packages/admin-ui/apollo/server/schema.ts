@@ -32,11 +32,6 @@ export const typeDefs = gql`
     columns: [String!]!
   }
 
-  type RelationColumnInformation {
-    tableName: String!
-    columnName: String!
-  }
-
   enum RelationType {
     ONE_TO_ONE
     ONE_TO_MANY
@@ -44,30 +39,41 @@ export const typeDefs = gql`
     MANY_TO_MANY
   }
 
-  input AutoGenerateInput {
-    tables: [String!]!
-  }
-
   type Relation {
-    from: RelationColumnInformation!
-    to: RelationColumnInformation!
+    fromModel: Int!
+    fromColumn: Int!
+    toModel: Int!
+    toColumn: Int!
     type: RelationType!
+    name: String!
   }
 
-  input RelationColumnInformationInput {
-    tableName: String!
-    columnName: String!
+  type RecommandRelations {
+    name: String!
+    id: Int!
+    relations: [Relation]!
   }
 
   input RelationInput {
-    from: RelationColumnInformationInput!
-    to: RelationColumnInformationInput!
+    name: String!
+    fromModel: Int!
+    fromColumn: Int!
+    toModel: Int!
+    toColumn: Int!
     type: RelationType!
   }
 
-  input MDLInput {
-    models: [MDLModelSubmitInput!]!
-    relations: [RelationInput!]!
+  input SaveRelationInput {
+    relations: [RelationInput]!
+  }
+
+  input SaveTablesInput {
+    tables: [ModelsInput!]!
+  }
+
+  input ModelsInput {
+    name: String!
+    columns: [String!]!
   }
 
   type CompactColumn {
@@ -117,13 +123,26 @@ export const typeDefs = gql`
     calculatedFields: [CalculatedFieldInput!]
   }
 
-  type CompactModel {
+  type ColumnInfo {
+    id: Int!
     name: String!
-    refSql: String!
+    type: String!
+    isCalculated: Boolean!
+    notNull: Boolean!
+    expression: String
+    properties: JSON
+  }
+
+  type ModelInfo {
+    id: Int!
+    name: String!
+    refSql: String
     primaryKey: String
     cached: Boolean!
-    refreshTime: String!
+    refreshTime: String
     description: String
+    columns: [ColumnInfo]!
+    properties: JSON
   }
 
   type DetailedColumn {
@@ -185,18 +204,19 @@ export const typeDefs = gql`
     # On Boarding Steps
     usableDataSource: [UsableDataSource!]!
     listDataSourceTables: [CompactTable!]!
-    autoGenerateRelation(where: AutoGenerateInput): [Relation!]!
+    autoGenerateRelation: [RecommandRelations!]
     manifest: JSON!
 
     # Modeling Page
-    listModels: [CompactModel!]!
+    listModels: [ModelInfo!]!
     getModel(where: ModelWhereInput!): DetailedModel!
   }
 
   type Mutation {
     # On Boarding Steps
     saveDataSource(data: DataSourceInput!): DataSource!
-    saveMDL(data: MDLInput!): JSON!
+    saveTables(data: SaveTablesInput!): JSON!
+    saveRelations(data: SaveRelationInput!): JSON!
 
     # Modeling Page
     createModel(data: CreateModelInput!): JSON!

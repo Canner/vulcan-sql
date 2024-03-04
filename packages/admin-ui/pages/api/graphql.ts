@@ -1,8 +1,22 @@
 import microCors from 'micro-cors';
 import { NextApiRequest, NextApiResponse, PageConfig } from 'next';
 import { ApolloServer } from 'apollo-server-micro';
-import { typeDefs, resolvers } from '@vulcan-sql/admin-ui/apollo/server';
+import { typeDefs } from '@vulcan-sql/admin-ui/apollo/server';
+import resolvers from '@vulcan-sql/admin-ui/apollo/server/resolvers';
 import { IContext } from '@vulcan-sql/admin-ui/apollo/server/types';
+import {
+  ModelColumnRepository,
+  ModelRepository,
+  ProjectRepository,
+  RelationRepository,
+} from '@vulcan-sql/admin-ui/apollo/server/repositories';
+import { bootstrapKnex } from '../../apollo/server/utils/knex';
+import { GraphQLError } from 'graphql';
+import { getLogger } from '@vulcan-sql/admin-ui/apollo/server/utils';
+import { getConfig } from '@vulcan-sql/admin-ui/apollo/server/config';
+
+const serverConfig = getConfig();
+const apolloLogger = getLogger('APOLLO');
 
 const cors = microCors();
 
@@ -11,14 +25,33 @@ export const config: PageConfig = {
     bodyParser: false,
   },
 };
+const knex = bootstrapKnex({
+  dbType: serverConfig.dbType,
+  pgUrl: serverConfig.pgUrl,
+  debug: serverConfig.debug,
+  sqliteFile: serverConfig.sqliteFile,
+});
+const projectRepository = new ProjectRepository(knex);
+const modelRepository = new ModelRepository(knex);
+const modelColumnRepository = new ModelColumnRepository(knex);
+const relationRepository = new RelationRepository(knex);
 
 const apolloServer: ApolloServer = new ApolloServer({
   typeDefs,
   resolvers,
+  formatError: (error: GraphQLError) => {
+    apolloLogger.error(error.extensions);
+    return error;
+  },
   introspection: process.env.NODE_ENV !== 'production',
   context: (): IContext => ({
-    // Place your context like repository, service layer here
-    // modelRepository: new ModelRepository(),
+    config: serverConfig,
+
+    // repository
+    projectRepository,
+    modelRepository,
+    modelColumnRepository,
+    relationRepository,
   }),
 });
 
