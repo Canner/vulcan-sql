@@ -11,6 +11,7 @@ exports.up = function (knex) {
     table.string('name').comment('the model display name');
     table
       .string('table_name')
+      .unique()
       .comment('referenced table name in the datasource');
     table.text('ref_sql').comment('Reference SQL');
 

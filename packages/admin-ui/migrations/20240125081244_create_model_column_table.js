@@ -29,13 +29,9 @@ exports.up = function (knex) {
       .nullable();
 
     table
-      .text('custom_expression')
-      .comment('for custom field or custom expression of calculated field.')
-      .nullable();
-
-    table
       .string('type')
-      .comment('Data type, refer to the column type in the datasource');
+      .comment('Data type, refer to the column type in the datasource')
+      .nullable();
     table.boolean('not_null').comment('Is not null');
     // is primary key
     table.boolean('is_pk').comment('Is primary key of the table');

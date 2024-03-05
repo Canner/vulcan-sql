@@ -1,5 +1,9 @@
-import { IContext } from '../types';
+import { BigQueryOptions } from '@google-cloud/bigquery';
+import { CreateModelData } from '../models';
+import { Model, ModelColumn, Project } from '../repositories';
+import { CompactTable, IContext } from '../types';
 import { getLogger } from '@vulcan-sql/admin-ui/apollo/server/utils';
+import { BQConnector } from '../connectors/bqConnector';
 
 const logger = getLogger('ModelResolver');
 logger.level = 'debug';
@@ -7,10 +11,13 @@ logger.level = 'debug';
 export class ModelResolver {
   constructor() {
     this.listModels = this.listModels.bind(this);
+    this.getModel = this.getModel.bind(this);
+    this.createModel = this.createModel.bind(this);
+    this.deleteModel = this.deleteModel.bind(this);
   }
 
   public async listModels(_root: any, args: any, ctx: IContext) {
-    const project = await this.getCurrentProject(ctx);
+    const project = await ctx.projectService.getCurrentProject();
     const projectId = project.id;
     const models = await ctx.modelRepository.findAllBy({ projectId });
     const modelIds = models.map((m) => m.id);
@@ -36,14 +43,146 @@ export class ModelResolver {
     return result;
   }
 
-  private async getCurrentProject(ctx: IContext) {
-    const projects = await ctx.projectRepository.findAll({
-      order: 'id',
-      limit: 1,
-    });
-    if (!projects.length) {
-      throw new Error('No project found');
+  public async getModel(_root: any, args: any, ctx: IContext) {
+    const modelId = args.where.id;
+    const model = await ctx.modelRepository.findOneBy({ id: modelId });
+    if (!model) {
+      throw new Error('Model not found');
     }
-    return projects[0];
+    let modelColumns = await ctx.modelColumnRepository.findColumnsByModelIds([
+      model.id,
+    ]);
+    modelColumns = modelColumns.map((c) => {
+      c.properties = JSON.parse(c.properties);
+      return c;
+    });
+    let relations = await ctx.relationRepository.findRelationsByColumnIds(
+      modelColumns.map((c) => c.id)
+    );
+    relations = relations.map((r) => ({
+      ...r,
+      type: r.joinType,
+    }));
+    return {
+      ...model,
+      columns: modelColumns.filter((c) => !c.isCalculated),
+      caculatedFields: modelColumns.filter((c) => c.isCalculated),
+      relations,
+      properties: {
+        ...JSON.parse(model.properties),
+      },
+    };
+  }
+
+  public async createModel(
+    _root: any,
+    args: { data: CreateModelData },
+    ctx: IContext
+  ) {
+    const {
+      displayName,
+      tableName,
+      refSql,
+      cached,
+      refreshTime,
+      fields,
+      description,
+    } = args.data;
+
+    const project = await ctx.projectService.getCurrentProject();
+    const filePath = await ctx.projectService.getCredentialFilePath(project);
+    const connector = await this.getBQConnector(project, filePath);
+    const columns = <CompactTable[]>await connector.listTables({
+      dataset: project.dataset,
+      format: true,
+    });
+    this.validateTableExist(tableName, columns);
+    this.validateColumnsExist(tableName, fields, columns);
+
+    const modelValue = {
+      projectId: project.id,
+      name: displayName, //use table name as model name
+      tableName,
+      refSql: refSql || `SELECT * FROM ${tableName}`,
+      cached,
+      refreshTime,
+      properties: JSON.stringify({ description }),
+    } as Partial<Model>;
+    const model = await ctx.modelRepository.createOne(modelValue);
+    const modelId = model.id;
+
+    // general fields
+    const columnValues = fields.map((field) => ({
+      modelId,
+      name: field,
+      isCalculated: false,
+      isPk: false,
+      type: columns
+        .find((c) => c.name === tableName)
+        ?.columns.find((c) => c.name === field)?.type,
+      properties: JSON.stringify({}),
+    })) as ModelColumn[];
+
+    // calculated fields
+    const calculatedFieldsValue = args.data.caculatedFields.map((field) => ({
+      modelId,
+      name: field.name,
+      aggregation: field.expression,
+      lineage: JSON.stringify(field.lineage),
+      diagram: JSON.stringify(field.diagram),
+      properties: JSON.stringify({}),
+    })) as ModelColumn[];
+    const calculatedFields = await ctx.modelColumnRepository.createMany(
+      columnValues.concat(calculatedFieldsValue)
+    );
+    return calculatedFields;
+  }
+
+  // delete model
+  public async deleteModel(_root: any, args: any, ctx: IContext) {
+    const modelId = args.where.id;
+    const model = await ctx.modelRepository.findOneBy({ id: modelId });
+    if (!model) {
+      throw new Error('Model not found');
+    }
+    const modelColumns = await ctx.modelColumnRepository.findColumnsByModelIds([
+      model.id,
+    ]);
+    logger.debug('find columns');
+    const columnIds = modelColumns.map((c) => c.id);
+    await ctx.relationRepository.deleteRelationsByColumnIds(columnIds);
+    await ctx.modelColumnRepository.deleteMany(columnIds);
+    await ctx.modelRepository.deleteOne(modelId);
+    return true;
+  }
+
+  private async getBQConnector(project: Project, filePath: string) {
+    // fetch tables
+    const { location, projectId } = project;
+    const connectionOption: BigQueryOptions = {
+      location,
+      projectId,
+      keyFilename: filePath,
+    };
+    return new BQConnector(connectionOption);
+  }
+
+  private validateTableExist(tableName: string, columns: CompactTable[]) {
+    if (!columns.find((c) => c.name === tableName)) {
+      throw new Error(`Table ${tableName} not found`);
+    }
+  }
+
+  private validateColumnsExist(
+    tableName: string,
+    fields: string[],
+    columns: CompactTable[]
+  ) {
+    const tableColumns = columns.find((c) => c.name === tableName)?.columns;
+    for (const field of fields) {
+      if (!tableColumns.find((c) => c.name === field)) {
+        throw new Error(`Column ${field} not found in table ${tableName}`);
+      }
+    }
   }
 }

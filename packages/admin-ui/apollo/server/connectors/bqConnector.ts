@@ -34,9 +34,13 @@ export interface BQConstraintResponse {
   constraintedColumn: string;
 }
 
+export interface BQListTableFilter {
+  tableName: string;
+}
 export interface BQListTableOptions {
   dataset: string;
   format?: boolean;
+  filter?: BQListTableFilter;
 }
 export class BQConnector
   implements IConnector<BQColumnResponse, BQConstraintResponse>
@@ -58,26 +62,28 @@ export class BQConnector
   }
 
   public async listTables(listTableOptions: BQListTableOptions) {
-    const { dataset, format } = listTableOptions;
+    const { dataset, format, filter } = listTableOptions;
+    let sql = `SELECT 
+        c.*, cf.description 
+      FROM ${dataset}.INFORMATION_SCHEMA.COLUMNS c 
+      JOIN ${dataset}.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS cf 
+        ON cf.table_name = c.table_name 
+        AND cf.column_name = c.column_name`;
+
+    if (filter?.tableName) {
+      sql += ` WHERE c.table_name = '${filter.tableName}'`;
+    }
+    sql += ` ORDER BY c.table_name, c.ordinal_position`;
+
     // list columns from INFORMATION_SCHEMA ref: https://cloud.google.com/bigquery/docs/information-schema-columns
     const columns = await new Promise((resolve, reject) => {
-      this.bq.query(
-        `SELECT 
-          c.*, cf.description 
-        FROM ${dataset}.INFORMATION_SCHEMA.COLUMNS c 
-        JOIN ${dataset}.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS cf 
-          ON cf.table_name = c.table_name 
-          AND cf.column_name = c.column_name
-        ORDER BY 
-          c.table_name, c.ordinal_position;`,
-        (err, rows) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(rows);
-          }
+      this.bq.query(sql, (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(rows);
         }
-      );
+      });
     });
 
     if (!format) {

@@ -12,13 +12,9 @@ import {
   RelationData,
   RelationType,
 } from '../types';
-import crypto from 'crypto';
-import * as fs from 'fs';
-import path from 'path';
 import { getLogger, Encryptor } from '@vulcan-sql/admin-ui/apollo/server/utils';
 import { Model, ModelColumn, Project } from '../repositories';
 import { CreateModelsInput } from '../models';
-import { IConfig } from '../config';
 
 const logger = getLogger('DataSourceResolver');
 logger.level = 'debug';
@@ -47,8 +43,8 @@ export class ProjectResolver {
   }
 
   public async listDataSourceTables(_root: any, arg, ctx: IContext) {
-    const project = await this.getCurrentProject(ctx);
-    const filePath = await this.getCredentialFilePath(project, ctx.config);
+    const project = await ctx.projectService.getCurrentProject();
+    const filePath = await ctx.projectService.getCredentialFilePath(project);
     const connector = await this.getBQConnector(project, filePath);
     const listTableOptions: BQListTableOptions = {
       dataset: project.dataset,
@@ -67,8 +63,8 @@ export class ProjectResolver {
     const tables = arg.data.tables;
 
     // get current project
-    const project = await this.getCurrentProject(ctx);
-    const filePath = await this.getCredentialFilePath(project, ctx.config);
+    const project = await ctx.projectService.getCurrentProject();
+    const filePath = await ctx.projectService.getCredentialFilePath(project);
 
     // get columns with descriptions
     const transformToCompactTable = false;
@@ -94,8 +90,8 @@ export class ProjectResolver {
   }
 
   public async autoGenerateRelation(_root: any, arg: any, ctx: IContext) {
-    const project = await this.getCurrentProject(ctx);
-    const filePath = await this.getCredentialFilePath(project, ctx.config);
+    const project = await ctx.projectService.getCurrentProject();
+    const filePath = await ctx.projectService.getCredentialFilePath(project);
     const models = await ctx.modelRepository.findAllBy({
       projectId: project.id,
     });
@@ -123,7 +119,7 @@ export class ProjectResolver {
     ctx: IContext
   ) {
     const { relations } = arg.data;
-    const project = await this.getCurrentProject(ctx);
+    const project = await ctx.projectService.getCurrentProject();
 
     // throw error if the relation name is duplicated
     const relationNames = relations.map((relation) => relation.name);
@@ -151,8 +147,8 @@ export class ProjectResolver {
       return {
         projectId: project.id,
         name: relation.name,
-        leftColumnId: relation.fromColumn,
-        rightColumnId: relation.toColumn,
+        fromColumnId: relation.fromColumn,
+        toColumnId: relation.toColumn,
         joinType: relation.type,
       };
     });
@@ -224,17 +220,6 @@ export class ProjectResolver {
     return new BQConnector(connectionOption);
   }
 
-  private async getCredentialFilePath(project: Project, config: IConfig) {
-    const { credentials: encryptedCredentials } = project;
-    const encryptor = new Encryptor(config);
-    const credentials = encryptor.decrypt(encryptedCredentials);
-    const filePath = this.writeCredentialsFile(
-      JSON.parse(credentials),
-      config.persistCredentialDir
-    );
-    return filePath;
-  }
-
   private async createModelColumns(
     tables: CreateModelsInput[],
     models: Model[],
@@ -301,24 +286,13 @@ export class ProjectResolver {
     return models;
   }
 
-  private async getCurrentProject(ctx: IContext) {
-    const projects = await ctx.projectRepository.findAll({
-      order: 'id',
-      limit: 1,
-    });
-    if (!projects.length) {
-      throw new Error('No project found');
-    }
-    return projects[0];
-  }
-
   private async saveBigQueryDataSource(properties: any, ctx: IContext) {
     const { displayName, location, projectId, dataset, credentials } =
       properties;
     const { config } = ctx;
     let filePath = '';
     // check DataSource is valid and can connect to it
-    filePath = await this.writeCredentialsFile(
+    filePath = ctx.projectService.writeCredentialsFile(
       credentials,
       config.persistCredentialDir
     );
@@ -354,32 +328,5 @@ export class ProjectResolver {
       credentials: encryptedCredentials,
     });
     return project;
-  }
-
-  private writeCredentialsFile(
-    credentials: JSON,
-    persistCredentialDir: string
-  ) {
-    // create persist_credential_dir if not exists
-    if (!fs.existsSync(persistCredentialDir)) {
-      fs.mkdirSync(persistCredentialDir, { recursive: true });
-    }
-    // file name will be the hash of the credentials, file path is current working directory
-    // convert credentials from base64 to string and replace all the matched "\n" with "\\n",  there are many \n in the "private_key" property
-    const credentialString = JSON.stringify(credentials);
-    const fileName = crypto
-      .createHash('md5')
-      .update(credentialString)
-      .digest('hex');
-
-    const filePath = path.join(persistCredentialDir, `${fileName}.json`);
-    // check if file exists
-    if (fs.existsSync(filePath)) {
-      logger.debug(`File ${filePath} already exists`);
-      return filePath;
-    }
-    logger.debug(`Writing credentials to file ${filePath}`);
-    fs.writeFileSync(filePath, credentialString);
-    return filePath;
   }
 }

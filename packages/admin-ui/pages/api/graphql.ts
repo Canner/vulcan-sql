@@ -14,6 +14,7 @@ import { bootstrapKnex } from '../../apollo/server/utils/knex';
 import { GraphQLError } from 'graphql';
 import { getLogger } from '@vulcan-sql/admin-ui/apollo/server/utils';
 import { getConfig } from '@vulcan-sql/admin-ui/apollo/server/config';
+import { ProjectService } from '@vulcan-sql/admin-ui/apollo/server/services/projectService';
 
 const serverConfig = getConfig();
 const apolloLogger = getLogger('APOLLO');
@@ -36,6 +37,8 @@ const modelRepository = new ModelRepository(knex);
 const modelColumnRepository = new ModelColumnRepository(knex);
 const relationRepository = new RelationRepository(knex);
 
+const projectService = new ProjectService({ projectRepository });
+
 const apolloServer: ApolloServer = new ApolloServer({
   typeDefs,
   resolvers,
@@ -46,6 +49,9 @@ const apolloServer: ApolloServer = new ApolloServer({
   introspection: process.env.NODE_ENV !== 'production',
   context: (): IContext => ({
     config: serverConfig,
+
+    // services
+    projectService,
 
     // repository
     projectRepository,

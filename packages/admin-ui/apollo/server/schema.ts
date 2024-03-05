@@ -81,11 +81,6 @@ export const typeDefs = gql`
     type: String!
   }
 
-  enum ModelType {
-    TABLE
-    CUSTOM
-  }
-
   input CustomFieldInput {
     name: String!
     expression: String!
@@ -94,33 +89,33 @@ export const typeDefs = gql`
   input CalculatedFieldInput {
     name: String!
     expression: String!
+    lineage: [Int!]!
+    diagram: JSON
   }
 
   input CreateModelInput {
-    type: ModelType!
+    name: String!
     tableName: String!
     displayName: String!
+    refSql: String
     description: String
     cached: Boolean!
     refreshTime: String
     fields: [String!]!
-    customFields: [CustomFieldInput!]
-    calculatedFields: [CalculatedFieldInput!]
+    caculatedFields: [CaculatedFieldInput!]
   }
 
   input ModelWhereInput {
-    name: String!
+    id: Int!
   }
 
   input UpdateModelInput {
-    type: ModelType!
     displayName: String!
     description: String
     cached: Boolean!
     refreshTime: String
     fields: [String!]!
-    customFields: [CustomFieldInput!]
-    calculatedFields: [CalculatedFieldInput!]
+    caculatedFields: [CaculatedFieldInput!]
   }
 
   type ColumnInfo {
@@ -153,14 +148,24 @@ export const typeDefs = gql`
     properties: JSON!
   }
 
+  type DetailedRelation {
+    fromModelId: Int!
+    fromColumnId: Int!
+    toModelId: Int!
+    toColumnId: Int!
+    type: RelationType!
+    name: String!
+  }
+
   type DetailedModel {
     name: String!
     refSql: String!
     primaryKey: String
     cached: Boolean!
-    refreshTime: String!
+    refreshTime: String
     description: String
     columns: [DetailedColumn!]!
+    relations: [DetailedRelation]
     properties: JSON!
   }
 
@@ -193,7 +198,6 @@ export const typeDefs = gql`
     cached: Boolean!
     refreshTime: String
     model: String!
-    modelType: ModelType!
     properties: JSON!
     measure: [SimpleMeasureInput!]!
     dimension: [DimensionInput!]!
@@ -209,7 +213,7 @@ export const typeDefs = gql`
 
     # Modeling Page
     listModels: [ModelInfo!]!
-    getModel(where: ModelWhereInput!): DetailedModel!
+    model(where: ModelWhereInput!): DetailedModel!
   }
 
   type Mutation {
