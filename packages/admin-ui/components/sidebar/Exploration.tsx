@@ -97,7 +97,7 @@ export default function Exploration(props: Props) {
 
   const onCopyLink = (explorationId: string) => {
     copy(`${window.location.toString()}/${explorationId}`);
-    message.success('Copied link to clipboard!');
+    message.success('Copied link to clipboard.');
   };
 
   const onTreeSelect = (selectedKeys: React.Key[], info: any) => {
