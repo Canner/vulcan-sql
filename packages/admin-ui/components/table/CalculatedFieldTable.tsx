@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { Table, TableProps } from 'antd';
 import { CalculatedFieldValue } from '@vulcan-sql/admin-ui/components/modals/AddCalculatedFieldModal';
-import CodeBlock from '../editor/CodeBlock';
+import CodeBlock from '@vulcan-sql/admin-ui/components/editor/CodeBlock';
+import EllipsisWrapper from '@vulcan-sql/admin-ui/components/EllipsisWrapper';
 
 type Props = Pick<TableProps<CalculatedFieldValue>, 'dataSource'> &
   Partial<Pick<TableProps<CalculatedFieldValue>, 'columns'>>;
@@ -9,15 +10,26 @@ type Props = Pick<TableProps<CalculatedFieldValue>, 'dataSource'> &
 export const getCalculatedFieldTableColumns = () => {
   return [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      width: 150,
+      title: 'Display name',
+      dataIndex: ['properties', 'displayName'],
+      width: 125,
+      render: (name) => <EllipsisWrapper text={name} />,
+    },
+    {
+      title: 'Reference name',
+      dataIndex: 'referenceName',
+      width: 140,
+      render: (name) => <EllipsisWrapper text={name} />,
     },
     {
       title: 'Expression',
       dataIndex: 'expression',
       render: (expression) => {
-        return <CodeBlock code={expression} inline />;
+        return (
+          <EllipsisWrapper text={expression}>
+            <CodeBlock code={expression} inline />
+          </EllipsisWrapper>
+        );
       },
     },
   ];

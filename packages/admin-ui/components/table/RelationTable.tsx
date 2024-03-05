@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Table, TableProps } from 'antd';
 import { getJoinTypeText } from '@vulcan-sql/admin-ui/utils/data';
 import { RelationFieldValue } from '@vulcan-sql/admin-ui/components/modals/AddRelationModal';
+import EllipsisWrapper from '@vulcan-sql/admin-ui/components/EllipsisWrapper';
 
 type Props = Pick<TableProps<RelationFieldValue>, 'dataSource'> &
   Partial<Pick<TableProps<RelationFieldValue>, 'columns'>>;
@@ -9,14 +10,20 @@ type Props = Pick<TableProps<RelationFieldValue>, 'dataSource'> &
 export const getRelationTableColumns = () => {
   return [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      width: 150,
+      title: 'Display name',
+      dataIndex: ['properties', 'displayName'],
+      width: 125,
+      render: (name) => <EllipsisWrapper text={name} />,
+    },
+    {
+      title: 'Reference name',
+      dataIndex: 'referenceName',
+      width: 140,
+      render: (name) => <EllipsisWrapper text={name} />,
     },
     {
       title: 'Relation',
       dataIndex: 'joinType',
-      width: 150,
       render: (joinType) => getJoinTypeText(joinType),
     },
   ];

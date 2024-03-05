@@ -16,7 +16,7 @@ type Props = ModalAction<{
 
 export default function GenerateMetadataModal(props: Props) {
   const { visible, defaultValue, loading, onSubmit, onClose } = props;
-  const { name } = defaultValue;
+  const { name } = defaultValue || {};
 
   const submit = (values) => {
     onSubmit(values);
@@ -25,7 +25,7 @@ export default function GenerateMetadataModal(props: Props) {
   return (
     <Modal
       title={`Generate ${name}'s metadata`}
-      width={520}
+      width={700}
       visible={visible}
       okText="Submit"
       onOk={submit}

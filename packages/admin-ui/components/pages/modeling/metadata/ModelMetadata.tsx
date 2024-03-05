@@ -1,20 +1,35 @@
-import { Typography } from 'antd';
+import { Typography, Row, Col } from 'antd';
 import FieldTable from '@vulcan-sql/admin-ui/components/table/FieldTable';
 import CalculatedFieldTable from '@vulcan-sql/admin-ui/components/table/CalculatedFieldTable';
-import RelationTableFormControl from '@vulcan-sql/admin-ui/components/tableFormControls/RelationTableFormControl';
+import RelationTable from '@vulcan-sql/admin-ui/components/table/RelationTable';
 import { makeMetadataBaseTable } from '@vulcan-sql/admin-ui/components/table/MetadataBaseTable';
 import UpdateMetadataModal from '@vulcan-sql/admin-ui/components/modals/UpdateMetadataModal';
 
-export default function ModelMetadata({
-  name,
-  fields = [],
-  calculatedFields = [],
-  relations = [],
-}) {
+export interface Props {
+  referenceName: string;
+  tableName: string;
+  fields: any[];
+  calculatedFields: any[];
+  relations: any[];
+  properties: Record<string, any>;
+}
+
+export default function ModelMetadata(props: Props) {
+  const {
+    tableName,
+    referenceName,
+    fields = [],
+    calculatedFields = [],
+    relations = [],
+    properties,
+  } = props || {};
+
   const FieldMetadataTable =
     makeMetadataBaseTable(FieldTable)(UpdateMetadataModal);
   const CalculatedFieldMetadataTable =
     makeMetadataBaseTable(CalculatedFieldTable)(UpdateMetadataModal);
+  const RelationMetadataTable =
+    makeMetadataBaseTable(RelationTable)(UpdateMetadataModal);
 
   const submitRelation = async (value) => {
     // TODO: waiting for API
@@ -41,6 +56,41 @@ export default function ModelMetadata({
 
   return (
     <>
+      <Row>
+        <Col span={12}>
+          <div className="mb-6">
+            <Typography.Text className="d-block gray-7 mb-2">
+              Display name
+            </Typography.Text>
+            <div>{properties?.displayName || '-'}</div>
+          </div>
+        </Col>
+        <Col span={12}>
+          <div className="mb-6">
+            <Typography.Text className="d-block gray-7 mb-2">
+              Reference name
+            </Typography.Text>
+            <div>{referenceName || '-'}</div>
+          </div>
+        </Col>
+        <Col span={24}>
+          <div className="mb-6">
+            <Typography.Text className="d-block gray-7 mb-2">
+              Description
+            </Typography.Text>
+            <div>{properties?.description || '-'}</div>
+          </div>
+        </Col>
+        <Col span={12}>
+          <div className="mb-6">
+            <Typography.Text className="d-block gray-7 mb-2">
+              Source table name
+            </Typography.Text>
+            <div>{tableName || '-'}</div>
+          </div>
+        </Col>
+      </Row>
+
       <div className="mb-6">
         <Typography.Text className="d-block gray-7 mb-2">
           Fields ({fields.length})
@@ -69,11 +119,10 @@ export default function ModelMetadata({
         <Typography.Text className="d-block gray-7 mb-2">
           Relations ({relations.length})
         </Typography.Text>
-        <RelationTableFormControl
-          modalProps={{ model: name }}
-          value={relations}
-          onRemoteSubmit={submitRelation}
-          onRemoteDelete={deleteRelation}
+        <RelationMetadataTable
+          dataSource={relations}
+          onEditValue={editMetadataValue}
+          onSubmitRemote={submitMetadata}
         />
       </div>
     </>

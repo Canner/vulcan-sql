@@ -1,30 +1,28 @@
-import { Drawer, Button, Typography } from 'antd';
+import { Drawer, Button } from 'antd';
 import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { DrawerAction } from '@vulcan-sql/admin-ui/hooks/useDrawerAction';
 import { SparklesIcon } from '@vulcan-sql/admin-ui/utils/icons';
-import ModelMetadata from './metadata/ModelMetadata';
-import MetricMetadata from './metadata/MetricMetadata';
-import ViewMetadata from './metadata/ViewMetadata';
+import ModelMetadata, {
+  Props as ModelMetadataProps,
+} from './metadata/ModelMetadata';
+import MetricMetadata, {
+  Props as MetricMetadataProps,
+} from './metadata/MetricMetadata';
+import ViewMetadata, {
+  Props as ViewMetadataProps,
+} from './metadata/ViewMetadata';
 import GenerateMetadataModal from './GenerateMetadataModal';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 
-interface MetadataData {
-  name: string;
-  fields?: any[];
-  calculatedFields?: any[];
-  relations?: any[];
-  measures?: any[];
-  dimensions?: any[];
-  windows?: any[];
-  nodeType: NODE_TYPE;
-  properties: Record<string, any>;
-}
+type Metadata = { nodeType: NODE_TYPE } & ModelMetadataProps &
+  MetricMetadataProps &
+  ViewMetadataProps;
 
-type Props = DrawerAction<MetadataData>;
+type Props = DrawerAction<Metadata>;
 
 export default function MetadataDrawer(props: Props) {
   const { visible, defaultValue, onClose } = props;
-  const { name, properties, nodeType = NODE_TYPE.MODEL } = defaultValue || {};
+  const { name, nodeType = NODE_TYPE.MODEL } = defaultValue || {};
 
   const generateMetadataModal = useModalAction();
   const openGeneratedMetadataModal = () => {
@@ -38,7 +36,7 @@ export default function MetadataDrawer(props: Props) {
   return (
     <Drawer
       visible={visible}
-      title={name}
+      title={`${name}'s metadata`}
       width={750}
       closable
       destroyOnClose
@@ -55,13 +53,6 @@ export default function MetadataDrawer(props: Props) {
         </div>
       }
     >
-      <div className="mb-6">
-        <Typography.Text className="d-block gray-7 mb-2">
-          Description
-        </Typography.Text>
-        <div>{properties?.description || '-'}</div>
-      </div>
-
       {nodeType === NODE_TYPE.MODEL && <ModelMetadata {...defaultValue} />}
       {nodeType === NODE_TYPE.METRIC && <MetricMetadata {...defaultValue} />}
       {nodeType === NODE_TYPE.VIEW && <ViewMetadata {...defaultValue} />}

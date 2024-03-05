@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 import { Table, TableProps } from 'antd';
+import EllipsisWrapper from '@vulcan-sql/admin-ui/components/EllipsisWrapper';
+import { getColumnTypeIcon } from '@vulcan-sql/admin-ui/utils/columnType';
 
 type Props = Pick<TableProps<{ name: string; type: string }>, 'dataSource'> &
   Partial<Pick<TableProps<{ name: string; type: string }>, 'columns'>>;
@@ -7,14 +9,28 @@ type Props = Pick<TableProps<{ name: string; type: string }>, 'dataSource'> &
 export const getFieldTableColumns = () => {
   return [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      width: 150,
+      title: 'Display name',
+      dataIndex: ['properties', 'displayName'],
+      width: 125,
+      render: (name) => <EllipsisWrapper text={name} />,
+    },
+    {
+      title: 'Reference name',
+      dataIndex: 'referenceName',
+      width: 140,
+      render: (name) => <EllipsisWrapper text={name} />,
     },
     {
       title: 'Type',
-      width: 150,
       dataIndex: 'type',
+      render: (type) => {
+        return (
+          <div className="d-flex align-center">
+            {getColumnTypeIcon({ type }, { className: 'mr-2' })}
+            {type}
+          </div>
+        );
+      },
     },
   ];
 };

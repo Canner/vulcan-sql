@@ -5,11 +5,16 @@ import WindowFieldTable from '@vulcan-sql/admin-ui/components/table/WindowFieldT
 import { makeMetadataBaseTable } from '@vulcan-sql/admin-ui/components/table/MetadataBaseTable';
 import UpdateMetadataModal from '@vulcan-sql/admin-ui/components/modals/UpdateMetadataModal';
 
-export default function MetricMetadata({
-  measures = [],
-  dimensions = undefined,
-  windows = undefined,
-}) {
+export interface Props {
+  measures: any[];
+  dimensions?: any[];
+  windows?: any[];
+  properties: Record<string, any>
+}
+
+export default function MetricMetadata(props: Props) {
+  const { measures = [], dimensions, windows, properties } = props || {};
+
   const MeasureFieldMetadataTable =
     makeMetadataBaseTable(MeasureFieldTable)(UpdateMetadataModal);
   const DimensionFieldMetadataTable =
@@ -32,6 +37,13 @@ export default function MetricMetadata({
 
   return (
     <>
+      <div className="mb-6">
+        <Typography.Text className="d-block gray-7 mb-2">
+          Description
+        </Typography.Text>
+        <div>{properties?.description || '-'}</div>
+      </div>
+
       <div className="mb-6">
         <Typography.Text className="d-block gray-7 mb-2">
           Measures ({measures.length})

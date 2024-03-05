@@ -2,6 +2,7 @@ import { Space, Button, TableProps } from 'antd';
 import EditOutlined from '@ant-design/icons/EditOutlined';
 import React, { useMemo } from 'react';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
+import EllipsisWrapper from '@vulcan-sql/admin-ui/components/EllipsisWrapper';
 
 interface Props<MData> {
   dataSource: any[];
@@ -21,7 +22,10 @@ export const getMetadataColumns = (
   {
     title: 'Description',
     dataIndex: dataIndex?.description,
-    render: (text) => text || '-',
+    width: 200,
+    render: (text) => {
+      return <EllipsisWrapper text={text} />;
+    },
   },
 ];
 
@@ -47,7 +51,7 @@ export const makeMetadataBaseTable =
             ? [
                 {
                   key: 'action',
-                  width: 80,
+                  width: 64,
                   render: (record) => {
                     return (
                       <Space className="d-flex justify-end">
