@@ -1,6 +1,7 @@
 import { Typography } from 'antd';
 import { useEffect } from 'react';
 import styled from 'styled-components';
+import '@vulcan-sql/admin-ui/components/editor/AceEditor';
 
 const Block = styled.div<{ inline?: boolean }>`
   position: relative;
@@ -8,7 +9,18 @@ const Block = styled.div<{ inline?: boolean }>`
   ${(props) =>
     props.inline
       ? `display: inline; border: none; background: transparent !important; padding: 0;`
-      : `background: var(--gray-3); padding: 8px 24px 8px 8px;`}
+      : `background: var(--gray-1); padding: 4px;`}
+
+  .line-number {
+    user-select: none;
+    display: inline-block;
+    min-width: 1.5em;
+    text-align: right;
+    margin-right: 1em;
+    color: var(--gray-6);
+    font-weight: 700;
+    font-size: 14px;
+  }
 `;
 
 const CopyText = styled(Typography.Text)`
@@ -25,6 +37,7 @@ interface Props {
   code: string;
   inline?: boolean;
   copyable?: boolean;
+  showLineNumbers?: boolean;
 }
 
 const addThemeStyleManually = (cssText) => {
@@ -40,7 +53,7 @@ const addThemeStyleManually = (cssText) => {
 };
 
 export default function CodeBlock(props: Props) {
-  const { code, inline, copyable } = props;
+  const { code, copyable, inline, showLineNumbers } = props;
   const { ace } = window as any;
   const { Tokenizer } = ace.require('ace/tokenizer');
   const { SqlHighlightRules } = ace.require(`ace/mode/sql_highlight_rules`);
@@ -52,7 +65,7 @@ export default function CodeBlock(props: Props) {
     addThemeStyleManually(cssText);
   }, []);
 
-  const lines = code.split('\n').map((line) => {
+  const lines = code.split('\n').map((line, index) => {
     const tokens = tokenizer.getLineTokens(line).tokens;
     const children = tokens.map((token, index) => {
       const classNames = token.type.split('.').map((name) => `ace_${name}`);
@@ -62,10 +75,14 @@ export default function CodeBlock(props: Props) {
         </span>
       );
     });
+
     return (
-      <span className="ace_line" key={line}>
-        {children}
-      </span>
+      <div className="ace_line" key={`${line}-${index}`}>
+        <div className="my-1">
+          {showLineNumbers && <span className="line-number">{index + 1}</span>}
+          {children}
+        </div>
+      </div>
     );
   });
 
