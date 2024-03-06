@@ -22,7 +22,8 @@ export interface BQColumnResponse {
   collation_name: string;
   column_default: string;
   rounding_mode: string;
-  description: string;
+  column_description: string;
+  table_description: string;
 }
 
 export interface BQConstraintResponse {
@@ -64,11 +65,16 @@ export class BQConnector
   public async listTables(listTableOptions: BQListTableOptions) {
     const { dataset, format, filter } = listTableOptions;
     let sql = `SELECT 
-        c.*, cf.description 
+        c.*, 
+        cf.description AS column_description, 
+        table_options.option_value AS table_description
       FROM ${dataset}.INFORMATION_SCHEMA.COLUMNS c 
       JOIN ${dataset}.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS cf 
         ON cf.table_name = c.table_name 
-        AND cf.column_name = c.column_name`;
+        AND cf.column_name = c.column_name
+      LEFT JOIN ${dataset}.INFORMATION_SCHEMA.TABLE_OPTIONS table_options
+        ON c.table_name = table_options.table_name
+      `;
 
     if (filter?.tableName) {
       sql += ` WHERE c.table_name = '${filter.tableName}'`;
@@ -127,6 +133,7 @@ export class BQConnector
       if (!table) {
         table = {
           name: row.table_name,
+          description: row.table_description,
           columns: [],
         };
         acc.push(table);
@@ -134,6 +141,7 @@ export class BQConnector
       table.columns.push({
         name: row.column_name,
         type: row.data_type,
+        description: row.column_description,
       });
       return acc;
     }, []);

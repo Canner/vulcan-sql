@@ -67,16 +67,21 @@ export class ProjectResolver {
     const filePath = await ctx.projectService.getCredentialFilePath(project);
 
     // get columns with descriptions
-    const transformToCompactTable = false;
     const connector = await this.getBQConnector(project, filePath);
     const listTableOptions: BQListTableOptions = {
       dataset: project.dataset,
-      format: transformToCompactTable,
+      format: false,
     };
     const dataSourceColumns = await connector.listTables(listTableOptions);
     // create models
     const id = project.id;
-    const models = await this.createModels(tables, id, ctx);
+    const tableDescriptions = dataSourceColumns
+      .filter((col: BQColumnResponse) => col.table_description)
+      .reduce((acc, column: BQColumnResponse) => {
+        acc[column.table_name] = column.table_description;
+        return acc;
+      }, {});
+    const models = await this.createModels(tables, id, ctx, tableDescriptions);
 
     // create columns
     const columns = await this.createModelColumns(
@@ -101,14 +106,15 @@ export class ProjectResolver {
       dataset: project.dataset,
     };
     const constraints = await connector.listConstraints(listConstraintOptions);
+    logger.log('constraints', constraints);
     const modelIds = models.map((m) => m.id);
     const columns = await ctx.modelColumnRepository.findColumnsByModelIds(
       modelIds
     );
     const relations = this.analysisRelation(constraints, models, columns);
-    return models.map(({ id, tableName }) => ({
+    return models.map(({ id, sourceTableName }) => ({
       id,
-      name: tableName,
+      name: sourceTableName,
       relations: relations.filter((relation) => relation.fromModel === id),
     }));
   }
@@ -175,8 +181,12 @@ export class ProjectResolver {
         constraintedColumn,
       } = constraint;
       // validate tables and columns exists in our models and model columns
-      const fromModel = models.find((m) => m.tableName === constraintTable);
-      const toModel = models.find((m) => m.tableName === constraintedTable);
+      const fromModel = models.find(
+        (m) => m.sourceTableName === constraintTable
+      );
+      const toModel = models.find(
+        (m) => m.sourceTableName === constraintedTable
+      );
       if (!fromModel || !toModel) {
         continue;
       }
@@ -191,12 +201,12 @@ export class ProjectResolver {
       }
       // create relation
       const relation = {
-        // upper case the first letter of the tableName
+        // upper case the first letter of the sourceTableName
         name:
-          fromModel.tableName.charAt(0).toUpperCase() +
-          fromModel.tableName.slice(1) +
-          toModel.tableName.charAt(0).toUpperCase() +
-          toModel.tableName.slice(1),
+          fromModel.sourceTableName.charAt(0).toUpperCase() +
+          fromModel.sourceTableName.slice(1) +
+          toModel.sourceTableName.charAt(0).toUpperCase() +
+          toModel.sourceTableName.slice(1),
         fromModel: fromModel.id,
         fromColumn: fromColumn.id,
         toModel: toModel.id,
@@ -227,7 +237,7 @@ export class ProjectResolver {
     ctx: IContext
   ) {
     const columnValues = tables.reduce((acc, table) => {
-      const modelId = models.find((m) => m.tableName === table.name)?.id;
+      const modelId = models.find((m) => m.sourceTableName === table.name)?.id;
       for (const columnName of table.columns) {
         const dataSourceColumn = dataSourceColumns.find(
           (c) => c.table_name === table.name && c.column_name === columnName
@@ -245,7 +255,7 @@ export class ProjectResolver {
           notNull: dataSourceColumn.is_nullable.toLocaleLowerCase() !== 'yes',
           isPk: false,
           properties: JSON.stringify({
-            description: dataSourceColumn.description,
+            description: dataSourceColumn.column_description,
           }),
         } as Partial<ModelColumn>;
         acc.push(columnValue);
@@ -263,17 +273,20 @@ export class ProjectResolver {
   private async createModels(
     tables: CreateModelsInput[],
     id: number,
-    ctx: IContext
+    ctx: IContext,
+    tableDescriptions: { [key: string]: string }
   ) {
     const modelValues = tables.map(({ name }) => {
+      const description = tableDescriptions[name];
       const model = {
         projectId: id,
-        name, //use table name as model name
-        tableName: name,
+        displayName: name, //use table name as displayName, referenceName and tableName
+        referenceName: name,
+        sourceTableName: name,
         refSql: `select * from ${name}`,
         cached: false,
         refreshTime: null,
-        properties: JSON.stringify({ description: '' }),
+        properties: JSON.stringify({ description }),
       } as Partial<Model>;
       return model;
     });

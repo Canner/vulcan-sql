@@ -5,6 +5,7 @@ import {
   IProjectRepository,
   IRelationRepository,
 } from '../repositories';
+import { IModelService } from '../services/modelService';
 import { IProjectService } from '../services/projectService';
 
 export interface IContext {
@@ -12,6 +13,7 @@ export interface IContext {
 
   // services
   projectService: IProjectService;
+  modelService: IModelService;
 
   // repository
   projectRepository: IProjectRepository;

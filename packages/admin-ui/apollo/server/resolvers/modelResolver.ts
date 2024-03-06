@@ -4,6 +4,7 @@ import { Model, ModelColumn, Project } from '../repositories';
 import { CompactTable, IContext } from '../types';
 import { getLogger } from '@vulcan-sql/admin-ui/apollo/server/utils';
 import { BQConnector } from '../connectors/bqConnector';
+import { GenerateReferenceNameData } from '../services/modelService';
 
 const logger = getLogger('ModelResolver');
 logger.level = 'debug';
@@ -21,22 +22,21 @@ export class ModelResolver {
     const projectId = project.id;
     const models = await ctx.modelRepository.findAllBy({ projectId });
     const modelIds = models.map((m) => m.id);
-    const modelColumns = await ctx.modelColumnRepository.findColumnsByModelIds(
-      modelIds
-    );
+    const modelColumnList =
+      await ctx.modelColumnRepository.findColumnsByModelIds(modelIds);
     const result = [];
     for (const model of models) {
+      const columns = modelColumnList
+        .filter((c) => c.modelId === model.id)
+        .map((c) => {
+          c.properties = JSON.parse(c.properties);
+          return c;
+        });
       result.push({
         ...model,
-        columns: modelColumns
-          .filter((c) => c.modelId === model.id)
-          .map((c) => {
-            c.properties = JSON.parse(c.properties);
-            return c;
-          }),
+        columns,
         properties: {
           ...JSON.parse(model.properties),
-          displayName: model.name,
         },
       });
     }
@@ -81,7 +81,7 @@ export class ModelResolver {
   ) {
     const {
       displayName,
-      tableName,
+      sourceTableName,
       refSql,
       cached,
       refreshTime,
@@ -96,14 +96,22 @@ export class ModelResolver {
       dataset: project.dataset,
       format: true,
     });
-    this.validateTableExist(tableName, columns);
-    this.validateColumnsExist(tableName, fields, columns);
+    this.validateTableExist(sourceTableName, columns);
+    this.validateColumnsExist(sourceTableName, fields, columns);
 
+    const generateOption = {
+      displayName,
+      sourceTableName,
+      existedReferenceNames: [],
+    } as GenerateReferenceNameData;
+    const referenceName =
+      ctx.modelService.generateReferenceName(generateOption);
     const modelValue = {
       projectId: project.id,
-      name: displayName, //use table name as model name
-      tableName,
-      refSql: refSql || `SELECT * FROM ${tableName}`,
+      displayName, //use table name as model name
+      referenceName,
+      sourceTableName,
+      refSql: refSql || `SELECT * FROM ${sourceTableName}`,
       cached,
       refreshTime,
       properties: JSON.stringify({ description }),
@@ -118,7 +126,7 @@ export class ModelResolver {
       isCalculated: false,
       isPk: false,
       type: columns
-        .find((c) => c.name === tableName)
+        .find((c) => c.name === sourceTableName)
         ?.columns.find((c) => c.name === field)?.type,
       properties: JSON.stringify({}),
     })) as ModelColumn[];
@@ -132,10 +140,10 @@ export class ModelResolver {
       diagram: JSON.stringify(field.diagram),
       properties: JSON.stringify({}),
     })) as ModelColumn[];
-    const calculatedFields = await ctx.modelColumnRepository.createMany(
+    await ctx.modelColumnRepository.createMany(
       columnValues.concat(calculatedFieldsValue)
     );
-    return calculatedFields;
+    return model;
   }
 
   // delete model

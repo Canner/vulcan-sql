@@ -17,10 +17,9 @@ interface CaculatedFieldData {
 
 export interface CreateModelData {
   type: ModelType;
-  name: string;
-  tableName: string;
-  refSql: string;
   displayName: string;
+  sourceTableName: string;
+  refSql: string;
   description: string;
   cached: boolean;
   refreshTime?: string;

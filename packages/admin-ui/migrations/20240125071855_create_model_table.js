@@ -8,11 +8,19 @@ exports.up = function (knex) {
     table.integer('project_id').comment('Reference to project.id');
 
     // basic info
-    table.string('name').comment('the model display name');
+    table.string('display_name').comment('the model display name');
     table
-      .string('table_name')
-      .unique()
-      .comment('referenced table name in the datasource');
+      .string('source_table_name')
+      .unique(['project_id', 'source_table_name'])
+      .comment(
+        'referenced table name in the datasource, can not be duplicated in the same project'
+      );
+    table
+      .string('reference_name')
+      .unique(['project_id', 'reference_name'])
+      .comment(
+        'the name used in MDL structure, should be unique between models in the same project'
+      );
     table.text('ref_sql').comment('Reference SQL');
 
     // cache setting

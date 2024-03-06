@@ -94,9 +94,8 @@ export const typeDefs = gql`
   }
 
   input CreateModelInput {
-    name: String!
-    tableName: String!
     displayName: String!
+    sourceTableName: String!
     refSql: String
     description: String
     cached: Boolean!
@@ -130,7 +129,9 @@ export const typeDefs = gql`
 
   type ModelInfo {
     id: Int!
-    name: String!
+    displayName: String!
+    referenceName: String!
+    sourceTableName: String!
     refSql: String
     primaryKey: String
     cached: Boolean!
@@ -158,7 +159,9 @@ export const typeDefs = gql`
   }
 
   type DetailedModel {
-    name: String!
+    displayName: String!
+    referenceName: String!
+    sourceTableName: String!
     refSql: String!
     primaryKey: String
     cached: Boolean!

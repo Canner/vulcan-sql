@@ -15,6 +15,7 @@ import { GraphQLError } from 'graphql';
 import { getLogger } from '@vulcan-sql/admin-ui/apollo/server/utils';
 import { getConfig } from '@vulcan-sql/admin-ui/apollo/server/config';
 import { ProjectService } from '@vulcan-sql/admin-ui/apollo/server/services/projectService';
+import { ModelService } from '@vulcan-sql/admin-ui/apollo/server/services/modelService';
 
 const serverConfig = getConfig();
 const apolloLogger = getLogger('APOLLO');
@@ -38,6 +39,7 @@ const modelColumnRepository = new ModelColumnRepository(knex);
 const relationRepository = new RelationRepository(knex);
 
 const projectService = new ProjectService({ projectRepository });
+const modelService = new ModelService();
 
 const apolloServer: ApolloServer = new ApolloServer({
   typeDefs,
@@ -52,6 +54,7 @@ const apolloServer: ApolloServer = new ApolloServer({
 
     // services
     projectService,
+    modelService,
 
     // repository
     projectRepository,
