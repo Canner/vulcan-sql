@@ -14,7 +14,7 @@ import ViewMetadata, {
 import GenerateMetadataModal from './GenerateMetadataModal';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 
-type Metadata = { nodeType: NODE_TYPE } & ModelMetadataProps &
+type Metadata = { nodeType: NODE_TYPE; name: string } & ModelMetadataProps &
   MetricMetadataProps &
   ViewMetadataProps;
 

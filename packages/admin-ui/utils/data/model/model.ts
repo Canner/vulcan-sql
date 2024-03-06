@@ -34,7 +34,11 @@ export class ModelData {
     this.relations = data.relationships
       .filter((relationship) => relationship.models.includes(this.name))
       .map((relationship) => new RelationData(relationship));
-    this.properties = model.properties;
+    // TODO: this will redefine when API come out
+    this.properties = {
+      displayName: model.name,
+      ...model.properties,
+    };
 
     this.columns = model.columns.map(
       (column) => new ModelColumnData(column, model, this.relations)
@@ -74,7 +78,11 @@ export class ModelColumnData {
     }
     this.isPrimaryKey = column.name === model.primaryKey;
     this.isCalculated = column.isCalculated;
-    this.properties = column.properties;
+    // TODO: this will redefine when API come out
+    this.properties = {
+      displayName: column.name,
+      ...column.properties,
+    };
   }
 }
 
