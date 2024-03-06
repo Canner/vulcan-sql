@@ -8,7 +8,16 @@ exports.up = function (knex) {
     table.integer('model_id').comment('Reference to model ID');
     // column name
     table.boolean('is_calculated').comment('Is calculated field');
-    table.string('name').comment('Column name');
+
+    table.string('display_name').comment('Display name of the column');
+    table
+      .string('source_column_name')
+      .unique(['model_id', 'source_column_name'])
+      .comment('the column name in the datasource');
+    table
+      .string('reference_name')
+      .unique(['model_id', 'reference_name'])
+      .comment('The name used in the MDL structure and query');
 
     // aggregation
     table

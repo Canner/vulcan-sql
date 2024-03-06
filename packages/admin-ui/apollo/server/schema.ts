@@ -119,7 +119,9 @@ export const typeDefs = gql`
 
   type ColumnInfo {
     id: Int!
-    name: String!
+    displayName: String!
+    referenceName: String!
+    sourceColumnName: String!
     type: String!
     isCalculated: Boolean!
     notNull: Boolean!
@@ -142,8 +144,10 @@ export const typeDefs = gql`
   }
 
   type DetailedColumn {
-    name: String!
-    type: String!
+    displayName: String!
+    referenceName: String!
+    sourceColumnName: String!
+    type: String
     isCalculated: Boolean!
     notNull: Boolean!
     properties: JSON!
@@ -167,7 +171,8 @@ export const typeDefs = gql`
     cached: Boolean!
     refreshTime: String
     description: String
-    columns: [DetailedColumn!]!
+    fields: [DetailedColumn]
+    calculatedFields: [DetailedColumn]
     relations: [DetailedRelation]
     properties: JSON!
   }

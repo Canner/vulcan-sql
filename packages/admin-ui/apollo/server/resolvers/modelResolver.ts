@@ -65,8 +65,8 @@ export class ModelResolver {
     }));
     return {
       ...model,
-      columns: modelColumns.filter((c) => !c.isCalculated),
-      caculatedFields: modelColumns.filter((c) => c.isCalculated),
+      fields: modelColumns.filter((c) => !c.isCalculated),
+      calculatedFields: modelColumns.filter((c) => c.isCalculated),
       relations,
       properties: {
         ...JSON.parse(model.properties),
@@ -92,12 +92,12 @@ export class ModelResolver {
     const project = await ctx.projectService.getCurrentProject();
     const filePath = await ctx.projectService.getCredentialFilePath(project);
     const connector = await this.getBQConnector(project, filePath);
-    const columns = <CompactTable[]>await connector.listTables({
+    const dataSourceTables = <CompactTable[]>await connector.listTables({
       dataset: project.dataset,
       format: true,
     });
-    this.validateTableExist(sourceTableName, columns);
-    this.validateColumnsExist(sourceTableName, fields, columns);
+    this.validateTableExist(sourceTableName, dataSourceTables);
+    this.validateColumnsExist(sourceTableName, fields, dataSourceTables);
 
     const generateOption = {
       displayName,
@@ -120,25 +120,41 @@ export class ModelResolver {
     const modelId = model.id;
 
     // general fields
-    const columnValues = fields.map((field) => ({
-      modelId,
-      name: field,
-      isCalculated: false,
-      isPk: false,
-      type: columns
-        .find((c) => c.name === sourceTableName)
-        ?.columns.find((c) => c.name === field)?.type,
-      properties: JSON.stringify({}),
-    })) as ModelColumn[];
+    const dataSourceColumns = dataSourceTables.find(
+      (c) => c.name === sourceTableName
+    ).columns;
+    const columnValues = fields.map((fieldName) => {
+      const dataSourceColumn = dataSourceColumns.find(
+        (c) => c.name === fieldName
+      );
+      return {
+        modelId,
+        displayName: fieldName,
+        sourceColumnName: fieldName,
+        referenceName: fieldName,
+        isCalculated: false,
+        isPk: false,
+        notNull: dataSourceColumn.notNull,
+        type: dataSourceColumn.type,
+        properties: JSON.stringify({
+          description: dataSourceColumn.description,
+        }),
+      };
+    }) as ModelColumn[];
 
     // calculated fields
     const calculatedFieldsValue = args.data.caculatedFields.map((field) => ({
       modelId,
-      name: field.name,
+      displayName: field.name,
+      sourceColumnName: field.name,
+      referenceName: field.name,
+      isCalculated: true,
+      isPk: false,
+      notNull: false,
       aggregation: field.expression,
       lineage: JSON.stringify(field.lineage),
       diagram: JSON.stringify(field.diagram),
-      properties: JSON.stringify({}),
+      properties: JSON.stringify({ description: '' }),
     })) as ModelColumn[];
     await ctx.modelColumnRepository.createMany(
       columnValues.concat(calculatedFieldsValue)

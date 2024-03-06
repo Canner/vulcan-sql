@@ -191,10 +191,12 @@ export class ProjectResolver {
         continue;
       }
       const fromColumn = columns.find(
-        (c) => c.modelId === fromModel.id && c.name === constraintColumn
+        (c) =>
+          c.modelId === fromModel.id && c.sourceColumnName === constraintColumn
       );
       const toColumn = columns.find(
-        (c) => c.modelId === toModel.id && c.name === constraintedColumn
+        (c) =>
+          c.modelId === toModel.id && c.sourceColumnName === constraintedColumn
       );
       if (!fromColumn || !toColumn) {
         continue;
@@ -250,7 +252,9 @@ export class ProjectResolver {
         const columnValue = {
           modelId,
           isCalculated: false,
-          name: columnName,
+          displayName: columnName,
+          sourceColumnName: columnName,
+          referenceName: columnName,
           type: dataSourceColumn?.data_type || 'string',
           notNull: dataSourceColumn.is_nullable.toLocaleLowerCase() !== 'yes',
           isPk: false,

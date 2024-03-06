@@ -141,6 +141,7 @@ export class BQConnector
       table.columns.push({
         name: row.column_name,
         type: row.data_type,
+        notNull: row.is_nullable.toLocaleLowerCase() !== 'yes',
         description: row.column_description,
       });
       return acc;
