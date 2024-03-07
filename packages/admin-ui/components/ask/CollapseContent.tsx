@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import { Button, Typography } from 'antd';
 import CopyOutlined from '@ant-design/icons/lib/icons/CopyOutlined';
 import UpCircleOutlined from '@ant-design/icons/UpCircleOutlined';
-import PreviewDataContent from '@vulcan-sql/admin-ui/components/pages/modeling/form/PreviewDataContent';
+import PreviewData from '@vulcan-sql/admin-ui/components/ask/PreviewData';
 
 const CodeBlock = dynamic(
   () => import('@vulcan-sql/admin-ui/components/editor/CodeBlock'),
@@ -38,7 +38,7 @@ export default function CollapseContent(props: Props) {
       )}
       {isPreviewData && (
         <div className="my-2">
-          <PreviewDataContent columns={[]} data={[]} />
+          <PreviewData sql={sql} />
         </div>
       )}
       {(isViewSQL || isPreviewData) && (
