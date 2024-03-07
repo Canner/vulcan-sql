@@ -84,7 +84,7 @@ export class ProjectResolver {
     const models = await this.createModels(tables, id, ctx, tableDescriptions);
 
     // create columns
-    const columns = await this.createModelColumns(
+    const columns = await this.createAllColumnsInDataSource(
       tables,
       models,
       dataSourceColumns as BQColumnResponse[],
@@ -232,34 +232,33 @@ export class ProjectResolver {
     return new BQConnector(connectionOption);
   }
 
-  private async createModelColumns(
+  private async createAllColumnsInDataSource(
     tables: CreateModelsInput[],
     models: Model[],
     dataSourceColumns: BQColumnResponse[],
     ctx: IContext
   ) {
-    const columnValues = tables.reduce((acc, table) => {
-      const modelId = models.find((m) => m.sourceTableName === table.name)?.id;
-      for (const columnName of table.columns) {
-        const dataSourceColumn = dataSourceColumns.find(
-          (c) => c.table_name === table.name && c.column_name === columnName
-        );
-        if (!dataSourceColumn) {
-          throw new Error(
-            `Column ${columnName} not found in the DataSource ${table.name}`
-          );
-        }
+    const columnValues = tables.reduce((acc, { name: tableName }) => {
+      const modelId = models.find((m) => m.sourceTableName === tableName)?.id;
+      if (!modelId) {
+        throw new Error('Model not found');
+      }
+      const tableColumns = dataSourceColumns.filter(
+        (col) => col.table_name === tableName
+      );
+      for (const tableColumn of tableColumns) {
+        const columnName = tableColumn.column_name;
         const columnValue = {
           modelId,
           isCalculated: false,
           displayName: columnName,
           sourceColumnName: columnName,
           referenceName: columnName,
-          type: dataSourceColumn?.data_type || 'string',
-          notNull: dataSourceColumn.is_nullable.toLocaleLowerCase() !== 'yes',
+          type: tableColumn?.data_type || 'string',
+          notNull: tableColumn.is_nullable.toLocaleLowerCase() !== 'yes',
           isPk: false,
           properties: JSON.stringify({
-            description: dataSourceColumn.column_description,
+            description: tableColumn.column_description,
           }),
         } as Partial<ModelColumn>;
         acc.push(columnValue);

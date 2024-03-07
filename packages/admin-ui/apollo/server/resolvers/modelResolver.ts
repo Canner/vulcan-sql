@@ -26,15 +26,18 @@ export class ModelResolver {
       await ctx.modelColumnRepository.findColumnsByModelIds(modelIds);
     const result = [];
     for (const model of models) {
-      const columns = modelColumnList
+      const modelFields = modelColumnList
         .filter((c) => c.modelId === model.id)
         .map((c) => {
           c.properties = JSON.parse(c.properties);
           return c;
         });
+      const fields = modelFields.filter((c) => !c.isCalculated);
+      const calculatedFields = modelFields.filter((c) => c.isCalculated);
       result.push({
         ...model,
-        columns,
+        fields,
+        calculatedFields,
         properties: {
           ...JSON.parse(model.properties),
         },

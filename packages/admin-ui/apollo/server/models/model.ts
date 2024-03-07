@@ -1,6 +1,5 @@
 export interface CreateModelsInput {
   name: string;
-  columns: string[];
 }
 
 enum ModelType {

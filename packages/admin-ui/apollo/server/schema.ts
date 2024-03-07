@@ -68,12 +68,7 @@ export const typeDefs = gql`
   }
 
   input SaveTablesInput {
-    tables: [ModelsInput!]!
-  }
-
-  input ModelsInput {
-    name: String!
-    columns: [String!]!
+    tables: [String!]!
   }
 
   type CompactColumn {
@@ -117,12 +112,12 @@ export const typeDefs = gql`
     caculatedFields: [CaculatedFieldInput!]
   }
 
-  type ColumnInfo {
+  type FieldInfo {
     id: Int!
     displayName: String!
     referenceName: String!
     sourceColumnName: String!
-    type: String!
+    type: String
     isCalculated: Boolean!
     notNull: Boolean!
     expression: String
@@ -139,7 +134,8 @@ export const typeDefs = gql`
     cached: Boolean!
     refreshTime: String
     description: String
-    columns: [ColumnInfo]!
+    fields: [FieldInfo]!
+    calculatedFields: [FieldInfo]!
     properties: JSON
   }
 
