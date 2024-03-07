@@ -20,37 +20,15 @@ export default function StepContent(props: Props) {
   const { fullSql, isLastStep, sql, stepNumber, summary } = props;
 
   const {
-    isViewSQL,
-    isPreviewData,
-    onViewSQL,
-    onPreviewData,
-    onCloseCollapse,
-    onCopyFullSQL,
-  } = useAnswerStepContent();
-
-  const previewDataButtonProps = isLastStep
-    ? { type: 'primary', className: 'mr-2' }
-    : {
-        type: 'text',
-        className: `mr-2 ${isPreviewData ? 'gray-9' : 'gray-6'}`,
-      };
-
-  const [viewSQLButtonText, viewSQLButtonProps] = isLastStep
-    ? ['View Full SQL', { className: 'adm-btn-gray' }]
-    : [
-        'View SQL',
-        { type: 'text', className: isViewSQL ? 'gray-9' : 'gray-6' },
-      ];
-
-  const collapseContentProps = isLastStep
-    ? {
-        isPreviewData,
-        isViewFullSQL: isViewSQL,
-        onCloseCollapse,
-        onCopyFullSQL: () => onCopyFullSQL(fullSql),
-        sql: fullSql,
-      }
-    : { isViewSQL, isPreviewData, onCloseCollapse, sql };
+    collapseContentProps,
+    previewDataButtonProps,
+    viewSQLButtonProps,
+    viewSQLButtonText,
+  } = useAnswerStepContent({
+    fullSql,
+    isLastStep,
+    sql,
+  });
 
   return (
     <Row className="mb-3 bg-gray-2" wrap={false}>
@@ -79,7 +57,6 @@ export default function StepContent(props: Props) {
               }}
             />
           }
-          onClick={onPreviewData}
         >
           Preview Data
         </Button>
@@ -87,7 +64,6 @@ export default function StepContent(props: Props) {
           {...(viewSQLButtonProps as ButtonProps)}
           size="small"
           icon={<FunctionOutlined />}
-          onClick={onViewSQL}
         >
           {viewSQLButtonText}
         </Button>

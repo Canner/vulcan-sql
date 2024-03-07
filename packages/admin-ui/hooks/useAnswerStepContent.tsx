@@ -3,7 +3,49 @@ import copy from 'copy-to-clipboard';
 import { message } from 'antd';
 import { COLLAPSE_CONTENT_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 
-export default function useAnswerStepContent() {
+function getButtonProps({
+  isLastStep,
+  isPreviewData,
+  isViewSQL,
+  onViewSQL,
+  onPreviewData,
+}) {
+  const previewDataButtonProps = isLastStep
+    ? { type: 'primary', className: 'mr-2' }
+    : {
+        type: 'text',
+        className: `mr-2 ${isPreviewData ? 'gray-9' : 'gray-6'}`,
+      };
+
+  const [viewSQLButtonText, viewSQLButtonProps] = isLastStep
+    ? ['View Full SQL', { className: 'adm-btn-gray' }]
+    : [
+        'View SQL',
+        { type: 'text', className: isViewSQL ? 'gray-9' : 'gray-6' },
+      ];
+
+  return {
+    viewSQLButtonText,
+    viewSQLButtonProps: {
+      ...viewSQLButtonProps,
+      onClick: onViewSQL,
+    },
+    previewDataButtonProps: {
+      ...previewDataButtonProps,
+      onClick: onPreviewData,
+    },
+  };
+}
+
+export default function useAnswerStepContent({
+  fullSql,
+  isLastStep,
+  sql,
+}: {
+  fullSql: string;
+  isLastStep: boolean;
+  sql: string;
+}) {
   const [collapseContentType, setCollapseContentType] =
     useState<COLLAPSE_CONTENT_TYPE>(COLLAPSE_CONTENT_TYPE.NONE);
 
@@ -16,8 +58,8 @@ export default function useAnswerStepContent() {
   const onCloseCollapse = () =>
     setCollapseContentType(COLLAPSE_CONTENT_TYPE.NONE);
 
-  const onCopyFullSQL = (sql: string) => {
-    copy(sql);
+  const onCopyFullSQL = () => {
+    copy(fullSql);
     message.success('Copied SQL to clipboard.');
   };
 
@@ -26,12 +68,29 @@ export default function useAnswerStepContent() {
   const isPreviewData =
     collapseContentType === COLLAPSE_CONTENT_TYPE.PREVIEW_DATA;
 
-  return {
+  const buttonProps = getButtonProps({
+    isLastStep,
     isPreviewData,
     isViewSQL,
-    onCloseCollapse,
-    onCopyFullSQL,
     onPreviewData,
     onViewSQL,
+  });
+
+  return {
+    collapseContentProps: {
+      isPreviewData,
+      onCloseCollapse,
+      onCopyFullSQL,
+      ...(isLastStep
+        ? {
+            isViewFullSQL: isViewSQL,
+            sql: fullSql,
+          }
+        : {
+            isViewSQL,
+            sql,
+          }),
+    },
+    ...buttonProps,
   };
 }
