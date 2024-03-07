@@ -3,8 +3,9 @@ import { ModalAction } from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import GenerateModelMetadata, {
   Props as GenerateModelProps,
+  namespace,
 } from '@vulcan-sql/admin-ui/components/pages/modeling/metadata/GenerateModelMetadata';
-import { EditableContext } from '@vulcan-sql/admin-ui/components/table/EditableBaseTable';
+import { EditableContext } from '@vulcan-sql/admin-ui/components/EditableWrapper';
 
 type Props = ModalAction<{
   nodeType: NODE_TYPE;
@@ -13,9 +14,6 @@ type Props = ModalAction<{
   fields?: any[];
   calculatedFields?: any[];
   relations?: any[];
-  measures?: any[];
-  dimensions?: any[];
-  windows?: any[];
   properties: Record<string, any>;
 }> & { loading?: boolean };
 
@@ -25,8 +23,10 @@ export default function GenerateMetadataModal(props: Props) {
 
   const [form] = Form.useForm();
 
-  const submit = (values) => {
-    onSubmit(values);
+  const submit = async () => {
+    const values = form.getFieldValue(namespace);
+    await onSubmit(values);
+    onClose();
   };
 
   return (
