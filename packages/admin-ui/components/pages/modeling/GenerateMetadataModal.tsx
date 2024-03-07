@@ -7,10 +7,9 @@ import GenerateModelMetadata, {
 import { EditableContext } from '@vulcan-sql/admin-ui/components/table/EditableBaseTable';
 
 type Props = ModalAction<{
-  name: string;
   nodeType: NODE_TYPE;
+  displayName: string;
   referenceName: string;
-  tableName: string;
   fields?: any[];
   calculatedFields?: any[];
   relations?: any[];
@@ -22,7 +21,7 @@ type Props = ModalAction<{
 
 export default function GenerateMetadataModal(props: Props) {
   const { visible, defaultValue, loading, onSubmit, onClose } = props;
-  const { name } = defaultValue || {};
+  const { displayName } = defaultValue || {};
 
   const [form] = Form.useForm();
 
@@ -32,7 +31,7 @@ export default function GenerateMetadataModal(props: Props) {
 
   return (
     <Modal
-      title={`Generate ${name}'s metadata`}
+      title={`Generate ${displayName}'s metadata`}
       width={700}
       visible={visible}
       okText="Submit"

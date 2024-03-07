@@ -21,13 +21,13 @@ export const MetricNode = ({ data }: CustomNodeProps<MetricData>) => {
   const onMoreClick = (type: MORE_ACTION) => {
     context?.onMoreClick({
       type,
-      title: data.originalData.name,
+      title: data.originalData.displayName,
       data: data.originalData,
     });
   };
   const onNodeClick = () => {
     context?.onNodeClick({
-      title: data.originalData.name,
+      title: data.originalData.displayName,
       data: data.originalData,
     });
   };
@@ -42,7 +42,7 @@ export const MetricNode = ({ data }: CustomNodeProps<MetricData>) => {
       <NodeHeader className="dragHandle" color="var(--citrus-6)">
         <span className="adm-model-header">
           <MetricIcon />
-          {data.originalData.name}
+          {data.originalData.displayName}
         </span>
         <span>
           <CachedIcon originalData={data.originalData} />

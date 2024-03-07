@@ -11,10 +11,10 @@ import MetricMetadata, {
 import ViewMetadata, {
   Props as ViewMetadataProps,
 } from './metadata/ViewMetadata';
-import GenerateMetadataModal from './GenerateMetadataModal';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
+import GenerateMetadataModal from '@vulcan-sql/admin-ui/components/pages/modeling/GenerateMetadataModal';
 
-type Metadata = { nodeType: NODE_TYPE; name: string } & ModelMetadataProps &
+type Metadata = { nodeType: NODE_TYPE } & ModelMetadataProps &
   MetricMetadataProps &
   ViewMetadataProps;
 
@@ -22,10 +22,11 @@ type Props = DrawerAction<Metadata>;
 
 export default function MetadataDrawer(props: Props) {
   const { visible, defaultValue, onClose } = props;
-  const { name, nodeType = NODE_TYPE.MODEL } = defaultValue || {};
+  const { displayName, nodeType = NODE_TYPE.MODEL } = defaultValue || {};
 
   const generateMetadataModal = useModalAction();
   const openGeneratedMetadataModal = () => {
+    // TODO: put generated metadata in
     generateMetadataModal.openModal(defaultValue);
   };
 
@@ -36,7 +37,7 @@ export default function MetadataDrawer(props: Props) {
   return (
     <Drawer
       visible={visible}
-      title={`${name}'s metadata`}
+      title={`${displayName}'s metadata`}
       width={750}
       closable
       destroyOnClose

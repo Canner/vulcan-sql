@@ -43,7 +43,7 @@ export default function ViewTree(props) {
             id: nodeKey,
             isLeaf: false,
             key: nodeKey,
-            title: <LabelTitle title={view.name} />,
+            title: <LabelTitle title={view.displayName} />,
             type: view.nodeType,
           };
         }),

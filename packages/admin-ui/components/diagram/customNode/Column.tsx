@@ -44,7 +44,7 @@ export const ColumnTitle = styled.div`
 type ColumnProps = {
   id: string;
   type: string;
-  name: string;
+  displayName: string;
   properties: {
     [key: string]: any;
     description?: string;
@@ -64,7 +64,7 @@ export default function Column(props: ColumnProps) {
     type,
     onMouseEnter,
     onMouseLeave,
-    name,
+    displayName,
     style = {},
     icon,
     append,
@@ -91,7 +91,7 @@ export default function Column(props: ColumnProps) {
     >
       <div className="adm-column-title">
         <span title={type}>{icon}</span>
-        <span title={name}>{name}</span>
+        <span title={displayName}>{displayName}</span>
       </div>
       {append}
       <MarkerHandle id={id} />
@@ -100,7 +100,7 @@ export default function Column(props: ColumnProps) {
 
   return isPopoverShow ? (
     <CustomPopover
-      title={name}
+      title={displayName}
       placement="right"
       content={
         <CustomPopover.Row gutter={16}>

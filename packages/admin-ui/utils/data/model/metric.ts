@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+/* @ts-nocheck */
+// This file just remain for future scope.
 import { v4 as uuidv4 } from 'uuid';
 import { METRIC_TYPE, NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import { Metric, MetricColumn } from '@vulcan-sql/admin-ui/utils/data/type';
@@ -6,7 +9,8 @@ export class MetricData {
   public readonly nodeType: NODE_TYPE = NODE_TYPE.METRIC;
 
   public readonly id: string;
-  public readonly name: string;
+  public readonly displayName: string;
+  public readonly referenceName: string;
   public readonly baseObject: string;
   public readonly cached: boolean;
   public readonly refreshTime: string;
@@ -20,7 +24,9 @@ export class MetricData {
 
   constructor(metric: Metric, isCumulative: boolean = false) {
     this.id = uuidv4();
-    this.name = metric.name;
+    this.displayName = metric.name;
+    this.referenceName = metric.name;
+
     this.baseObject = metric.baseObject;
     this.cached = metric.cached || false;
     this.refreshTime = metric.refreshTime || null;
@@ -67,7 +73,7 @@ export class MetricData {
 
 export class MetricColumnData {
   public readonly id: string;
-  public readonly name: string;
+  public readonly displayName: string;
   public readonly type: string;
   public readonly metricType: METRIC_TYPE;
   public readonly operator?: string;
@@ -83,7 +89,7 @@ export class MetricColumnData {
 
   constructor(column: MetricColumn, metricType: METRIC_TYPE) {
     this.id = uuidv4();
-    this.name = column.name;
+    this.displayName = column.name;
     this.type = column?.type || '';
     this.metricType = metricType;
     this.operator = column?.operator;

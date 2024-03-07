@@ -6,7 +6,8 @@ export class ViewData {
   public readonly nodeType: NODE_TYPE = NODE_TYPE.VIEW;
 
   public readonly id: string;
-  public readonly name: string;
+  public readonly displayName: string;
+  public readonly referenceName: string;
   public readonly statement: string;
   public readonly cached: boolean;
   public readonly refreshTime: string;
@@ -16,7 +17,10 @@ export class ViewData {
 
   constructor(view: View) {
     this.id = uuidv4();
-    this.name = view.name;
+    // TODO: this will redefine when API come out
+    this.displayName = view.name;
+    this.referenceName = view.name;
+
     this.statement = view.statement;
     this.cached = view.cached;
     this.refreshTime = view.refreshTime;
@@ -30,13 +34,17 @@ export class ViewData {
 
 export class ViewColumnData {
   public readonly id: string;
-  public readonly name: string;
+  public readonly displayName: string;
+  public readonly referenceName: string;
   public readonly type: string;
   public readonly properties: ViewColumn['properties'];
 
   constructor(column: ViewColumn) {
     this.id = uuidv4();
-    this.name = column.name;
+    // TODO: this will redefine when API come out
+    this.displayName = column.name;
+    this.referenceName = column.name;
+
     this.type = column.type || '';
     this.properties = column.properties;
   }

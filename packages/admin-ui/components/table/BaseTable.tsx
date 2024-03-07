@@ -11,15 +11,19 @@ import {
 export const COLUMN = {
   DISPLAY_NAME: {
     title: 'Display name',
-    dataIndex: ['properties', 'displayName'],
+    dataIndex: 'displayName',
+    key: 'displayName',
     width: 140,
-    render: (name) => <EllipsisWrapper text={name} />,
+    ellipsis: true,
+    render: (name) => name || '-',
   },
   REFERENCE_NAME: {
     title: 'Reference name',
     dataIndex: 'referenceName',
+    key: 'referenceName',
     width: 150,
-    render: (name) => <EllipsisWrapper text={name} />,
+    ellipsis: true,
+    render: (name) => name || '-',
   },
   TYPE: {
     title: 'Type',
@@ -36,6 +40,7 @@ export const COLUMN = {
   EXPRESSION: {
     title: 'Expression',
     dataIndex: 'expression',
+    key: 'expression',
     render: (expression) => {
       return (
         <EllipsisWrapper text={expression}>
@@ -47,15 +52,16 @@ export const COLUMN = {
   RELATION: {
     title: 'Relation',
     dataIndex: 'joinType',
+    key: 'joinType',
     render: (joinType) => getJoinTypeText(joinType),
   },
   DESCRIPTION: {
     title: 'Description',
-    dataIndex: 'description',
+    dataIndex: ['properties', 'description'],
+    key: 'description',
     width: 200,
-    render: (text) => {
-      return <EllipsisWrapper text={text} />;
-    },
+    ellipsis: true,
+    render: (text) => text || '-',
   },
 };
 

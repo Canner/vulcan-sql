@@ -6,8 +6,9 @@ import { makeMetadataBaseTable } from '@vulcan-sql/admin-ui/components/table/Met
 import UpdateMetadataModal from '@vulcan-sql/admin-ui/components/modals/UpdateMetadataModal';
 
 export interface Props {
+  displayName: string;
   referenceName: string;
-  tableName: string;
+  sourceTableName: string;
   fields: any[];
   calculatedFields: any[];
   relations: any[];
@@ -16,7 +17,8 @@ export interface Props {
 
 export default function ModelMetadata(props: Props) {
   const {
-    tableName,
+    displayName,
+    sourceTableName,
     referenceName,
     fields = [],
     calculatedFields = [],
@@ -52,7 +54,7 @@ export default function ModelMetadata(props: Props) {
             <Typography.Text className="d-block gray-7 mb-2">
               Display name
             </Typography.Text>
-            <div>{properties?.displayName || '-'}</div>
+            <div>{displayName || '-'}</div>
           </div>
         </Col>
         <Col span={12}>
@@ -76,7 +78,7 @@ export default function ModelMetadata(props: Props) {
             <Typography.Text className="d-block gray-7 mb-2">
               Source table name
             </Typography.Text>
-            <div>{tableName || '-'}</div>
+            <div>{sourceTableName || '-'}</div>
           </div>
         </Col>
       </Row>
