@@ -1,13 +1,26 @@
 import { Typography } from 'antd';
+import { useEffect } from 'react';
 import styled from 'styled-components';
+import '@vulcan-sql/admin-ui/components/editor/AceEditor';
 
 const Block = styled.div<{ inline?: boolean }>`
   position: relative;
   white-space: pre;
   ${(props) =>
     props.inline
-      ? `border: none; background: transparent; padding: 0;`
-      : `background: var(--gray-3); padding: 8px 24px 8px 8px;`}
+      ? `display: inline; border: none; background: transparent !important; padding: 0;`
+      : `background: var(--gray-1); padding: 4px;`}
+
+  .line-number {
+    user-select: none;
+    display: inline-block;
+    min-width: 1.5em;
+    text-align: right;
+    margin-right: 1em;
+    color: var(--gray-6);
+    font-weight: 700;
+    font-size: 14px;
+  }
 `;
 
 const CopyText = styled(Typography.Text)`
@@ -21,20 +34,38 @@ const CopyText = styled(Typography.Text)`
 `;
 
 interface Props {
-  copyable?: boolean;
-  inline?: boolean;
   code: string;
+  inline?: boolean;
+  copyable?: boolean;
+  showLineNumbers?: boolean;
 }
 
+const addThemeStyleManually = (cssText) => {
+  // same id as ace editor appended, it will exist only one.
+  const id = 'ace-tomorrow';
+  const themeElement = document.getElementById(id);
+  if (!themeElement) {
+    const styleElement = document.createElement('style');
+    styleElement.id = id;
+    document.head.appendChild(styleElement);
+    styleElement.appendChild(document.createTextNode(cssText));
+  }
+};
+
 export default function CodeBlock(props: Props) {
-  const { code, copyable, inline } = props;
+  const { code, copyable, inline, showLineNumbers } = props;
   const { ace } = window as any;
   const { Tokenizer } = ace.require('ace/tokenizer');
   const { SqlHighlightRules } = ace.require(`ace/mode/sql_highlight_rules`);
   const rules = new SqlHighlightRules();
   const tokenizer = new Tokenizer(rules.getRules());
 
-  const lines = code.split('\n').map((line) => {
+  useEffect(() => {
+    const { cssText } = ace.require('ace/theme/tomorrow');
+    addThemeStyleManually(cssText);
+  }, []);
+
+  const lines = code.split('\n').map((line, index) => {
     const tokens = tokenizer.getLineTokens(line).tokens;
     const children = tokens.map((token, index) => {
       const classNames = token.type.split('.').map((name) => `ace_${name}`);
@@ -44,9 +75,13 @@ export default function CodeBlock(props: Props) {
         </span>
       );
     });
+
     return (
-      <div className="ace_line" key={line}>
-        {children}
+      <div className="ace_line" key={`${line}-${index}`}>
+        <div className="my-1">
+          {showLineNumbers && <span className="line-number">{index + 1}</span>}
+          {children}
+        </div>
       </div>
     );
   });
