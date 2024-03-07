@@ -8,6 +8,7 @@ const { Title } = Typography;
 
 interface Props {
   loading: boolean;
+  onOpenSaveAsViewModal: ({ sql: string }) => void;
   question: string;
   description: string;
   answerResultSteps: Array<{
@@ -18,7 +19,14 @@ interface Props {
 }
 
 export default function AnswerResult(props: Props) {
-  const { loading, question, description, answerResultSteps, sql } = props;
+  const {
+    loading,
+    onOpenSaveAsViewModal,
+    question,
+    description,
+    answerResultSteps,
+    sql,
+  } = props;
 
   return (
     <Skeleton active loading={loading}>
@@ -49,7 +57,7 @@ export default function AnswerResult(props: Props) {
           type="text"
           size="small"
           icon={<SaveOutlined />}
-          onClick={() => console.log('Save as view')}
+          onClick={() => onOpenSaveAsViewModal({ sql })}
         >
           Save as view
         </Button>

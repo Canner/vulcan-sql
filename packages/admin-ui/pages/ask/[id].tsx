@@ -2,8 +2,10 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { Divider } from 'antd';
 import { Path } from '@vulcan-sql/admin-ui/utils/enum';
+import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import SiderLayout from '@vulcan-sql/admin-ui/components/layouts/SiderLayout';
 import AnswerResult from '@vulcan-sql/admin-ui/components/ask/AnswerResult';
+import SaveAsViewModal from '@vulcan-sql/admin-ui/components/modals/SaveAsViewModal';
 
 const AnswerResultsBlock = styled.div`
   width: 768px;
@@ -30,6 +32,7 @@ const AnswerResultsBlock = styled.div`
 
 export default function AnswerBlock() {
   const router = useRouter();
+  const saveAsViewModal = useModalAction();
 
   // TODO: call API to get real exploration list data
   const data = [];
@@ -77,12 +80,20 @@ export default function AnswerBlock() {
               answerResultSteps={answerResult.steps}
               description={answerResult.description}
               loading={answerResult.status !== 'finished'}
+              onOpenSaveAsViewModal={saveAsViewModal.openModal}
               question={answerResult.query}
               sql={answerResult.sql}
             />
           </div>
         ))}
       </AnswerResultsBlock>
+      <SaveAsViewModal
+        {...saveAsViewModal.state}
+        onClose={saveAsViewModal.closeModal}
+        onSubmit={async (values) => {
+          console.log('save as view', values);
+        }}
+      />
     </SiderLayout>
   );
 }

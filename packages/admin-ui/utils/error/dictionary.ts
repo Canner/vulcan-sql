@@ -116,4 +116,9 @@ export const ERROR_TEXTS = {
       REQUIRED: 'Please select at least one field.',
     },
   },
+  SAVE_AS_VIEW: {
+    DISPLAY_NAME: {
+      REQUIRED: 'Please input display name.',
+    },
+  },
 };
