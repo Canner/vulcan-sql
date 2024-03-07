@@ -7,7 +7,7 @@ enum ModelType {
   CUSTOM = 'CUSTOM',
 }
 
-interface CaculatedFieldData {
+interface CalculatedFieldData {
   name: string;
   expression: string;
   lineage: number[];
@@ -23,5 +23,5 @@ export interface CreateModelData {
   cached: boolean;
   refreshTime?: string;
   fields: [string];
-  caculatedFields?: [CaculatedFieldData];
+  calculatedFields?: [CalculatedFieldData];
 }

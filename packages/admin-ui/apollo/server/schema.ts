@@ -96,7 +96,7 @@ export const typeDefs = gql`
     cached: Boolean!
     refreshTime: String
     fields: [String!]!
-    caculatedFields: [CaculatedFieldInput!]
+    calculatedFields: [CalculatedFieldInput!]
   }
 
   input ModelWhereInput {
@@ -109,7 +109,7 @@ export const typeDefs = gql`
     cached: Boolean!
     refreshTime: String
     fields: [String!]!
-    caculatedFields: [CaculatedFieldInput!]
+    calculatedFields: [CalculatedFieldInput!]
   }
 
   type FieldInfo {

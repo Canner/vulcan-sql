@@ -146,7 +146,7 @@ export class ModelResolver {
     }) as ModelColumn[];
 
     // calculated fields
-    const calculatedFieldsValue = args.data.caculatedFields.map((field) => ({
+    const calculatedFieldsValue = args.data.calculatedFields.map((field) => ({
       modelId,
       displayName: field.name,
       sourceColumnName: field.name,
