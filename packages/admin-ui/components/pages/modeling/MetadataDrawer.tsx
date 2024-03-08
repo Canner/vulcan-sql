@@ -20,9 +20,18 @@ type Metadata = { nodeType: NODE_TYPE } & ModelMetadataProps &
 
 type Props = DrawerAction<Metadata>;
 
+const getDrawerTitle = (nodeType: NODE_TYPE) => {
+  return (
+    {
+      [NODE_TYPE.MODEL]: "Model's metadata",
+      [NODE_TYPE.VIEW]: "View's metadata",
+    }[nodeType] || 'Metadata'
+  );
+};
+
 export default function MetadataDrawer(props: Props) {
   const { visible, defaultValue, onClose } = props;
-  const { displayName, nodeType = NODE_TYPE.MODEL } = defaultValue || {};
+  const { nodeType = NODE_TYPE.MODEL } = defaultValue || {};
 
   const generateMetadataModal = useModalAction();
   const openGeneratedMetadataModal = () => {
@@ -37,7 +46,7 @@ export default function MetadataDrawer(props: Props) {
   return (
     <Drawer
       visible={visible}
-      title={`${displayName}'s metadata`}
+      title={getDrawerTitle(nodeType)}
       width={750}
       closable
       destroyOnClose

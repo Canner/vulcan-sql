@@ -1,78 +1,25 @@
-import { useContext, useEffect, useState } from 'react';
-import { Typography, Row, Col } from 'antd';
+import { useContext } from 'react';
+import { Typography } from 'antd';
 import FieldTable from '@vulcan-sql/admin-ui/components/table/FieldTable';
 import CalculatedFieldTable from '@vulcan-sql/admin-ui/components/table/CalculatedFieldTable';
 import RelationTable from '@vulcan-sql/admin-ui/components/table/RelationTable';
 import { makeEditableBaseTable } from '@vulcan-sql/admin-ui/components/table/EditableBaseTable';
 import { COLUMN } from '@vulcan-sql/admin-ui/components/table/BaseTable';
-import { cloneDeep, set } from 'lodash';
-import EditableWrapper, {
-  EditableContext,
-} from '@vulcan-sql/admin-ui/components/EditableWrapper';
+import { EditableContext } from '@vulcan-sql/admin-ui/components/EditableWrapper';
+import GenerateBasicMetadata from './GenerateBasicMetadata';
 
 export interface Props {
+  formNamespace: string;
   displayName: string;
   fields: any[];
   calculatedFields?: any[];
   relations: any[];
   properties: Record<string, any>;
-  onChange?: (value: any) => void;
 }
-
-export const namespace = 'generatedMetadata';
-
-const BasicMetadata = (props) => {
-  const { dataSource, onChange } = props;
-  const [data, setData] = useState(dataSource);
-
-  useEffect(() => {
-    onChange && onChange(data);
-  }, [data]);
-
-  const handleSave = (_, value) => {
-    const [dataIndexKey] = Object.keys(value);
-
-    const newData = cloneDeep(data);
-    set(newData, dataIndexKey, value[dataIndexKey]);
-    setData(newData);
-  };
-
-  return (
-    <Row>
-      <Col span={12}>
-        <div className="mb-6">
-          <Typography.Text className="d-block gray-7 mb-2">
-            Display name
-          </Typography.Text>
-          <EditableWrapper
-            record={data}
-            dataIndex="displayName"
-            handleSave={handleSave}
-          >
-            {data.displayName || '-'}
-          </EditableWrapper>
-        </div>
-      </Col>
-      <Col span={12}>
-        <div className="mb-6">
-          <Typography.Text className="d-block gray-7 mb-2">
-            Description
-          </Typography.Text>
-          <EditableWrapper
-            record={data}
-            dataIndex="properties.description"
-            handleSave={handleSave}
-          >
-            {data.properties?.description || '-'}
-          </EditableWrapper>
-        </div>
-      </Col>
-    </Row>
-  );
-};
 
 export default function GenerateModelMetadata(props: Props) {
   const {
+    formNamespace,
     displayName,
     fields = [],
     calculatedFields = [],
@@ -90,7 +37,7 @@ export default function GenerateModelMetadata(props: Props) {
   const onChange = (value) => {
     form.setFieldsValue({
       generatedMetadata: {
-        ...(form.getFieldValue(namespace) || {}),
+        ...(form.getFieldValue(formNamespace) || {}),
         ...value,
       },
     });
@@ -98,7 +45,7 @@ export default function GenerateModelMetadata(props: Props) {
 
   return (
     <>
-      <BasicMetadata
+      <GenerateBasicMetadata
         dataSource={{ displayName, properties }}
         onChange={onChange}
       />

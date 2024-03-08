@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { set, cloneDeep } from 'lodash';
+import { set, cloneDeep, isEmpty } from 'lodash';
 import {
   COLUMN,
   Props as BaseTableProps,
@@ -30,7 +30,9 @@ export const makeEditableBaseTable = (BaseTable: React.FC<BaseTableProps>) => {
   const EditableBaseTable = (props: Props) => {
     const { columns, dataSource, onChange } = props;
     const [data, setData] = useState(dataSource);
-    const components = { body: { cell: EditableCell } };
+    const components = {
+      body: { cell: !isEmpty(dataSource) ? EditableCell : undefined },
+    };
 
     useEffect(() => {
       onChange && onChange(data);

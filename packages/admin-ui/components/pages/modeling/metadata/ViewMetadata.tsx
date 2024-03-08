@@ -1,15 +1,17 @@
-import { Typography } from 'antd';
+import { Typography, Row, Col } from 'antd';
 import FieldTable from '@vulcan-sql/admin-ui/components/table/FieldTable';
 import { makeMetadataBaseTable } from '@vulcan-sql/admin-ui/components/table/MetadataBaseTable';
 import UpdateMetadataModal from '@vulcan-sql/admin-ui/components/modals/UpdateMetadataModal';
 
 export interface Props {
+  displayName: string;
+  referenceName: string;
   fields: any[];
-  properties: Record<string, any>
+  properties: Record<string, any>;
 }
 
 export default function ViewMetadata(props: Props) {
-  const { fields = [], properties } = props || {};
+  const { displayName, referenceName, fields = [], properties } = props || {};
 
   const FieldMetadataTable =
     makeMetadataBaseTable(FieldTable)(UpdateMetadataModal);
@@ -29,12 +31,32 @@ export default function ViewMetadata(props: Props) {
 
   return (
     <>
-      <div className="mb-6">
-        <Typography.Text className="d-block gray-7 mb-2">
-          Description
-        </Typography.Text>
-        <div>{properties?.description || '-'}</div>
-      </div>
+      <Row>
+        <Col span={12}>
+          <div className="mb-6">
+            <Typography.Text className="d-block gray-7 mb-2">
+              Display name
+            </Typography.Text>
+            <div>{displayName || '-'}</div>
+          </div>
+        </Col>
+        <Col span={12}>
+          <div className="mb-6">
+            <Typography.Text className="d-block gray-7 mb-2">
+              Reference name
+            </Typography.Text>
+            <div>{referenceName || '-'}</div>
+          </div>
+        </Col>
+        <Col span={24}>
+          <div className="mb-6">
+            <Typography.Text className="d-block gray-7 mb-2">
+              Description
+            </Typography.Text>
+            <div>{properties?.description || '-'}</div>
+          </div>
+        </Col>
+      </Row>
 
       <div className="mb-6">
         <Typography.Text className="d-block gray-7 mb-2">

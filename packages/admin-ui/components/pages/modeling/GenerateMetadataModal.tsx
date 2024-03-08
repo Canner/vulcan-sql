@@ -3,35 +3,46 @@ import { ModalAction } from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import { NODE_TYPE } from '@vulcan-sql/admin-ui/utils/enum';
 import GenerateModelMetadata, {
   Props as GenerateModelProps,
-  namespace,
 } from '@vulcan-sql/admin-ui/components/pages/modeling/metadata/GenerateModelMetadata';
+import GenerateViewMetadata, {
+  Props as GenerateViewProps,
+} from '@vulcan-sql/admin-ui/components/pages/modeling/metadata/GenerateViewMetadata';
 import { EditableContext } from '@vulcan-sql/admin-ui/components/EditableWrapper';
 
-type Props = ModalAction<{
+type DefaultValue = (GenerateModelProps & GenerateViewProps) & {
   nodeType: NODE_TYPE;
-  displayName: string;
-  referenceName: string;
-  fields?: any[];
-  calculatedFields?: any[];
-  relations?: any[];
-  properties: Record<string, any>;
-}> & { loading?: boolean };
+};
+
+type Props = ModalAction<DefaultValue> & {
+  loading?: boolean;
+};
+
+const getDrawerTitle = (nodeType: NODE_TYPE) => {
+  return (
+    {
+      [NODE_TYPE.MODEL]: "Generate model's metadata",
+      [NODE_TYPE.VIEW]: "Generate view's metadata",
+    }[nodeType] || 'Generate metadata'
+  );
+};
+
+const formNamespace = 'generatedMetadata';
 
 export default function GenerateMetadataModal(props: Props) {
   const { visible, defaultValue, loading, onSubmit, onClose } = props;
-  const { displayName } = defaultValue || {};
+  const { nodeType } = defaultValue || {};
 
   const [form] = Form.useForm();
 
   const submit = async () => {
-    const values = form.getFieldValue(namespace);
+    const values = form.getFieldValue(formNamespace);
     await onSubmit(values);
     onClose();
   };
 
   return (
     <Modal
-      title={`Generate ${displayName}'s metadata`}
+      title={getDrawerTitle(nodeType)}
       width={700}
       visible={visible}
       okText="Submit"
@@ -43,7 +54,18 @@ export default function GenerateMetadataModal(props: Props) {
     >
       <EditableContext.Provider value={form}>
         <Form form={form} component={false}>
-          <GenerateModelMetadata {...(defaultValue as GenerateModelProps)} />
+          {nodeType === NODE_TYPE.MODEL && (
+            <GenerateModelMetadata
+              formNamespace={formNamespace}
+              {...defaultValue}
+            />
+          )}
+          {nodeType === NODE_TYPE.VIEW && (
+            <GenerateViewMetadata
+              formNamespace={formNamespace}
+              {...(defaultValue as GenerateModelProps)}
+            />
+          )}
         </Form>
       </EditableContext.Provider>
     </Modal>
