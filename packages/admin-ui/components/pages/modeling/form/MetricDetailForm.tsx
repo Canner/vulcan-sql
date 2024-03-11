@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Form, FormInstance, Select, Radio, Button, Space } from 'antd';
 import { FORM_MODE } from '@vulcan-sql/admin-ui/utils/enum';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
-import PreviewDataContent from './PreviewDataContent';
+import PreviewDataContent from '@vulcan-sql/admin-ui/components/PreviewDataContent';
 import MeasureTableFormControl, {
   MeasureTableValue,
 } from '@vulcan-sql/admin-ui/components/tableFormControls/MeasureTableFormControl';

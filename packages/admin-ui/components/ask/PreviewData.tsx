@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Typography } from 'antd';
 import { getColumnTypeIcon } from '@vulcan-sql/admin-ui/utils/columnType';
-import PreviewDataContent from '@vulcan-sql/admin-ui/components/pages/modeling/form/PreviewDataContent';
+import PreviewDataContent from '@vulcan-sql/admin-ui/components/PreviewDataContent';
 
 const { Text } = Typography;
 

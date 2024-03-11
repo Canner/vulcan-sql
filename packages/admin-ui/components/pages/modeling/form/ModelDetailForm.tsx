@@ -8,7 +8,7 @@ import CalulatedFieldTableFormControl, {
   CalculatedFieldTableValue,
 } from '@vulcan-sql/admin-ui/components/tableFormControls/CalculatedFieldTableFormControl';
 import useModelDetailFormOptions from '@vulcan-sql/admin-ui/hooks/useModelDetailFormOptions';
-import PreviewDataContent from './PreviewDataContent';
+import PreviewDataContent from '@vulcan-sql/admin-ui/components/PreviewDataContent';
 
 export interface ButtonProps {
   form: FormInstance;

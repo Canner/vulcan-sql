@@ -3,7 +3,7 @@ import { Form, FormInstance, Button, Space } from 'antd';
 import { FORM_MODE } from '@vulcan-sql/admin-ui/utils/enum';
 import { ERROR_TEXTS } from '@vulcan-sql/admin-ui/utils/error';
 import Editor from '@vulcan-sql/admin-ui/components/editor';
-import PreviewDataContent from './PreviewDataContent';
+import PreviewDataContent from '@vulcan-sql/admin-ui/components/PreviewDataContent';
 import useAutoCompleteSource from '@vulcan-sql/admin-ui/hooks/useAutoCompleteSource';
 
 export interface ButtonProps {
