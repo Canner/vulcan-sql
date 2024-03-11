@@ -51,6 +51,7 @@ export default function GenerateMetadataModal(props: Props) {
       confirmLoading={loading}
       maskClosable={false}
       destroyOnClose
+      centered
     >
       <EditableContext.Provider value={form}>
         <Form form={form} component={false}>
