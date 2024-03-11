@@ -73,7 +73,7 @@ export const getColumnNode = (
         className: 'adm-treeNode adm-treeNode-column adm-treeNode--selectNode',
         title: (
           <ColumnNode
-            title={column.name}
+            title={column.displayName}
             relation={column?.relation}
             primary={column?.isPrimaryKey}
           />

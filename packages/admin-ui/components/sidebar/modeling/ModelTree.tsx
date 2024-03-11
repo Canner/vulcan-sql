@@ -54,7 +54,7 @@ export default function ModelTree(props) {
             id: nodeKey,
             isLeaf: false,
             key: nodeKey,
-            title: <LabelTitle title={model.name} />,
+            title: <LabelTitle title={model.displayName} />,
             type: model.nodeType,
           };
         }),

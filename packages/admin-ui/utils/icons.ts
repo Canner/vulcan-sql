@@ -25,6 +25,7 @@ import SwapOutlined from '@ant-design/icons/SwapOutlined';
 import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
 import { LightningCharge } from '@styled-icons/bootstrap';
 import MoreOutlined from '@ant-design/icons/MoreOutlined';
+import { Sparkles } from '@styled-icons/ionicons-outline';
 
 export const NumericIcon = styled(SortNumerically)`
   height: 1em;
@@ -84,5 +85,8 @@ export const ViewIcon = styled(Pageview)`
   height: 1em;
 `;
 export const ExploreIcon = styled(Explore)`
+  height: 1em;
+`;
+export const SparklesIcon = styled(Sparkles)`
   height: 1em;
 `;

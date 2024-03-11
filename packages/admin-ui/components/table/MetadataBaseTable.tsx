@@ -1,7 +1,8 @@
-import { Space, Button, TableProps } from 'antd';
+import { Space, Button } from 'antd';
 import EditOutlined from '@ant-design/icons/EditOutlined';
-import React, { useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
+import { Props as BaseTableProps } from '@vulcan-sql/admin-ui/components/table/BaseTable';
 
 interface Props<MData> {
   dataSource: any[];
@@ -9,34 +10,21 @@ interface Props<MData> {
   onEditValue?: (value: any) => any;
   onSubmitRemote?: (value: any) => void;
   modalProps?: Partial<MData>;
+  onCellRender?: (data: any) => ReactElement;
 }
 
-const defaultIndex = {
-  description: ['properties', 'description'],
-};
-
-export const getMetadataColumns = (
-  dataIndex: Record<string, string | string[]> = defaultIndex
-) => [
-  {
-    title: 'Description',
-    dataIndex: dataIndex?.description,
-    render: (text) => text || '-',
-  },
-];
-
 export const makeMetadataBaseTable =
-  <TData,>(BaseTable: React.FC<Partial<TableProps<TData>>>) =>
+  (BaseTable: React.FC<BaseTableProps>) =>
   <MData,>(ModalComponent?: React.FC<Partial<MData>>) => {
     const isEditable = !!ModalComponent;
 
     const MetadataBaseTable = (props: Props<MData>) => {
       const {
         dataSource,
-        metadataIndex,
         onEditValue = (value) => value,
         onSubmitRemote,
         modalProps,
+        onCellRender,
       } = props;
 
       const modalComponent = useModalAction();
@@ -47,7 +35,7 @@ export const makeMetadataBaseTable =
             ? [
                 {
                   key: 'action',
-                  width: 80,
+                  width: 64,
                   render: (record) => {
                     return (
                       <Space className="d-flex justify-end">
@@ -77,7 +65,8 @@ export const makeMetadataBaseTable =
         <>
           <BaseTable
             dataSource={dataSource}
-            columns={[...getMetadataColumns(metadataIndex), ...actionColumns]}
+            actionColumns={actionColumns}
+            components={onCellRender ? { body: { cell: onCellRender } } : null}
           />
           {isEditable && (
             <ModalComponent

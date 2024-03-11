@@ -60,7 +60,7 @@ export default function MetricTree(props) {
             id: nodeKey,
             isLeaf: false,
             key: nodeKey,
-            title: <LabelTitle title={metric.name} />,
+            title: <LabelTitle title={metric.displayName} />,
             type: metric.nodeType,
           };
         }),

@@ -160,18 +160,22 @@ export class Transformer {
         // prepare to add new edge
         const targetModel = this.models.find(
           (model) =>
-            model.id !== data.id && column.relation?.models.includes(model.name)
+            model.id !== data.id &&
+            column.relation?.models.includes(model.referenceName)
         )!;
         const targetColumn = targetModel?.columns.find(
           (targetColumn) =>
-            targetColumn.relation?.name === column.relation?.name
+            targetColumn.relation?.referenceName ===
+            column.relation?.referenceName
         );
 
         // check what source and target relation order
         const { joinType, models } = column.relation;
-        const sourceJoinIndex = models.findIndex((name) => name === data.name);
+        const sourceJoinIndex = models.findIndex(
+          (name) => name === data.referenceName
+        );
         const targetJoinIndex = models.findIndex(
-          (name) => name === targetModel?.name
+          (name) => name === targetModel?.referenceName
         );
 
         targetModel &&
@@ -193,7 +197,9 @@ export class Transformer {
 
   private addMetricEdge(data: MetricData) {
     const { baseObject } = data;
-    const targetModel = this.models.find((model) => model.name === baseObject)!;
+    const targetModel = this.models.find(
+      (model) => model.referenceName === baseObject
+    )!;
     targetModel &&
       this.edges.push(
         this.createEdge({

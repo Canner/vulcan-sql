@@ -1,51 +1,21 @@
-import { useMemo } from 'react';
-import { Table, TableProps } from 'antd';
-
-type Props = Pick<TableProps<{ name: string; type: string }>, 'dataSource'> &
-  Partial<Pick<TableProps<{ name: string; type: string }>, 'columns'>>;
-
-export const getFieldTableColumns = () => {
-  return [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      width: 150,
-    },
-    {
-      title: 'Type',
-      width: 150,
-      dataIndex: 'type',
-    },
-  ];
-};
+import BaseTable, {
+  Props,
+  COLUMN,
+} from '@vulcan-sql/admin-ui/components/table/BaseTable';
 
 export default function FieldTable(props: Props) {
-  const { dataSource = [], columns = [] } = props;
-
-  const tableColumns = useMemo(
-    () => [...getFieldTableColumns(), ...columns],
-    [dataSource]
-  );
-
-  const tableData = useMemo(
-    () =>
-      (dataSource || []).map((record, index) => ({
-        ...record,
-        key: `${record.name}-${index}`,
-      })),
-    [dataSource]
-  );
-
+  const { columns } = props;
   return (
-    <Table
-      dataSource={tableData}
-      showHeader={tableData.length > 0}
-      columns={tableColumns}
-      pagination={{
-        hideOnSinglePage: true,
-        pageSize: 10,
-        size: 'small',
-      }}
+    <BaseTable
+      {...props}
+      columns={
+        columns || [
+          COLUMN.DISPLAY_NAME,
+          COLUMN.REFERENCE_NAME,
+          COLUMN.TYPE,
+          COLUMN.DESCRIPTION,
+        ]
+      }
     />
   );
 }

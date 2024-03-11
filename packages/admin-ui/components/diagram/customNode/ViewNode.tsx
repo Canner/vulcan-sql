@@ -20,13 +20,13 @@ export const ViewNode = ({ data }: CustomNodeProps<ViewData>) => {
   const onMoreClick = (type: MORE_ACTION) => {
     context?.onMoreClick({
       type,
-      title: data.originalData.name,
+      title: data.originalData.displayName,
       data: data.originalData,
     });
   };
   const onNodeClick = () => {
     context?.onNodeClick({
-      title: data.originalData.name,
+      title: data.originalData.displayName,
       data: data.originalData,
     });
   };
@@ -38,7 +38,7 @@ export const ViewNode = ({ data }: CustomNodeProps<ViewData>) => {
       <NodeHeader className="dragHandle" color="var(--green-6)">
         <span className="adm-model-header">
           <ViewIcon />
-          {data.originalData.name}
+          {data.originalData.displayName}
         </span>
         <span>
           <CachedIcon originalData={data.originalData} />

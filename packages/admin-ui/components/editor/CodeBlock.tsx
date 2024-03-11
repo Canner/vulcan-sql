@@ -77,12 +77,10 @@ export default function CodeBlock(props: Props) {
     });
 
     return (
-      <div className="ace_line" key={`${line}-${index}`}>
-        <div className="my-1">
-          {showLineNumbers && <span className="line-number">{index + 1}</span>}
-          {children}
-        </div>
-      </div>
+      <span className="ace_line" key={`${line}-${index}`}>
+        {showLineNumbers && <span className="line-number">{index + 1}</span>}
+        {children}
+      </span>
     );
   });
 

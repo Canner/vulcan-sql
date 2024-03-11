@@ -11,7 +11,9 @@ export class ModelData {
   public readonly nodeType: NODE_TYPE = NODE_TYPE.MODEL;
 
   public readonly id: string;
-  public readonly name: string;
+  public readonly displayName: string;
+  public readonly referenceName: string;
+  public readonly sourceTableName: string;
   public readonly description: string;
   public readonly refSql: string;
   public readonly cached: boolean;
@@ -26,15 +28,20 @@ export class ModelData {
 
   constructor(model: Model, data: Manifest) {
     this.id = uuidv4();
-    this.name = model.name;
+    // TODO: this will redefine when API come out
+    this.displayName = model.name;
+    this.referenceName = model.name;
+    this.sourceTableName = model.name;
+
     this.description = model?.description || '';
     this.refSql = model.refSql;
     this.cached = model.cached;
     this.refreshTime = model.refreshTime;
     this.relations = data.relationships
-      .filter((relationship) => relationship.models.includes(this.name))
+      .filter((relationship) =>
+        relationship.models.includes(this.referenceName)
+      )
       .map((relationship) => new RelationData(relationship));
-    this.properties = model.properties;
 
     this.columns = model.columns.map(
       (column) => new ModelColumnData(column, model, this.relations)
@@ -51,7 +58,8 @@ export class ModelData {
 
 export class ModelColumnData {
   public readonly id: string;
-  public readonly name: string;
+  public readonly displayName: string;
+  public readonly referenceName: string;
   public readonly type: string;
   public readonly relation?: RelationData;
   public readonly expression?: string;
@@ -61,11 +69,14 @@ export class ModelColumnData {
 
   constructor(column: ModelColumn, model: Model, relations: RelationData[]) {
     this.id = uuidv4();
-    this.name = column.name;
+    // TODO: this will redefine when API come out
+    this.displayName = column.name;
+    this.referenceName = column.name;
+
     this.type = column.type;
     if (column?.relationship) {
       const relation = relations.find(
-        (item) => item.name === column?.relationship
+        (item) => item.referenceName === column?.relationship
       );
       this.relation = relation;
     }
@@ -74,13 +85,13 @@ export class ModelColumnData {
     }
     this.isPrimaryKey = column.name === model.primaryKey;
     this.isCalculated = column.isCalculated;
-    this.properties = column.properties;
   }
 }
 
 export class RelationData {
   public readonly id: string;
-  public readonly name: string;
+  public readonly displayName: string;
+  public readonly referenceName: string;
   public readonly models: string[];
   public readonly joinType: JOIN_TYPE;
   public readonly condition: string;
@@ -90,7 +101,10 @@ export class RelationData {
 
   constructor(relationship: Relationship) {
     this.id = uuidv4();
-    this.name = relationship.name;
+    // TODO: this will redefine when API come out
+    this.displayName = relationship.name;
+    this.referenceName = relationship.name;
+
     this.models = relationship.models;
     this.joinType = relationship.joinType;
     this.condition = relationship.condition;
