@@ -1,17 +1,22 @@
 import { Layout } from 'antd';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import SimpleLayout from '@vulcan-sql/admin-ui/components/layouts/SimpleLayout';
 import Sidebar from '@vulcan-sql/admin-ui/components/sidebar';
 
 const { Sider } = Layout;
 
+const basicStyle = css`
+  height: calc(100vh - 48px);
+  overflow: auto;
+`;
+
 const StyledContentLayout = styled(Layout)`
   position: relative;
+  ${basicStyle}
 `;
 
 const StyledSider = styled(Sider)`
-  height: calc(100vh - 48px);
-  overflow: auto;
+  ${basicStyle}
 `;
 
 type Props = React.ComponentProps<typeof SimpleLayout> & {

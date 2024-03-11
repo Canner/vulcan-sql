@@ -23,7 +23,7 @@ import {
 import MonitorOutlined from '@ant-design/icons/MonitorOutlined';
 import SwapOutlined from '@ant-design/icons/SwapOutlined';
 import ShareAltOutlined from '@ant-design/icons/ShareAltOutlined';
-import { LightningCharge } from '@styled-icons/bootstrap';
+import { Binoculars, LightningCharge } from '@styled-icons/bootstrap';
 import MoreOutlined from '@ant-design/icons/MoreOutlined';
 import { Sparkles } from '@styled-icons/ionicons-outline';
 
@@ -89,4 +89,9 @@ export const ExploreIcon = styled(Explore)`
 `;
 export const SparklesIcon = styled(Sparkles)`
   height: 1em;
+`;
+
+export const BinocularsIcon = styled(Binoculars)`
+  height: 16px;
+  width: 14px;
 `;
