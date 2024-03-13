@@ -5,7 +5,7 @@ import { Divider } from 'antd';
 import { Path } from '@vulcan-sql/admin-ui/utils/enum';
 import useModalAction from '@vulcan-sql/admin-ui/hooks/useModalAction';
 import SiderLayout from '@vulcan-sql/admin-ui/components/layouts/SiderLayout';
-import AnswerResult from '@vulcan-sql/admin-ui/components/ask/AnswerResult';
+import AnswerResult from '@vulcan-sql/admin-ui/components/pages/home/AnswerResult';
 import SaveAsViewModal from '@vulcan-sql/admin-ui/components/modals/SaveAsViewModal';
 
 const AnswerResultsBlock = styled.div`

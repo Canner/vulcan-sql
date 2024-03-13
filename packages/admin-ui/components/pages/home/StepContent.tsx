@@ -3,7 +3,7 @@ import FunctionOutlined from '@ant-design/icons/FunctionOutlined';
 import { BinocularsIcon } from '@vulcan-sql/admin-ui/utils/icons';
 import CollapseContent, {
   Props as CollapseContentProps,
-} from '@vulcan-sql/admin-ui/components/ask/CollapseContent';
+} from '@vulcan-sql/admin-ui/components/pages/home/CollapseContent';
 import useAnswerStepContent from '@vulcan-sql/admin-ui/hooks/useAnswerStepContent';
 
 const { Title, Paragraph } = Typography;
