@@ -208,6 +208,7 @@ const resolvers = {
     autoGenerateRelation: projectResolver.autoGenerateRelation,
     listModels: modelResolver.listModels,
     model: modelResolver.getModel,
+    manifest: modelResolver.getManifest,
   },
   Mutation: {
     saveDataSource: projectResolver.saveDataSource,

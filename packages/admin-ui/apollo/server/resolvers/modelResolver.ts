@@ -5,6 +5,7 @@ import { CompactTable, IContext } from '../types';
 import { getLogger } from '@vulcan-sql/admin-ui/apollo/server/utils';
 import { BQConnector } from '../connectors/bqConnector';
 import { GenerateReferenceNameData } from '../services/modelService';
+import { Manifest } from '../mdl/type';
 
 const logger = getLogger('ModelResolver');
 logger.level = 'debug';
@@ -15,6 +16,16 @@ export class ModelResolver {
     this.getModel = this.getModel.bind(this);
     this.createModel = this.createModel.bind(this);
     this.deleteModel = this.deleteModel.bind(this);
+    this.getManifest = this.getManifest.bind(this);
+  }
+
+  public async getManifest(
+    _root: any,
+    args: any,
+    ctx: IContext
+  ): Promise<Manifest> {
+    const manifest = await ctx.mdlService.makeCurrentModelMDL();
+    return manifest;
   }
 
   public async listModels(_root: any, args: any, ctx: IContext) {
@@ -59,9 +70,9 @@ export class ModelResolver {
       c.properties = JSON.parse(c.properties);
       return c;
     });
-    let relations = await ctx.relationRepository.findRelationsByColumnIds(
-      modelColumns.map((c) => c.id)
-    );
+    let relations = await ctx.relationRepository.findRelationsBy({
+      columnIds: modelColumns.map((c) => c.id),
+    });
     relations = relations.map((r) => ({
       ...r,
       type: r.joinType,

@@ -16,6 +16,7 @@ import { getLogger } from '@vulcan-sql/admin-ui/apollo/server/utils';
 import { getConfig } from '@vulcan-sql/admin-ui/apollo/server/config';
 import { ProjectService } from '@vulcan-sql/admin-ui/apollo/server/services/projectService';
 import { ModelService } from '@vulcan-sql/admin-ui/apollo/server/services/modelService';
+import { MDLService } from '@vulcan-sql/admin-ui/apollo/server/services/mdlService';
 
 const serverConfig = getConfig();
 const apolloLogger = getLogger('APOLLO');
@@ -40,6 +41,12 @@ const relationRepository = new RelationRepository(knex);
 
 const projectService = new ProjectService({ projectRepository });
 const modelService = new ModelService();
+const mdlService = new MDLService({
+  projectRepository,
+  modelRepository,
+  modelColumnRepository,
+  relationRepository,
+});
 
 const apolloServer: ApolloServer = new ApolloServer({
   typeDefs,
@@ -55,6 +62,7 @@ const apolloServer: ApolloServer = new ApolloServer({
     // services
     projectService,
     modelService,
+    mdlService,
 
     // repository
     projectRepository,

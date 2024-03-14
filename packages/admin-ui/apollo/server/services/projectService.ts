@@ -28,14 +28,7 @@ export class ProjectService implements IProjectService {
   }
 
   public async getCurrentProject() {
-    const projects = await this.projectRepository.findAll({
-      order: 'id',
-      limit: 1,
-    });
-    if (!projects.length) {
-      throw new Error('No project found');
-    }
-    return projects[0];
+    return await this.projectRepository.getCurrentProject();
   }
 
   public async getCredentialFilePath(project?: Project) {
