@@ -15,7 +15,10 @@ export interface Model {
 
 export interface IModelRepository extends IBasicRepository<Model> {}
 
-export class ModelRepository extends BaseRepository<Model> {
+export class ModelRepository
+  extends BaseRepository<Model>
+  implements IModelRepository
+{
   constructor(knexPg: Knex) {
     super({ knexPg, tableName: 'model' });
   }

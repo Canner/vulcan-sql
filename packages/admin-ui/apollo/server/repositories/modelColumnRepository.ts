@@ -33,7 +33,10 @@ export interface IModelColumnRepository extends IBasicRepository<ModelColumn> {
   ): Promise<ModelColumn[]>;
 }
 
-export class ModelColumnRepository extends BaseRepository<ModelColumn> {
+export class ModelColumnRepository
+  extends BaseRepository<ModelColumn>
+  implements IModelColumnRepository
+{
   constructor(knexPg: Knex) {
     super({ knexPg, tableName: 'model_column' });
   }

@@ -15,24 +15,46 @@ export interface Relation {
   toColumnId: number; // to column id, "{fromColumn} {joinType} {toColumn}"
 }
 
+export interface ExtraRelationInfo {
+  fromModelId: number;
+  fromModelName: string;
+  fromColumnName: string;
+  toModelId: number;
+  toModelName: string;
+  toColumnName: string;
+}
+
+export type RelationInfo = Relation & ExtraRelationInfo;
+
 export interface IRelationRepository extends IBasicRepository<Relation> {
-  findRelationsByColumnIds(
-    columnIds: number[],
+  findRelationsBy(
+    filter: { columnIds?: number[]; modelIds?: number[] },
     queryOptions?: IQueryOptions
   ): Promise<Relation[]>;
   deleteRelationsByColumnIds(
     columnIds: number[],
     queryOptions?: IQueryOptions
   ): Promise<void>;
+  findRelationInfoBy(
+    filter: {
+      projectId?: number;
+      columnIds?: number[];
+      modelIds?: number[];
+    },
+    queryOptions?: IQueryOptions
+  ): Promise<RelationInfo[]>;
 }
 
-export class RelationRepository extends BaseRepository<Relation> {
+export class RelationRepository
+  extends BaseRepository<Relation>
+  implements IRelationRepository
+{
   constructor(knexPg: Knex) {
     super({ knexPg, tableName: 'relation' });
   }
 
-  public async findRelationsByColumnIds(
-    columnIds: number[],
+  public async findRelationsBy(
+    { columnIds, modelIds },
     queryOptions?: IQueryOptions
   ) {
     let executer = this.knex;
@@ -41,7 +63,7 @@ export class RelationRepository extends BaseRepository<Relation> {
       executer = tx;
     }
     // select the leftModel name and rightModel name along with relation
-    const result = await executer(this.tableName)
+    const builder = executer(this.tableName)
       .join(
         'model_column AS fmc',
         `${this.tableName}.from_column_id`,
@@ -53,14 +75,23 @@ export class RelationRepository extends BaseRepository<Relation> {
         `${this.tableName}.to_column_id`,
         '=',
         'tmc.id'
-      )
-      .whereIn(`${this.tableName}.from_column_id`, columnIds)
-      .orWhereIn(`${this.tableName}.to_column_id`, columnIds)
-      .select(
-        `${this.tableName}.*`,
-        'fmc.model_id AS fromModelId',
-        'tmc.model_id AS toModelId'
       );
+    if (columnIds && columnIds.length > 0) {
+      builder
+        .whereIn(`${this.tableName}.from_column_id`, columnIds)
+        .orWhereIn(`${this.tableName}.to_column_id`, columnIds);
+    }
+    if (modelIds && modelIds.length > 0) {
+      builder
+        .whereIn('fmc.model_id', modelIds)
+        .orWhereIn('tmc.model_id', modelIds);
+    }
+
+    const result = await builder.select(
+      `${this.tableName}.*`,
+      'fmc.model_id AS fromModelId',
+      'tmc.model_id AS toModelId'
+    );
     return result.map((r) => this.transformFromDBData(r));
   }
   public async deleteRelationsByColumnIds(
@@ -79,5 +110,51 @@ export class RelationRepository extends BaseRepository<Relation> {
       .whereIn('from_column_id', columnIds)
       .orWhereIn('to_column_id', columnIds)
       .delete();
+  }
+
+  public async findRelationInfoBy(filter, queryOptions) {
+    const { projectId, columnIds, modelIds } = filter;
+    let executer = this.knex;
+    if (queryOptions && queryOptions.tx) {
+      const { tx } = queryOptions;
+      executer = tx;
+    }
+    // select the leftModel name and rightModel name along with relation
+    const builder = executer(this.tableName)
+      .join(
+        'model_column AS fmc',
+        `${this.tableName}.from_column_id`,
+        '=',
+        'fmc.id'
+      )
+      .join(
+        'model_column AS tmc',
+        `${this.tableName}.to_column_id`,
+        '=',
+        'tmc.id'
+      )
+      .join('model AS fm', 'fmc.model_id', '=', 'fm.id')
+      .join('model AS tm', 'tmc.model_id', '=', 'tm.id');
+
+    if (projectId) {
+      builder.where(`${this.tableName}.project_id`, projectId);
+    } else if (columnIds && columnIds.length > 0) {
+      builder
+        .whereIn(`${this.tableName}.from_column_id`, columnIds)
+        .orWhereIn(`${this.tableName}.to_column_id`, columnIds);
+    } else if (modelIds && modelIds.length > 0) {
+      builder
+        .whereIn('fmc.model_id', modelIds)
+        .orWhereIn('tmc.model_id', modelIds);
+    }
+
+    const result = await builder.select(
+      `${this.tableName}.*`,
+      'fm.id AS fromModelId, fm.reference_name AS fromModelName',
+      'tm.id AS toModelId, tm.reference_name AS toModelName',
+      'fmc.reference_name AS fromColumnName',
+      'tmc.reference_name AS toColumnName'
+    );
+    return result.map((r) => this.transformFromDBData(r)) as RelationInfo[];
   }
 }
