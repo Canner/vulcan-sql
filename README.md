@@ -33,7 +33,7 @@
 
 Given the vast amount of analytical data in databases, data warehouses, and data lakes, there is currently no easy method for data professionals to share data with relevant stakeholders for operational business use cases.
 
-#### With **VulcanSQL** you can
+### With **VulcanSQL** you can
 
 **Rapid Development and Integration**: By abstracting the complexities of directly interacting with databases and data warehouses, developers can focus on the higher-level logic of their applications. This reduces the development time and simplifies the process of integrating AI capabilities into applications.
 
@@ -71,7 +71,7 @@ VulcanSQL offers flexible deployment options - whether you prefer Docker or comm
 
 ❤️ **Share**
 
-VulcanSQL offers many data sharing options, seamlessly integrating your data into familiar applications within your workflow and build AI Agents.
+VulcanSQL offers many data sharing options, seamlessly integrating your data into familiar applications within your workflow and build AI agents.
 
 ## Documentation
 
@@ -92,7 +92,7 @@ Below are some common scenarios that you may be interested:
 
 ## Use Cases
 
-🚀 **AI agents**: Streamline the creation of APIs for AI agents to interact with databases and data warehouses.
+🤖 **AI agents**: Streamline the creation of APIs for AI agents to interact with databases and data warehouses.
 
 📈 **Customer-facing analytics**: Expose analytics in your SaaS product for customers to understand how the product is performing for them via customer dashboards, insights, and reports.
 
