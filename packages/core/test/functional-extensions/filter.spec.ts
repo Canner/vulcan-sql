@@ -43,3 +43,31 @@ it('The extensions created by createFilter function should work with template en
   expect(queries[0]).toBe('SELECT $1');
   expect(bindings[0].get('$1')).toBe('QAQ3QQQQ');
 });
+
+it('The extensions can return arbitrary value', async () => {
+  // Arrange
+  const testFilter: FunctionalFilter = async ({ args, value }) =>
+    ({id: args['aa'], text: `QAQ${args['aa']}${value}`});
+  const [Builder, Runner] = createFilterExtension('test', testFilter);
+  const builder = new Builder({}, '');
+  const runner = new Runner({}, '');
+  const {
+    compiler,
+    loader,
+    executeTemplate,
+    getCreatedQueries,
+    getCreatedBinding,
+  } = await createTestCompiler({ additionalExtensions: [builder, runner] });
+  const { compiledData } = await compiler.compile(
+    `SELECT {{ (context.params.id | test(aa=3)).id }}, {{ (context.params.id | test(aa=3)).text }}`
+  );
+  loader.setSource('test', compiledData);
+  // Act
+  await executeTemplate('test', { id: 'QQQQ' });
+  const queries = await getCreatedQueries();
+  const bindings = await getCreatedBinding();
+  // Assert
+  expect(queries[0]).toBe('SELECT $1, $2');
+  expect(bindings[0].get('$1')).toBe(3);
+  expect(bindings[0].get('$2')).toBe('QAQ3QQQQ');
+});
