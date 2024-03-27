@@ -29,7 +29,7 @@
 
 ![overview of VulcanSQL](https://i.imgur.com/JvCIZQ1.png)
 
-## What Problems does VulcanSQL aim to solve?
+## Why VulcanSQL?
 
 Given the vast amount of analytical data in databases, data warehouses, and data lakes, there is currently no easy method for data professionals to share data with relevant stakeholders for operational business use cases.
 
