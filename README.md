@@ -25,13 +25,23 @@
 
 ## What is VulcanSQL?
 
-**[VulcanSQL](https://vulcansql.com/) is an Analytical Data API Framework for data apps**. It aims to help data professionals deliver RESTful APIs from databases, data warehouses or data lakes much easier and faster. It turns your SQL queries into REST APIs in no time!
+**[VulcanSQL](https://vulcansql.com/) is an Analytical Data API Framework for AI agents and data apps**. It aims to help data professionals deliver RESTful APIs from databases, data warehouses or data lakes much easier and secure. It turns your SQL into APIs in no time!
 
 ![overview of VulcanSQL](https://i.imgur.com/JvCIZQ1.png)
 
 ## What Problems does VulcanSQL aim to solve?
 
 Given the vast amount of analytical data in databases, data warehouses, and data lakes, there is currently no easy method for data professionals to share data with relevant stakeholders for operational business use cases.
+
+#### With **VulcanSQL** you can
+
+**Rapid Development and Integration**: By abstracting the complexities of directly interacting with databases and data warehouses, developers can focus on the higher-level logic of their applications. This reduces the development time and simplifies the process of integrating AI capabilities into applications.
+
+**Standardization**: Utilizing OpenAPI documents for interaction provides a standardized way for AI agents to understand and interact with different APIs. This promotes interoperability among various systems and tools, making it easier to integrate with a wide array of services and data sources.
+
+**Scalability and Maintenance**: A template-driven approach to API creation can make it easier to scale and maintain APIs over time. Changes in the underlying data schema or business logic can be propagated to the APIs more efficiently, without the need for extensive manual adjustments.
+
+**Accessibility**: Making data more accessible to AI agents through well-defined APIs can unlock new insights and capabilities by leveraging machine learning and analytics. This can enhance decision-making processes and automate routine tasks, among other benefits.
 
 ## Online Playground
 
@@ -61,7 +71,7 @@ VulcanSQL offers flexible deployment options - whether you prefer Docker or comm
 
 ❤️ **Share**
 
-VulcanSQL offers many data sharing options, seamlessly integrating your data into familiar applications within your workflow.
+VulcanSQL offers many data sharing options, seamlessly integrating your data into familiar applications within your workflow and build AI Agents.
 
 ## Documentation
 
@@ -81,6 +91,8 @@ Below are some common scenarios that you may be interested:
 - [Deployment](https://vulcansql.com/docs/deployment)
 
 ## Use Cases
+
+🚀 **AI agents**: Streamline the creation of APIs for AI agents to interact with databases and data warehouses.
 
 📈 **Customer-facing analytics**: Expose analytics in your SaaS product for customers to understand how the product is performing for them via customer dashboards, insights, and reports.
 
