@@ -6,8 +6,8 @@ import Carousel from '../share/Carousel';
 
 enum ShareType {
   API_Documentation = 'API Documentation',
-  Data_Catalog = 'Data Catalog',
-  Connect_from_Application = 'Connect from Application',
+  Data_Catalog = 'API Catalog',
+  Connect_from_Application = 'Connect from AI Agents & Apps',
 }
 
 const shareSessions = [
@@ -102,11 +102,6 @@ export default function HomepageFeatures(): JSX.Element {
           <h3 className={`${styles.card_title}`}>Build</h3>
           <p className={`${styles.card_description}`}>
             VulcanSQL offers a development experience similar to{' '}
-            <img
-              src={'./img/dbt_logo.png'}
-              className={styles.inline_logo}
-              alt="dbt logo"
-            />
             <span className={styles.bold}>dbt</span>. Just insert variables into
             your templated SQL. VulcanSQL accepts input from your API and{' '}
             <span className={styles.highlight}>
