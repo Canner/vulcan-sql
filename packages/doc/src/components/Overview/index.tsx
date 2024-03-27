@@ -116,7 +116,7 @@ export default function Overview(): JSX.Element {
         <span className={styles.gradient_text}>APIs</span> Fast.{' '}
       </h1>
       <div className={`text--center ${styles.description}`}>
-        Data API Framework for AI agents and data apps
+        Data API Framework for AI Agents and Data Apps
       </div>
       <div className={styles.banner_button_content}>
         <Link
