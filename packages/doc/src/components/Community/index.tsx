@@ -9,7 +9,6 @@ import Carousel from '../share/Carousel';
 import GITHUB_DATA from './data';
 dayjs.extend(relativeTime);
 
-const Discord = require('@site/static/img/discord.svg').default;
 const GitHub = require('@site/static/img/github.svg').default;
 
 enum EmojisType {
@@ -125,17 +124,10 @@ export default function Community(): JSX.Element {
       <h1 className={`text--center ${styles.title}`}>Join the Community</h1>
       <div className={`text--center ${styles.descriptionBlock}`}>
         <div className={`text--center ${styles.description}`}>
-          Join the discord group to chat with the developers and directly
+          Join the community with the developers and directly
           connect with the VulcanSQL team.
         </div>
         <div className={`buttons ${styles.buttonContainer}`}>
-          <Link
-            className={`button button--outline ${styles.actionButton}`}
-            to="https://discord.gg/ztDz8DCmG4"
-          >
-            <Discord className={styles.actionIcon} role="img" />
-            Discord
-          </Link>
           <Link
             className={`button button--outline ${styles.actionButton}`}
             to="https://github.com/Canner/vulcan-sql"

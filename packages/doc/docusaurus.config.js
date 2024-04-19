@@ -81,11 +81,6 @@ const config = {
             label: 'Examples',
           },
           {
-            href: 'https://discord.gg/ztDz8DCmG4',
-            position: 'left',
-            label: 'Community',
-          },
-          {
             href: 'https://twitter.com/vulcansql',
             label: 'Twitter',
             position: 'right',
@@ -136,10 +131,6 @@ const config = {
           {
             title: 'Community',
             items: [
-              {
-                label: 'Discord',
-                href: 'https://discord.gg/ztDz8DCmG4',
-              },
               {
                 label: 'Twitter',
                 href: 'https://twitter.com/vulcansql',
