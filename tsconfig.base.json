@@ -76,6 +76,9 @@
       "@vulcan-sql/extension-authenticator-canner": [
         "packages/extension-authenticator-canner/src/index.ts"
       ],
+      "@vulcan-sql/extension-authenticator-oidc": [
+        "packages/extension-authenticator-oidc/src/index.ts"
+      ],
       "@vulcan-sql/extension-dbt": ["packages/extension-dbt/src/index"],
       "@vulcan-sql/extension-debug-tools": [
         "packages/extension-debug-tools/src/index.ts"
