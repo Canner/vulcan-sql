@@ -48,7 +48,7 @@ describe('Test "rest_api" filter', () => {
           extensions: { rest_api: path.join(__dirname, '..', 'src') },
         });
 
-      const sql = `{% set value = { "path": { "id": 1 } } %}SELECT {{ value | rest_api(url='https://dummyjson.com/products/:id') }}`;
+      const sql = `{% set value = { "path": { "id": 1 } } %}SELECT {{ value | rest_api(url='https://dummyjson.com/products/:id') | dump }}`;
 
       // Act
       await compileAndLoad(sql);
@@ -161,7 +161,7 @@ describe('Test "rest_api" filter', () => {
           extensions: { rest_api: path.join(__dirname, '..', 'src') },
         });
 
-      const sql = `{% set value = { "query": { "q": "phone" }  } %}SELECT {{ value | rest_api(url='https://dummyjson.com/products/search') }}`;
+      const sql = `{% set value = { "query": { "q": "phone" }  } %}SELECT {{ value | rest_api(url='https://dummyjson.com/products/search') | dump }}`;
 
       // Act
       await compileAndLoad(sql);
@@ -190,7 +190,35 @@ describe('Test "rest_api" filter', () => {
           extensions: { rest_api: path.join(__dirname, '..', 'src') },
         });
 
-      const sql = `{% set value = { "body": { "title": "BMW Pencil" }, "headers": { "Content-Type": "application/json" } } %}SELECT {{ value | rest_api(url='https://dummyjson.com/products/add', method='POST') }}`;
+      const sql = `{% set value = { "body": { "title": "BMW Pencil" }, "headers": { "Content-Type": "application/json" } } %}SELECT {{ value | rest_api(url='https://dummyjson.com/products/add', method='POST') | dump }}`;
+
+      // Act
+      await compileAndLoad(sql);
+      await execute({});
+
+      // Assert
+      const queries = await getExecutedQueries();
+      const bindings = await getCreatedBinding();
+
+      expect(queries[0]).toBe('SELECT $1');
+      expect(bindings[0].get('$1')).toEqual(expected);
+    },
+    50 * 1000
+  )
+
+  it(
+    'Should work with template engine with field access',
+    async () => {
+      const expected = {
+        id: 101,
+        title: 'BMW Pencil'
+      }.id;
+
+      const { compileAndLoad, execute, getExecutedQueries, getCreatedBinding } = await getTestCompiler({
+        extensions: { rest_api: path.join(__dirname, '..', 'src') },
+      });
+
+      const sql = `{% set value = { "body": { "title": "BMW Pencil" }, "headers": { "Content-Type": "application/json" } } %}SELECT {{ (value | rest_api(url='https://dummyjson.com/products/add', method='POST')).id }}`;
 
       // Act
       await compileAndLoad(sql);
