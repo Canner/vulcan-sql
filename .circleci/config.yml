@@ -219,25 +219,25 @@ workflows:
       - test:
           requires:
             - install
-  nightly-build:
-    when:
-      or:
-        - and:
-            - equal: [scheduled_pipeline, << pipeline.trigger_source >>]
-            - equal: ['nightly build', << pipeline.schedule.name >>]
-        - and:
-            - equal: [api, << pipeline.trigger_source >>]
-            - equal: ['nightly build', << pipeline.parameters.workflow_name >>]
-    jobs:
-      - install
-      - lint:
-          requires:
-            - install
-      - test:
-          requires:
-            - install
-      - nightly-build:
-          requires:
-            - install
-            - lint
-            - test
+  # nightly-build:
+  #   when:
+  #     or:
+  #       - and:
+  #           - equal: [scheduled_pipeline, << pipeline.trigger_source >>]
+  #           - equal: ['nightly build', << pipeline.schedule.name >>]
+  #       - and:
+  #           - equal: [api, << pipeline.trigger_source >>]
+  #           - equal: ['nightly build', << pipeline.parameters.workflow_name >>]
+  #   jobs:
+  #     - install
+  #     - lint:
+  #         requires:
+  #           - install
+  #     - test:
+  #         requires:
+  #           - install
+  #     - nightly-build:
+  #         requires:
+  #           - install
+  #           - lint
+  #           - test
