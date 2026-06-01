@@ -124,4 +124,50 @@ Below are some common scenarios that you may be interested:
 
 ## Community
 
+## FAQ
+
+### What is VulcanSQL?
+
+VulcanSQL is an **Analytical Data API Framework for AI agents and data apps**. It helps data professionals deliver RESTful APIs from databases, data warehouses, or data lakes easier and more secure. It turns your SQL into APIs in no time.
+
+### Why use VulcanSQL?
+
+| Benefit | Description |
+|---------|-------------|
+| Rapid Development | Abstract complexities of database interaction |
+| Standardization | OpenAPI documents provide standard AI agent interaction |
+| Scalability | Template-driven approach simplifies API maintenance |
+| Accessibility | Well-defined APIs unlock ML and analytics insights |
+
+### How do I install VulcanSQL?
+
+Visit the [installation guide](https://vulcansql.com/docs/get-started/installation).
+
+### Is there an online playground?
+
+Yes! Use the [Online Playground](https://codesandbox.io/p/sandbox/vulcansql-demo-wfd834) to try VulcanSQL.
+
+### What are the pain points VulcanSQL solves?
+
+| Pain Point | Traditional Approach |
+|------------|---------------------|
+| Time-Consuming | Manual API coding |
+| Error-Prone | Manual coding increases bugs |
+| Integration Complexity | Diverse data sources require significant effort |
+| Security Risks | Ensuring compliance requires extra layers |
+| Lack of Documentation | APIs often undocumented |
+
+### Where can I find examples?
+
+See the [selected compilation of examples](https://github.com/Canner/vulcan-sql-examples) showcasing VulcanSQL usage.
+
+### What license applies?
+
+MIT License — See [LICENSE](https://github.com/Canner/vulcan-sql/blob/develop/LICENSE) for details.
+
+### How can I follow updates?
+
+Follow [@vulcansql](https://twitter.com/vulcansql) on Twitter for updates.
+
+
 - If there is any issues, please visit [Github Issues](https://github.com/Canner/vulcan-sql/issues).
